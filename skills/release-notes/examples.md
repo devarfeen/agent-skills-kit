@@ -16,18 +16,25 @@ Generate release notes for 11 March 2026
 
 ### RFID Lookup Reliability Improvements
 
+**Summary**
+- RFID-enabled workflows now start scans more consistently, reducing retries during daily operations.
+
 **Problem**
-- RFID scans could start before the reader was fully ready, causing inconsistent results.
+- Warehouse teams saw inconsistent scan starts, especially during busy lookup periods.
+- Failed first attempts caused repeat actions and slowed task completion.
 
 **Change**
-- Added a shared RFID setup flow before scans begin.
-- Scanner power is now set and verified before lookup starts.
-- Added retry handling when hardware is not yet ready.
+- Standardized how scanning is prepared before each RFID lookup.
+- Added readiness checks so the app starts scans only when the scanner is ready.
+- Added controlled retry behavior when the scanner is temporarily unavailable.
 
 **Impact**
-- More reliable RFID scan results
-- Fewer scan failures
-- Better performance in dense tag environments
+- Fewer failed first-scan attempts in lookup workflows.
+- Less operator rework caused by scanner startup timing.
+- More predictable throughput during high-volume tag reads.
+
+**Scope**
+- Applies to RFID-enabled stock lookup operations in Partners App.
 
 ## Example 2: Single Project on a Date
 
@@ -39,17 +46,23 @@ Generate release notes for Partners App on 11 March
 
 ### Stock Lookup Stability Improvements
 
+**Summary**
+- Stock lookup scans now behave more consistently across shifts.
+
 **Problem**
-- Some stock lookup flows were failing when scanner setup was incomplete.
+- Stock teams experienced failed lookups when scans started before setup finished.
 
 **Change**
-- Improved the initialization sequence before lookups begin.
-- Added checks to ensure scanner readiness before processing.
+- Standardized the startup sequence for lookup scanning.
+- Added readiness validation before processing lookup scans.
 
 **Impact**
-- More stable stock lookup workflow
-- Reduced failed scans
-- Improved consistency for users
+- Fewer interrupted lookup tasks.
+- Lower scan failure rates tied to startup timing.
+- More predictable operator experience during stock checks.
+
+**Scope**
+- Affects stock lookup workflows in Partners App.
 
 ## Example 3: Session Summary
 
@@ -61,17 +74,23 @@ Summarize today's development session
 
 ### RFID Setup and Scan Flow Improvements
 
+**Summary**
+- RFID scanning now starts with a consistent setup path across this session's updates.
+
 **Problem**
-- RFID scan behavior was inconsistent due to setup timing and missing validation.
+- Teams faced uneven scan behavior when setup and validation steps varied by flow.
 
 **Change**
-- Introduced a shared setup process used before scan operations.
-- Added validation and retry handling to improve scan readiness.
+- Introduced one shared scanner preparation process before RFID actions.
+- Added validation and retry safeguards for scanner readiness.
 
 **Impact**
-- More predictable RFID scanning
-- Better reliability during lookup flows
-- Reduced need for repeated scan attempts
+- More consistent scan starts across updated workflows.
+- Fewer repeat attempts due to setup timing issues.
+- Higher confidence for teams using RFID-heavy screens.
+
+**Scope**
+- Covers RFID-related workflows updated during the development session.
 
 ## Example 4: Feature-Based Summary
 
@@ -83,14 +102,20 @@ Write release notes for the RFID scanning improvements
 
 ### RFID Scanning Improvements
 
+**Summary**
+- RFID workflows now follow a more consistent scan startup process.
+
 **Problem**
-- RFID scanning was unreliable in some cases because initialization steps were not always completed before scanning.
+- Scan attempts could fail when startup steps were incomplete in certain flows.
 
 **Change**
-- Standardized scanner setup before scans begin.
-- Added readiness checks and retry handling.
+- Standardized scanner setup before scan actions.
+- Added readiness checks and controlled retry handling.
 
 **Impact**
-- More consistent scan performance
-- Fewer operational failures
-- Improved user confidence in lookup workflows
+- Fewer startup-related scan failures.
+- Reduced operational interruptions in RFID workflows.
+- More reliable scan behavior for front-line users.
+
+**Scope**
+- Applies to RFID scanning flows covered by this feature.

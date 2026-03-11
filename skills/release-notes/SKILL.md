@@ -17,6 +17,8 @@ The skill can produce summaries from:
 
 Outputs must explain what changed, why it changed, and the improvement delivered, using simple language suitable for non-technical stakeholders.
 
+Default audience is Project Managers and operations stakeholders, not engineers.
+
 ## Supported Generation Modes
 
 ### 1. Date-Based Release Notes (Git History)
@@ -133,24 +135,65 @@ Project names and codes may be found from:
 
 ### <Feature or Improvement Name>
 
+**Summary**
+
+- One sentence: what is now better in day-to-day operations.
+
 **Problem**
 
-- What issue or limitation existed
+- What users or operations teams were experiencing before this change
+- Include the business consequence (delays, rework, missed scans, confusion, etc.)
 
 **Change**
 
-- What was changed across the grouped commits
+- Explain the solution in product/workflow language
+- Name affected workflows or screens in plain language
+- Do not include file paths, class names, package names, or internal module names
 
 **Impact**
 
-- What improved for users, reliability, operations, or performance
+- State concrete outcomes, not generic claims
+- Prefer specific statements such as "fewer failed scans during stock take" over "improved reliability"
+
+**Scope**
+
+- Who is affected (teams, roles, or flows) and where the change applies
+
+**Commits Included**
+
+- List commit hashes only at the end for traceability
 
 ## Writing Guidelines
 
 - Write for non-technical stakeholders
+- Translate implementation details into user-facing outcomes
 - Avoid unnecessary engineering terminology
-- Focus on what improved
+- Focus on what improved and how it affects operations
 - Prefer short bullet points
+- Avoid vague wording such as "enhanced", "optimized", or "improved" without saying what changed in behavior
+- If exact metrics are unavailable, use directional impact grounded in observed behavior
+
+## Translation Rules
+
+When source input contains engineering details, rewrite them as operational meaning.
+
+Examples:
+
+- "added API classes/interfaces" -> "connected scanner capabilities so app screens use the same scan process"
+- "refactored useRfidScanner" -> "standardized scanner setup to reduce inconsistent scan starts"
+- "added test coverage" -> "reduced regression risk by validating scanner setup behavior"
+
+Do not copy code identifiers directly into PM output unless the user explicitly asks for technical detail.
+
+## Quality Check Before Finalizing
+
+Before returning output, verify:
+
+1. A PM can understand it without code context.
+2. Each impact bullet describes an observable operational outcome.
+3. At least one bullet names affected workflows or teams.
+4. Technical identifiers are removed from the main narrative.
+5. Commit hashes, if included, appear in a final traceability line only.
 
 ## Fallback
 

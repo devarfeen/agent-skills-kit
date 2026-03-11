@@ -17,8 +17,11 @@ Generate PM-friendly release notes from git commits, session work, or completed 
 
 ## Output Style
 Uses a clear structure:
+- Summary
 - Problem
 - Change
 - Impact
+- Scope
+- Commits Included
 
 The output is designed for Project Managers and other non-technical stakeholders.
