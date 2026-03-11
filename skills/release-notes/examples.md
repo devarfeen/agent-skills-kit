@@ -12,6 +12,8 @@ Generate release notes for 11 March 2026
 - feat: verify scanner power before lookup
 
 ### Example Output
+Date: 11 March 2026
+
 ## Partners App
 
 ### RFID Lookup Reliability Improvements
@@ -27,6 +29,8 @@ Generate release notes for 11 March 2026
 - Standardized how scanning is prepared before each RFID lookup.
 - Added readiness checks so the app starts scans only when the scanner is ready.
 - Added controlled retry behavior when the scanner is temporarily unavailable.
+- What changed where: scanner setup setting, stock lookup view, and scan status indicator shown before lookup starts.
+- Simple logic explanation: The app now waits until the scanner says "ready" before it tries to read tags.
 
 **Impact**
 - Fewer failed first-scan attempts in lookup workflows.
@@ -42,6 +46,8 @@ Generate release notes for 11 March 2026
 Generate release notes for Partners App on 11 March
 
 ### Example Output
+Date: 11 March 2026
+
 ## Partners App
 
 ### Stock Lookup Stability Improvements
@@ -55,6 +61,8 @@ Generate release notes for Partners App on 11 March
 **Change**
 - Standardized the startup sequence for lookup scanning.
 - Added readiness validation before processing lookup scans.
+- What changed where: stock lookup page and its scan start controls.
+- Simple logic explanation: Instead of scanning right away, the app first checks "is scanner ready?" and only then continues.
 
 **Impact**
 - Fewer interrupted lookup tasks.
@@ -83,6 +91,8 @@ Summarize today's development session
 **Change**
 - Introduced one shared scanner preparation process before RFID actions.
 - Added validation and retry safeguards for scanner readiness.
+- What changed where: RFID-enabled operation screens and scan-start status messaging.
+- Simple logic explanation: If the scanner is not ready yet, the app waits and retries instead of failing immediately.
 
 **Impact**
 - More consistent scan starts across updated workflows.
@@ -111,6 +121,8 @@ Write release notes for the RFID scanning improvements
 **Change**
 - Standardized scanner setup before scan actions.
 - Added readiness checks and controlled retry handling.
+- What changed where: RFID scan pages and scan action controls used by front-line teams.
+- Simple logic explanation: The app turns the scanner setup steps into the same repeatable checklist every time.
 
 **Impact**
 - Fewer startup-related scan failures.

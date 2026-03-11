@@ -131,6 +131,12 @@ Project names and codes may be found from:
 
 ## Output Format
 
+Output must follow the exact structure below. Do not reorder sections.
+
+For date-based release notes, include a date line at the top.
+
+`Date: <DD Month YYYY>`
+
 ## <Product / App Name>
 
 ### <Feature or Improvement Name>
@@ -148,6 +154,8 @@ Project names and codes may be found from:
 
 - Explain the solution in product/workflow language
 - Name affected workflows or screens in plain language
+- Include 1 to 3 concrete user-visible touchpoints when available: setting, view/page, component/screen section, URL/route, or visible UI element
+- If logic changed, add one simple sentence in plain language for a 5th grader
 - Do not include file paths, class names, package names, or internal module names
 
 **Impact**
@@ -163,6 +171,46 @@ Project names and codes may be found from:
 
 - List commit hashes only at the end for traceability
 
+If there are multiple features under one project, repeat the feature block:
+
+### <Feature or Improvement Name>
+
+- Summary
+- Problem
+- Change
+- Impact
+- Scope
+- Commits Included
+
+Do not place feature sections above the project header.
+
+## File Output Rules
+
+Always save the generated markdown under the root `changelog/` folder.
+
+1. Date-based summary or release notes:
+   - Path: `changelog/DDMMYYYY.md`
+   - Example: `changelog/12032026.md`
+2. Feature-based summary:
+   - Path: `changelog/<feature-name>.md`
+   - Use lowercase kebab-case for file name
+   - Example: `changelog/rfid-scanner-reliability.md`
+3. Session summary without explicit feature name:
+   - Path: `changelog/DDMMYYYY.md`
+
+If `changelog/` does not exist, create it before writing output.
+
+## Section Hierarchy Rule
+
+The hierarchy must be:
+
+1. Date line (date-based only)
+2. Project Name
+3. Feature Name
+4. Child sections under feature: Summary, Problem, Change, Impact, Scope, Commits Included
+
+Never output child sections directly under the date line or without a feature heading.
+
 ## Writing Guidelines
 
 - Write for non-technical stakeholders
@@ -172,6 +220,34 @@ Project names and codes may be found from:
 - Prefer short bullet points
 - Avoid vague wording such as "enhanced", "optimized", or "improved" without saying what changed in behavior
 - If exact metrics are unavailable, use directional impact grounded in observed behavior
+
+## Git Detail Extraction Rules
+
+When generating from git commits/diffs, explicitly extract and summarize user-visible change locations when present.
+
+Look for and report in plain language:
+
+- Main setting changed (for example scanner power, timeout, toggle defaults)
+- View/page/screen affected
+- Component or visible screen section affected
+- URL or route changed (if available and user-visible)
+- Visible element changed (button label, status text, warning, banner, modal, etc.)
+
+Prefer naming what users see over code object names.
+
+If details are not available in commits/diffs, say "Not explicitly visible in commit history" instead of guessing.
+
+## Simple Logic Explanation Rule
+
+If a feature includes programming logic changes, add a plain-language explanation inside the Change section.
+
+Format:
+
+- Simple logic explanation: <one sentence a 5th grader can understand>
+
+Example:
+
+- Simple logic explanation: Raised scanner power from 20 to 30 and made the app switch it on every time before scanning.
 
 ## Translation Rules
 
@@ -194,6 +270,10 @@ Before returning output, verify:
 3. At least one bullet names affected workflows or teams.
 4. Technical identifiers are removed from the main narrative.
 5. Commit hashes, if included, appear in a final traceability line only.
+6. Output follows Date -> Project -> Feature -> Child sections hierarchy.
+7. File is saved in `changelog/` with correct naming convention.
+8. Change section includes user-visible touchpoints when commit history provides them.
+9. Logic changes include one simple sentence understandable by non-technical readers.
 
 ## Fallback
 
