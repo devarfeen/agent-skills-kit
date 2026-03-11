@@ -29,6 +29,8 @@ Uses a clear structure:
 
 Required section order is strict: Date -> Project -> Feature -> Child sections.
 
+Only include project sections that have confirmed changes in the selected commit/session scope.
+
 ## Detail Level
 - For git-based outputs, include concrete "what changed where" details when available:
 	setting, page/view, component section, URL/route, or visible UI element.
@@ -37,7 +39,7 @@ Required section order is strict: Date -> Project -> Feature -> Child sections.
 
 ## Output File Location
 - Save all generated notes in `changelog/` at workspace root.
-- Date-based or session summary: `changelog/DDMMYYYY.md` (example: `changelog/12032026.md`)
-- Feature-based summary: `changelog/<feature-name>.md` using lowercase kebab-case.
+- Date-based or session summary: `changelog/DD-Month-YYYY.md` (example: `changelog/12-March-2026.md`)
+- Feature-based summary: `changelog/Feature-Name.md` using Title-Case words joined by hyphens.
 
 The output is designed for Project Managers and other non-technical stakeholders.

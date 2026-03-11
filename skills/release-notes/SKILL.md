@@ -184,19 +184,25 @@ If there are multiple features under one project, repeat the feature block:
 
 Do not place feature sections above the project header.
 
+## Project Inclusion Rule
+
+Include a project section only if that project has at least one confirmed change in the selected commits/session scope.
+
+Do not include unchanged projects in the final generated file.
+
 ## File Output Rules
 
 Always save the generated markdown under the root `changelog/` folder.
 
 1. Date-based summary or release notes:
-   - Path: `changelog/DDMMYYYY.md`
-   - Example: `changelog/12032026.md`
+   - Path: `changelog/DD-Month-YYYY.md`
+   - Example: `changelog/12-March-2026.md`
 2. Feature-based summary:
-   - Path: `changelog/<feature-name>.md`
-   - Use lowercase kebab-case for file name
-   - Example: `changelog/rfid-scanner-reliability.md`
+   - Path: `changelog/Feature-Name.md`
+   - Use Title-Case words joined with hyphens
+   - Example: `changelog/RFID-Scanner-Reliability.md`
 3. Session summary without explicit feature name:
-   - Path: `changelog/DDMMYYYY.md`
+   - Path: `changelog/DD-Month-YYYY.md`
 
 If `changelog/` does not exist, create it before writing output.
 
@@ -274,6 +280,7 @@ Before returning output, verify:
 7. File is saved in `changelog/` with correct naming convention.
 8. Change section includes user-visible touchpoints when commit history provides them.
 9. Logic changes include one simple sentence understandable by non-technical readers.
+10. Final file includes only projects that have confirmed changes.
 
 ## Fallback
 

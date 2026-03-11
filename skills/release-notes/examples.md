@@ -131,3 +131,80 @@ Write release notes for the RFID scanning improvements
 
 **Scope**
 - Applies to RFID scanning flows covered by this feature.
+
+## Example 5: Omit Unchanged Projects
+
+### User Request
+Generate release notes for 12 March 2026 across all projects
+
+### Example Input
+- Partners App commits found for 12 March 2026
+- Warehouse Admin commits found for 12 March 2026
+- No commits found for Customer Portal on 12 March 2026
+
+### Example Output Rule
+- Include Partners App and Warehouse Admin sections.
+- Do not include Customer Portal because it has no confirmed changes.
+
+### Example Output
+Date: 12 March 2026
+
+## Partners App
+
+### RFID Scanner Reliability
+
+**Summary**
+- Scanner startup became more consistent in daily operations.
+
+**Problem**
+- Teams faced failed first scans in some operational flows.
+
+**Change**
+- Standardized scanner startup behavior across updated flows.
+- What changed where: scan setup setting and scan status indicator.
+
+**Impact**
+- Fewer failed first-scan attempts.
+
+**Scope**
+- RFID-enabled operational flows in Partners App.
+
+**Commits Included**
+- 148cfb8f, f626e8fa
+
+## Warehouse Admin
+
+### Intake Validation Clarity
+
+**Summary**
+- Intake warnings are clearer before submission.
+
+**Problem**
+- Users missed required fields during intake.
+
+**Change**
+- Added clearer required-field guidance in intake screens.
+- What changed where: intake page warning banner and submit-state message.
+
+**Impact**
+- Fewer intake retries due to missing fields.
+
+**Scope**
+- Intake flow for warehouse supervisors.
+
+**Commits Included**
+- a1b2c3d4
+
+## Example 6: Output File Naming
+
+### User Request
+Generate release notes for 12 March 2026
+
+### Expected Output File
+- `changelog/12-March-2026.md`
+
+### User Request
+Write release notes for RFID Scanner Reliability
+
+### Expected Output File
+- `changelog/RFID-Scanner-Reliability.md`
