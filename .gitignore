@@ -1,0 +1,6 @@
+.DS_Store
+Thumbs.db
+*.zip
+
+# Auto Claude data directory
+.auto-claude/
