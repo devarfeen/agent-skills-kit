@@ -28,7 +28,9 @@ agent-skills-kit/
     │       └── session-summary-template.md
     ├── feature-discovery/    # The feature-discovery skill
     │   └── SKILL.md          # Required: metadata + instructions
-    └── feature-prompt/       # The feature-prompt skill
+    ├── feature-prompt/       # The feature-prompt skill
+    │   └── SKILL.md          # Required: metadata + instructions
+    └── feature-prompt-full/  # Full prompt -> grill -> PRD -> issues -> TDD chain
         └── SKILL.md          # Required: metadata + instructions
 ```
 
@@ -179,6 +181,31 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
 | New feature | `Help me create a feature prompt for stock transfer approvals` |
 | Change request | `Turn this rough request into a dev prompt for APP and API` |
 | Multi-project work | `Create a feature prompt for Admin, Mobile, and Backend` |
+
+### `feature-prompt-full`
+
+Turns a rough feature idea into a prompt and prepares the full downstream
+delivery chain: `/grill-with-docs`, `/to-prd`, `/to-issues`, and `/tdd`.
+
+```bash
+npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature-prompt-full
+```
+
+**What it does**
+
+- Shows the proposed command chain first and waits for approval
+- Interviews the user one section at a time with numbered options
+- Uses explorer sub-agents where codebase context can sharpen the prompt
+- Sends the draft prompt to the user for review before finalizing it
+- Ends with the exact next chain: `/grill-with-docs` -> `/to-prd` -> `/to-issues` -> `/tdd`
+
+**Example prompts**
+
+| Mode | Example prompt |
+| --- | --- |
+| Full delivery chain | `Create a full feature prompt for stock transfer approvals` |
+| PRD-ready feature | `Use feature-prompt-full for Admin and API invite changes` |
+| TDD-ready handoff | `Prepare a full feature chain for scanner reliability work` |
 
 ## Using a Skill (Quick Walkthrough)
 
