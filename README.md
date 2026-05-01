@@ -17,6 +17,8 @@ agent-skills-kit/
 ├── README.md                 # This file
 ├── LICENSE                   # MIT
 └── skills/
+    ├── agents-md/            # Generate AGENTS.md plus CLAUDE.md/GEMINI.md shims
+    │   └── SKILL.md          # Required: metadata + instructions
     ├── release-notes/        # The release-notes skill
     │   ├── SKILL.md          # Required: metadata + instructions
     │   ├── README.md         # Human-readable docs for this skill
@@ -30,7 +32,9 @@ agent-skills-kit/
     │   └── SKILL.md          # Required: metadata + instructions
     ├── feature-prompt/       # The feature-prompt skill
     │   └── SKILL.md          # Required: metadata + instructions
-    └── feature-prompt-full/  # Full prompt -> grill -> PRD -> issues -> TDD chain
+    ├── feature-prompt-full/  # Full prompt -> grill -> PRD -> issues -> TDD chain
+    │   └── SKILL.md          # Required: metadata + instructions
+    └── ubiquitous-language/  # Domain glossary extraction and terminology cleanup
         └── SKILL.md          # Required: metadata + instructions
 ```
 
@@ -57,6 +61,32 @@ agent normally — it will invoke the skill when your request matches one of
 its trigger phrases.
 
 ## Available Skills
+
+### `agents-md`
+
+Generates `AGENTS.md` as the canonical agent instruction file and creates
+`CLAUDE.md` / `GEMINI.md` shims that point to it.
+
+```bash
+npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-md
+```
+
+**What it does**
+
+- Embeds the Karpathy-style `CLAUDE.md` guidance as hard-coded template text in `AGENTS.md`
+- Detects VS Code workspaces and uses each folder `name` as the project name/code source
+- Treats the workspace folder with `path: "."` as a meta workspace with no code
+- Builds a project matrix: `Project Name (Code) | Path | Tech Stack`
+- Establishes stable project codes for use across prompt, PRD, issue, discovery, and release-note skills
+- References `UBIQUITOUS_LANGUAGE.md` as required domain context when available
+
+**Example prompts**
+
+| Mode | Example prompt |
+| --- | --- |
+| New instructions | `Generate AGENTS.md for this workspace` |
+| VS Code workspace | `Create AGENTS.md and shims from my VS Code workspace` |
+| Refresh project matrix | `Update AGENTS.md project codes and tech stacks` |
 
 ### `release-notes`
 
@@ -206,6 +236,32 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
 | Full delivery chain | `Create a full feature prompt for stock transfer approvals` |
 | PRD-ready feature | `Use feature-prompt-full for Admin and API invite changes` |
 | TDD-ready handoff | `Prepare a full feature chain for scanner reliability work` |
+
+### `ubiquitous-language`
+
+Creates or updates a DDD-style `UBIQUITOUS_LANGUAGE.md` glossary from the
+current conversation and local domain context. Based on Matt Pocock's
+deprecated `ubiquitous-language` skill.
+
+```bash
+npx skills install https://github.com/devarfeen/agent-skills-kit --skill ubiquitous-language
+```
+
+**What it does**
+
+- Extracts domain terms, roles, workflows, states, and business concepts
+- Chooses canonical names and lists aliases to avoid
+- Flags ambiguous, overloaded, or conflicting terminology
+- Adds relationships, an example dialogue, and open questions
+- Updates an existing `UBIQUITOUS_LANGUAGE.md` instead of replacing it blindly
+
+**Example prompts**
+
+| Mode | Example prompt |
+| --- | --- |
+| New glossary | `Create a ubiquitous language glossary from this conversation` |
+| Terminology cleanup | `Harden our domain language for stock transfers` |
+| Existing glossary update | `Update UBIQUITOUS_LANGUAGE.md with what we just discussed` |
 
 ## Using a Skill (Quick Walkthrough)
 
