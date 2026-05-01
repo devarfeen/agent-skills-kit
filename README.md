@@ -154,8 +154,11 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
 
 - Interviews the user one section at a time: Projects, Need, Integration,
   Reason, Constraints, and optional Acceptance
+- Presents four numbered pre-made answers plus a custom option for each step
 - Challenges vague answers before moving on
 - Inspects the codebase when local context can answer or sharpen a section
+- Sends the draft prompt to the user for review before finalizing it
+- Asks the user to pass the final prompt to `grill-me`
 - Produces a short final prompt in the same section order
 
 **Prompt sections**
@@ -189,6 +192,16 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
 The skills avoid changing your git state unless their own instructions say
 otherwise. Skills that inspect history only read commits already available on
 your machine.
+
+## Agent Runtime Behavior
+
+When the agent runtime supports sub-agents and the user allows them, these
+skills may use multiple read-only explorer agents for independent discovery
+work. This is most useful for multi-repo workspaces, separate modules, or
+parallel evidence gathering.
+
+The main agent still owns final judgment and output quality. Explorer agents
+collect facts; they do not replace the final synthesis.
 
 ## Contributing a New Skill
 

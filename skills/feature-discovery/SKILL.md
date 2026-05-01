@@ -24,6 +24,9 @@ What:
 - Prefer CLI tools over MCP.
 - Use `rg` first for text search.
 - Use `git`, `git grep`, `find`, package metadata, local docs, and tests as needed.
+- When the active agent runtime supports sub-agents and the user has allowed them, use explorer agents for independent read-only discovery work.
+- Use multiple explorer agents in parallel when projects, modules, or evidence streams can be investigated independently.
+- Keep the main session responsible for synthesis, evidence quality, uncertainty calls, and final reporting.
 - Do not run `git fetch`, `git pull`, installs, migrations, or destructive commands.
 - Scan the codebase before using git history.
 - Review git commits only when code scanning does not explain the topic clearly.
@@ -50,6 +53,7 @@ What:
    - Trace definitions to callers.
    - Trace user-facing flows from entry points to lower-level services.
    - Include tests, docs, configs, migrations, routes, background jobs, and feature flags when relevant.
+   - If using explorer agents, split work by project, module, or evidence type and require each explorer to return file paths, symbols, commands, and uncertainty.
 
 4. Use git history only if needed:
    - Limit to the last 2 months.

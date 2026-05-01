@@ -143,6 +143,15 @@ Behavior:
 
 The skill must NOT run `git fetch`, `git pull`, or any command that modifies the local git state. It only reads what is already available locally.
 
+### Agent Use
+
+When the active agent runtime supports sub-agents and the user has allowed them, use read-only explorer agents for independent collection and summarization work.
+
+- Use multiple explorer agents in parallel for separate repos, date ranges, or clearly independent feature clusters.
+- Ask explorers to return commit hashes, affected files, visible user-facing changes, likely grouping, and uncertainty.
+- Keep the main session responsible for final clustering, plain-language rewriting, QA-step quality, and file output.
+- Do not use worker agents for release notes unless the user explicitly asks for file-writing delegation.
+
 ### Multi-Repo Workspaces
 
 If the workspace contains multiple repositories (multi-root workspace with several git repos):
