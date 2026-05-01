@@ -66,6 +66,37 @@ See [Workflow.md](Workflow.md) for the recommended workflow from
 workspace setup and spec creation through issues, TDD implementation, PR
 shipping, and release notes.
 
+## Credits And Provenance
+
+This repository combines original local skills with workflow ideas and companion
+skills from the wider agent-skills ecosystem.
+
+- Local skills and docs in this repository are authored and maintained by
+  Arfeen Arif. Local git history shows the release-notes skill was added first,
+  followed by feature-discovery, feature-prompt, feature-prompt-full,
+  agents-md, ubiquitous-language, and the workflow guide.
+- The four non-negotiable behavioral principles used by `agents-md` are adapted
+  from Forrest Chang's Karpathy-inspired `CLAUDE.md` guidelines:
+  https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md
+  The upstream repository is MIT licensed. This repo records credit here rather
+  than emitting source notes into generated `AGENTS.md` files.
+- `ubiquitous-language` is based on Matt Pocock's deprecated
+  `ubiquitous-language` skill, MIT License, Copyright 2026 Matt Pocock:
+  https://github.com/mattpocock/skills/blob/main/ubiquitous-language/SKILL.md
+- The workflow guide references companion skills from Matt Pocock's skills repo,
+  including `grill-me`, `grill-with-docs`, `to-prd`, `to-issues`, `tdd`,
+  `diagnose`, `triage`, `improve-codebase-architecture`, `zoom-out`, and
+  `caveman`: https://github.com/mattpocock/skills
+- `/skill-creator` is credited to Anthropic's public skills repository:
+  https://github.com/anthropics/skills/tree/main/skills/skill-creator
+- `/agent-browser`, the `skills` CLI, `find-skills`, and Vercel React/React
+  Native best-practice skills are credited to Vercel Labs:
+  https://github.com/vercel-labs/agent-browser
+  https://github.com/vercel-labs/skills
+  https://github.com/vercel-labs/agent-skills
+- `/sentry` refers to Sentry's CLI for developers and agents:
+  https://cli.sentry.dev/
+
 ## Available Skills
 
 ### `agents-md`
@@ -79,7 +110,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 
 **What it does**
 
-- Embeds the Karpathy-style `CLAUDE.md` guidance as hard-coded template text in `AGENTS.md`
+- Includes four non-negotiable behavioral principles in `AGENTS.md`
 - Detects VS Code workspaces and uses each folder `name` as the project name/code source
 - Treats the workspace folder with `path: "."` as a meta workspace with no code
 - Builds a project matrix: `Project Name (Code) | Path | Tech Stack`

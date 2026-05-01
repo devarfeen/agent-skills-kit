@@ -4,6 +4,35 @@ This guide describes how to combine skills from this kit and other skill sets to
 
 It is not a strict state machine, but it behaves like one: each step has an entry condition, an output, and a decision about where to go next. The workflow works best when you do not skip context-building steps.
 
+## Credits And Provenance
+
+This workflow is a local orchestration guide for this repository, with credit to
+the upstream authors whose skills and ideas it combines.
+
+- Local workflow and repo-specific skills are authored and maintained by Arfeen
+  Arif. Git history shows this guide was added in commit `593eac3`, after the
+  repo's release-notes, feature-discovery, feature-prompt,
+  feature-prompt-full, agents-md, and ubiquitous-language skills were added.
+- `/agents-md` includes four non-negotiable behavioral principles adapted from
+  Forrest Chang's Karpathy-inspired `CLAUDE.md` guidelines:
+  https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md
+  The upstream repository is MIT licensed.
+- `/ubiquitous-language` is based on Matt Pocock's deprecated
+  `ubiquitous-language` skill, MIT License, Copyright 2026 Matt Pocock:
+  https://github.com/mattpocock/skills/blob/main/ubiquitous-language/SKILL.md
+- The core prompt, grill, PRD, issue, TDD, diagnosis, triage, architecture, and
+  compression workflow uses companion skills from Matt Pocock's skills repo:
+  https://github.com/mattpocock/skills
+- `/skill-creator` is credited to Anthropic's public skills repository:
+  https://github.com/anthropics/skills/tree/main/skills/skill-creator
+- `/agent-browser`, the `skills` CLI, `find-skills`, and Vercel React/React
+  Native best-practice skills are credited to Vercel Labs:
+  https://github.com/vercel-labs/agent-browser
+  https://github.com/vercel-labs/skills
+  https://github.com/vercel-labs/agent-skills
+- `/sentry` refers to Sentry's CLI for developers and agents:
+  https://cli.sentry.dev/
+
 ## First-Time Setup
 
 Run these once per workspace, then refresh them when the workspace structure or domain language changes.
