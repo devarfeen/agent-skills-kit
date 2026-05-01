@@ -17,15 +17,19 @@ agent-skills-kit/
 ├── README.md                 # This file
 ├── LICENSE                   # MIT
 └── skills/
-    └── release-notes/        # The release-notes skill
-        ├── SKILL.md          # Required: metadata + instructions
-        ├── README.md         # Human-readable docs for this skill
-        ├── references/       # Additional docs loaded on demand
-        │   ├── examples.md   # Worked input → output examples
-        │   └── triggers.md   # Phrases that activate the skill
-        └── assets/           # Output templates the skill fills in
-            ├── release-notes-template.md
-            └── session-summary-template.md
+    ├── release-notes/        # The release-notes skill
+    │   ├── SKILL.md          # Required: metadata + instructions
+    │   ├── README.md         # Human-readable docs for this skill
+    │   ├── references/       # Additional docs loaded on demand
+    │   │   ├── examples.md   # Worked input → output examples
+    │   │   └── triggers.md   # Phrases that activate the skill
+    │   └── assets/           # Output templates the skill fills in
+    │       ├── release-notes-template.md
+    │       └── session-summary-template.md
+    ├── feature-discovery/    # The feature-discovery skill
+    │   └── SKILL.md          # Required: metadata + instructions
+    └── feature-prompt/       # The feature-prompt skill
+        └── SKILL.md          # Required: metadata + instructions
 ```
 
 Each subfolder under `skills/` is a standalone skill that follows the
@@ -110,17 +114,81 @@ See [skills/release-notes/README.md](skills/release-notes/README.md) for the
 full feature list and [skills/release-notes/references/examples.md](skills/release-notes/references/examples.md)
 for input/output examples (including a side-by-side bad-vs-good comparison).
 
+### `feature-discovery`
+
+Performs a read-only discovery pass for a feature, issue, module, workflow,
+API, config, or behavior across one or more codebase projects.
+
+```bash
+npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature-discovery
+```
+
+**What it does**
+
+- Maps project codes to likely repo, app, or package roots
+- Searches code, tests, docs, configs, routes, jobs, and feature flags
+- Traces definitions to callers and user-facing flows
+- Uses recent git history only when code scanning is not enough
+- Produces a structured report covering summary, behavior, implementation,
+  usage sites, rationale, risks, gaps, and next checks
+
+**Example prompts**
+
+| Mode | Example prompt |
+| --- | --- |
+| Feature lookup | `Explain how asset lookup works in APP` |
+| Issue trace | `Investigate why RFID scans fail in APP` |
+| Workflow audit | `Trace the invite-user workflow across Admin and API` |
+
+### `feature-prompt`
+
+Turns a rough feature idea into a **precise feature-development prompt** for
+one or more codebase projects. Designed for short, step-by-step clarification
+before handing work to an implementation agent.
+
+```bash
+npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature-prompt
+```
+
+**What it does**
+
+- Interviews the user one section at a time: Projects, Need, Integration,
+  Reason, Constraints, and optional Acceptance
+- Challenges vague answers before moving on
+- Inspects the codebase when local context can answer or sharpen a section
+- Produces a short final prompt in the same section order
+
+**Prompt sections**
+
+| Section | Purpose |
+| --- | --- |
+| Projects | Project codes or repos affected by the change |
+| Need | What needs to be built or changed |
+| Integration | Where the change connects in code, UI, APIs, DB, jobs, or services |
+| Reason | Why the change is needed |
+| Constraints | Limits, exclusions, compatibility needs, or `none` |
+| Acceptance | Optional done-state; inferred if skipped |
+
+**Example prompts**
+
+| Mode | Example prompt |
+| --- | --- |
+| New feature | `Help me create a feature prompt for stock transfer approvals` |
+| Change request | `Turn this rough request into a dev prompt for APP and API` |
+| Multi-project work | `Create a feature prompt for Admin, Mobile, and Backend` |
+
 ## Using a Skill (Quick Walkthrough)
 
-1. **Install:** run the `npx skills install …` command above in your project.
-2. **Ask your agent:** use any of the trigger phrases — e.g. "Generate
-   release notes for today".
-3. **Review the output:** the skill writes the file to `changelog/` and tells
-   you the path. Edit freely before sharing.
+1. **Install:** run the `npx skills install …` command for the skill you want.
+2. **Ask your agent:** use a natural request that matches the skill — e.g.
+   "Generate release notes for today" or "Create a feature prompt for APP".
+3. **Review the output:** release notes write markdown files under
+   `changelog/`; discovery and prompt skills return structured markdown in the
+   conversation.
 
-The skill never modifies your git state. It only reads commit history that's
-already on your machine, so make sure to `git pull` your repos first if you
-want the latest commits included.
+The skills avoid changing your git state unless their own instructions say
+otherwise. Skills that inspect history only read commits already available on
+your machine.
 
 ## Contributing a New Skill
 
