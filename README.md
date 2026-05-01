@@ -60,6 +60,12 @@ into your agent's local skills directory. After install, just talk to your
 agent normally — it will invoke the skill when your request matches one of
 its trigger phrases.
 
+## Workflow Guide
+
+See [Workflow.md](Workflow.md) for the recommended workflow from
+workspace setup and spec creation through issues, TDD implementation, PR
+shipping, and release notes.
+
 ## Available Skills
 
 ### `agents-md`
