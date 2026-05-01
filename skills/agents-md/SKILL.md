@@ -11,16 +11,12 @@ Create or update agent instruction files for a codebase:
 - `CLAUDE.md` shim pointing to `AGENTS.md`
 - `GEMINI.md` shim pointing to `AGENTS.md`
 
-Embed the behavioral principles from the public Karpathy-inspired coding guidelines:
-https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md
-
-Source license: MIT, per the upstream repository.
-
-The full upstream `CLAUDE.md` text is hard-coded in the `AGENTS.md` template below. Use that embedded text when generating `AGENTS.md`.
+Include the four non-negotiable behavioral principles in the `AGENTS.md` template below.
+Make clear that these principles must be followed and fully enforced.
 
 ## Non-Negotiable Principles
 
-Every generated `AGENTS.md` must include the hard-coded upstream four principles as non-negotiables. The four principles are:
+Every generated `AGENTS.md` must include the following four principles as non-negotiables. The four principles are:
 
 1. Think Before Coding
 2. Simplicity First
@@ -88,12 +84,7 @@ Generate `AGENTS.md` with this structure:
 
 ## Non-Negotiable Principles
 
-Source:
-https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md
-
-Upstream license: MIT.
-
-# CLAUDE.md
+Follow the following 4 principles. They are non-negotiable and must be fully enforced.
 
 Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
 
@@ -181,12 +172,6 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - Prefer existing project patterns over new abstractions.
 - Keep generated plans tied to project codes.
 - Run targeted validation for changed behavior.
-
-## Source Notes
-
-- Behavioral principles are copied verbatim from the Karpathy-inspired guidelines by forrestchang:
-  https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md
-- Upstream license: MIT.
 ````
 
 Preserve any useful existing local instructions when updating `AGENTS.md`, but reorganize duplicated content into this structure.
