@@ -23,6 +23,8 @@ the upstream authors whose skills and ideas it combines.
 - The core prompt, grill, PRD, issue, TDD, diagnosis, triage, architecture, and
   compression workflow uses companion skills from Matt Pocock's skills repo:
   https://github.com/mattpocock/skills
+- `/ship-pr` is credited to AgentSystemLabs' `agentsystem-essentials` skills:
+  `npx skills add https://github.com/AgentSystemLabs/essentials/tree/main/plugins/agentsystem-essentials/skills/ship-pr --skill ship-pr`
 - `/skill-creator` is credited to Anthropic's public skills repository:
   https://github.com/anthropics/skills/tree/main/skills/skill-creator
 - `/agent-browser`, the `skills` CLI, `find-skills`, and Vercel React/React

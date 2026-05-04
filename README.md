@@ -87,6 +87,8 @@ skills from the wider agent-skills ecosystem.
   including `grill-me`, `grill-with-docs`, `to-prd`, `to-issues`, `tdd`,
   `diagnose`, `triage`, `improve-codebase-architecture`, `zoom-out`, and
   `caveman`: https://github.com/mattpocock/skills
+- `/ship-pr` is credited to AgentSystemLabs' `agentsystem-essentials` skills:
+  `npx skills add https://github.com/AgentSystemLabs/essentials/tree/main/plugins/agentsystem-essentials/skills/ship-pr --skill ship-pr`
 - `/skill-creator` is credited to Anthropic's public skills repository:
   https://github.com/anthropics/skills/tree/main/skills/skill-creator
 - `/agent-browser`, the `skills` CLI, `find-skills`, and Vercel React/React
