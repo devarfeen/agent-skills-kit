@@ -72,12 +72,17 @@ Use this as the default chain for product work that should produce a spec, issue
 -> /grill-with-docs
 -> /to-prd
 -> /to-issues
+-> /triage
 -> /tdd
 -> /ship-pr
 -> /release-notes
 ```
 
 The first two setup steps can be skipped only when `AGENTS.md` and `UBIQUITOUS_LANGUAGE.md` are already current.
+
+## Triage Gate
+
+`/to-issues` auto-applies the `needs-triage` label to every issue it creates. `/triage` is the manual gate that promotes those issues to `ready-for-agent` and posts an **Agent Brief** comment — the durable, behavioral contract the implementing agent works from. `/tdd` does not enforce this gate; the precondition is convention, not tooling. Treat `/triage` as mandatory between `/to-issues` and `/tdd`.
 
 ## Workflow Gates
 
@@ -91,7 +96,8 @@ Think of each step as a gate. Move forward only when the output is good enough f
 | Prompt | `/feature-prompt` or `/feature-prompt-full` | Final implementation prompt | User has reviewed the prompt. |
 | Grill | `/grill-me` or `/grill-with-docs` | Challenged assumptions and resolved questions | Major ambiguities are resolved or deferred explicitly. |
 | PRD | `/to-prd` | Product requirements/spec | Problem, solution, stories, decisions, tests, and scope are clear. |
-| Issues | `/to-issues` | Vertical slices | Each issue can be implemented independently. |
+| Issues | `/to-issues` | Vertical slices labeled `needs-triage` | Each issue can be implemented independently. |
+| Triage | `/triage` | Issue at `ready-for-agent` with Agent Brief comment | Category and state clear; Agent Brief is testable. |
 | Build | `/tdd` | Tested implementation | Tests pass or blocker is documented. |
 | Debug | `/diagnose` | Root cause and fix path | Cause is known and fix is scoped. |
 | Ship | `/ship-pr` | Branch, commits, PR body | PR is review-ready. |
@@ -106,6 +112,7 @@ Use this for new user-facing or workflow-changing features.
 -> /grill-with-docs
 -> /to-prd
 -> /to-issues
+-> /triage
 -> /tdd
 -> /ship-pr
 -> /release-notes
@@ -125,6 +132,7 @@ Use this when the request changes an already-planned feature, PRD, or issue list
 -> /grill-me
 -> /to-prd
 -> /to-issues
+-> /triage
 -> /tdd
 ```
 
@@ -164,6 +172,7 @@ Use this when a workflow crosses API, web, mobile, jobs, database, or service bo
 -> /grill-with-docs
 -> /to-prd
 -> /to-issues
+-> /triage
 -> /tdd
 ```
 
@@ -276,6 +285,7 @@ Use this when the work needs a specialized capability outside this kit.
 - If the grill finds unresolved domain language, go back to `/ubiquitous-language`.
 - If the PRD exposes missing behavior context, go back to `/feature-discovery`.
 - If issues are too large, go back to `/to-issues`.
+- If an issue lacks an Agent Brief or its acceptance criteria are vague, go back to `/triage`.
 - If implementation fails unexpectedly, go to `/diagnose`, then return to `/tdd`.
 - If release notes are too technical, rerun `/release-notes` with PM/QA audience emphasis.
 
@@ -283,10 +293,10 @@ Use this when the work needs a specialized capability outside this kit.
 
 | Use Case | Chain |
 | --- | --- |
-| Full feature | `/feature-prompt-full` -> `/grill-with-docs` -> `/to-prd` -> `/to-issues` -> `/tdd` -> `/ship-pr` -> `/release-notes` |
+| Full feature | `/feature-prompt-full` -> `/grill-with-docs` -> `/to-prd` -> `/to-issues` -> `/triage` -> `/tdd` -> `/ship-pr` -> `/release-notes` |
 | Small feature | `/feature-prompt` -> `/grill-me` -> `/tdd` |
 | Bug fix | `/feature-discovery` -> `/diagnose` -> `/tdd` |
-| Multi-project change | `/agents-md` -> `/feature-discovery` -> `/feature-prompt-full` -> `/grill-with-docs` -> `/to-prd` -> `/to-issues` -> `/tdd` |
+| Multi-project change | `/agents-md` -> `/feature-discovery` -> `/feature-prompt-full` -> `/grill-with-docs` -> `/to-prd` -> `/to-issues` -> `/triage` -> `/tdd` |
 | Change request | `/feature-discovery` -> `/feature-prompt` -> `/grill-me` -> `/to-prd` -> `/to-issues` |
 | Release notes only | `/release-notes` |
 | Manual coding | Read `AGENTS.md` and `UBIQUITOUS_LANGUAGE.md`, make the smallest change, verify, summarize |
