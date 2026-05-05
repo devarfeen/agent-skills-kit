@@ -23,17 +23,22 @@ What:
 - Stay read-only. Do not edit files.
 - Prefer CLI tools over MCP.
 - Use `rg` first for text search.
-- Use `git`, `git grep`, `find`, package metadata, local docs, and tests as needed.
+- Use `git`, `git grep`, `find`, `gh`, package metadata, local docs, issues, and tests as needed.
 - When the active agent runtime supports sub-agents and the user has allowed them, use explorer agents for independent read-only discovery work.
 - Use multiple explorer agents in parallel when projects, modules, or evidence streams can be investigated independently.
 - Keep the main session responsible for synthesis, evidence quality, uncertainty calls, and final reporting.
 - Do not run `git fetch`, `git pull`, installs, migrations, or destructive commands.
 - Scan the codebase before using git history.
+- Check available internal memory before doing broad GitHub issue discovery. Internal memory can include conversation memory, AGENTS.md, UBIQUITOUS_LANGUAGE.md, local docs, local issue caches, prior issue references, or project-specific memory files.
+- If internal memory identifies relevant GitHub issue numbers, URLs, titles, labels, milestones, or search terms, read all GitHub issues in that bounded set.
+- If no reliable internal memory exists for the topic, ask the user for approval before scanning broadly across GitHub issues. Explain that reading all related issues can take a long time.
+- If approval for broad GitHub issue scanning is not granted, continue with code, docs, tests, local memory, and git history, and state that broad GitHub issue scanning was skipped.
 - Review git commits only when code scanning does not explain the topic clearly.
 - If git history is needed, review only the last 2 months.
-- Back concrete claims with file paths, symbols, commands, tests, docs, or commits.
+- Back concrete claims with file paths, symbols, commands, tests, docs, GitHub issues, or commits.
 - Separate confirmed facts from inference.
 - Do not invent memory or rationale.
+- Do not give the final discovery report until findings have passed two validation scans.
 
 ## Workflow
 
@@ -55,15 +60,24 @@ What:
    - Include tests, docs, configs, migrations, routes, background jobs, and feature flags when relevant.
    - If using explorer agents, split work by project, module, or evidence type and require each explorer to return file paths, symbols, commands, and uncertainty.
 
-4. Use git history only if needed:
+4. Discover related memory and GitHub issues:
+   - First inspect available internal memory for issue references or topic clues. Search AGENTS.md, UBIQUITOUS_LANGUAGE.md, docs, local issue folders, prior prompt context, and memory files when present.
+   - If memory gives a bounded GitHub issue set, read every issue in that set with `gh issue view` or equivalent.
+   - If memory gives reliable labels, milestones, titles, or exact search terms, use them to perform a bounded GitHub issue search and read every matching issue that is plausibly related.
+   - If memory does not exist or is too vague to bound the search, pause and ask the user to approve a broad GitHub issue scan before running it.
+   - Summarize which issues were read, which were excluded as unrelated, and whether broad scanning was skipped.
+
+5. Use git history only if needed:
    - Limit to the last 2 months.
    - Look for commits touching discovered files or mentioning the topic.
    - Use commit history to explain why or when behavior changed, not as the primary source of truth.
 
-5. Validate findings:
-   - Cross-check code against tests, docs, configs, and usage sites.
-   - Mark dead code, unclear ownership, missing tests, contradictory evidence, and unverified assumptions.
+6. Validate findings twice:
+   - First pass: cross-check the main explanation against code, tests, docs, configs, usage sites, internal memory, related GitHub issues, and git history where used.
+   - Second pass: repeat the scan with aliases and reverse lookups, re-open the strongest evidence, look for contradictory code paths, issue comments, docs, commits, and stale assumptions, then tighten or downgrade claims.
+   - Mark dead code, unclear ownership, missing tests, contradictory evidence, skipped issue scans, and unverified assumptions.
    - Avoid broad claims when evidence is partial.
+   - Keep a short validation note for the final report that states what was checked in each pass.
 
 ## Search Defaults
 
@@ -73,6 +87,8 @@ Adapt commands to the repo. Keep command output summarized in the final report.
 rg -n "exact topic|likely alias|route|config_key" .
 find . -maxdepth 4 \( -name package.json -o -name README.md -o -name .git \)
 git grep -n "term"
+gh issue view <issue-number> --comments
+gh issue list --state all --search "exact topic OR likely alias"
 git log --since="2 months ago" --oneline --all -- <relevant-path>
 ```
 
@@ -117,6 +133,12 @@ Use this structure exactly.
 - [Risk, ambiguity, dead code, missing test, or unclear owner.]
 - [Recommended next check.]
 - [State what could not be verified.]
+
+## 7. Validation Performed
+
+- [Pass 1: code/tests/docs/configs/memory/issues/history checked.]
+- [Pass 2: aliases/reverse lookups/contradictions/stale assumptions checked.]
+- [State whether broad GitHub issue scanning was approved, bounded by memory, skipped, or unavailable.]
 ```
 
 ## Evidence Style
@@ -127,6 +149,7 @@ Prefer concise evidence bullets:
 - `apps/admin/src/routes/users.ts`: defines the route.
 - `packages/auth/src/session.ts`: validates the session before the route runs.
 - `apps/admin/src/routes/users.test.ts`: covers the disabled-user case.
+- GitHub issue `#123`: records the requested behavior and acceptance criteria.
 - Commit `abc1234` from 2026-04-12: introduced the feature flag.
 ```
 
