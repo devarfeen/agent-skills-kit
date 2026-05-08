@@ -32,6 +32,10 @@ agent-skills-kit/
     │   └── SKILL.md          # Required: metadata + instructions
     ├── feature-prompt/       # The feature-prompt skill
     │   └── SKILL.md          # Required: metadata + instructions
+    ├── commit-push-close/    # The commit-push-close skill
+    │   └── SKILL.md          # Required: metadata + instructions
+    ├── commit-push-pr/       # The commit-push-pr skill
+    │   └── SKILL.md          # Required: metadata + instructions
     └── deprecated/           # Retained for reference only — do not install for new workflows
         ├── feature-prompt-full/  # Deprecated; trigger each step manually instead
         │   └── SKILL.md
@@ -92,13 +96,12 @@ skills from the wider agent-skills ecosystem.
   including `grill-me`, `grill-with-docs`, `to-prd`, `to-issues`, `tdd`,
   `diagnose`, `triage`, `improve-codebase-architecture`, and `zoom-out`:
   https://github.com/mattpocock/skills
-- `/caveman` is credited to Julius Brussee:
-  https://github.com/JuliusBrussee/caveman
+- `/caveman` is credited to Matt Pocock's `caveman` skill, MIT License,
+  Copyright 2026 Matt Pocock:
+  https://github.com/mattpocock/skills/blob/main/skills/productivity/caveman/SKILL.md
   Generated `AGENTS.md` files invoke caveman at intensity `full` as a
   non-negotiable rule for chat output only — never for code, docs, PRDs,
   release notes, PR bodies, or any persisted artifact.
-- `/ship-pr` is credited to AgentSystemLabs' `agentsystem-essentials` skills:
-  `npx skills add https://github.com/AgentSystemLabs/essentials/tree/main/plugins/agentsystem-essentials/skills/ship-pr --skill ship-pr`
 - `/skill-creator` is credited to Anthropic's public skills repository:
   https://github.com/anthropics/skills/tree/main/skills/skill-creator
 - `/agent-browser`, the `skills` CLI, `find-skills`, and Vercel React/React
@@ -266,6 +269,83 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
 | New feature | `Help me create a feature prompt for stock transfer approvals` |
 | Change request | `Turn this rough request into a dev prompt for APP and API` |
 | Multi-project work | `Create a feature prompt for Admin, Mobile, and Backend` |
+
+### `commit-push-close`
+
+Ships one iteration of work on a GitHub issue: stage and commit with a
+structured message, push to the current branch, then close the linked GitHub
+issue with a comment that explains how to test the change.
+
+```bash
+npx skills install https://github.com/devarfeen/agent-skills-kit --skill commit-push-close
+```
+
+**What it does**
+
+- Resolves the linked GitHub issue from the branch name, recent commits, or conversation context (asks if it cannot find one)
+- Reads issue state via `gh issue view --json state,labels,title` and picks the commit subject prefix from the state label:
+  - `ready-for-human` → `HITL:`
+  - `ready-for-agent` → `AKF:`
+  - neither label or no issue → asks the user; never guesses
+- Writes a structured commit message: `<PREFIX> <subject>` + `Issue:` line + optional `Decisions:` / `Files:` / `Notes:` sections
+- Honors hooks (no `--no-verify`), refuses to stage secret-pattern files, and stages explicitly by path (no `git add -A`)
+- Pushes the current branch (`-u origin <branch>` if no upstream); requires a separate confirmation when the branch is `main` / `master`
+- Closes the issue with `gh issue close <num> --comment` — the comment includes the commit SHA, branch, a one-line summary, and a 3–6 step **How to test** plan derived from the diff
+- Asks before posting if the test plan cannot be derived from the diff
+
+**Use when**
+
+- You wrap up an iteration on a GitHub issue and want to commit, push, and close in one step
+- You are working directly on a branch and do not need a PR review step
+- The work is issue-driven and the issue uses `ready-for-human` / `ready-for-agent` state labels
+
+**Example prompts**
+
+| Mode | Example prompt |
+| --- | --- |
+| Wrap up an iteration | `Commit, push, and close this issue` |
+| Ship issue work | `I'm done with #418, ship it` |
+| Explicit close | `commit-push-close — write the test steps from the diff` |
+
+### `commit-push-pr`
+
+Ships one iteration of work on a GitHub issue as a pull request: stage and
+commit with a structured message, push the current branch (auto-creating a
+feature branch off `main`/`master` first), and open a PR with `Closes #N`,
+a summary, and a how-to-test plan.
+
+```bash
+npx skills install https://github.com/devarfeen/agent-skills-kit --skill commit-push-pr
+```
+
+**What it does**
+
+- Resolves the linked GitHub issue from the branch name, recent commits, or conversation context (asks if it cannot find one)
+- Reads issue state via `gh issue view --json state,labels,title,url` and picks the commit subject prefix from the state label:
+  - `ready-for-human` → `HITL:`
+  - `ready-for-agent` → `AKF:`
+  - neither label or no issue → asks the user; never guesses
+- If the current branch is the repo default (`main` / `master`), proposes a feature branch (`hitl/<num>-<slug>` or `akf/<num>-<slug>`) and waits for the user to confirm before checking it out
+- Writes a structured commit message: `<PREFIX> <subject>` + `Issue:` line + optional `Decisions:` / `Files:` / `Notes:` sections
+- Honors hooks (no `--no-verify`), refuses to stage secret-pattern files, and stages explicitly by path (no `git add -A`)
+- Pushes with `-u origin <branch>` if no upstream is set
+- Opens a PR against the detected default branch (`gh repo view --json defaultBranchRef`) with the same prefix in the title and a body containing `Closes #N`, **Summary**, optional **Decisions**, **How to test** (3–6 steps), and optional **Notes**
+- Detects an existing PR for the branch and edits it (`gh pr edit`) instead of creating a duplicate
+- Asks before opening the PR if the test plan cannot be derived from the diff
+
+**Use when**
+
+- You are wrapping up an issue and want a reviewable PR rather than a direct close
+- The repo workflow expects PRs to merge changes into `main`
+- You want the issue to auto-close when the PR merges (via `Closes #N`)
+
+**Example prompts**
+
+| Mode | Example prompt |
+| --- | --- |
+| Open a PR for the current issue | `Commit, push, and open a PR for this issue` |
+| Ship issue work as a PR | `PR this — closes #418` |
+| Update an existing PR | `commit-push-pr — there's already an open PR for this branch` |
 
 ### `feature-prompt-full` (deprecated)
 

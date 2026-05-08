@@ -27,13 +27,12 @@ the upstream authors whose skills and ideas it combines.
 - The core prompt, grill, PRD, issue, TDD, diagnosis, triage, and architecture
   workflow uses companion skills from Matt Pocock's skills repo:
   https://github.com/mattpocock/skills
-- `/caveman` is credited to Julius Brussee:
-  https://github.com/JuliusBrussee/caveman
+- `/caveman` is credited to Matt Pocock's `caveman` skill, MIT License,
+  Copyright 2026 Matt Pocock:
+  https://github.com/mattpocock/skills/blob/main/skills/productivity/caveman/SKILL.md
   Generated `AGENTS.md` files invoke caveman at intensity `full` as a
   non-negotiable rule for chat output only — never for code, docs, PRDs,
   release notes, PR bodies, or any persisted artifact.
-- `/ship-pr` is credited to AgentSystemLabs' `agentsystem-essentials` skills:
-  `npx skills add https://github.com/AgentSystemLabs/essentials/tree/main/plugins/agentsystem-essentials/skills/ship-pr --skill ship-pr`
 - `/skill-creator` is credited to Anthropic's public skills repository:
   https://github.com/anthropics/skills/tree/main/skills/skill-creator
 - `/agent-browser`, the `skills` CLI, `find-skills`, and Vercel React/React
@@ -66,7 +65,8 @@ Domain-language sharpening is no longer a separate setup step. `/grill-with-docs
 | Rough feature idea | `/feature-prompt` | Creates a focused implementation prompt; you trigger `/grill-with-docs`, `/to-prd`, `/to-issues`, `/triage`, and `/tdd` manually as the work progresses. |
 | Bug with unknown cause | `/diagnose` | Drives root-cause analysis before patching. |
 | Single decision needs interrogating in isolation | `/grill-me` | Standalone narrow-scope clarification interview — not part of any feature chain. |
-| Completed work needs a PR | `/ship-pr` | Packages changes into commits and a PR. |
+| Iteration on a GitHub issue is done | `/commit-push-close` | Commits with `HITL:` / `AKF:` prefix from issue state, pushes to current branch, closes the issue with a how-to-test comment. |
+| Iteration on a GitHub issue needs a PR | `/commit-push-pr` | Commits with `HITL:` / `AKF:` prefix, pushes the branch (auto-creating one off main if needed), opens a PR with `Closes #N` + how-to-test. |
 | Only stakeholder notes are needed | `/release-notes` | Produces PM-friendly release notes saved to `docs/adr/`. |
 | Need a missing capability | `/find-skills` | Looks for skills from other people or ecosystems. |
 
@@ -83,7 +83,7 @@ Use this as the default chain for product work that should produce a spec, issue
 -> /to-issues
 -> /triage
 -> /tdd
--> /ship-pr
+-> /commit-push-pr
 -> /release-notes
 ```
 
@@ -108,7 +108,8 @@ Think of each step as a gate. Move forward only when the output is good enough f
 | Triage | `/triage` | Issue at `ready-for-agent` with Agent Brief comment | Category and state clear; Agent Brief is testable. |
 | Build | `/tdd` | Tested implementation | Tests pass or blocker is documented. |
 | Debug | `/diagnose` | Root cause and fix path | Cause is known and fix is scoped. |
-| Ship | `/ship-pr` | Branch, commits, PR body | PR is review-ready. |
+| Close iteration | `/commit-push-close` | Commit + push + closed issue with how-to-test comment | Branch is pushed and the issue is closed cleanly. |
+| PR iteration | `/commit-push-pr` | Commit + push + PR with `Closes #N` + how-to-test | PR is open, linked to the issue, and review-ready. |
 | Release | `/release-notes` | PM-friendly notes | Release notes saved to `docs/adr/NNNN-<slug>-release-notes.md`. |
 
 ## Feature Development
@@ -122,7 +123,7 @@ Use this for new user-facing or workflow-changing features. Trigger each step ma
 -> /to-issues
 -> /triage
 -> /tdd
--> /ship-pr
+-> /commit-push-pr
 -> /release-notes
 ```
 
@@ -158,7 +159,7 @@ Use this when behavior is broken and the cause is not obvious.
 -> /feature-prompt
 -> /grill-with-docs
 -> /tdd
--> /ship-pr
+-> /commit-push-pr
 -> /release-notes
 ```
 
@@ -263,6 +264,24 @@ Use this when terminology, ADRs, or `CONTEXT.md` matter — it sharpens language
 
 Use this when a web flow needs visual or interactive verification.
 
+### Issue-Driven Iteration Close
+
+```text
+/tdd
+-> /commit-push-close
+```
+
+Use this when the work is scoped to one GitHub issue and you want to close the iteration without opening a PR — `/commit-push-close` reads the issue's `ready-for-human` / `ready-for-agent` label to pick the `HITL:` / `AKF:` commit prefix, pushes the current branch, and closes the issue with a how-to-test comment derived from the diff.
+
+### Issue-Driven Iteration As A PR
+
+```text
+/tdd
+-> /commit-push-pr
+```
+
+Use this when the issue should ship as a reviewable PR rather than a direct close — `/commit-push-pr` uses the same `HITL:` / `AKF:` prefix logic, auto-creates a feature branch when run from `main`/`master`, pushes the branch, and opens a PR with `Closes #N`, a summary, and a how-to-test plan. The issue auto-closes when the PR merges.
+
 ### With Production Errors
 
 ```text
@@ -297,9 +316,11 @@ Use this when the work needs a specialized capability outside this kit.
 
 | Use Case | Chain |
 | --- | --- |
-| Full feature | `/feature-prompt` -> `/grill-with-docs` -> `/to-prd` -> `/to-issues` -> `/triage` -> `/tdd` -> `/ship-pr` -> `/release-notes` |
+| Full feature | `/feature-prompt` -> `/grill-with-docs` -> `/to-prd` -> `/to-issues` -> `/triage` -> `/tdd` -> `/commit-push-pr` -> `/release-notes` |
 | Small feature | `/feature-prompt` -> `/grill-with-docs` -> `/tdd` |
 | Bug fix | `/feature-discovery` -> `/diagnose` -> `/tdd` |
+| Issue iteration close | `/tdd` -> `/commit-push-close` |
+| Issue iteration as PR | `/tdd` -> `/commit-push-pr` |
 | Multi-project change | `/agents-md` -> `/feature-discovery` -> `/feature-prompt` -> `/grill-with-docs` -> `/to-prd` -> `/to-issues` -> `/triage` -> `/tdd` |
 | Change request | `/feature-discovery` -> `/feature-prompt` -> `/grill-with-docs` -> `/to-prd` -> `/to-issues` |
 | Narrow standalone clarification | `/grill-me` (single decision in isolation; not part of any feature chain) |

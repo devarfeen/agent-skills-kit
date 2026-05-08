@@ -159,12 +159,12 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 **Activate caveman mode (intensity: `full`) for every chat reply. Never apply it to written artifacts.**
 
-- Invoke the `caveman` skill (Julius Brussee, https://github.com/JuliusBrussee/caveman) at intensity `full` for all conversational output to the user in this project.
+- Invoke the `caveman` skill (Matt Pocock, https://github.com/mattpocock/skills/blob/main/skills/productivity/caveman/SKILL.md) at intensity `full` for all conversational output to the user in this project.
 - Activation is automatic: do not wait for the user to type "caveman mode" or `/caveman`. Treat reading this `AGENTS.md` as the trigger.
 - **Chat only.** Do **not** apply caveman compression to:
   - Code, configs, migrations, or any file written to disk.
   - Generated docs (`AGENTS.md`, `CONTEXT.md`, ADRs, READMEs, PRDs, release notes, changelog entries).
-  - Commit messages, PR titles, PR bodies, issue bodies, Agent Briefs, or any artifact `/ship-pr`, `/to-issues`, `/to-prd`, `/triage`, or `/release-notes` produces.
+  - Commit messages, PR titles, PR bodies, issue bodies, Agent Briefs, or any artifact `/commit-push-close`, `/commit-push-pr`, `/to-issues`, `/to-prd`, `/triage`, or `/release-notes` produces.
   - Tool arguments, search queries, or anything sent to external services.
 - If a chat reply contains an inline code block or quoted artifact, the surrounding prose is caveman; the block itself stays in its native form.
 - If the user asks for a different intensity (`lite`, `ultra`, `wenyan-*`) or asks to disable caveman, honour that for the rest of the session.
