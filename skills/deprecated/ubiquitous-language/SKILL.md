@@ -1,9 +1,15 @@
 ---
 name: ubiquitous-language
-description: "Use when the user wants to create or update a DDD-style ubiquitous language glossary, define domain terms, resolve ambiguous terminology, harden naming, or write UBIQUITOUS_LANGUAGE.md from the current conversation and codebase context."
+description: "DEPRECATED — kept for reference only. Domain-language sharpening is now covered by Matt Pocock's grill-with-docs, which updates CONTEXT.md and ADRs inline. Only invoke if the user explicitly asks to maintain a legacy UBIQUITOUS_LANGUAGE.md file."
 ---
 
-# Ubiquitous Language
+# Ubiquitous Language (Deprecated)
+
+> **Deprecated.** This skill is retained in `skills/` for historical
+> reference. Domain-language sharpening should now happen inline via
+> `grill-with-docs`, which writes to `CONTEXT.md` and ADRs as decisions
+> crystallise. Only run this skill if the user explicitly asks to update an
+> existing legacy `UBIQUITOUS_LANGUAGE.md`.
 
 Create or update a DDD-style glossary of domain terms in `UBIQUITOUS_LANGUAGE.md`.
 

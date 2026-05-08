@@ -80,7 +80,6 @@ PARTNERS-APP
 - Field Support screen in Partners App.
 
 **Manual QA Steps**
-- See [Manual QA Steps](specs/activity-tracking/5-manual-qa-steps.md)
 1. Log in as field support and open a partner's Activity Log → Recent actions should appear with timestamps.
 2. Do a few actions as a partner (scan, lookup, submit), then check the log → All actions should be listed.
 3. Filter the log by date → Only matching entries should show.
@@ -322,14 +321,16 @@ Date: 12 March 2026
 
 ## Example 6: Output File Naming
 
+Release notes share `docs/adr/` and the ADR numbering sequence. The `-release-notes` suffix distinguishes them from ADRs (no suffix) and feature prompts (`-prompt`). Replace `0042` below with the next available number in your `docs/adr/`.
+
 ### User Request
 Generate release notes for 12 March 2026
 
 ### Expected Output File
-- `changelog/12-March-2026.md`
+- `docs/adr/0042-12-march-2026-release-notes.md`
 
 ### User Request
 Write release notes for RFID Scanner Reliability
 
 ### Expected Output File
-- `changelog/RFID-Scanner-Reliability.md`
+- `docs/adr/0042-rfid-scanner-reliability-release-notes.md`

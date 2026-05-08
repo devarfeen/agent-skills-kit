@@ -1,6 +1,6 @@
 ---
 name: agents-md
-description: "Generate or update AGENTS.md for a repository or VS Code workspace, create CLAUDE.md and GEMINI.md shims, build a project matrix with stable project codes, and include UBIQUITOUS_LANGUAGE.md as required context."
+description: "Generate or update AGENTS.md for a repository or VS Code workspace, create CLAUDE.md and GEMINI.md shims, build a project matrix with stable project codes, and reference CONTEXT.md / ADRs as required domain context."
 ---
 
 # AGENTS.md Generator
@@ -16,12 +16,13 @@ Make clear that these principles must be followed and fully enforced.
 
 ## Non-Negotiable Principles
 
-Every generated `AGENTS.md` must include the following four principles as non-negotiables. The four principles are:
+Every generated `AGENTS.md` must include the following five principles as non-negotiables. The five principles are:
 
 1. Think Before Coding
 2. Simplicity First
 3. Surgical Changes
 4. Goal-Driven Execution
+5. Caveman Communication (chat output only, intensity: `full`)
 
 ## Discovery Workflow
 
@@ -38,7 +39,11 @@ Every generated `AGENTS.md` must include the following four principles as non-ne
    - `pyproject.toml`, `requirements.txt`, `uv.lock`, `poetry.lock`
    - `go.mod`, `Cargo.toml`, `Gemfile`, `composer.json`
    - `Dockerfile`, `docker-compose.yml`, Terraform files, mobile app configs
-8. Check whether `UBIQUITOUS_LANGUAGE.md` exists. If it does, reference it as required domain context. If it does not, still include a note that it should be generated with the `ubiquitous-language` skill when domain terminology matters.
+8. Check whether `CONTEXT.md` or any artifacts under `docs/adr/` exist. The `docs/adr/` folder is shared across three artifact types — distinguish by filename suffix:
+   - `NNNN-<slug>.md` — ADR (no suffix), written by `grill-with-docs`.
+   - `NNNN-<slug>-prompt.md` — feature prompt, written by `feature-prompt`.
+   - `NNNN-<slug>-release-notes.md` — release notes, written by `release-notes`.
+   All three share one numbering sequence so the folder reads chronologically. Reference them as required domain context when present. If none exists and terminology matters, note that domain language is sharpened inline by the `grill-with-docs` skill, which writes to `CONTEXT.md` and ADRs as decisions crystallise. If a legacy `UBIQUITOUS_LANGUAGE.md` is present, also reference it, but prefer `CONTEXT.md` going forward.
 
 Use structured parsing when available. For `.code-workspace`, prefer JSON parsing that tolerates comments if the local toolchain supports it. If not, read carefully and avoid corrupting paths.
 
@@ -79,12 +84,16 @@ Generate `AGENTS.md` with this structure:
 
 - `AGENTS.md` is the canonical instruction file for agents in this workspace.
 - `CLAUDE.md` and `GEMINI.md` are shims that point here.
-- Read `UBIQUITOUS_LANGUAGE.md` when it exists before making domain decisions.
+- Read `CONTEXT.md` and the relevant files under `docs/adr/` before making domain decisions. The folder holds three artifact types, all sharing one numbering sequence:
+  - `NNNN-<slug>.md` — ADRs (no suffix). Architectural decisions; treat as binding.
+  - `NNNN-<slug>-prompt.md` — feature prompts produced by `feature-prompt`. Read the latest matching prompt before implementing a feature.
+  - `NNNN-<slug>-release-notes.md` — release notes produced by `release-notes`. Read for prior context on a recently shipped feature.
+- If a legacy `UBIQUITOUS_LANGUAGE.md` is present, read it too.
 - Use the project codes in the Project Matrix when referring to projects in prompts, PRDs, issues, release notes, and discovery reports.
 
 ## Non-Negotiable Principles
 
-Follow the following 4 principles. They are non-negotiable and must be fully enforced.
+Follow the following 5 principles. They are non-negotiable and must be fully enforced.
 
 Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
 
@@ -146,6 +155,20 @@ For multi-step tasks, state a brief plan:
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
+## 5. Caveman Communication
+
+**Activate caveman mode (intensity: `full`) for every chat reply. Never apply it to written artifacts.**
+
+- Invoke the `caveman` skill (Julius Brussee, https://github.com/JuliusBrussee/caveman) at intensity `full` for all conversational output to the user in this project.
+- Activation is automatic: do not wait for the user to type "caveman mode" or `/caveman`. Treat reading this `AGENTS.md` as the trigger.
+- **Chat only.** Do **not** apply caveman compression to:
+  - Code, configs, migrations, or any file written to disk.
+  - Generated docs (`AGENTS.md`, `CONTEXT.md`, ADRs, READMEs, PRDs, release notes, changelog entries).
+  - Commit messages, PR titles, PR bodies, issue bodies, Agent Briefs, or any artifact `/ship-pr`, `/to-issues`, `/to-prd`, `/triage`, or `/release-notes` produces.
+  - Tool arguments, search queries, or anything sent to external services.
+- If a chat reply contains an inline code block or quoted artifact, the surrounding prose is caveman; the block itself stays in its native form.
+- If the user asks for a different intensity (`lite`, `ultra`, `wenyan-*`) or asks to disable caveman, honour that for the rest of the session.
+
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
@@ -158,8 +181,14 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ## Domain Context
 
-- Read `UBIQUITOUS_LANGUAGE.md` before domain-heavy work.
-- If the file does not exist and terminology is unclear, generate it with the `ubiquitous-language` skill.
+- Read `CONTEXT.md` before domain-heavy work.
+- `docs/adr/` is the shared folder for architectural decisions, feature prompts, and release notes — distinguish by filename suffix:
+  - `NNNN-<slug>.md` (no suffix) — ADR. Binding architectural decision.
+  - `NNNN-<slug>-prompt.md` — feature prompt. Implementation-ready spec from `feature-prompt`.
+  - `NNNN-<slug>-release-notes.md` — release notes. PM-facing summary from `release-notes`.
+  All three share one sequential `NNNN` so the folder reads chronologically.
+- If a legacy `UBIQUITOUS_LANGUAGE.md` exists, read it as supplementary context.
+- If terminology is unclear, sharpen it inline via the `grill-with-docs` skill, which updates `CONTEXT.md` and ADRs as decisions crystallise.
 
 ## Workspace Notes
 
@@ -215,5 +244,5 @@ Project codes:
 
 Notes:
 - [VS Code workspace detected / not detected.]
-- [UBIQUITOUS_LANGUAGE.md referenced / missing but referenced as recommended context.]
+- [CONTEXT.md / `docs/adr/` artifacts (ADRs, `*-prompt.md`, `*-release-notes.md`) referenced, or noted as to-be-produced inline by `grill-with-docs` / `feature-prompt` / `release-notes`. Legacy `UBIQUITOUS_LANGUAGE.md` referenced if present.]
 ```

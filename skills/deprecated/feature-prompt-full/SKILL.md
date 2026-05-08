@@ -1,9 +1,17 @@
 ---
 name: feature-prompt-full
-description: "Use when the user wants a full feature-development chain: clarify a rough feature idea into a prompt, review it with the user, then hand it to grill-with-docs, to-prd, to-issues, and tdd."
+description: "DEPRECATED — kept for reference only. Auto-chained delivery (prompt → grill → PRD → issues → TDD) is no longer used in this kit. Trigger /feature-prompt, /grill-with-docs, /to-prd, /to-issues, /triage, and /tdd manually as needed. Only invoke if the user explicitly asks for the legacy auto-chain."
 ---
 
-# Feature Prompt Full
+# Feature Prompt Full (Deprecated)
+
+> **Deprecated.** This skill is retained in `skills/` for historical
+> reference. The kit now prefers manual, user-triggered invocation of each
+> step in the feature chain over a state-machine-style auto-chain. Use
+> `/feature-prompt` to draft a prompt, then trigger `/grill-with-docs`,
+> `/to-prd`, `/to-issues`, `/triage`, and `/tdd` yourself as the work
+> progresses. Only run this skill if the user explicitly asks for the legacy
+> behaviour.
 
 Turn rough feature requests into an implementation-ready prompt and prepare the downstream feature chain.
 

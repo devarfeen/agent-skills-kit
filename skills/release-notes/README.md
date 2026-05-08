@@ -57,8 +57,8 @@ Only include project sections that have confirmed changes in the selected commit
 
 ## Manual QA Steps
 Each feature entry includes a **Manual QA Steps** section:
-- If a `specs/5-manual-qa-steps.md` file exists for the feature, it is linked and key steps are included inline.
-- If no file exists, 3–5 practical QA steps are generated (Action → Expected Result format).
+- 3–5 practical QA steps are generated inline (Action → Expected Result format).
+- Steps cover the primary happy path and one edge case, written so a manual tester can follow them without reading the code.
 
 ## Detail Level
 - For git-based outputs, include concrete "what changed where" details when available:
@@ -67,9 +67,10 @@ Each feature entry includes a **Manual QA Steps** section:
 - If a detail is not present in commit history, state that clearly instead of guessing.
 
 ## Output File Location
-- Save all generated notes in `changelog/` at workspace root.
-- Date-based or session summary: `changelog/DD-Month-YYYY.md` (example: `changelog/12-March-2026.md`)
-- Feature-based summary: `changelog/Feature-Name.md` using Title-Case words joined by hyphens.
+- Save all generated notes in `docs/adr/`, sharing the ADR folder and numbering sequence. Suffix `-release-notes` distinguishes them from ADRs (no suffix) and feature prompts (`-prompt`).
+- Date-based or session summary: `docs/adr/NNNN-DD-month-YYYY-release-notes.md` (example: `docs/adr/0042-12-march-2026-release-notes.md`)
+- Feature-based summary: `docs/adr/NNNN-<feature-slug>-release-notes.md` (example: `docs/adr/0042-rfid-scanner-reliability-release-notes.md`)
+- Slug is kebab-case, ASCII; `NNNN` is one greater than the highest existing number in `docs/adr/` across all artifact types.
 
 The output is designed for Project Managers and other non-technical stakeholders.
 

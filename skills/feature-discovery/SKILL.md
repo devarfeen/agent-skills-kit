@@ -29,7 +29,7 @@ What:
 - Keep the main session responsible for synthesis, evidence quality, uncertainty calls, and final reporting.
 - Do not run `git fetch`, `git pull`, installs, migrations, or destructive commands.
 - Scan the codebase before using git history.
-- Check available internal memory before doing broad GitHub issue discovery. Internal memory can include conversation memory, AGENTS.md, UBIQUITOUS_LANGUAGE.md, local docs, local issue caches, prior issue references, or project-specific memory files.
+- Check available internal memory before doing broad GitHub issue discovery. Internal memory can include conversation memory, AGENTS.md, CONTEXT.md, ADRs under `docs/adr/`, legacy UBIQUITOUS_LANGUAGE.md when present, local docs, local issue caches, prior issue references, or project-specific memory files.
 - If internal memory identifies relevant GitHub issue numbers, URLs, titles, labels, milestones, or search terms, read all GitHub issues in that bounded set.
 - If no reliable internal memory exists for the topic, ask the user for approval before scanning broadly across GitHub issues. Explain that reading all related issues can take a long time.
 - If approval for broad GitHub issue scanning is not granted, continue with code, docs, tests, local memory, and git history, and state that broad GitHub issue scanning was skipped.
@@ -61,7 +61,7 @@ What:
    - If using explorer agents, split work by project, module, or evidence type and require each explorer to return file paths, symbols, commands, and uncertainty.
 
 4. Discover related memory and GitHub issues:
-   - First inspect available internal memory for issue references or topic clues. Search AGENTS.md, UBIQUITOUS_LANGUAGE.md, docs, local issue folders, prior prompt context, and memory files when present.
+   - First inspect available internal memory for issue references or topic clues. Search AGENTS.md, CONTEXT.md, ADRs under `docs/adr/`, legacy UBIQUITOUS_LANGUAGE.md when present, docs, local issue folders, prior prompt context, and memory files.
    - If memory gives a bounded GitHub issue set, read every issue in that set with `gh issue view` or equivalent.
    - If memory gives reliable labels, milestones, titles, or exact search terms, use them to perform a bounded GitHub issue search and read every matching issue that is plausibly related.
    - If memory does not exist or is too vague to bound the search, pause and ask the user to approve a broad GitHub issue scan before running it.

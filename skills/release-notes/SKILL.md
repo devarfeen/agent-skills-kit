@@ -252,17 +252,9 @@ PRODUCT-CODE-2
 
 Every feature entry in the detailed release notes must include a **Manual QA Steps** subsection.
 
-### Finding Existing QA Steps
-
-Before generating QA steps, search for an existing `5-manual-qa-steps.md` file:
-
-1. Look in the feature's specs folder (e.g., `specs/5-manual-qa-steps.md`, `specs/<feature-name>/5-manual-qa-steps.md`, or any `**/specs/5-manual-qa-steps.md` path relative to the feature's code).
-2. If found, link to it: `See [Manual QA Steps](relative/path/to/specs/5-manual-qa-steps.md)`
-3. Also include the key steps from that file inline so the release note is self-contained.
-
 ### Generating QA Steps
 
-If no `5-manual-qa-steps.md` file exists, generate 3–5 practical manual QA steps based on the change:
+Generate 3–5 practical manual QA steps inline based on the change:
 
 - Each step must be: **Action → Expected Result**
 - Steps should cover the primary happy path and one edge case.
@@ -362,19 +354,38 @@ Do not include unchanged projects in the final generated file.
 
 ## File Output Rules
 
-Always save the generated markdown under the root `changelog/` folder.
+Always save the generated markdown under `docs/adr/`, sharing the same folder and numbering sequence as ADRs (see `grill-with-docs/ADR-FORMAT.md`). Release notes use the `-release-notes` suffix as the type discriminator. ADRs have no suffix, feature prompts use `-prompt`, release notes use `-release-notes`. Numbers are shared across all artifact types so the folder reads chronologically.
 
-1. Date-based summary or release notes:
-   - Path: `changelog/DD-Month-YYYY.md`
-   - Example: `changelog/12-March-2026.md`
-2. Feature-based summary:
-   - Path: `changelog/Feature-Name.md`
-   - Use Title-Case words joined with hyphens
-   - Example: `changelog/RFID-Scanner-Reliability.md`
-3. Session summary without explicit feature name:
-   - Path: `changelog/DD-Month-YYYY.md`
+### Path shape
 
-If `changelog/` does not exist, create it before writing output.
+```
+docs/adr/NNNN-<slug>-release-notes.md
+```
+
+- **`docs/adr/`** — at the repo root for single-context repos. For multi-context repos (a root `CONTEXT-MAP.md` exists), use the `docs/adr/` of the context the change belongs to. For multi-repo workspaces, write one file per repo under that repo's own `docs/adr/`.
+- **`NNNN`** — four-digit sequential. Scan `docs/adr/` for the highest existing number (across all artifact types) and increment by one.
+- **`<slug>`** — kebab-case, ASCII only. Choice depends on mode (see below).
+- **`-release-notes`** — fixed suffix.
+
+### Slug per mode
+
+1. **Date-based release notes (`Date: <DD Month YYYY>`):**
+   - Slug: `DD-month-YYYY` (lowercase month, kebab-case)
+   - Example: `docs/adr/0042-12-march-2026-release-notes.md`
+2. **Feature-based summary:**
+   - Slug: kebab-case feature name, ≤ 4 words
+   - Example: `docs/adr/0042-rfid-scanner-reliability-release-notes.md`
+3. **Session summary without explicit feature name:**
+   - Slug: `DD-month-YYYY-session` if a date is available, otherwise prompt the user for a short slug
+   - Example: `docs/adr/0042-12-march-2026-session-release-notes.md`
+
+### Conflict handling
+
+- If `docs/adr/` does not exist, create it lazily before writing.
+- If a file with the chosen number already exists, recompute the next number — never overwrite a number assigned to another artifact.
+- If a prior `*-release-notes.md` exists for the same slug and contains only generated content from this skill, overwrite in place (keep the same number).
+- If the existing file contains hand-edits, show the diff and ask the user whether to overwrite, write a new numbered revision, or abort.
+- Never delete unrelated files in `docs/adr/`.
 
 ## Section Hierarchy Rule
 
@@ -447,7 +458,7 @@ Before returning output, verify:
 4. Technical identifiers are removed from the main narrative.
 5. Commit hashes, if included, appear in a final traceability line only.
 6. Output follows Date -> Project -> Feature -> Child sections hierarchy.
-7. File is saved in `changelog/` with correct naming convention.
+7. File is saved in `docs/adr/` with the `NNNN-<slug>-release-notes.md` naming convention, sharing the ADR numbering sequence.
 8. Change section includes user-visible touchpoints when commit history provides them.
 9. Logic changes include one simple sentence understandable by non-technical readers.
 10. Final file includes only projects that have confirmed changes.

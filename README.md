@@ -32,10 +32,11 @@ agent-skills-kit/
     │   └── SKILL.md          # Required: metadata + instructions
     ├── feature-prompt/       # The feature-prompt skill
     │   └── SKILL.md          # Required: metadata + instructions
-    ├── feature-prompt-full/  # Full prompt -> grill -> PRD -> issues -> TDD chain
-    │   └── SKILL.md          # Required: metadata + instructions
-    └── ubiquitous-language/  # Domain glossary extraction and terminology cleanup
-        └── SKILL.md          # Required: metadata + instructions
+    └── deprecated/           # Retained for reference only — do not install for new workflows
+        ├── feature-prompt-full/  # Deprecated; trigger each step manually instead
+        │   └── SKILL.md
+        └── ubiquitous-language/  # Deprecated; use Matt Pocock's /grill-with-docs instead
+            └── SKILL.md
 ```
 
 Each subfolder under `skills/` is a standalone skill that follows the
@@ -73,20 +74,29 @@ skills from the wider agent-skills ecosystem.
 
 - Local skills and docs in this repository are authored and maintained by
   Arfeen Arif. Local git history shows the release-notes skill was added first,
-  followed by feature-discovery, feature-prompt, feature-prompt-full,
-  agents-md, ubiquitous-language, and the workflow guide.
+  followed by feature-discovery, feature-prompt, feature-prompt-full
+  (deprecated), agents-md, ubiquitous-language (deprecated), and the workflow
+  guide.
 - The four non-negotiable behavioral principles used by `agents-md` are adapted
   from Forrest Chang's Karpathy-inspired `CLAUDE.md` guidelines:
   https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md
   The upstream repository is MIT licensed. This repo records credit here rather
   than emitting source notes into generated `AGENTS.md` files.
-- `ubiquitous-language` is based on Matt Pocock's deprecated
-  `ubiquitous-language` skill, MIT License, Copyright 2026 Matt Pocock:
+- `ubiquitous-language` (deprecated, kept in `skills/` for reference only) is
+  based on Matt Pocock's deprecated `ubiquitous-language` skill, MIT License,
+  Copyright 2026 Matt Pocock:
   https://github.com/mattpocock/skills/blob/main/ubiquitous-language/SKILL.md
+  Domain-language sharpening is now covered by Matt's `/grill-with-docs`,
+  which updates `CONTEXT.md` and ADRs inline.
 - The workflow guide references companion skills from Matt Pocock's skills repo,
   including `grill-me`, `grill-with-docs`, `to-prd`, `to-issues`, `tdd`,
-  `diagnose`, `triage`, `improve-codebase-architecture`, `zoom-out`, and
-  `caveman`: https://github.com/mattpocock/skills
+  `diagnose`, `triage`, `improve-codebase-architecture`, and `zoom-out`:
+  https://github.com/mattpocock/skills
+- `/caveman` is credited to Julius Brussee:
+  https://github.com/JuliusBrussee/caveman
+  Generated `AGENTS.md` files invoke caveman at intensity `full` as a
+  non-negotiable rule for chat output only — never for code, docs, PRDs,
+  release notes, PR bodies, or any persisted artifact.
 - `/ship-pr` is credited to AgentSystemLabs' `agentsystem-essentials` skills:
   `npx skills add https://github.com/AgentSystemLabs/essentials/tree/main/plugins/agentsystem-essentials/skills/ship-pr --skill ship-pr`
 - `/skill-creator` is credited to Anthropic's public skills repository:
@@ -112,12 +122,12 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 
 **What it does**
 
-- Includes four non-negotiable behavioral principles in `AGENTS.md`
+- Includes five non-negotiable behavioral principles in `AGENTS.md` (the four Karpathy-inspired coding principles plus chat-only caveman activation at intensity `full`)
 - Detects VS Code workspaces and uses each folder `name` as the project name/code source
 - Treats the workspace folder with `path: "."` as a meta workspace with no code
 - Builds a project matrix: `Project Name (Code) | Path | Tech Stack`
 - Establishes stable project codes for use across prompt, PRD, issue, discovery, and release-note skills
-- References `UBIQUITOUS_LANGUAGE.md` as required domain context when available
+- References `CONTEXT.md` and `docs/adr/` as required domain context when available (and legacy `UBIQUITOUS_LANGUAGE.md` if it exists)
 
 **Example prompts**
 
@@ -161,19 +171,24 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill release
 
 **Output location**
 
-When you run the skill, generated files land in a `changelog/` folder at
-**your** workspace root (the skill creates it if it doesn't exist):
+Generated files land in `docs/adr/` at **your** workspace root, sharing the
+same folder and numbering sequence as ADRs and feature prompts. Suffix
+`-release-notes` distinguishes them from ADRs (no suffix) and feature prompts
+(`-prompt`):
 
-- Date or session: `changelog/DD-Month-YYYY.md` (e.g. `changelog/12-March-2026.md`)
-- Feature: `changelog/Feature-Name.md` in Title-Case-Hyphenated form
-  (e.g. `changelog/RFID-Scanner-Reliability.md`)
+- Date or session: `docs/adr/NNNN-DD-month-YYYY-release-notes.md`
+  (e.g. `docs/adr/0042-12-march-2026-release-notes.md`)
+- Feature: `docs/adr/NNNN-<feature-slug>-release-notes.md`
+  (e.g. `docs/adr/0042-rfid-scanner-reliability-release-notes.md`)
+
+`NNNN` is one greater than the highest existing number across all artifact
+types in `docs/adr/`, so the folder reads chronologically.
 
 **Manual QA steps**
 
-Each detailed feature entry includes a Manual QA Steps subsection. If a
-`specs/5-manual-qa-steps.md` file exists for the feature it is linked and key
-steps are inlined; otherwise the skill generates 3–5 practical
-Action → Expected Result steps.
+Each detailed feature entry includes a Manual QA Steps subsection. The skill
+generates 3–5 practical Action → Expected Result steps inline, covering the
+primary happy path and one edge case.
 
 **Writing style**
 
@@ -229,7 +244,8 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
 - Challenges vague answers before moving on
 - Inspects the codebase when local context can answer or sharpen a section
 - Sends the draft prompt to the user for review before finalizing it
-- Asks the user to pass the final prompt to `grill-me`
+- Saves the final prompt to `docs/adr/NNNN-<feature-slug>-prompt.md` (sharing the ADR folder and numbering sequence)
+- Asks the user to pass the final prompt to `grill-with-docs`
 - Produces a short final prompt in the same section order
 
 **Prompt sections**
@@ -251,14 +267,18 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
 | Change request | `Turn this rough request into a dev prompt for APP and API` |
 | Multi-project work | `Create a feature prompt for Admin, Mobile, and Backend` |
 
-### `feature-prompt-full`
+### `feature-prompt-full` (deprecated)
+
+> **Deprecated.** Source lives at
+> [`skills/deprecated/feature-prompt-full/`](skills/deprecated/feature-prompt-full/SKILL.md)
+> for reference only. The kit now prefers manual, user-triggered invocation of
+> each downstream step over a state-machine-style auto-chain. Use
+> `/feature-prompt` to draft the prompt, then trigger `/grill-with-docs`,
+> `/to-prd`, `/to-issues`, `/triage`, and `/tdd` yourself as the work
+> progresses. Do not install for new workflows.
 
 Turns a rough feature idea into a prompt and prepares the full downstream
 delivery chain: `/grill-with-docs`, `/to-prd`, `/to-issues`, and `/tdd`.
-
-```bash
-npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature-prompt-full
-```
 
 **What it does**
 
@@ -272,19 +292,21 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
 
 | Mode | Example prompt |
 | --- | --- |
-| Full delivery chain | `Create a full feature prompt for stock transfer approvals` |
-| PRD-ready feature | `Use feature-prompt-full for Admin and API invite changes` |
-| TDD-ready handoff | `Prepare a full feature chain for scanner reliability work` |
+| Full delivery chain (legacy) | `Create a full feature prompt for stock transfer approvals` |
+| PRD-ready feature (legacy) | `Use feature-prompt-full for Admin and API invite changes` |
+| TDD-ready handoff (legacy) | `Prepare a full feature chain for scanner reliability work` |
 
-### `ubiquitous-language`
+### `ubiquitous-language` (deprecated)
+
+> **Deprecated.** Source lives at
+> [`skills/deprecated/ubiquitous-language/`](skills/deprecated/ubiquitous-language/SKILL.md)
+> for reference only. Domain-language sharpening is now covered by Matt
+> Pocock's `/grill-with-docs`, which updates `CONTEXT.md` and ADRs inline as
+> decisions crystallise. Do not install for new workflows.
 
 Creates or updates a DDD-style `UBIQUITOUS_LANGUAGE.md` glossary from the
 current conversation and local domain context. Based on Matt Pocock's
 deprecated `ubiquitous-language` skill.
-
-```bash
-npx skills install https://github.com/devarfeen/agent-skills-kit --skill ubiquitous-language
-```
 
 **What it does**
 
@@ -307,9 +329,9 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill ubiquit
 1. **Install:** run the `npx skills install …` command for the skill you want.
 2. **Ask your agent:** use a natural request that matches the skill — e.g.
    "Generate release notes for today" or "Create a feature prompt for APP".
-3. **Review the output:** release notes write markdown files under
-   `changelog/`; discovery and prompt skills return structured markdown in the
-   conversation.
+3. **Review the output:** feature prompts and release notes write markdown
+   files under `docs/adr/` (sharing the ADR numbering sequence); discovery
+   skills return structured markdown in the conversation.
 
 The skills avoid changing your git state unless their own instructions say
 otherwise. Skills that inspect history only read commits already available on

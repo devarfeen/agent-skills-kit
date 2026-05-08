@@ -37,8 +37,7 @@ Date: <DD Month YYYY>
 - <Which screen/app/user group is affected>
 
 **Manual QA Steps**
-- <If `specs/5-manual-qa-steps.md` exists: See [Manual QA Steps](path/to/specs/5-manual-qa-steps.md)>
-- <Otherwise, 3-5 steps: Action → Expected result>
+- <3-5 steps inline: Action → Expected result>
 1. <Do X → Y should happen>
 2. <Do X → Y should happen>
 3. <Do X → Y should happen>

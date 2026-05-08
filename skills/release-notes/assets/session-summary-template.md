@@ -22,5 +22,4 @@
 - <What improved as a result>
 
 **Manual QA Steps**
-- <If `specs/5-manual-qa-steps.md` exists, link to it>
-- <Otherwise, generate 3-5 steps: Action → Expected Result>
+- <Generate 3-5 steps inline: Action → Expected Result>

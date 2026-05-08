@@ -11,18 +11,27 @@ the upstream authors whose skills and ideas it combines.
 
 - Local workflow and repo-specific skills are authored and maintained by Arfeen
   Arif. Git history shows this guide was added in commit `593eac3`, after the
-  repo's release-notes, feature-discovery, feature-prompt,
-  feature-prompt-full, agents-md, and ubiquitous-language skills were added.
+  repo's release-notes, feature-discovery, feature-prompt, feature-prompt-full
+  (now deprecated), agents-md, and ubiquitous-language (now deprecated) skills
+  were added.
 - `/agents-md` includes four non-negotiable behavioral principles adapted from
   Forrest Chang's Karpathy-inspired `CLAUDE.md` guidelines:
   https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md
   The upstream repository is MIT licensed.
-- `/ubiquitous-language` is based on Matt Pocock's deprecated
-  `ubiquitous-language` skill, MIT License, Copyright 2026 Matt Pocock:
+- `/ubiquitous-language` (deprecated, kept in `skills/` for reference only) is
+  based on Matt Pocock's deprecated `ubiquitous-language` skill, MIT License,
+  Copyright 2026 Matt Pocock:
   https://github.com/mattpocock/skills/blob/main/ubiquitous-language/SKILL.md
-- The core prompt, grill, PRD, issue, TDD, diagnosis, triage, architecture, and
-  compression workflow uses companion skills from Matt Pocock's skills repo:
+  Domain-language sharpening is now covered by `/grill-with-docs`, which
+  updates `CONTEXT.md` and ADRs inline as decisions crystallise.
+- The core prompt, grill, PRD, issue, TDD, diagnosis, triage, and architecture
+  workflow uses companion skills from Matt Pocock's skills repo:
   https://github.com/mattpocock/skills
+- `/caveman` is credited to Julius Brussee:
+  https://github.com/JuliusBrussee/caveman
+  Generated `AGENTS.md` files invoke caveman at intensity `full` as a
+  non-negotiable rule for chat output only — never for code, docs, PRDs,
+  release notes, PR bodies, or any persisted artifact.
 - `/ship-pr` is credited to AgentSystemLabs' `agentsystem-essentials` skills:
   `npx skills add https://github.com/AgentSystemLabs/essentials/tree/main/plugins/agentsystem-essentials/skills/ship-pr --skill ship-pr`
 - `/skill-creator` is credited to Anthropic's public skills repository:
@@ -37,29 +46,28 @@ the upstream authors whose skills and ideas it combines.
 
 ## First-Time Setup
 
-Run these once per workspace, then refresh them when the workspace structure or domain language changes.
+Run this once per workspace, then refresh when the workspace structure changes.
 
 ```text
 /agents-md
--> /ubiquitous-language
 ```
 
 `/agents-md` creates the workspace anchor: `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, project codes, paths, tech stacks, and the project matrix. Other skills should use those project codes.
 
-`/ubiquitous-language` creates `UBIQUITOUS_LANGUAGE.md`, which captures domain terms, short codes, operational language, and ambiguities. Use it when terms like `DN`, `Warehouse On Site`, or `Files` have business meaning.
+Domain-language sharpening is no longer a separate setup step. `/grill-with-docs` captures terminology, ambiguities, and decisions inline in `CONTEXT.md` and ADRs as the conversation surfaces them.
 
 ## Choosing A Starting Point
 
 | Situation | Start With | Why |
 | --- | --- | --- |
 | New workspace or unclear project codes | `/agents-md` | Establishes project names, codes, paths, and canonical agent instructions. |
-| Domain terms are unclear | `/ubiquitous-language` | Gives later prompts and specs the right business language. |
+| Domain terms are unclear | `/grill-with-docs` | Sharpens terminology against `CONTEXT.md` and ADRs as part of grilling. |
 | Existing behavior is unclear | `/feature-discovery` | Produces a read-only explanation before planning changes. |
-| Rough feature idea | `/feature-prompt` | Creates a focused implementation prompt and then asks you to pass it to `/grill-me`. |
-| Full feature lifecycle | `/feature-prompt-full` | Entry point for the full `/grill-with-docs` workflow: prompt, grill, PRD, issues, TDD. |
+| Rough feature idea | `/feature-prompt` | Creates a focused implementation prompt; you trigger `/grill-with-docs`, `/to-prd`, `/to-issues`, `/triage`, and `/tdd` manually as the work progresses. |
 | Bug with unknown cause | `/diagnose` | Drives root-cause analysis before patching. |
+| Single decision needs interrogating in isolation | `/grill-me` | Standalone narrow-scope clarification interview — not part of any feature chain. |
 | Completed work needs a PR | `/ship-pr` | Packages changes into commits and a PR. |
-| Only stakeholder notes are needed | `/release-notes` | Produces PM-friendly changelog/session notes. |
+| Only stakeholder notes are needed | `/release-notes` | Produces PM-friendly release notes saved to `docs/adr/`. |
 | Need a missing capability | `/find-skills` | Looks for skills from other people or ecosystems. |
 
 ## Core Progression
@@ -68,9 +76,8 @@ Use this as the default chain for product work that should produce a spec, issue
 
 ```text
 /agents-md
--> /ubiquitous-language
 -> /feature-discovery
--> /feature-prompt-full
+-> /feature-prompt
 -> /grill-with-docs
 -> /to-prd
 -> /to-issues
@@ -80,7 +87,7 @@ Use this as the default chain for product work that should produce a spec, issue
 -> /release-notes
 ```
 
-The first two setup steps can be skipped only when `AGENTS.md` and `UBIQUITOUS_LANGUAGE.md` are already current.
+The setup step can be skipped when `AGENTS.md` is already current. `/grill-with-docs` handles domain-language sharpening inline against `CONTEXT.md` and ADRs. Each step is triggered manually — there is no auto-chain.
 
 ## Triage Gate
 
@@ -93,24 +100,23 @@ Think of each step as a gate. Move forward only when the output is good enough f
 | Gate | Skill | Output | Continue When |
 | --- | --- | --- | --- |
 | Workspace | `/agents-md` | `AGENTS.md`, shims, project matrix | Project codes and paths are stable. |
-| Language | `/ubiquitous-language` | `UBIQUITOUS_LANGUAGE.md` | Terms, short codes, and ambiguities are captured. |
 | Discovery | `/feature-discovery` | Evidence-backed feature report | Current behavior and risks are understood. |
-| Prompt | `/feature-prompt` or `/feature-prompt-full` | Final implementation prompt | User has reviewed the prompt. |
-| Grill | `/grill-me` or `/grill-with-docs` | Challenged assumptions and resolved questions | Major ambiguities are resolved or deferred explicitly. |
+| Prompt | `/feature-prompt` | Final implementation prompt | User has reviewed the prompt. |
+| Grill | `/grill-with-docs` | Challenged assumptions and resolved questions against domain language and ADRs | Major ambiguities are resolved or deferred explicitly. |
 | PRD | `/to-prd` | Product requirements/spec | Problem, solution, stories, decisions, tests, and scope are clear. |
 | Issues | `/to-issues` | Vertical slices labeled `needs-triage` | Each issue can be implemented independently. |
 | Triage | `/triage` | Issue at `ready-for-agent` with Agent Brief comment | Category and state clear; Agent Brief is testable. |
 | Build | `/tdd` | Tested implementation | Tests pass or blocker is documented. |
 | Debug | `/diagnose` | Root cause and fix path | Cause is known and fix is scoped. |
 | Ship | `/ship-pr` | Branch, commits, PR body | PR is review-ready. |
-| Release | `/release-notes` | PM-friendly notes | Changelog/session summary is saved. |
+| Release | `/release-notes` | PM-friendly notes | Release notes saved to `docs/adr/NNNN-<slug>-release-notes.md`. |
 
 ## Feature Development
 
-Use this for new user-facing or workflow-changing features.
+Use this for new user-facing or workflow-changing features. Trigger each step manually — none of these skills auto-chain into the next.
 
 ```text
-/feature-prompt-full
+/feature-prompt
 -> /grill-with-docs
 -> /to-prd
 -> /to-issues
@@ -120,9 +126,9 @@ Use this for new user-facing or workflow-changing features.
 -> /release-notes
 ```
 
-Use `/feature-prompt-full` when you want the full use case of the `grill-me` family. It clarifies the feature, asks for approval of the chain, produces a final prompt, then points into `/grill-with-docs`, `/to-prd`, `/to-issues`, and `/tdd`.
+`/feature-prompt` produces a reviewed, implementation-ready prompt and saves it to `docs/adr/NNNN-<slug>-prompt.md`. The next step is always `/grill-with-docs`, which stress-tests the prompt against terminology, ADRs, and the codebase.
 
-Add `/feature-discovery` before it when the feature modifies existing behavior.
+Add `/feature-discovery` before `/feature-prompt` when the feature modifies existing behavior, or `/diagnose` when it grows out of an unexplained bug.
 
 ## Change Requests
 
@@ -131,19 +137,16 @@ Use this when the request changes an already-planned feature, PRD, or issue list
 ```text
 /feature-discovery
 -> /feature-prompt
--> /grill-me
+-> /grill-with-docs
 -> /to-prd
 -> /to-issues
 -> /triage
 -> /tdd
 ```
 
-If the change is broad or touches multiple projects, use `/feature-prompt-full` and `/grill-with-docs` instead of `/feature-prompt` and `/grill-me`.
+`/grill-with-docs` always follows `/feature-prompt`. If you need to understand existing behavior first, prepend `/feature-discovery`; if a bug is in scope, prepend `/diagnose`.
 
-Decision rule:
-
-- Use `/feature-prompt` for narrow implementation prompts.
-- Use `/feature-prompt-full` for changes that need the full prompt -> grill -> PRD -> issues -> TDD chain.
+`/grill-me` is **not** part of this chain. It is a standalone narrow-scope clarification interview — useful when you want to interrogate a single decision or assumption in isolation, outside any feature-development workflow.
 
 ## Bug Fixes
 
@@ -153,7 +156,7 @@ Use this when behavior is broken and the cause is not obvious.
 /feature-discovery
 -> /diagnose
 -> /feature-prompt
--> /grill-me
+-> /grill-with-docs
 -> /tdd
 -> /ship-pr
 -> /release-notes
@@ -170,7 +173,7 @@ Use this when a workflow crosses API, web, mobile, jobs, database, or service bo
 ```text
 /agents-md
 -> /feature-discovery
--> /feature-prompt-full
+-> /feature-prompt
 -> /grill-with-docs
 -> /to-prd
 -> /to-issues
@@ -192,7 +195,7 @@ Use this when you already know the change and do not need a PRD.
 
 ```text
 /feature-prompt
--> /grill-me
+-> /grill-with-docs
 -> /tdd
 ```
 
@@ -203,7 +206,7 @@ For very small edits, you can skip `/feature-prompt` and use direct coding, but 
 3. Run the smallest meaningful verification.
 4. Summarize files changed and remaining risk.
 
-Use `/agents-md` and `UBIQUITOUS_LANGUAGE.md` as context even for manual work.
+Use `/agents-md` and `CONTEXT.md` (plus any ADRs) as context even for manual work.
 
 ## Release Notes Only
 
@@ -246,11 +249,10 @@ Use this before planning when the codebase is unfamiliar or when a change reques
 ### With Docs And Domain Language
 
 ```text
-/ubiquitous-language
--> /grill-with-docs
+/grill-with-docs
 ```
 
-Use this when terminology, ADRs, or `CONTEXT.md` matter.
+Use this when terminology, ADRs, or `CONTEXT.md` matter — it sharpens language and updates documentation inline as decisions crystallise.
 
 ### With Browser Testing
 
@@ -283,8 +285,8 @@ Use this when the work needs a specialized capability outside this kit.
 
 ## Recovery Loops
 
-- If the prompt is vague, go back to `/feature-prompt` or `/feature-prompt-full`.
-- If the grill finds unresolved domain language, go back to `/ubiquitous-language`.
+- If the prompt is vague, go back to `/feature-prompt`.
+- If the grill finds unresolved domain language, stay in `/grill-with-docs` and let it update `CONTEXT.md` / ADRs inline.
 - If the PRD exposes missing behavior context, go back to `/feature-discovery`.
 - If issues are too large, go back to `/to-issues`.
 - If an issue lacks an Agent Brief or its acceptance criteria are vague, go back to `/triage`.
@@ -295,13 +297,14 @@ Use this when the work needs a specialized capability outside this kit.
 
 | Use Case | Chain |
 | --- | --- |
-| Full feature | `/feature-prompt-full` -> `/grill-with-docs` -> `/to-prd` -> `/to-issues` -> `/triage` -> `/tdd` -> `/ship-pr` -> `/release-notes` |
-| Small feature | `/feature-prompt` -> `/grill-me` -> `/tdd` |
+| Full feature | `/feature-prompt` -> `/grill-with-docs` -> `/to-prd` -> `/to-issues` -> `/triage` -> `/tdd` -> `/ship-pr` -> `/release-notes` |
+| Small feature | `/feature-prompt` -> `/grill-with-docs` -> `/tdd` |
 | Bug fix | `/feature-discovery` -> `/diagnose` -> `/tdd` |
-| Multi-project change | `/agents-md` -> `/feature-discovery` -> `/feature-prompt-full` -> `/grill-with-docs` -> `/to-prd` -> `/to-issues` -> `/triage` -> `/tdd` |
-| Change request | `/feature-discovery` -> `/feature-prompt` -> `/grill-me` -> `/to-prd` -> `/to-issues` |
+| Multi-project change | `/agents-md` -> `/feature-discovery` -> `/feature-prompt` -> `/grill-with-docs` -> `/to-prd` -> `/to-issues` -> `/triage` -> `/tdd` |
+| Change request | `/feature-discovery` -> `/feature-prompt` -> `/grill-with-docs` -> `/to-prd` -> `/to-issues` |
+| Narrow standalone clarification | `/grill-me` (single decision in isolation; not part of any feature chain) |
 | Release notes only | `/release-notes` |
-| Manual coding | Read `AGENTS.md` and `UBIQUITOUS_LANGUAGE.md`, make the smallest change, verify, summarize |
+| Manual coding | Read `AGENTS.md` and `CONTEXT.md` (plus ADRs), make the smallest change, verify, summarize |
 
 ## Practical Default
 
@@ -309,8 +312,8 @@ When unsure, start with:
 
 ```text
 /feature-discovery
--> /feature-prompt-full
+-> /feature-prompt
 -> /grill-with-docs
 ```
 
-That gives the agent enough code context, a precise prompt, and a challenged plan before the PRD or implementation starts.
+That gives the agent enough code context, a precise prompt, and a challenged plan before the PRD or implementation starts. Trigger each step manually.
