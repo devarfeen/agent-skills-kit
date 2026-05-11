@@ -43,7 +43,7 @@ Every generated `AGENTS.md` must include the following five principles as non-ne
    - `NNNN-<slug>.md` — ADR (no suffix), written by `grill-with-docs`.
    - `NNNN-<slug>-prompt.md` — feature prompt, written by `feature-prompt`.
    - `NNNN-<slug>-release-notes.md` — release notes, written by `release-notes`.
-   All three share one numbering sequence so the folder reads chronologically. Reference them as required domain context when present. If none exists and terminology matters, note that domain language is sharpened inline by the `grill-with-docs` skill, which writes to `CONTEXT.md` and ADRs as decisions crystallise. If a legacy `UBIQUITOUS_LANGUAGE.md` is present, also reference it, but prefer `CONTEXT.md` going forward.
+     All three share one numbering sequence so the folder reads chronologically. Reference them as required domain context when present. If none exists and terminology matters, note that domain language is sharpened inline by the `grill-with-docs` skill, which writes to `CONTEXT.md` and ADRs as decisions crystallise. If a legacy `UBIQUITOUS_LANGUAGE.md` is present, also reference it, but prefer `CONTEXT.md` going forward.
 
 Use structured parsing when available. For `.code-workspace`, prefer JSON parsing that tolerates comments if the local toolchain supports it. If not, read carefully and avoid corrupting paths.
 
@@ -51,14 +51,14 @@ Use structured parsing when available. For `.code-workspace`, prefer JSON parsin
 
 Every `AGENTS.md` must include a project matrix with this exact heading and columns:
 
-````markdown
+```markdown
 ## Project Matrix
 
-| Project Name (Code) | Path | Tech Stack |
-| --- | --- | --- |
-| Full Platform Workspace (FULL-PLATFORM-WORKSPACE) | . | Meta workspace, no code |
-| PARTNERS-API (PARTNERS-API) | ../partners-apis.example.com | PHP, Laravel |
-````
+| Project Name (Code)                               | Path                         | Tech Stack              |
+| ------------------------------------------------- | ---------------------------- | ----------------------- |
+| Full Platform Workspace (FULL-PLATFORM-WORKSPACE) | .                            | Meta workspace, no code |
+| PARTNERS-API (PARTNERS-API)                       | ../partners-apis.example.com | PHP, Laravel            |
+```
 
 Project code rules:
 
@@ -104,6 +104,7 @@ Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-s
 **Don't assume. Don't hide confusion. Surface tradeoffs.**
 
 Before implementing:
+
 - State your assumptions explicitly. If uncertain, ask.
 - If multiple interpretations exist, present them - don't pick silently.
 - If a simpler approach exists, say so. Push back when warranted.
@@ -126,12 +127,14 @@ Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, sim
 **Touch only what you must. Clean up only your own mess.**
 
 When editing existing code:
+
 - Don't "improve" adjacent code, comments, or formatting.
 - Don't refactor things that aren't broken.
 - Match existing style, even if you'd do it differently.
 - If you notice unrelated dead code, mention it - don't delete it.
 
 When your changes create orphans:
+
 - Remove imports/variables/functions that YOUR changes made unused.
 - Don't remove pre-existing dead code unless asked.
 
@@ -142,11 +145,13 @@ The test: Every changed line should trace directly to the user's request.
 **Define success criteria. Loop until verified.**
 
 Transform tasks into verifiable goals:
+
 - "Add validation" → "Write tests for invalid inputs, then make them pass"
 - "Fix the bug" → "Write a test that reproduces it, then make it pass"
 - "Refactor X" → "Ensure tests pass before and after"
 
 For multi-step tasks, state a brief plan:
+
 ```
 1. [Step] → verify: [check]
 2. [Step] → verify: [check]
@@ -159,7 +164,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 **Activate caveman mode (intensity: `full`) for every chat reply. Never apply it to written artifacts.**
 
-- Invoke the `caveman` skill (Matt Pocock, https://github.com/mattpocock/skills/blob/main/skills/productivity/caveman/SKILL.md) at intensity `full` for all conversational output to the user in this project.
+- Invoke the `caveman` skill at intensity `full` for all conversational output to the user in this project.
 - Activation is automatic: do not wait for the user to type "caveman mode" or `/caveman`. Treat reading this `AGENTS.md` as the trigger.
 - **Chat only.** Do **not** apply caveman compression to:
   - Code, configs, migrations, or any file written to disk.
@@ -176,8 +181,8 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 ## Project Matrix
 
 | Project Name (Code) | Path | Tech Stack |
-| --- | --- | --- |
-| ... | ... | ... |
+| ------------------- | ---- | ---------- |
+| ...                 | ...  | ...        |
 
 ## Domain Context
 
@@ -186,7 +191,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
   - `NNNN-<slug>.md` (no suffix) — ADR. Binding architectural decision.
   - `NNNN-<slug>-prompt.md` — feature prompt. Implementation-ready spec from `feature-prompt`.
   - `NNNN-<slug>-release-notes.md` — release notes. PM-facing summary from `release-notes`.
-  All three share one sequential `NNNN` so the folder reads chronologically.
+    All three share one sequential `NNNN` so the folder reads chronologically.
 - If a legacy `UBIQUITOUS_LANGUAGE.md` exists, read it as supplementary context.
 - If terminology is unclear, sharpen it inline via the `grill-with-docs` skill, which updates `CONTEXT.md` and ADRs as decisions crystallise.
 
@@ -235,14 +240,17 @@ After writing files, respond with:
 Generated agent instructions.
 
 Files:
+
 - `AGENTS.md`
 - `CLAUDE.md`
 - `GEMINI.md`
 
 Project codes:
+
 - `CODE` - Project Name
 
 Notes:
+
 - [VS Code workspace detected / not detected.]
 - [CONTEXT.md / `docs/adr/` artifacts (ADRs, `*-prompt.md`, `*-release-notes.md`) referenced, or noted as to-be-produced inline by `grill-with-docs` / `feature-prompt` / `release-notes`. Legacy `UBIQUITOUS_LANGUAGE.md` referenced if present.]
 ```
