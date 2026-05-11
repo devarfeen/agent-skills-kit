@@ -216,6 +216,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 - Preserve unrelated user changes.
 - Prefer existing workspace, repository, and project patterns over new abstractions.
+- Prefer Context7 for documentation lookups when working with SDKs, APIs, frameworks, packages, guides, how-to questions, or version-sensitive docs; use general web search only when Context7 is unavailable or insufficient.
 - Keep generated plans tied to project codes.
 - Run targeted validation for changed behavior.
 ````
