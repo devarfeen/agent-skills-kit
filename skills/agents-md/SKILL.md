@@ -11,18 +11,19 @@ Create or update agent instruction files for a codebase:
 - `CLAUDE.md` shim pointing to `AGENTS.md`
 - `GEMINI.md` shim pointing to `AGENTS.md`
 
-Include the four non-negotiable behavioral principles in the `AGENTS.md` template below.
+Include the six non-negotiable behavioral principles in the `AGENTS.md` template below.
 Make clear that these principles must be followed and fully enforced.
 
 ## Non-Negotiable Principles
 
-Every generated `AGENTS.md` must include the following five principles as non-negotiables. The five principles are:
+Every generated `AGENTS.md` must include the following six principles as non-negotiables. The six principles are:
 
 1. Think Before Coding
 2. Simplicity First
 3. Surgical Changes
 4. Goal-Driven Execution
 5. Caveman Communication (chat output only, intensity: `full`)
+6. Parallel Execution (prefer independent tool calls and sub-agents first)
 
 ## Discovery Workflow
 
@@ -56,8 +57,8 @@ Every `AGENTS.md` must include a project matrix with this exact heading and colu
 
 | Project Name (Code)                               | Path                         | Tech Stack              |
 | ------------------------------------------------- | ---------------------------- | ----------------------- |
-| Full Platform Workspace (FULL-PLATFORM-WORKSPACE) | .                            | Meta workspace, no code |
-| PARTNERS-API (PARTNERS-API)                       | ../partners-apis.example.com | PHP, Laravel            |
+| Example Workspace (EXAMPLE-WORKSPACE)             | .                            | Meta workspace, no code |
+| API Service (API-SERVICE)                         | ../api-service               | PHP, Laravel            |
 ```
 
 Project code rules:
@@ -67,8 +68,8 @@ Project code rules:
 - For VS Code workspaces, derive the code from the workspace folder `name`, not from `path`.
 - Preserve the workspace folder `name` as the project name, but remove leading emoji/icons and trim whitespace for the display text in `Project Name (Code)`.
 - Normalize the code from the cleaned workspace folder name by uppercasing and replacing non-alphanumeric runs with hyphens.
-- Example: `🔌 PARTNERS-API` becomes `PARTNERS-API (PARTNERS-API)`.
-- Example: `🧩 Full Platform Workspace` with path `.` becomes `Full Platform Workspace (FULL-PLATFORM-WORKSPACE)` and is marked as meta workspace.
+- Example: `🔌 API Service` becomes `API Service (API-SERVICE)`.
+- Example: `🧩 Example Workspace` with path `.` becomes `Example Workspace (EXAMPLE-WORKSPACE)` and is marked as meta workspace.
 - If two projects collide, add a qualifier: `ADMIN-WEB`, `ADMIN-API`.
 - Do not rename existing project codes in an existing `AGENTS.md` unless the user asks.
 - Mark the VS Code workspace folder with `path: "."` as `Meta workspace, no code`.
@@ -84,7 +85,7 @@ Generate `AGENTS.md` with this structure:
 
 - `AGENTS.md` is the canonical instruction file for agents in this workspace.
 - `CLAUDE.md` and `GEMINI.md` are shims that point here.
-- Read `CONTEXT.md` and the relevant files under `docs/adr/` before making domain decisions. The folder holds three artifact types, all sharing one numbering sequence:
+- Read `CONTEXT.md` when it exists and the relevant files under `docs/adr/` before making domain decisions. The folder holds three artifact types, all sharing one numbering sequence:
   - `NNNN-<slug>.md` — ADRs (no suffix). Architectural decisions; treat as binding.
   - `NNNN-<slug>-prompt.md` — feature prompts produced by `feature-prompt`. Read the latest matching prompt before implementing a feature.
   - `NNNN-<slug>-release-notes.md` — release notes produced by `release-notes`. Read for prior context on a recently shipped feature.
@@ -93,9 +94,9 @@ Generate `AGENTS.md` with this structure:
 
 ## Non-Negotiable Principles
 
-Follow the following 5 principles. They are non-negotiable and must be fully enforced.
+Follow these 6 principles. They are non-negotiable and must be fully enforced.
 
-Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
+Behavioral guidelines to reduce common LLM coding mistakes. Merge with workspace- or project-specific instructions as needed.
 
 **Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
 
@@ -164,7 +165,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 **Activate caveman mode (intensity: `full`) for every chat reply. Never apply it to written artifacts.**
 
-- Invoke the `caveman` skill at intensity `full` for all conversational output to the user in this project.
+- Invoke the `caveman` skill at intensity `full` for all conversational output to the user in this workspace or codebase.
 - Activation is automatic: do not wait for the user to type "caveman mode" or `/caveman`. Treat reading this `AGENTS.md` as the trigger.
 - **Chat only.** Do **not** apply caveman compression to:
   - Code, configs, migrations, or any file written to disk.
@@ -172,11 +173,22 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
   - Commit messages, PR titles, PR bodies, issue bodies, Agent Briefs, or any artifact `/commit-push-close`, `/commit-push-pr`, `/to-issues`, `/to-prd`, `/triage`, or `/release-notes` produces.
   - Tool arguments, search queries, or anything sent to external services.
 - If a chat reply contains an inline code block or quoted artifact, the surrounding prose is caveman; the block itself stays in its native form.
-- If the user asks for a different intensity (`lite`, `ultra`, `wenyan-*`) or asks to disable caveman, honour that for the rest of the session.
+- If the user asks for a different intensity (`lite`, `ultra`, `wenyan-*`) or asks to disable caveman, honor that for the rest of the session.
+
+## 6. Parallel Execution
+
+**Prefer parallel execution first for independent work whenever the active agent can do it.**
+
+- First try parallel tool calls during discovery, diagnosis, find/search work, repo scans, file reads, history inspection, and other fact-gathering where outputs do not depend on each other.
+- Use explorer sub-agents for read-only investigation when projects, modules, bugs, features, logs, or evidence streams can be examined independently.
+- Use worker sub-agents for delegated implementation only when the user asks for delegated implementation and the runtime's rules allow it.
+- Do not parallelize dependent steps where ordering matters or where one result changes the next action.
+- Do not delegate final judgment, synthesis, or user-facing conclusions to tools or sub-agents.
+- The main agent remains responsible for correctness, scope control, and final output quality.
 
 ---
 
-**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, faster independent discovery, and clarifying questions come before implementation rather than after mistakes.
 
 ## Project Matrix
 
@@ -186,7 +198,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ## Domain Context
 
-- Read `CONTEXT.md` before domain-heavy work.
+- Read `CONTEXT.md` before domain-heavy work when it exists.
 - `docs/adr/` is the shared folder for architectural decisions, feature prompts, and release notes — distinguish by filename suffix:
   - `NNNN-<slug>.md` (no suffix) — ADR. Binding architectural decision.
   - `NNNN-<slug>-prompt.md` — feature prompt. Implementation-ready spec from `feature-prompt`.
@@ -203,7 +215,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 ## Operating Rules
 
 - Preserve unrelated user changes.
-- Prefer existing project patterns over new abstractions.
+- Prefer existing workspace, repository, and project patterns over new abstractions.
 - Keep generated plans tied to project codes.
 - Run targeted validation for changed behavior.
 ````
@@ -214,7 +226,7 @@ Preserve any useful existing local instructions when updating `AGENTS.md`, but r
 
 Create or update `CLAUDE.md` and `GEMINI.md` as shims.
 
-Use this content unless the project already has important tool-specific instructions:
+Use this content unless the workspace or repository already has important tool-specific instructions:
 
 ```markdown
 # Agent Instructions
