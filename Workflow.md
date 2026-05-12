@@ -14,8 +14,9 @@ the upstream authors whose skills and ideas it combines.
   repo's release-notes, feature-discovery, feature-prompt, feature-prompt-full
   (now deprecated), agents-md, and ubiquitous-language (now deprecated) skills
   were added.
-- `/agents-md` includes four non-negotiable behavioral principles adapted from
-  Forrest Chang's Karpathy-inspired `CLAUDE.md` guidelines:
+- `/agents-md` non-negotiable discipline was originally adapted from
+  Forrest Chang's Karpathy-inspired `CLAUDE.md` guidelines and expanded in
+  this repo into a 12-rule core plus retained operational defaults:
   https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md
   The upstream repository is MIT licensed.
 - `/ubiquitous-language` (deprecated, kept in `skills/` for reference only) is
@@ -24,8 +25,9 @@ the upstream authors whose skills and ideas it combines.
   https://github.com/mattpocock/skills/blob/main/ubiquitous-language/SKILL.md
   Domain-language sharpening is now covered by `/grill-with-docs`, which
   updates `CONTEXT.md` and ADRs inline as decisions crystallise.
-- The core prompt, grill, PRD, issue, TDD, diagnosis, triage, and architecture
-  workflow uses companion skills from Matt Pocock's skills repo:
+- The core setup, prompt, grill, PRD, issue, TDD, diagnosis, triage,
+  architecture, prototype, and handoff workflow uses companion skills from
+  Matt Pocock's skills repo:
   https://github.com/mattpocock/skills
 - `/caveman` is credited to Matt Pocock's `caveman` skill, MIT License,
   Copyright 2026 Matt Pocock:
@@ -49,9 +51,17 @@ Run this once per workspace, then refresh when the workspace structure changes.
 
 ```text
 /agents-md
+/setup-matt-pocock-skills
 ```
 
 `/agents-md` creates the workspace anchor: `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, project codes, paths, tech stacks, and the project matrix. Other skills should use those project codes.
+
+`/setup-matt-pocock-skills` creates and updates the engineering-skill runtime config:
+
+- `docs/agents/issue-tracker.md`
+- `docs/agents/triage-labels.md`
+- `docs/agents/domain.md`
+- `## Agent skills` block in `AGENTS.md` or `CLAUDE.md`
 
 Domain-language sharpening is no longer a separate setup step. `/grill-with-docs` captures terminology, ambiguities, and decisions inline in `CONTEXT.md` and ADRs as the conversation surfaces them.
 
@@ -60,11 +70,14 @@ Domain-language sharpening is no longer a separate setup step. `/grill-with-docs
 | Situation | Start With | Why |
 | --- | --- | --- |
 | New workspace or unclear project codes | `/agents-md` | Establishes project names, codes, paths, and canonical agent instructions. |
+| First run with Matt engineering skills in this repo | `/setup-matt-pocock-skills` | Configures issue tracker, triage label mappings, and domain-doc layout for `to-prd`/`to-issues`/`triage`/`diagnose`/`tdd`. |
 | Domain terms are unclear | `/grill-with-docs` | Sharpens terminology against `CONTEXT.md` and ADRs as part of grilling. |
 | Existing behavior is unclear | `/feature-discovery` | Produces a read-only explanation before planning changes. |
 | Rough feature idea | `/feature-prompt` | Creates a focused implementation prompt; you trigger `/grill-with-docs`, `/to-prd`, `/to-issues`, `/triage`, and `/tdd` manually as the work progresses. |
 | Bug with unknown cause | `/diagnose` | Drives root-cause analysis before patching. |
+| Need to test a design before committing | `/prototype` | Builds throwaway logic/UI prototypes to validate decisions before PRD/issues. |
 | Single decision needs interrogating in isolation | `/grill-me` | Standalone narrow-scope clarification interview — not part of any feature chain. |
+| Need to pause and transfer context | `/handoff` | Produces a compact handoff doc so another agent can continue without rediscovery. |
 | Iteration on a GitHub issue is done | `/commit-push-close` | Commits with `HITL:` / `AKF:` prefix from issue state, pushes to current branch, closes the issue with a how-to-test comment. |
 | Iteration on a GitHub issue needs a PR | `/commit-push-pr` | Commits with `HITL:` / `AKF:` prefix, pushes the branch (auto-creating one off main if needed), opens a PR with `Closes #N` + how-to-test. |
 | Only stakeholder notes are needed | `/release-notes` | Produces PM-friendly release notes saved to `docs/adr/`. |
@@ -76,6 +89,7 @@ Use this as the default chain for product work that should produce a spec, issue
 
 ```text
 /agents-md
+-> /setup-matt-pocock-skills
 -> /feature-discovery
 -> /feature-prompt
 -> /grill-with-docs
@@ -87,11 +101,11 @@ Use this as the default chain for product work that should produce a spec, issue
 -> /release-notes
 ```
 
-The setup step can be skipped when `AGENTS.md` is already current. `/grill-with-docs` handles domain-language sharpening inline against `CONTEXT.md` and ADRs. Each step is triggered manually — there is no auto-chain.
+`/agents-md` and `/setup-matt-pocock-skills` are both setup steps with different jobs. Skip `/agents-md` only when project codes are already current. Skip `/setup-matt-pocock-skills` only when `docs/agents/*` config is already present and accurate. `/grill-with-docs` handles domain-language sharpening inline against `CONTEXT.md` and ADRs. Each step is triggered manually — there is no auto-chain.
 
 ## Triage Gate
 
-`/to-issues` auto-applies the `needs-triage` label to every issue it creates. `/triage` is the manual gate that promotes those issues to `ready-for-agent` and posts an **Agent Brief** comment — the durable, behavioral contract the implementing agent works from. `/tdd` does not enforce this gate; the precondition is convention, not tooling. Treat `/triage` as mandatory between `/to-issues` and `/tdd`.
+`/setup-matt-pocock-skills` defines the label mapping and tracker behavior used by `/to-issues` and `/triage`. Do not assume fixed label strings like `needs-triage`; use whatever is configured in `docs/agents/triage-labels.md`. `/triage` is still the quality gate that checks category/state and adds an **Agent Brief** when moving work to agent-ready state. `/tdd` does not enforce this gate; the precondition is convention, not tooling.
 
 ## Workflow Gates
 
@@ -100,12 +114,13 @@ Think of each step as a gate. Move forward only when the output is good enough f
 | Gate | Skill | Output | Continue When |
 | --- | --- | --- | --- |
 | Workspace | `/agents-md` | `AGENTS.md`, shims, project matrix | Project codes and paths are stable. |
+| Engineering config | `/setup-matt-pocock-skills` | `docs/agents/*` config + `## Agent skills` block | Issue tracker, label mapping, and domain-doc layout are explicit. |
 | Discovery | `/feature-discovery` | Evidence-backed feature report | Current behavior and risks are understood. |
 | Prompt | `/feature-prompt` | Final implementation prompt | User has reviewed the prompt. |
 | Grill | `/grill-with-docs` | Challenged assumptions and resolved questions against domain language and ADRs | Major ambiguities are resolved or deferred explicitly. |
 | PRD | `/to-prd` | Product requirements/spec | Problem, solution, stories, decisions, tests, and scope are clear. |
-| Issues | `/to-issues` | Vertical slices labeled `needs-triage` | Each issue can be implemented independently. |
-| Triage | `/triage` | Issue at `ready-for-agent` with Agent Brief comment | Category and state clear; Agent Brief is testable. |
+| Issues | `/to-issues` | Vertical slices published to configured tracker | Each issue can be implemented independently. |
+| Triage | `/triage` | Issue state/category updated per configured mapping; Agent Brief when needed | Category and state are clear; execution contract is testable. |
 | Build | `/tdd` | Tested implementation | Tests pass or blocker is documented. |
 | Debug | `/diagnose` | Root cause and fix path | Cause is known and fix is scoped. |
 | Close iteration | `/commit-push-close` | Commit + push + closed issue with how-to-test comment | Branch is pushed and the issue is closed cleanly. |
@@ -115,6 +130,7 @@ Think of each step as a gate. Move forward only when the output is good enough f
 ## Feature Development
 
 Use this for new user-facing or workflow-changing features. Trigger each step manually — none of these skills auto-chain into the next.
+Assumes `/setup-matt-pocock-skills` has already been run for this repo.
 
 ```text
 /feature-prompt
@@ -134,6 +150,7 @@ Add `/feature-discovery` before `/feature-prompt` when the feature modifies exis
 ## Change Requests
 
 Use this when the request changes an already-planned feature, PRD, or issue list.
+Assumes `/setup-matt-pocock-skills` has already been run for this repo.
 
 ```text
 /feature-discovery
@@ -152,6 +169,7 @@ Use this when the request changes an already-planned feature, PRD, or issue list
 ## Bug Fixes
 
 Use this when behavior is broken and the cause is not obvious.
+Assumes `/setup-matt-pocock-skills` has already been run for this repo.
 
 ```text
 /feature-discovery
@@ -173,6 +191,7 @@ Use this when a workflow crosses API, web, mobile, jobs, database, or service bo
 
 ```text
 /agents-md
+-> /setup-matt-pocock-skills
 -> /feature-discovery
 -> /feature-prompt
 -> /grill-with-docs
@@ -247,6 +266,16 @@ Use this before planning when the codebase is unfamiliar or when a change reques
 
 ## Skill Combinations
 
+### With Prototyping
+
+```text
+/prototype
+-> /grill-with-docs
+-> /to-prd
+```
+
+Use this when you need to validate state shape or UI direction before planning implementation work.
+
 ### With Docs And Domain Language
 
 ```text
@@ -282,6 +311,26 @@ Use this when the work is scoped to one GitHub issue and you want to close the i
 
 Use this when the issue should ship as a reviewable PR rather than a direct close — `/commit-push-pr` uses the same `HITL:` / `AKF:` prefix logic, auto-creates a feature branch when run from `main`/`master`, pushes the branch, and opens a PR with `Closes #N`, a summary, and a how-to-test plan. The issue auto-closes when the PR merges.
 
+### Session Handoff
+
+```text
+/tdd
+-> /handoff
+```
+
+```text
+/diagnose
+-> /handoff
+```
+
+```text
+/to-issues
+-> /triage
+-> /handoff
+```
+
+Use this when you are pausing work or switching agents. `/handoff` creates a compact continuation doc and points the next session to the right artifacts and next skills.
+
 ### With Production Errors
 
 ```text
@@ -311,18 +360,23 @@ Use this when the work needs a specialized capability outside this kit.
 - If an issue lacks an Agent Brief or its acceptance criteria are vague, go back to `/triage`.
 - If implementation fails unexpectedly, go to `/diagnose`, then return to `/tdd`.
 - If release notes are too technical, rerun `/release-notes` with PM/QA audience emphasis.
+- If you need to stop before completion, run `/handoff` so the next session can resume immediately.
 
 ## Minimal Chains
+
+Assumes `/setup-matt-pocock-skills` is already configured when the chain uses Matt's engineering issue/triage flow.
 
 | Use Case | Chain |
 | --- | --- |
 | Full feature | `/feature-prompt` -> `/grill-with-docs` -> `/to-prd` -> `/to-issues` -> `/triage` -> `/tdd` -> `/commit-push-pr` -> `/release-notes` |
 | Small feature | `/feature-prompt` -> `/grill-with-docs` -> `/tdd` |
+| Design spike | `/prototype` -> `/grill-with-docs` -> `/to-prd` |
 | Bug fix | `/feature-discovery` -> `/diagnose` -> `/tdd` |
 | Issue iteration close | `/tdd` -> `/commit-push-close` |
 | Issue iteration as PR | `/tdd` -> `/commit-push-pr` |
-| Multi-project change | `/agents-md` -> `/feature-discovery` -> `/feature-prompt` -> `/grill-with-docs` -> `/to-prd` -> `/to-issues` -> `/triage` -> `/tdd` |
+| Multi-project change | `/agents-md` -> `/setup-matt-pocock-skills` -> `/feature-discovery` -> `/feature-prompt` -> `/grill-with-docs` -> `/to-prd` -> `/to-issues` -> `/triage` -> `/tdd` |
 | Change request | `/feature-discovery` -> `/feature-prompt` -> `/grill-with-docs` -> `/to-prd` -> `/to-issues` |
+| Session transfer | `/handoff` |
 | Narrow standalone clarification | `/grill-me` (single decision in isolation; not part of any feature chain) |
 | Release notes only | `/release-notes` |
 | Manual coding | Read `AGENTS.md` and `CONTEXT.md` (plus ADRs), make the smallest change, verify, summarize |

@@ -69,7 +69,10 @@ its trigger phrases.
 
 See [Workflow.md](Workflow.md) for the recommended workflow from
 workspace setup and spec creation through issues, TDD implementation, PR
-shipping, and release notes.
+shipping, and release notes. If you use Matt's engineering skills, run
+`/setup-matt-pocock-skills` once per repo before `/to-prd`, `/to-issues`,
+`/triage`, `/diagnose`, `/tdd`, `/improve-codebase-architecture`, or
+`/zoom-out`.
 
 ## Credits And Provenance
 
@@ -81,8 +84,9 @@ skills from the wider agent-skills ecosystem.
   followed by feature-discovery, feature-prompt, feature-prompt-full
   (deprecated), agents-md, ubiquitous-language (deprecated), and the workflow
   guide.
-- The four non-negotiable behavioral principles used by `agents-md` are adapted
-  from Forrest Chang's Karpathy-inspired `CLAUDE.md` guidelines:
+- The non-negotiable discipline in `agents-md` was originally seeded by
+  Forrest Chang's Karpathy-inspired `CLAUDE.md` guidelines and later expanded
+  in this repo into a 12-rule core plus retained operational defaults:
   https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md
   The upstream repository is MIT licensed. This repo records credit here rather
   than emitting source notes into generated `AGENTS.md` files.
@@ -93,8 +97,9 @@ skills from the wider agent-skills ecosystem.
   Domain-language sharpening is now covered by Matt's `/grill-with-docs`,
   which updates `CONTEXT.md` and ADRs inline.
 - The workflow guide references companion skills from Matt Pocock's skills repo,
-  including `grill-me`, `grill-with-docs`, `to-prd`, `to-issues`, `tdd`,
-  `diagnose`, `triage`, `improve-codebase-architecture`, and `zoom-out`:
+  including `setup-matt-pocock-skills`, `grill-me`, `grill-with-docs`,
+  `to-prd`, `to-issues`, `tdd`, `diagnose`, `triage`,
+  `improve-codebase-architecture`, `zoom-out`, `prototype`, and `handoff`:
   https://github.com/mattpocock/skills
 - `/caveman` is credited to Matt Pocock's `caveman` skill, MIT License,
   Copyright 2026 Matt Pocock:
@@ -125,7 +130,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 
 **What it does**
 
-- Includes five non-negotiable behavioral principles in `AGENTS.md` (the four Karpathy-inspired coding principles plus chat-only caveman activation at intensity `full`)
+- Includes a 12-rule non-negotiable core in `AGENTS.md`, plus retained operational defaults for chat-only caveman activation (intensity `full`) and parallel execution
 - Detects VS Code workspaces and uses each folder `name` as the project name/code source
 - Treats the workspace folder with `path: "."` as a meta workspace with no code
 - Builds a project matrix: `Project Name (Code) | Path | Tech Stack`
