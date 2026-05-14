@@ -354,16 +354,26 @@ Do not include unchanged projects in the final generated file.
 
 ## File Output Rules
 
-Always save the generated markdown under `docs/adr/`, sharing the same folder and numbering sequence as ADRs (see `grill-with-docs/ADR-FORMAT.md`). Release notes use the `-release-notes` suffix as the type discriminator. ADRs have no suffix, feature prompts use `-prompt`, release notes use `-release-notes`. Numbers are shared across all artifact types so the folder reads chronologically.
+Always save the generated markdown under `<artifacts-root>/docs/adr/`, alongside ADRs (see `grill-with-docs/ADR-FORMAT.md`). Release notes use the `-release-notes` suffix as the type discriminator. ADRs have no suffix and also live in `docs/adr/`; feature prompts use `-prompt` and live in the sibling `docs/prompt/` folder. Numbering is shared globally across all three artifact types and both folders so the union reads chronologically.
+
+### Resolving `<artifacts-root>`
+
+Centralize artifacts when a workspace exists; only fall back to a project repo when there's no workspace. Resolve in this order:
+
+1. **VS Code workspace (preferred when present).** If a `*.code-workspace` file is found at or above the cwd, write to the directory containing it. All projects in the workspace share one `docs/adr/` and `docs/prompt/`.
+2. **Multi-context single repo.** If no workspace file but a root `CONTEXT-MAP.md` exists, use the `docs/adr/` of the context the change belongs to.
+3. **Single-repo project.** Fall back to the repo root.
+
+For multi-repo workspaces *without* a `.code-workspace` file, write one file per repo under that repo's own `docs/adr/`.
 
 ### Path shape
 
 ```
-docs/adr/NNNN-<slug>-release-notes.md
+<artifacts-root>/docs/adr/NNNN-<slug>-release-notes.md
 ```
 
-- **`docs/adr/`** — at the repo root for single-context repos. For multi-context repos (a root `CONTEXT-MAP.md` exists), use the `docs/adr/` of the context the change belongs to. For multi-repo workspaces, write one file per repo under that repo's own `docs/adr/`.
-- **`NNNN`** — four-digit sequential. Scan `docs/adr/` for the highest existing number (across all artifact types) and increment by one.
+- **`docs/adr/`** — relative to `<artifacts-root>` resolved above.
+- **`NNNN`** — four-digit sequential. Scan **both** `<artifacts-root>/docs/adr/` and `<artifacts-root>/docs/prompt/` for the highest existing number across all artifact types (ADRs, prompts, release notes), then increment by one.
 - **`<slug>`** — kebab-case, ASCII only. Choice depends on mode (see below).
 - **`-release-notes`** — fixed suffix.
 
@@ -371,18 +381,21 @@ docs/adr/NNNN-<slug>-release-notes.md
 
 1. **Date-based release notes (`Date: <DD Month YYYY>`):**
    - Slug: `DD-month-YYYY` (lowercase month, kebab-case)
-   - Example: `docs/adr/0042-12-march-2026-release-notes.md`
+   - Example (workspace): `<workspace-dir>/docs/adr/0042-12-march-2026-release-notes.md`
+   - Example (single repo): `docs/adr/0042-12-march-2026-release-notes.md`
 2. **Feature-based summary:**
    - Slug: kebab-case feature name, ≤ 4 words
-   - Example: `docs/adr/0042-rfid-scanner-reliability-release-notes.md`
+   - Example (workspace): `<workspace-dir>/docs/adr/0042-rfid-scanner-reliability-release-notes.md`
+   - Example (single repo): `docs/adr/0042-rfid-scanner-reliability-release-notes.md`
 3. **Session summary without explicit feature name:**
    - Slug: `DD-month-YYYY-session` if a date is available, otherwise prompt the user for a short slug
-   - Example: `docs/adr/0042-12-march-2026-session-release-notes.md`
+   - Example (workspace): `<workspace-dir>/docs/adr/0042-12-march-2026-session-release-notes.md`
+   - Example (single repo): `docs/adr/0042-12-march-2026-session-release-notes.md`
 
 ### Conflict handling
 
-- If `docs/adr/` does not exist, create it lazily before writing.
-- If a file with the chosen number already exists, recompute the next number — never overwrite a number assigned to another artifact.
+- If `<artifacts-root>/docs/adr/` does not exist, create it lazily before writing.
+- If a file with the chosen number already exists in `<artifacts-root>/docs/adr/` **or** `<artifacts-root>/docs/prompt/`, recompute the next number — never overwrite a number assigned to another artifact, even across folders.
 - If a prior `*-release-notes.md` exists for the same slug and contains only generated content from this skill, overwrite in place (keep the same number).
 - If the existing file contains hand-edits, show the diff and ask the user whether to overwrite, write a new numbered revision, or abort.
 - Never delete unrelated files in `docs/adr/`.

@@ -179,18 +179,24 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill release
 
 **Output location**
 
-Generated files land in `docs/adr/` at **your** workspace root, sharing the
-same folder and numbering sequence as ADRs and feature prompts. Suffix
-`-release-notes` distinguishes them from ADRs (no suffix) and feature prompts
-(`-prompt`):
+Generated files land in `<artifacts-root>/docs/adr/`, sharing the numbering
+sequence with ADRs and feature prompts (which live in the sibling
+`<artifacts-root>/docs/prompt/`). `<artifacts-root>` resolves to the VS Code
+workspace root when a `*.code-workspace` file is present, otherwise the repo
+root — so artifacts stay centralized and out of individual project repos
+whenever a workspace exists. Suffix `-release-notes` distinguishes release
+notes from ADRs (no suffix) and feature prompts (`-prompt`):
 
-- Date or session: `docs/adr/NNNN-DD-month-YYYY-release-notes.md`
-  (e.g. `docs/adr/0042-12-march-2026-release-notes.md`)
-- Feature: `docs/adr/NNNN-<feature-slug>-release-notes.md`
-  (e.g. `docs/adr/0042-rfid-scanner-reliability-release-notes.md`)
+- Date or session: `<artifacts-root>/docs/adr/NNNN-DD-month-YYYY-release-notes.md`
+  (workspace example: `<workspace-dir>/docs/adr/0042-12-march-2026-release-notes.md`;
+  single repo: `docs/adr/0042-12-march-2026-release-notes.md`)
+- Feature: `<artifacts-root>/docs/adr/NNNN-<feature-slug>-release-notes.md`
+  (workspace example: `<workspace-dir>/docs/adr/0042-rfid-scanner-reliability-release-notes.md`;
+  single repo: `docs/adr/0042-rfid-scanner-reliability-release-notes.md`)
 
 `NNNN` is one greater than the highest existing number across all artifact
-types in `docs/adr/`, so the folder reads chronologically.
+types in **both** `<artifacts-root>/docs/adr/` and `<artifacts-root>/docs/prompt/`,
+so the union reads chronologically.
 
 **Manual QA steps**
 
@@ -252,7 +258,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
 - Challenges vague answers before moving on
 - Inspects the codebase when local context can answer or sharpen a section
 - Sends the draft prompt to the user for review before finalizing it
-- Saves the final prompt to `docs/adr/NNNN-<feature-slug>-prompt.md` (sharing the ADR folder and numbering sequence)
+- Saves the final prompt to `<artifacts-root>/docs/prompt/NNNN-<feature-slug>-prompt.md` (sibling of `docs/adr/`; numbering is shared globally across both folders). `<artifacts-root>` is the VS Code workspace root when present, otherwise the repo root — artifacts stay out of individual project repos whenever a workspace exists.
 - Asks the user to pass the final prompt to `grill-with-docs`
 - Produces a short final prompt in the same section order
 

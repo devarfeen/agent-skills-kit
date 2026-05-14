@@ -67,10 +67,11 @@ Each feature entry includes a **Manual QA Steps** section:
 - If a detail is not present in commit history, state that clearly instead of guessing.
 
 ## Output File Location
-- Save all generated notes in `docs/adr/`, sharing the ADR folder and numbering sequence. Suffix `-release-notes` distinguishes them from ADRs (no suffix) and feature prompts (`-prompt`).
-- Date-based or session summary: `docs/adr/NNNN-DD-month-YYYY-release-notes.md` (example: `docs/adr/0042-12-march-2026-release-notes.md`)
-- Feature-based summary: `docs/adr/NNNN-<feature-slug>-release-notes.md` (example: `docs/adr/0042-rfid-scanner-reliability-release-notes.md`)
-- Slug is kebab-case, ASCII; `NNNN` is one greater than the highest existing number in `docs/adr/` across all artifact types.
+- Save all generated notes under `<artifacts-root>/docs/adr/`, alongside ADRs. Suffix `-release-notes` distinguishes them from ADRs (no suffix). Feature prompts (`-prompt`) live in the sibling `<artifacts-root>/docs/prompt/` folder.
+- Resolve `<artifacts-root>` in this order: (1) directory containing a `*.code-workspace` file if one exists, (2) per-context root in a multi-context repo (`CONTEXT-MAP.md` at root), (3) the single repo root. Workspace mode is preferred — it keeps artifacts out of individual project repos.
+- Date-based or session summary: `<artifacts-root>/docs/adr/NNNN-DD-month-YYYY-release-notes.md` (workspace example: `<workspace-dir>/docs/adr/0042-12-march-2026-release-notes.md`; single repo: `docs/adr/0042-12-march-2026-release-notes.md`)
+- Feature-based summary: `<artifacts-root>/docs/adr/NNNN-<feature-slug>-release-notes.md` (workspace example: `<workspace-dir>/docs/adr/0042-rfid-scanner-reliability-release-notes.md`; single repo: `docs/adr/0042-rfid-scanner-reliability-release-notes.md`)
+- Slug is kebab-case, ASCII; `NNNN` is one greater than the highest existing number across **both** `<artifacts-root>/docs/adr/` and `<artifacts-root>/docs/prompt/` (numbering is shared globally across all artifact types).
 
 The output is designed for Project Managers and other non-technical stakeholders.
 

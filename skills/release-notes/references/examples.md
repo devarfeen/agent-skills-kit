@@ -321,16 +321,20 @@ Date: 12 March 2026
 
 ## Example 6: Output File Naming
 
-Release notes share `docs/adr/` and the ADR numbering sequence. The `-release-notes` suffix distinguishes them from ADRs (no suffix) and feature prompts (`-prompt`). Replace `0042` below with the next available number in your `docs/adr/`.
+Release notes live in `<artifacts-root>/docs/adr/` alongside ADRs. The `-release-notes` suffix distinguishes them from ADRs (no suffix). Feature prompts (`-prompt`) live in the sibling `<artifacts-root>/docs/prompt/` folder. Numbering is shared globally across both folders — replace `0042` below with the next available number across `<artifacts-root>/docs/adr/` and `<artifacts-root>/docs/prompt/` combined.
+
+`<artifacts-root>` resolves to (1) the directory containing the `*.code-workspace` file when a VS Code workspace is present, (2) the per-context root in a multi-context repo (`CONTEXT-MAP.md` at root), or (3) the repo root for single-repo projects. Workspace mode is preferred — it keeps artifacts out of individual project repos.
 
 ### User Request
 Generate release notes for 12 March 2026
 
 ### Expected Output File
-- `docs/adr/0042-12-march-2026-release-notes.md`
+- Workspace mode: `<workspace-dir>/docs/adr/0042-12-march-2026-release-notes.md`
+- Single repo: `docs/adr/0042-12-march-2026-release-notes.md`
 
 ### User Request
 Write release notes for RFID Scanner Reliability
 
 ### Expected Output File
-- `docs/adr/0042-rfid-scanner-reliability-release-notes.md`
+- Workspace mode: `<workspace-dir>/docs/adr/0042-rfid-scanner-reliability-release-notes.md`
+- Single repo: `docs/adr/0042-rfid-scanner-reliability-release-notes.md`

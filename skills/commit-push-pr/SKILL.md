@@ -1,15 +1,16 @@
 ---
 name: commit-push-pr
-description: Ship one iteration of work on a GitHub issue as a pull request — stage and commit with a structured message, push the current branch, and open a PR that uses `Closes #N` to auto-close the linked issue on merge. The commit subject prefix is chosen by the issue's state label (`HITL:` for `ready-for-human`, `AKF:` for `ready-for-agent`). Use when the user says "commit, push, and open a PR", "ship this as a PR", "PR this issue", or otherwise wants to wrap up issue work as a reviewable PR rather than a direct close.
+description: Ship one iteration of work on a GitHub issue as a pull request — stage and commit with a structured message, push the current branch, and open a PR that uses `Closes #N` to auto-close the linked issue on merge. If no GitHub issue can be located, the skill creates one inline before committing. The commit subject prefix is chosen by the issue's state label (`HITL:` for `ready-for-human`, `AKF:` for `ready-for-agent`). Use when the user says "commit, push, and open a PR", "ship this as a PR", "PR this issue", or otherwise wants to wrap up issue work as a reviewable PR rather than a direct close.
 ---
 
 # commit-push-pr
 
-Three-step ship for one GitHub-issue iteration, ending in a reviewable PR:
+Ship one GitHub-issue iteration as a reviewable PR (with an inline create-if-missing step for the issue):
 
-1. **Commit** the diff with a structured message (prefix chosen by issue state).
-2. **Push** the current branch (auto-create one off `main`/`master` first).
-3. **Open a PR** with `Closes #N`, a summary, and a how-to-test plan.
+1. **Resolve or create** the GitHub issue.
+2. **Commit** the diff with a structured message (prefix chosen by issue state).
+3. **Push** the current branch (auto-create one off `main`/`master` first).
+4. **Open a PR** with `Closes #N`, a summary, and a how-to-test plan.
 
 ## Prefix selection
 
@@ -19,9 +20,33 @@ The subject prefix depends on the linked issue's state label:
 | -------------------- | ------- |
 | `ready-for-human`    | `HITL:` |
 | `ready-for-agent`    | `AKF:`  |
-| neither / no issue   | ask the user; do not guess |
+| neither              | ask the user |
+| no linked issue      | create one inline (see **Inline issue creation**) — the user picks the state label during creation, which fixes the prefix |
 
 Read state with: `gh issue view <num> --json state,labels,title,url`. Match label names exactly.
+
+## Inline issue creation
+
+When step 2 of the workflow can't locate an issue, create one before committing. Do **not** invent an issue number, and do **not** continue without an issue.
+
+1. Draft from the diff:
+   - **Title** — imperative, ≤ 72 chars, no `HITL:`/`AKF:` prefix (the prefix belongs to the commit/PR, not the issue title).
+   - **Body** — short problem/intent statement + what this change does + how to test. Keep under ~15 lines. The PR body's `Closes #N` will reference this issue.
+2. Ask the user to pick the state label so the commit prefix is determined:
+   - `ready-for-human` → commit/PR prefix `HITL:`
+   - `ready-for-agent` → commit/PR prefix `AKF:`
+3. Show the user the draft (title + body + chosen state) and wait for approval. This is folded into the single combined approval in step 7 of the workflow — don't ask twice.
+4. Create with:
+   ```bash
+   gh issue create \
+     --title "<title>" \
+     --body "$(cat <<'EOF'
+   <body>
+   EOF
+   )" \
+     --label "<state-label>"
+   ```
+5. Capture the returned issue number from the URL/output and use it as `<num>` for the rest of the workflow (commit `Issue:` line, PR `Closes #<num>`). Skip the "read state" call — the label was set at creation.
 
 ## Commit message format
 
@@ -94,9 +119,9 @@ The `Closes #N` line is mandatory and must be on its own line near the top of th
    - `git remote get-url origin`
    - Detect default branch: `gh repo view --json defaultBranchRef -q .defaultBranchRef.name` (fallback: `main`).
 
-2. **Resolve the issue** — branch name → recent commits → conversation context. If none, ask the user. Do not invent.
+2. **Resolve or create the issue** — branch name → recent commits → conversation context. If none, switch to **Inline issue creation** (see section above): draft title/body from the diff, ask the user for the state label, fold the issue draft into the combined approval, then `gh issue create`. Use the returned number for the rest of the workflow.
 
-3. **Read issue state** — `gh issue view <num> --json state,labels,title,url`. Pick `HITL:` or `AKF:` per the table. If neither label is present, ask.
+3. **Read issue state** — for issues that already existed, run `gh issue view <num> --json state,labels,title,url` and pick `HITL:` or `AKF:` per the table. If neither label is present, ask. For issues just created inline, skip this step — the prefix is already fixed by the label set at creation.
 
 4. **Branch handling** — if the current branch is `main` or `master` (or the detected default branch):
    - Stop before staging anything.
@@ -109,7 +134,9 @@ The `Closes #N` line is mandatory and must be on its own line near the top of th
 
 6. **Draft the PR title and body** — same prefix in title; body has `Closes #N`, summary, optional decisions, how-to-test, optional notes. If the test plan isn't obvious, ask the user before continuing.
 
-7. **Show the user the drafts** (commit message + PR title + PR body) and wait for one combined approval. Do not stage, push, or call `gh pr create` before approval.
+7. **Show the user the drafts** and wait for one combined approval. Do not stage, push, or call `gh pr create` before approval. The drafts shown depend on whether an issue was just created inline:
+   - Existing issue: commit message + PR title + PR body.
+   - Inline-created issue: new-issue title + new-issue body + chosen state label + commit message + PR title + PR body. After approval, create the issue first, then commit/push/PR in order.
 
 8. **Pre-commit safety**:
    - Refuse to stage secret-pattern files: `.env`, `.env.*` (except `.env.example`), `*.pem`, `*.key`, `id_rsa*`, `credentials*.json`, `*secret*`. Warn and skip.
@@ -235,7 +262,7 @@ Checkout charges are now idempotent on `x-request-id`; replays return the origin
 ## Checklist
 
 Before reporting done, verify:
-- [ ] Issue resolved + state read → correct prefix (`HITL:` or `AKF:`)
+- [ ] Issue resolved (or created inline) + state read → correct prefix (`HITL:` or `AKF:`)
 - [ ] If on default branch, a feature branch was created and confirmed
 - [ ] Commit subject ≤ 72 chars, starts with prefix + space
 - [ ] `Issue:` line present in commit body

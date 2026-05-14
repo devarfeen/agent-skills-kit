@@ -52,11 +52,13 @@ Every generated `AGENTS.md` must also retain these operational defaults:
    - `pyproject.toml`, `requirements.txt`, `uv.lock`, `poetry.lock`
    - `go.mod`, `Cargo.toml`, `Gemfile`, `composer.json`
    - `Dockerfile`, `docker-compose.yml`, Terraform files, mobile app configs
-8. Check whether `CONTEXT.md` or any artifacts under `docs/adr/` exist. The `docs/adr/` folder is shared across three artifact types — distinguish by filename suffix:
-   - `NNNN-<slug>.md` — ADR (no suffix), written by `grill-with-docs`.
-   - `NNNN-<slug>-prompt.md` — feature prompt, written by `feature-prompt`.
-   - `NNNN-<slug>-release-notes.md` — release notes, written by `release-notes`.
-     All three share one numbering sequence so the folder reads chronologically. Reference them as required domain context when present. If none exists and terminology matters, note that domain language is sharpened inline by the `grill-with-docs` skill, which writes to `CONTEXT.md` and ADRs as decisions crystallise. If a legacy `UBIQUITOUS_LANGUAGE.md` is present, also reference it, but prefer `CONTEXT.md` going forward.
+8. Check whether `CONTEXT.md` or any artifacts under `docs/adr/` and `docs/prompt/` exist. Look first at the `<artifacts-root>` (see below); fall back to the repo root only when no workspace is present. Three artifact types live in sibling folders, distinguished by location and filename suffix:
+   - `<artifacts-root>/docs/adr/NNNN-<slug>.md` — ADR (no suffix), written by `grill-with-docs`.
+   - `<artifacts-root>/docs/prompt/NNNN-<slug>-prompt.md` — feature prompt, written by `feature-prompt`.
+   - `<artifacts-root>/docs/adr/NNNN-<slug>-release-notes.md` — release notes, written by `release-notes`.
+     All three share one global numbering sequence across both folders so the union reads chronologically. Reference them as required domain context when present. If none exists and terminology matters, note that domain language is sharpened inline by the `grill-with-docs` skill, which writes to `CONTEXT.md` and ADRs as decisions crystallise. If a legacy `UBIQUITOUS_LANGUAGE.md` is present, also reference it, but prefer `CONTEXT.md` going forward.
+
+   `<artifacts-root>` resolves as: (1) the directory containing the `*.code-workspace` file if a VS Code workspace is detected — this is the same location as the meta-workspace folder (`path: "."`); (2) else the per-context root for multi-context repos with a root `CONTEXT-MAP.md`; (3) else the repo root for single-repo projects. Workspace mode is preferred: it keeps prompts/ADRs/release notes centralized instead of scattering them across project repos.
 
 Use structured parsing when available. For `.code-workspace`, prefer JSON parsing that tolerates comments if the local toolchain supports it. If not, read carefully and avoid corrupting paths.
 
@@ -97,10 +99,10 @@ Generate `AGENTS.md` with this structure:
 
 - `AGENTS.md` is the canonical instruction file for agents in this workspace.
 - `CLAUDE.md` and `GEMINI.md` are shims that point here.
-- Read `CONTEXT.md` when it exists and the relevant files under `docs/adr/` before making domain decisions. The folder holds three artifact types, all sharing one numbering sequence:
-  - `NNNN-<slug>.md` — ADRs (no suffix). Architectural decisions; treat as binding.
-  - `NNNN-<slug>-prompt.md` — feature prompts produced by `feature-prompt`. Read the latest matching prompt before implementing a feature.
-  - `NNNN-<slug>-release-notes.md` — release notes produced by `release-notes`. Read for prior context on a recently shipped feature.
+- Read `CONTEXT.md` when it exists and the relevant files under `docs/adr/` and `docs/prompt/` before making domain decisions. When this is a VS Code workspace, look in the **workspace root** (next to the `.code-workspace` file) for `docs/adr/` and `docs/prompt/` — that is where prompts, ADRs, and release notes are centralized. For single-repo projects without a workspace, they sit at the repo root instead. Three artifact types live in sibling folders, all sharing one global numbering sequence:
+  - `docs/adr/NNNN-<slug>.md` — ADRs (no suffix). Architectural decisions; treat as binding.
+  - `docs/prompt/NNNN-<slug>-prompt.md` — feature prompts produced by `feature-prompt`. Read the latest matching prompt before implementing a feature.
+  - `docs/adr/NNNN-<slug>-release-notes.md` — release notes produced by `release-notes`. Read for prior context on a recently shipped feature.
 - If a legacy `UBIQUITOUS_LANGUAGE.md` is present, read it too.
 - Use the project codes in the Project Matrix when referring to projects in prompts, PRDs, issues, release notes, and discovery reports.
 
@@ -245,11 +247,11 @@ Retain these defaults unless the user explicitly overrides them.
 ## Domain Context
 
 - Read `CONTEXT.md` before domain-heavy work when it exists.
-- `docs/adr/` is the shared folder for architectural decisions, feature prompts, and release notes — distinguish by filename suffix:
-  - `NNNN-<slug>.md` (no suffix) — ADR. Binding architectural decision.
-  - `NNNN-<slug>-prompt.md` — feature prompt. Implementation-ready spec from `feature-prompt`.
-  - `NNNN-<slug>-release-notes.md` — release notes. PM-facing summary from `release-notes`.
-    All three share one sequential `NNNN` so the folder reads chronologically.
+- Domain artifacts live in two sibling folders, centralized at the workspace root when a `*.code-workspace` is present (otherwise at the repo root for single-repo projects, or per-context root for multi-context repos):
+  - `docs/adr/NNNN-<slug>.md` (no suffix) — ADR. Binding architectural decision.
+  - `docs/prompt/NNNN-<slug>-prompt.md` — feature prompt. Implementation-ready spec from `feature-prompt`.
+  - `docs/adr/NNNN-<slug>-release-notes.md` — release notes. PM-facing summary from `release-notes`.
+    All three share one global sequential `NNNN` across both folders so the union reads chronologically.
 - If a legacy `UBIQUITOUS_LANGUAGE.md` exists, read it as supplementary context.
 - If terminology is unclear, sharpen it inline via the `grill-with-docs` skill, which updates `CONTEXT.md` and ADRs as decisions crystallise.
 
@@ -311,5 +313,5 @@ Project codes:
 Notes:
 
 - [VS Code workspace detected / not detected.]
-- [CONTEXT.md / `docs/adr/` artifacts (ADRs, `*-prompt.md`, `*-release-notes.md`) referenced, or noted as to-be-produced inline by `grill-with-docs` / `feature-prompt` / `release-notes`. Legacy `UBIQUITOUS_LANGUAGE.md` referenced if present.]
+- [CONTEXT.md / `docs/adr/` (ADRs, `*-release-notes.md`) / `docs/prompt/` (`*-prompt.md`) artifacts referenced, or noted as to-be-produced inline by `grill-with-docs` / `feature-prompt` / `release-notes`. Legacy `UBIQUITOUS_LANGUAGE.md` referenced if present.]
 ```

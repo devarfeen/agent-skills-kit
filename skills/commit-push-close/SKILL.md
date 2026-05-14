@@ -1,15 +1,16 @@
 ---
 name: commit-push-close
-description: Ship one iteration of work on a GitHub issue — stage and commit with a structured message, push to the current branch, then close the linked GitHub issue with a comment that explains how to test the change. The commit subject prefix is chosen by the issue's state label (`HITL:` for `ready-for-human`, `AKF:` for `ready-for-agent`). Use when the user says "commit, push, and close", "ship this issue", "I'm done with this issue", or otherwise wants to wrap up work on a GitHub issue in one step.
+description: Ship one iteration of work on a GitHub issue — stage and commit with a structured message, push to the current branch, then close the linked GitHub issue with a comment that explains how to test the change. If no GitHub issue can be located, the skill creates one inline before committing. The commit subject prefix is chosen by the issue's state label (`HITL:` for `ready-for-human`, `AKF:` for `ready-for-agent`). Use when the user says "commit, push, and close", "ship this issue", "I'm done with this issue", or otherwise wants to wrap up work on a GitHub issue in one step.
 ---
 
 # commit-push-close
 
-Three-step ship for one GitHub-issue iteration:
+Three-step ship for one GitHub-issue iteration (with an inline create-if-missing step for the issue):
 
-1. **Commit** the diff with a structured message (prefix chosen by issue state).
-2. **Push** to the current branch.
-3. **Close** the GitHub issue with a comment explaining how to test it.
+1. **Resolve or create** the GitHub issue.
+2. **Commit** the diff with a structured message (prefix chosen by issue state).
+3. **Push** to the current branch.
+4. **Close** the GitHub issue with a comment explaining how to test it.
 
 ## Prefix selection
 
@@ -19,9 +20,33 @@ The subject prefix depends on the linked issue's state label:
 | -------------------- | ------- |
 | `ready-for-human`    | `HITL:` |
 | `ready-for-agent`    | `AKF:`  |
-| neither / no issue   | ask the user which to use; do not guess |
+| neither              | ask the user which to use |
+| no linked issue      | create one inline (see **Inline issue creation**) — the user picks the state label during creation, which fixes the prefix |
 
 Read state with: `gh issue view <num> --json state,labels,title,url`. Match label names exactly.
+
+## Inline issue creation
+
+When step 2 of the workflow can't locate an issue, create one before committing. Do **not** invent an issue number, and do **not** continue without an issue.
+
+1. Draft from the diff:
+   - **Title** — imperative, ≤ 72 chars, no `HITL:`/`AKF:` prefix (the prefix belongs to the commit, not the issue title).
+   - **Body** — short problem/intent statement + what this change does + how to test (mirrors the close-comment shape so the closing comment can extend it). Keep under ~15 lines.
+2. Ask the user to pick the state label so the commit prefix is determined:
+   - `ready-for-human` → commit prefix `HITL:`
+   - `ready-for-agent` → commit prefix `AKF:`
+3. Show the user the draft (title + body + chosen state) and wait for approval. This is folded into the single combined approval in step 6 of the workflow — don't ask twice.
+4. Create with:
+   ```bash
+   gh issue create \
+     --title "<title>" \
+     --body "$(cat <<'EOF'
+   <body>
+   EOF
+   )" \
+     --label "<state-label>"
+   ```
+5. Capture the returned issue number from the URL/output and use it as `<num>` for the rest of the workflow. Skip the "read state" call — the label was set at creation.
 
 ## Commit message format
 
@@ -83,19 +108,21 @@ Rules for **How to test**:
    - `git branch --show-current`
    - `git remote get-url origin` (sanity-check the repo)
 
-2. **Resolve the issue** — check, in order:
+2. **Resolve or create the issue** — check, in order:
    - Branch name (e.g. `feat/123-...`, `agent/PROJ-456-...`)
    - Recent commits on this branch
    - Conversation context
-   If no issue can be located, ask the user. Do not invent one.
+   If no issue can be located, switch to **Inline issue creation** (see section above): draft title/body from the diff, ask the user for the state label, fold the issue draft into the combined approval, then `gh issue create`. Use the returned number for the rest of the workflow.
 
-3. **Read issue state** — `gh issue view <num> --json state,labels,title,url`. Pick `HITL:` or `AKF:` per the table. If neither label is present, ask.
+3. **Read issue state** — for issues that already existed, run `gh issue view <num> --json state,labels,title,url` and pick `HITL:` or `AKF:` per the table. If neither label is present, ask. For issues just created inline, skip this step — the prefix is already fixed by the label set at creation.
 
 4. **Draft the commit message** from the diff (subject, decisions, files, notes per format above).
 
 5. **Draft the issue-close comment** — summary + how-to-test from the diff. If the test plan isn't obvious, ask the user before continuing.
 
-6. **Show the user the drafts** (commit message + close comment) and wait for approval before any write action. This is one combined confirmation, not three.
+6. **Show the user the drafts** and wait for approval before any write action. This is one combined confirmation, not three. The drafts shown depend on whether an issue was just created inline:
+   - Existing issue: commit message + close comment.
+   - Inline-created issue: new-issue title + new-issue body + chosen state label + commit message + close comment. After approval, create the issue first, then commit/push/close in order.
 
 7. **Pre-commit safety**:
    - Refuse to stage secret-pattern files: `.env`, `.env.*` (except `.env.example`), `*.pem`, `*.key`, `id_rsa*`, `credentials*.json`, `*secret*`. Warn and skip.
@@ -210,7 +237,7 @@ Notes: Stripe webhook path still unguarded — see follow-up #419.
 ## Checklist
 
 Before marking the iteration done, verify:
-- [ ] Issue resolved + state read → correct prefix (`HITL:` or `AKF:`)
+- [ ] Issue resolved (or created inline) + state read → correct prefix (`HITL:` or `AKF:`)
 - [ ] Commit subject ≤ 72 chars, starts with prefix + space
 - [ ] `Issue:` line present in commit body
 - [ ] No secret files staged

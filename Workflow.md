@@ -143,7 +143,7 @@ Assumes `/setup-matt-pocock-skills` has already been run for this repo.
 -> /release-notes
 ```
 
-`/feature-prompt` produces a reviewed, implementation-ready prompt and saves it to `docs/adr/NNNN-<slug>-prompt.md`. The next step is always `/grill-with-docs`, which stress-tests the prompt against terminology, ADRs, and the codebase.
+`/feature-prompt` produces a reviewed, implementation-ready prompt and saves it to `<artifacts-root>/docs/prompt/NNNN-<slug>-prompt.md` (sibling of `docs/adr/`; numbering is shared globally across both folders). `<artifacts-root>` is the directory containing the `*.code-workspace` file when a VS Code workspace is detected, otherwise the repo root. The next step is always `/grill-with-docs`, which stress-tests the prompt against terminology, ADRs, and the codebase.
 
 Add `/feature-discovery` before `/feature-prompt` when the feature modifies existing behavior, or `/diagnose` when it grows out of an unexplained bug.
 
