@@ -1,394 +1,84 @@
 # Agent Workflow Guide
 
-This guide describes how to combine skills from this kit and other skill sets to move from idea, discovery, or manual work to shipped code and release notes.
-
-It is not a strict state machine, but it behaves like one: each step has an entry condition, an output, and a decision about where to go next. The workflow works best when you do not skip context-building steps.
+Combine skills from this kit and the wider ecosystem to move from idea to shipped code and release notes. Prioritize context, evidence, and task isolation.
 
 ## Credits And Provenance
 
-This workflow is a local orchestration guide for this repository, with credit to
-the upstream authors whose skills and ideas it combines.
+- **Local Skills:** Authored by Arfeen Arif. Combines original logic with ecosystem companion skills.
+- **Matt Pocock:** Source for `/caveman`, `/grill-with-docs`, `/grill-me`, `/to-prd`, `/to-issues`, `/tdd`, `/diagnose`, `/triage`, `/improve-codebase-architecture`, `/zoom-out`, `/prototype`, and `/handoff`.
+- **Forrest Chang:** Seeding logic for `/agents-md` non-negotiable principles.
+- **Anthropic:** Source for `/skill-creator`.
+- **Vercel Labs:** Source for `/agent-browser`, `skills` CLI, and React/React Native best practices.
 
-- Local workflow and repo-specific skills are authored and maintained by Arfeen
-  Arif. Git history shows this guide was added in commit `593eac3`, after the
-  repo's release-notes, feature-discovery, feature-prompt, feature-prompt-full
-  (now deprecated), agents-md, and ubiquitous-language (now deprecated) skills
-  were added.
-- `/agents-md` non-negotiable discipline was originally adapted from
-  Forrest Chang's Karpathy-inspired `CLAUDE.md` guidelines and expanded in
-  this repo into a 12-rule core plus retained operational defaults:
-  https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md
-  The upstream repository is MIT licensed.
-- `/ubiquitous-language` (deprecated, kept in `skills/` for reference only) is
-  based on Matt Pocock's deprecated `ubiquitous-language` skill, MIT License,
-  Copyright 2026 Matt Pocock:
-  https://github.com/mattpocock/skills/blob/main/ubiquitous-language/SKILL.md
-  Domain-language sharpening is now covered by `/grill-with-docs`, which
-  updates `CONTEXT.md` and ADRs inline as decisions crystallise.
-- The core setup, prompt, grill, PRD, issue, TDD, diagnosis, triage,
-  architecture, prototype, and handoff workflow uses companion skills from
-  Matt Pocock's skills repo:
-  https://github.com/mattpocock/skills
-- `/caveman` is credited to Matt Pocock's `caveman` skill, MIT License,
-  Copyright 2026 Matt Pocock:
-  https://github.com/mattpocock/skills/blob/main/skills/productivity/caveman/SKILL.md
-  Generated `AGENTS.md` files invoke caveman as a
-  non-negotiable rule for chat output only — never for code, docs, PRDs,
-  release notes, PR bodies, or any persisted artifact.
-- `/skill-creator` is credited to Anthropic's public skills repository:
-  https://github.com/anthropics/skills/tree/main/skills/skill-creator
-- `/agent-browser`, the `skills` CLI, `find-skills`, and Vercel React/React
-  Native best-practice skills are credited to Vercel Labs:
-  https://github.com/vercel-labs/agent-browser
-  https://github.com/vercel-labs/skills
-  https://github.com/vercel-labs/agent-skills
-- `/sentry` refers to Sentry's CLI for developers and agents:
-  https://cli.sentry.dev/
+## Non-Negotiable Core (Spartan Rules)
+
+Every session follows these 13 rules (enforced by `AGENTS.md`):
+
+1. **Invoke Caveman First:** Immediate `/caveman` (or tool call) is mandatory.
+2. **Evidence Before Claim:** No status claims without raw command output.
+3. **Task Isolation:** Fresh context per independent task. No history bloat.
+4. **Goal-Driven Execution:** Empirical proof only. Bug fixes require Red-Green-Refactor.
+5. **Surgical Minimalism:** Match style. Min code. No adjacent cleanup.
+6. **Systematic Debugging:** Trace root cause. No symptom patches or hacks.
+7. **Think & Ask:** Stop at ambiguity. Surface tradeoffs. No guessing.
+8. **Read Before Write:** Map exports, callers, and utils before editing.
+9. **Token Guardrails:** Treat budgets as hard limits. Anchor and restart if near breach.
+10. **Surface Conflicts:** Resolve pattern clashes explicitly. No silent forks.
+11. **Conventions Over Taste:** Local idioms beat personal preference.
+12. **State Anchoring:** Continuously report `[verified]`, `[current]`, and `[todo]`.
+13. **Fail Loud:** No silent skips. Completion requires full verification.
 
 ## First-Time Setup
 
-Run this once per workspace, then refresh when the workspace structure changes.
-
-```text
-/agents-md
-/setup-matt-pocock-skills
-```
-
-`/agents-md` creates the workspace anchor: `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, project codes, paths, tech stacks, and the project matrix. Other skills should use those project codes.
-
-`/setup-matt-pocock-skills` creates and updates the engineering-skill runtime config:
-
-- `docs/agents/issue-tracker.md`
-- `docs/agents/triage-labels.md`
-- `docs/agents/domain.md`
-- `## Agent skills` block in `AGENTS.md` or `CLAUDE.md`
-
-Domain-language sharpening is no longer a separate setup step. `/grill-with-docs` captures terminology, ambiguities, and decisions inline in `CONTEXT.md` and ADRs as the conversation surfaces them.
+1. **`/agents-md`**: Creates `AGENTS.md`, shims, and project matrix.
+2. **`/setup-matt-pocock-skills`**: Configures tracker, labels, and `## Agent skills` block.
 
 ## Choosing A Starting Point
 
 | Situation | Start With | Why |
-| --- | --- | --- |
-| New workspace or unclear project codes | `/agents-md` | Establishes project names, codes, paths, and canonical agent instructions. |
-| First run with Matt engineering skills in this repo | `/setup-matt-pocock-skills` | Configures issue tracker, triage label mappings, and domain-doc layout for `to-prd`/`to-issues`/`triage`/`diagnose`/`tdd`. |
-| Domain terms are unclear | `/grill-with-docs` | Sharpens terminology against `CONTEXT.md` and ADRs as part of grilling. |
-| Existing behavior is unclear | `/feature-discovery` | Produces a read-only explanation before planning changes. |
-| Rough feature idea | `/feature-prompt` | Creates a focused implementation prompt; you trigger `/grill-with-docs`, `/to-prd`, `/to-issues`, `/triage`, and `/tdd` manually as the work progresses. |
-| Bug with unknown cause | `/diagnose` | Drives root-cause analysis before patching. |
-| Need to test a design before committing | `/prototype` | Builds throwaway logic/UI prototypes to validate decisions before PRD/issues. |
-| Single decision needs interrogating in isolation | `/grill-me` | Standalone narrow-scope clarification interview — not part of any feature chain. |
-| Need to pause and transfer context | `/handoff` | Produces a compact handoff doc so another agent can continue without rediscovery. |
-| Iteration on a GitHub issue is done | `/commit-push-close` | Commits with `HITL:` / `AKF:` prefix from issue state, pushes to current branch, closes the issue with a how-to-test comment. |
-| Iteration on a GitHub issue needs a PR | `/commit-push-pr` | Commits with `HITL:` / `AKF:` prefix, pushes the branch (auto-creating one off main if needed), opens a PR with `Closes #N` + how-to-test. |
-| Only stakeholder notes are needed | `/release-notes` | Produces PM-friendly release notes saved to `docs/adr/`. |
-| Need a missing capability | `/find-skills` | Looks for skills from other people or ecosystems. |
+| :--- | :--- | :--- |
+| New Workspace | `/agents-md` | Establish codes, paths, and Spartan Rules. |
+| Unclear Behavior | `/feature-discovery` | Read-only audit before planning. |
+| Rough Idea | `/feature-prompt` | Section-by-section clarification interview. |
+| Broken Behavior | `/diagnose` | Systematic root cause analysis. |
+| Design Spike | `/prototype` | Validate UI/state before PRD/Issues. |
+| Issue Work | `/tdd` | Red-Green-Refactor implementation loop. |
+| Session Pause | `/handoff` | Continuation doc for the next agent. |
 
 ## Core Progression
 
-Use this as the default chain for product work that should produce a spec, issues, implementation, PR, and release notes.
-
 ```text
-/agents-md
--> /setup-matt-pocock-skills
--> /feature-discovery
--> /feature-prompt
--> /grill-with-docs
--> /to-prd
--> /to-issues
--> /triage
--> /tdd
--> /commit-push-pr
--> /release-notes
+/agents-md -> /setup-matt-pocock-skills -> /feature-discovery -> /feature-prompt -> /grill-with-docs -> /to-prd -> /to-issues -> /triage -> /tdd -> /commit-push-pr -> /release-notes
 ```
-
-`/agents-md` and `/setup-matt-pocock-skills` are both setup steps with different jobs. Skip `/agents-md` only when project codes are already current. Skip `/setup-matt-pocock-skills` only when `docs/agents/*` config is already present and accurate. `/grill-with-docs` handles domain-language sharpening inline against `CONTEXT.md` and ADRs. Each step is triggered manually — there is no auto-chain.
-
-## Triage Gate
-
-`/setup-matt-pocock-skills` defines the label mapping and tracker behavior used by `/to-issues` and `/triage`. Do not assume fixed label strings like `needs-triage`; use whatever is configured in `docs/agents/triage-labels.md`. `/triage` is still the quality gate that checks category/state and adds an **Agent Brief** when moving work to agent-ready state. `/tdd` does not enforce this gate; the precondition is convention, not tooling.
 
 ## Workflow Gates
 
-Think of each step as a gate. Move forward only when the output is good enough for the next skill.
-
-| Gate | Skill | Output | Continue When |
-| --- | --- | --- | --- |
-| Workspace | `/agents-md` | `AGENTS.md`, shims, project matrix | Project codes and paths are stable. |
-| Engineering config | `/setup-matt-pocock-skills` | `docs/agents/*` config + `## Agent skills` block | Issue tracker, label mapping, and domain-doc layout are explicit. |
-| Discovery | `/feature-discovery` | Evidence-backed feature report | Current behavior and risks are understood. |
-| Prompt | `/feature-prompt` | Final implementation prompt | User has reviewed the prompt. |
-| Grill | `/grill-with-docs` | Challenged assumptions and resolved questions against domain language and ADRs | Major ambiguities are resolved or deferred explicitly. |
-| PRD | `/to-prd` | Product requirements/spec | Problem, solution, stories, decisions, tests, and scope are clear. |
-| Issues | `/to-issues` | Vertical slices published to configured tracker | Each issue can be implemented independently. |
-| Triage | `/triage` | Issue state/category updated per configured mapping; Agent Brief when needed | Category and state are clear; execution contract is testable. |
-| Build | `/tdd` | Tested implementation | Tests pass or blocker is documented. |
-| Debug | `/diagnose` | Root cause and fix path | Cause is known and fix is scoped. |
-| Close iteration | `/commit-push-close` | Commit + push + closed issue with how-to-test comment | Branch is pushed and the issue is closed cleanly. |
-| PR iteration | `/commit-push-pr` | Commit + push + PR with `Closes #N` + how-to-test | PR is open, linked to the issue, and review-ready. |
-| Release | `/release-notes` | PM-friendly notes | Release notes saved to `docs/adr/NNNN-<slug>-release-notes.md`. |
-
-## Feature Development
-
-Use this for new user-facing or workflow-changing features. Trigger each step manually — none of these skills auto-chain into the next.
-Assumes `/setup-matt-pocock-skills` has already been run for this repo.
-
-```text
-/feature-prompt
--> /grill-with-docs
--> /to-prd
--> /to-issues
--> /triage
--> /tdd
--> /commit-push-pr
--> /release-notes
-```
-
-`/feature-prompt` produces a reviewed, implementation-ready prompt and saves it to `<artifacts-root>/docs/prompt/NNNN-<slug>-prompt.md` (sibling of `docs/adr/`; numbering is shared globally across both folders). `<artifacts-root>` is the directory containing the `*.code-workspace` file when a VS Code workspace is detected, otherwise the repo root. The next step is always `/grill-with-docs`, which stress-tests the prompt against terminology, ADRs, and the codebase.
-
-Add `/feature-discovery` before `/feature-prompt` when the feature modifies existing behavior, or `/diagnose` when it grows out of an unexplained bug.
-
-## Change Requests
-
-Use this when the request changes an already-planned feature, PRD, or issue list.
-Assumes `/setup-matt-pocock-skills` has already been run for this repo.
-
-```text
-/feature-discovery
--> /feature-prompt
--> /grill-with-docs
--> /to-prd
--> /to-issues
--> /triage
--> /tdd
-```
-
-`/grill-with-docs` always follows `/feature-prompt`. If you need to understand existing behavior first, prepend `/feature-discovery`; if a bug is in scope, prepend `/diagnose`.
-
-`/grill-me` is **not** part of this chain. It is a standalone narrow-scope clarification interview — useful when you want to interrogate a single decision or assumption in isolation, outside any feature-development workflow.
-
-## Bug Fixes
-
-Use this when behavior is broken and the cause is not obvious.
-Assumes `/setup-matt-pocock-skills` has already been run for this repo.
-
-```text
-/feature-discovery
--> /diagnose
--> /feature-prompt
--> /grill-with-docs
--> /tdd
--> /commit-push-pr
--> /release-notes
-```
-
-Use `/feature-discovery` to understand where the behavior lives. Use `/diagnose` when tests, logs, or runtime behavior are confusing. Use `/tdd` to reproduce the bug with a failing test before fixing it when possible.
-
-For production incidents, add `/sentry` before `/diagnose` when Sentry has the relevant issue.
-
-## Multiple-Project Changes
-
-Use this when a workflow crosses API, web, mobile, jobs, database, or service boundaries.
-
-```text
-/agents-md
--> /setup-matt-pocock-skills
--> /feature-discovery
--> /feature-prompt
--> /grill-with-docs
--> /to-prd
--> /to-issues
--> /triage
--> /tdd
-```
-
-Rules:
-
-- Use project codes from `AGENTS.md` in every prompt.
-- Ask `/feature-discovery` to inspect each affected project.
-- Let `/to-issues` split work into vertical slices across projects.
-- Avoid one issue per layer unless the work truly cannot be shipped vertically.
-- Use explorer sub-agents when the runtime supports them and projects can be investigated independently.
-
-## Manual Work Or Direct Coding
-
-Use this when you already know the change and do not need a PRD.
-
-```text
-/feature-prompt
--> /grill-with-docs
--> /tdd
-```
-
-For very small edits, you can skip `/feature-prompt` and use direct coding, but keep the same gates mentally:
-
-1. State the intended change.
-2. Make the smallest edit.
-3. Run the smallest meaningful verification.
-4. Summarize files changed and remaining risk.
-
-Use `/agents-md` and `CONTEXT.md` (plus any ADRs) as context even for manual work.
-
-## Release Notes Only
-
-Use this when the work is already done and stakeholders need a summary.
-
-```text
-/release-notes
-```
-
-Useful prompts:
-
-- `Generate release notes for today`
-- `Create release notes for 11 March 2026`
-- `Summarize this development session`
-- `Write release notes for the scanner reliability work`
-
-`/release-notes` should use git history, current diffs, and project codes from `AGENTS.md` when available.
-
-## Discovery Only
-
-Use this when you only need to understand a feature, issue, module, workflow, API, config, or behavior.
-
-```text
-/feature-discovery
-```
-
-Good inputs:
-
-```markdown
-Projects Affected: PARTNERS-API, APP-PARTNERS
-
-What:
-Delivery Note upload handling
-```
-
-Use this before planning when the codebase is unfamiliar or when a change request depends on current behavior.
-
-## Skill Combinations
-
-### With Prototyping
-
-```text
-/prototype
--> /grill-with-docs
--> /to-prd
-```
-
-Use this when you need to validate state shape or UI direction before planning implementation work.
-
-### With Docs And Domain Language
-
-```text
-/grill-with-docs
-```
-
-Use this when terminology, ADRs, or `CONTEXT.md` matter — it sharpens language and updates documentation inline as decisions crystallise.
-
-### With Browser Testing
-
-```text
-/tdd
--> /agent-browser
-```
-
-Use this when a web flow needs visual or interactive verification.
-
-### Issue-Driven Iteration Close
-
-```text
-/tdd
--> /commit-push-close
-```
-
-Use this when the work is scoped to one GitHub issue and you want to close the iteration without opening a PR — `/commit-push-close` reads the issue's `ready-for-human` / `ready-for-agent` label to pick the `HITL:` / `AKF:` commit prefix, pushes the current branch, and closes the issue with a how-to-test comment derived from the diff.
-
-### Issue-Driven Iteration As A PR
-
-```text
-/tdd
--> /commit-push-pr
-```
-
-Use this when the issue should ship as a reviewable PR rather than a direct close — `/commit-push-pr` uses the same `HITL:` / `AKF:` prefix logic, auto-creates a feature branch when run from `main`/`master`, pushes the branch, and opens a PR with `Closes #N`, a summary, and a how-to-test plan. The issue auto-closes when the PR merges.
-
-### Session Handoff
-
-```text
-/tdd
--> /handoff
-```
-
-```text
-/diagnose
--> /handoff
-```
-
-```text
-/to-issues
--> /triage
--> /handoff
-```
-
-Use this when you are pausing work or switching agents. `/handoff` creates a compact continuation doc and points the next session to the right artifacts and next skills.
-
-### With Production Errors
-
-```text
-/sentry
--> /diagnose
--> /tdd
-```
-
-Use this when Sentry can explain stack traces, affected users, or suspected root cause.
-
-### With Missing Skills
-
-```text
-/find-skills
--> install relevant skill
--> continue workflow
-```
-
-Use this when the work needs a specialized capability outside this kit.
+| Gate | Skill | Continue When |
+| :--- | :--- | :--- |
+| Workspace | `/agents-md` | Project codes and Spartan Rules are active. |
+| Discovery | `/feature-discovery` | Evidence-backed report explains current behavior. |
+| Prompt | `/feature-prompt` | Implementation-ready prompt is reviewed by user. |
+| Grill | `/grill-with-docs` | Ambiguities resolved against ADRs and domain language. |
+| PRD | `/to-prd` | Spec is clear on problem, solution, and success criteria. |
+| Issues | `/to-issues` | Work is split into independently testable vertical slices. |
+| Triage | `/triage` | Issue state is clear and Agent Brief is present. |
+| Build | `/tdd` | Failure verified (Red), Fix verified (Green). |
+| Ship | `/commit-push-*` | Branch pushed and issue/PR linked with test proof. |
+| Release | `/release-notes` | PM-friendly summary saved to `docs/adr/`. |
 
 ## Recovery Loops
 
-- If the prompt is vague, go back to `/feature-prompt`.
-- If the grill finds unresolved domain language, stay in `/grill-with-docs` and let it update `CONTEXT.md` / ADRs inline.
-- If the PRD exposes missing behavior context, go back to `/feature-discovery`.
-- If issues are too large, go back to `/to-issues`.
-- If an issue lacks an Agent Brief or its acceptance criteria are vague, go back to `/triage`.
-- If implementation fails unexpectedly, go to `/diagnose`, then return to `/tdd`.
-- If release notes are too technical, rerun `/release-notes` with PM/QA audience emphasis.
-- If you need to stop before completion, run `/handoff` so the next session can resume immediately.
-
-## Minimal Chains
-
-Assumes `/setup-matt-pocock-skills` is already configured when the chain uses Matt's engineering issue/triage flow.
-
-| Use Case | Chain |
-| --- | --- |
-| Full feature | `/feature-prompt` -> `/grill-with-docs` -> `/to-prd` -> `/to-issues` -> `/triage` -> `/tdd` -> `/commit-push-pr` -> `/release-notes` |
-| Small feature | `/feature-prompt` -> `/grill-with-docs` -> `/tdd` |
-| Design spike | `/prototype` -> `/grill-with-docs` -> `/to-prd` |
-| Bug fix | `/feature-discovery` -> `/diagnose` -> `/tdd` |
-| Issue iteration close | `/tdd` -> `/commit-push-close` |
-| Issue iteration as PR | `/tdd` -> `/commit-push-pr` |
-| Multi-project change | `/agents-md` -> `/setup-matt-pocock-skills` -> `/feature-discovery` -> `/feature-prompt` -> `/grill-with-docs` -> `/to-prd` -> `/to-issues` -> `/triage` -> `/tdd` |
-| Change request | `/feature-discovery` -> `/feature-prompt` -> `/grill-with-docs` -> `/to-prd` -> `/to-issues` |
-| Session transfer | `/handoff` |
-| Narrow standalone clarification | `/grill-me` (single decision in isolation; not part of any feature chain) |
-| Release notes only | `/release-notes` |
-| Manual coding | Read `AGENTS.md` and `CONTEXT.md` (plus ADRs), make the smallest change, verify, summarize |
+- **Vague Prompt:** Back to `/feature-prompt`.
+- **Domain Ambiguity:** Stay in `/grill-with-docs` (updates `CONTEXT.md` inline).
+- **Broken Tests:** Stay in `/tdd` or pivot to `/diagnose`.
+- **Large Issues:** Back to `/to-issues` for smaller slices.
+- **Production Error:** Start with `/sentry` -> `/diagnose`.
 
 ## Practical Default
 
-When unsure, start with:
+When unsure, run this sequence manually:
+1. `/feature-discovery` (Understand)
+2. `/feature-prompt` (Plan)
+3. `/grill-with-docs` (Challenge)
 
-```text
-/feature-discovery
--> /feature-prompt
--> /grill-with-docs
-```
-
-That gives the agent enough code context, a precise prompt, and a challenged plan before the PRD or implementation starts. Trigger each step manually.
+No auto-chains. Trigger each step based on gate completion.
