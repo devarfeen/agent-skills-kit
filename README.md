@@ -104,7 +104,7 @@ skills from the wider agent-skills ecosystem.
 - `/caveman` is credited to Matt Pocock's `caveman` skill, MIT License,
   Copyright 2026 Matt Pocock:
   https://github.com/mattpocock/skills/blob/main/skills/productivity/caveman/SKILL.md
-  Generated `AGENTS.md` files invoke caveman at intensity `full` as a
+  Generated `AGENTS.md` files invoke caveman as a
   non-negotiable rule for chat output only — never for code, docs, PRDs,
   release notes, PR bodies, or any persisted artifact.
 - `/skill-creator` is credited to Anthropic's public skills repository:
@@ -130,7 +130,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 
 **What it does**
 
-- Includes a 12-rule non-negotiable core in `AGENTS.md`, plus retained operational defaults for chat-only caveman activation (intensity `full`) and parallel execution
+- Includes a 12-rule non-negotiable core in `AGENTS.md`, plus retained operational defaults for chat-only caveman activation and parallel execution
 - Detects VS Code workspaces and uses each folder `name` as the project name/code source
 - Treats the workspace folder with `path: "."` as a meta workspace with no code
 - Builds a project matrix: `Project Name (Code) | Path | Tech Stack`

@@ -32,7 +32,7 @@ the upstream authors whose skills and ideas it combines.
 - `/caveman` is credited to Matt Pocock's `caveman` skill, MIT License,
   Copyright 2026 Matt Pocock:
   https://github.com/mattpocock/skills/blob/main/skills/productivity/caveman/SKILL.md
-  Generated `AGENTS.md` files invoke caveman at intensity `full` as a
+  Generated `AGENTS.md` files invoke caveman as a
   non-negotiable rule for chat output only — never for code, docs, PRDs,
   release notes, PR bodies, or any persisted artifact.
 - `/skill-creator` is credited to Anthropic's public skills repository:

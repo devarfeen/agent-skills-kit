@@ -17,24 +17,25 @@ Make clear that non-negotiables and operational defaults must be followed and fu
 
 ## Non-Negotiable Principles
 
-Every generated `AGENTS.md` must include the following twelve principles as non-negotiables:
+Every generated `AGENTS.md` must include the following thirteen principles as non-negotiables:
 
-1. Think Before Coding
-2. Simplicity First
-3. Surgical Changes
-4. Goal-Driven Execution
-5. Use The Model Only For Judgment Calls
-6. Token Budgets Are Configurable Guardrails
-7. Surface Conflicts, Don't Average Them
-8. Read Before You Write
-9. Tests Verify Intent, Not Just Behavior
-10. Checkpoint After Every Significant Step
-11. Match Codebase Conventions Even If You Disagree
-12. Fail Loud
+1. **Invoke Caveman First:** Immediately invoke the `caveman` skill using your internal tool-calling mechanism (e.g., `activate_skill`, `Skill`, or `@caveman`) before taking any other action. This ensures ultra-compressed communication and maximum token efficiency from the start.
+2. Think Before Coding
+3. Simplicity First
+4. Surgical Changes
+5. Goal-Driven Execution
+6. Use The Model Only For Judgment Calls
+7. Token Budgets Are Configurable Guardrails
+8. Surface Conflicts, Don't Average Them
+9. Read Before You Write
+10. Tests Verify Intent, Not Just Behavior
+11. Checkpoint After Every Significant Step
+12. Match Codebase Conventions Even If You Disagree
+13. Fail Loud
 
 Every generated `AGENTS.md` must also retain these operational defaults:
 
-- Caveman Communication (chat output only, intensity: `full`)
+- Caveman Communication (chat output only)
 - Parallel Execution (prefer independent tool calls and sub-agents first)
 
 ## Discovery Workflow
@@ -56,7 +57,7 @@ Every generated `AGENTS.md` must also retain these operational defaults:
    - `<artifacts-root>/docs/adr/NNNN-<slug>.md` — ADR (no suffix), written by `grill-with-docs`.
    - `<artifacts-root>/docs/prompt/NNNN-<slug>-prompt.md` — feature prompt, written by `feature-prompt`.
    - `<artifacts-root>/docs/adr/NNNN-<slug>-release-notes.md` — release notes, written by `release-notes`.
-     All three share one global numbering sequence across both folders so the union reads chronologically. Reference them as required domain context when present. If none exists and terminology matters, note that domain language is sharpened inline by the `grill-with-docs` skill, which writes to `CONTEXT.md` and ADRs as decisions crystallise. If a legacy `UBIQUITOUS_LANGUAGE.md` is present, also reference it, but prefer `CONTEXT.md` going forward.
+     All three share one global numbering sequence across both folders so the union reads chronologically. Reference them as required domain context when present. If none exists and terminology matters, note that domain language is sharpened inline by the `grill-with-docs` skill, which writes to `CONTEXT.md` and ADRs as decisions crystallise.
 
    `<artifacts-root>` resolves as: (1) the directory containing the `*.code-workspace` file if a VS Code workspace is detected — this is the same location as the meta-workspace folder (`path: "."`); (2) else the per-context root for multi-context repos with a root `CONTEXT-MAP.md`; (3) else the repo root for single-repo projects. Workspace mode is preferred: it keeps prompts/ADRs/release notes centralized instead of scattering them across project repos.
 
@@ -103,19 +104,30 @@ Generate `AGENTS.md` with this structure:
   - `docs/adr/NNNN-<slug>.md` — ADRs (no suffix). Architectural decisions; treat as binding.
   - `docs/prompt/NNNN-<slug>-prompt.md` — feature prompts produced by `feature-prompt`. Read the latest matching prompt before implementing a feature.
   - `docs/adr/NNNN-<slug>-release-notes.md` — release notes produced by `release-notes`. Read for prior context on a recently shipped feature.
-- If a legacy `UBIQUITOUS_LANGUAGE.md` is present, read it too.
 - Use the project codes in the Project Matrix when referring to projects in prompts, PRDs, issues, release notes, and discovery reports.
 
 ## Non-Negotiable Principles
 
-Follow these 12 principles. They are non-negotiable and must be fully enforced.
+Follow these 13 principles. They are non-negotiable and must be fully enforced.
 
 Behavioral guidelines to reduce common LLM coding mistakes. Merge with workspace- or project-specific instructions as needed.
 
 These rules apply to every task unless explicitly overridden.
 Bias toward caution over speed on non-trivial work.
 
-## 1. Think Before Coding
+## 1. Invoke Caveman First
+
+**Invoke the `caveman` skill using your platform's internal tool-calling mechanism before any other action.**
+
+- **Trigger:** Immediate upon reading `AGENTS.md` or its shims (`GEMINI.md`, `CLAUDE.md`).
+- **Gemini CLI:** Use `activate_skill(name="caveman")`.
+- **Claude Code:** Use `Skill(name="caveman")`.
+- **Copilot CLI:** Use `skill("caveman")`.
+- **Codex CLI:** Use `activate("caveman")`.
+- **Opencode CLI:** Use `load_skill("caveman")`.
+- **The 1% Rule:** If there is even a 1% chance a skill applies (especially for efficiency), you MUST invoke it.
+
+## 2. Think Before Coding
 
 **State assumptions explicitly. Ask rather than guess.**
 
@@ -124,7 +136,7 @@ Bias toward caution over speed on non-trivial work.
 - Push back when a simpler approach exists.
 - If confused, stop and ask.
 
-## 2. Simplicity First
+## 3. Simplicity First
 
 **Minimum code that solves the problem. Nothing speculative.**
 
@@ -132,7 +144,7 @@ Bias toward caution over speed on non-trivial work.
 - No abstractions for single-use code.
 - No speculative flexibility that was not requested.
 
-## 3. Surgical Changes
+## 4. Surgical Changes
 
 **Touch only what you must. Do not improve adjacent code.**
 
@@ -140,20 +152,20 @@ Bias toward caution over speed on non-trivial work.
 - Do not refactor what is not broken.
 - If your change creates unused code, clean up only what your change orphaned.
 
-## 4. Goal-Driven Execution
+## 5. Goal-Driven Execution
 
 **Define success criteria. Loop until verified.**
 
 - Strong success criteria should allow autonomous loops with verification.
 
-## 5. Use The Model Only For Judgment Calls
+## 6. Use The Model Only For Judgment Calls
 
 **If code can answer, code answers.**
 
 - Use the model for classification, drafting, summarization, and extraction.
 - Do not use the model for routing, retries, or deterministic transforms.
 
-## 6. Token Budgets Are Configurable Guardrails
+## 7. Token Budgets Are Configurable Guardrails
 
 **Budgets are optional to configure, but mandatory when configured.**
 
@@ -162,42 +174,42 @@ Bias toward caution over speed on non-trivial work.
 - If approaching budget, summarize state and start a fresh continuation.
 - Surface budget breaches explicitly. Do not silently overrun.
 
-## 7. Surface Conflicts, Don't Average Them
+## 8. Surface Conflicts, Don't Average Them
 
 **When patterns conflict, choose one explicitly and explain it.**
 
 - Prefer the more recent or more tested pattern.
 - Flag the conflicting pattern for follow-up cleanup.
 
-## 8. Read Before You Write
+## 9. Read Before You Write
 
 **Read local context before adding code.**
 
 - Read relevant exports, immediate callers, and shared utilities first.
 - If you cannot explain why code is structured a certain way, ask before changing it.
 
-## 9. Tests Verify Intent, Not Just Behavior
+## 10. Tests Verify Intent, Not Just Behavior
 
 **Tests should encode why behavior matters.**
 
 - A test that cannot fail when business logic changes is a weak test.
 - Favor tests that protect intent and domain outcomes, not incidental implementation details.
 
-## 10. Checkpoint After Every Significant Step
+## 11. Checkpoint After Every Significant Step
 
 **Do not continue from an unclear state.**
 
 - After significant steps, summarize what was done, what is verified, and what remains.
 - Re-anchor before proceeding when state is uncertain.
 
-## 11. Match Codebase Conventions Even If You Disagree
+## 12. Match Codebase Conventions Even If You Disagree
 
 **Conformance beats personal taste inside the codebase.**
 
 - Match established naming, structure, and style conventions.
 - If a convention seems harmful, surface it explicitly. Do not silently fork patterns.
 
-## 12. Fail Loud
+## 13. Fail Loud
 
 **Never report completion when anything was skipped silently.**
 
@@ -211,9 +223,9 @@ Retain these defaults unless the user explicitly overrides them.
 
 ### A. Caveman Communication
 
-**Activate caveman mode (intensity: `full`) for every chat reply. Never apply it to written artifacts.**
+**Activate caveman mode for every chat reply. Never apply it to written artifacts.**
 
-- Invoke the `caveman` skill at intensity `full` for all conversational output to the user in this workspace or codebase.
+- Invoke the `caveman` skill for all conversational output to the user in this workspace or codebase.
 - Activation is automatic: do not wait for the user to type "caveman mode" or `/caveman`. Treat reading this `AGENTS.md` as the trigger.
 - **Chat only.** Do **not** apply caveman compression to:
   - Code, configs, migrations, or any file written to disk.
@@ -221,7 +233,7 @@ Retain these defaults unless the user explicitly overrides them.
   - Commit messages, PR titles, PR bodies, issue bodies, Agent Briefs, or any artifact `/commit-push-close`, `/commit-push-pr`, `/to-issues`, `/to-prd`, `/triage`, or `/release-notes` produces.
   - Tool arguments, search queries, or anything sent to external services.
 - If a chat reply contains an inline code block or quoted artifact, the surrounding prose is caveman; the block itself stays in its native form.
-- If the user asks for a different intensity (`lite`, `ultra`, `wenyan-*`) or asks to disable caveman, honor that for the rest of the session.
+- If the user asks to disable caveman, honor that for the rest of the session.
 
 ### B. Parallel Execution
 
@@ -252,7 +264,6 @@ Retain these defaults unless the user explicitly overrides them.
   - `docs/prompt/NNNN-<slug>-prompt.md` — feature prompt. Implementation-ready spec from `feature-prompt`.
   - `docs/adr/NNNN-<slug>-release-notes.md` — release notes. PM-facing summary from `release-notes`.
     All three share one global sequential `NNNN` across both folders so the union reads chronologically.
-- If a legacy `UBIQUITOUS_LANGUAGE.md` exists, read it as supplementary context.
 - If terminology is unclear, sharpen it inline via the `grill-with-docs` skill, which updates `CONTEXT.md` and ADRs as decisions crystallise.
 
 ## Workspace Notes
@@ -313,5 +324,5 @@ Project codes:
 Notes:
 
 - [VS Code workspace detected / not detected.]
-- [CONTEXT.md / `docs/adr/` (ADRs, `*-release-notes.md`) / `docs/prompt/` (`*-prompt.md`) artifacts referenced, or noted as to-be-produced inline by `grill-with-docs` / `feature-prompt` / `release-notes`. Legacy `UBIQUITOUS_LANGUAGE.md` referenced if present.]
+- [CONTEXT.md / `docs/adr/` (ADRs, `*-release-notes.md`) / `docs/prompt/` (`*-prompt.md`) artifacts referenced, or noted as to-be-produced inline by `grill-with-docs` / `feature-prompt` / `release-notes`.]
 ```
