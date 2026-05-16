@@ -121,6 +121,14 @@ Follow these 13 rules. They are non-negotiable and must be fully enforced. Bias 
 - **Domain:** Read `CONTEXT.md` and `docs/adr/` before implementation. ADRs are binding.
 - **Validation:** Run targeted tests and workspace-standard checks (`tsc`, `lint`, `build`) after every edit.
 - **Completion:** Final report must include explicit validation performed and any remaining risks.
+- **TDD Skill Defaults:** When the `tdd` skill is invoked, apply these standing defaults unless the user overrides them in the same turn:
+  - Slices already have GitHub issues. Work through every slice; do not stop after one unless instructed.
+  - Fully complete a slice before moving on. After each slice, produce a hand-off document and a kickoff prompt, then ask the user to start a new session for the next slice.
+  - Parallelize with sub-agents or agents whenever steps are independent.
+  - **Decision points (HITL vs AFK):** Only ask the user a question or present recommendations when the GitHub issue title is prefixed `HITL:` — and even then, present a short menu of recommended options that best fit the concern rather than open-ended questions. For all other issues (default/`AFK:` prefix), treat the work as fully autonomous: auto-select the recommended option at every decision point and proceed. Surface the choices made in the hand-off document at the end of the slice instead of mid-flight. **Recommended options must be sourced from ADRs (`docs/adr/`), the GitHub issue body/comments, or the slice definition itself — never self-invented.** If no grounded option exists, stop and surface the gap rather than fabricating one.
+  - Keep the corresponding GitHub issue updated with the current status of internal cycles and slices as work progresses.
+  - Follow every relevant `AGENTS.md` in the workspace.
+  - If context approaches 200K tokens, prefer handing off to a new session; otherwise operate as an orchestrator dispatching sub-agents in parallel.
 ````
 
 Preserve any useful existing local instructions when updating `AGENTS.md`, but reorganize duplicated content into this structure.
