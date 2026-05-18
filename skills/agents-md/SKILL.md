@@ -19,9 +19,9 @@ Make clear that non-negotiables and operational defaults must be followed and fu
 
 Every generated `AGENTS.md` must include the following thirteen principles as non-negotiables:
 
-1. **Invoke Caveman First:** Trigger the `caveman` skill using your platform's tool-calling mechanism (`activate_skill`, `Skill`, `skill`, `activate`, or `load_skill`) before any other action.
+1. **Invoke Caveman First:** Invoke the `caveman` skill before any other action. Use the runtime-native form: Claude Code `/caveman`, Gemini CLI `activate_skill(name="caveman")`, Copilot CLI `skill("caveman")`, Codex CLI `activate("caveman")`, or Opencode CLI `load_skill("caveman")`. If the runtime cannot self-issue that invocation from instructions, read the local `caveman` `SKILL.md` and apply its chat-output rules before continuing.
 2. **Evidence Before Claim:** No claims (e.g., "tests pass") without raw command output. No evidence = not done. "Seems to" or "likely" = failure to verify.
-3. **Task Isolation:** Use a fresh subagent or tool call for each independent task. Do not carry bloated history into isolated jobs.
+3. **Task Isolation:** For each independent task, use a fresh subagent, agent, worker, or isolated tool pass when the runtime supports it and the work can be split without shared-file conflicts. Do not carry bloated history into isolated jobs.
 4. **Goal-Driven Execution:** Define verifiable success criteria. For bug fixes, always verify the failure (Red) before applying the fix (Green).
 5. **Surgical Minimalism:** Match style. Touch only what you must. No speculative abstractions, "just-in-case" code, or adjacent cleanup.
 6. **Systematic Debugging:** Trace failures to their root cause. Do not patch symptoms with generic hacks, arbitrary timeouts, or unverified assumptions.
@@ -95,9 +95,9 @@ Generate `AGENTS.md` with this structure:
 
 Follow these 13 rules. They are non-negotiable and must be fully enforced. Bias toward caution over speed on non-trivial work.
 
-1. **Invoke Caveman First:** Trigger the `caveman` skill using your platform's tool-calling mechanism (`activate_skill`, `Skill`, `skill`, `activate`, or `load_skill`) before any other action.
+1. **Invoke Caveman First:** Invoke the `caveman` skill before any other action. Use the runtime-native form: Claude Code `/caveman`, Gemini CLI `activate_skill(name="caveman")`, Copilot CLI `skill("caveman")`, Codex CLI `activate("caveman")`, or Opencode CLI `load_skill("caveman")`. If the runtime cannot self-issue that invocation from instructions, read the local `caveman` `SKILL.md` and apply its chat-output rules before continuing.
 2. **Evidence Before Claim:** No claims (e.g., "tests pass") without raw command output. No evidence = not done. "Seems to work" = failure to verify.
-3. **Task Isolation:** Use a fresh subagent or tool call for each independent task. Do not carry bloated history into isolated jobs.
+3. **Task Isolation:** For each independent task, use a fresh subagent, agent, worker, or isolated tool pass when the runtime supports it and the work can be split without shared-file conflicts. Do not carry bloated history into isolated jobs.
 4. **Goal-Driven Execution:** Success = empirical proof. Bug fixes require Red-Green-Refactor: verify the failure (Red) before applying the fix (Green).
 5. **Surgical Minimalism:** Match style. Touch only what you must. No speculative abstractions, "just-in-case" code, or adjacent cleanup.
 6. **Systematic Debugging:** Trace failures to their root cause. Do not patch symptoms with generic hacks, arbitrary timeouts, or unverified assumptions.
@@ -118,6 +118,8 @@ Follow these 13 rules. They are non-negotiable and must be fully enforced. Bias 
 ## Operating Protocol
 
 - **Discovery:** Map project codes to roots via package/config files. Use efficient search tools.
+- **Caveman Chat:** Caveman applies to chat output only. Do not caveman-compress code, docs, PRDs, release notes, PR bodies, generated prompts, or persisted artifacts. Use 5th-grade English in chat unless a technical term is required. Prefer `guess` over `speculate`, `join words` over `conjunctions`, `short sentence` over `fragment`, `because` or `so` over `causality`, `simple` over `shallow`, and `combine` over `synthesize`. Keep exact technical words such as `API`, `DB`, `auth`, `null`, `array`, `timeout`, and `race condition`.
+- **Subagent Dispatch:** Before substantial work, split the task into independent lanes. Dispatch fresh subagents, agents, workers, or isolated tool passes for lanes that can run in parallel without blocking the next local step. Use lanes for research, critique, comparison, risk checks, source checks, outline, terminology, audience fit, codebase search, multi-project mapping, test-failure investigation, and review. Main agent owns final judgment and conflict resolution. Keep work local when the task is tiny, sequential, tightly coupled, or likely to create edit conflicts. If the runtime lacks subagents, run separate focused tool passes.
 - **Domain:** Read `CONTEXT.md` and `docs/adr/` before implementation. ADRs are binding.
 - **Validation:** Run targeted tests and workspace-standard checks (`tsc`, `lint`, `build`) after every edit.
 - **Completion:** Final report must include explicit validation performed and any remaining risks.
@@ -137,14 +139,26 @@ Preserve any useful existing local instructions when updating `AGENTS.md`, but r
 
 Create or update `CLAUDE.md` and `GEMINI.md` as shims.
 
-Use this content unless the workspace or repository already has important tool-specific instructions:
+Use this content for `CLAUDE.md` unless the workspace or repository already has important Claude-specific instructions:
 
 ```markdown
 # Agent Instructions
 
 Read `AGENTS.md` first. It is the canonical instruction file for this workspace.
 
-This file is a shim for tool compatibility.
+Before any other action in Claude Code, invoke `/caveman`. If `/caveman` is unavailable or cannot be self-issued from instructions, load or read the local `caveman` skill and apply its chat-output rules before continuing.
+
+This file is a Claude Code shim for tool compatibility.
+```
+
+Use this content for `GEMINI.md` unless the workspace or repository already has important Gemini-specific instructions:
+
+```markdown
+# Agent Instructions
+
+Read `AGENTS.md` first. It is the canonical instruction file for this workspace.
+
+This file is a Gemini CLI shim for tool compatibility.
 ```
 
 If an existing shim contains valuable tool-specific rules, keep them under:

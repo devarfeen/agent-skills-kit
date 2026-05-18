@@ -16,7 +16,7 @@ Every session follows these 13 rules (enforced by `AGENTS.md`):
 
 1. **Invoke Caveman First:** Immediate `/caveman` (or tool call) is mandatory.
 2. **Evidence Before Claim:** No status claims without raw command output.
-3. **Task Isolation:** Fresh context per independent task. No history bloat.
+3. **Task Isolation:** Fresh context per independent task. Use subagents, agents, workers, or isolated tool passes when work can split without file conflicts.
 4. **Goal-Driven Execution:** Empirical proof only. Bug fixes require Red-Green-Refactor.
 5. **Surgical Minimalism:** Match style. Min code. No adjacent cleanup.
 6. **Systematic Debugging:** Trace root cause. No symptom patches or hacks.
@@ -27,6 +27,10 @@ Every session follows these 13 rules (enforced by `AGENTS.md`):
 11. **Conventions Over Taste:** Local idioms beat personal preference.
 12. **State Anchoring:** Continuously report `[verified]`, `[current]`, and `[todo]`.
 13. **Fail Loud:** No silent skips. Completion requires full verification.
+
+Operational default: caveman applies to chat output only. Do not caveman-compress code, docs, PRDs, release notes, PR bodies, generated prompts, or persisted artifacts. Use 5th-grade English in chat unless a technical term is required; keep exact terms like `API`, `DB`, `auth`, `null`, `array`, `timeout`, and `race condition`.
+
+Subagent default: before substantial work, split the task into independent lanes. Dispatch fresh agents for research, critique, comparison, risk checks, source checks, outline, terminology, audience fit, codebase search, mapping, test-failure investigation, and review. Main agent owns final judgment. Keep work local when tiny, sequential, tightly coupled, or conflict-prone. If the runtime lacks subagents, use separate focused tool passes.
 
 ## First-Time Setup
 
