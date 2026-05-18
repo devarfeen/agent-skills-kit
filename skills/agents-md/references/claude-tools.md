@@ -10,6 +10,7 @@
 | `Task` tool (dispatch subagent) | Native sub-agent support |
 
 **Key Notes:**
+
 - Claude Code skills are filesystem-backed and can be invoked directly with `/skill-name`.
 - Claude Code can also load a skill automatically when the request matches the skill's `description`.
 - Supports `defer_loading: true` for metadata-only initial context.

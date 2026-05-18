@@ -242,9 +242,9 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
 
 ### `feature-prompt`
 
-Turns a rough feature idea into a **precise feature-development prompt** for
-one or more codebase projects. Designed for short, step-by-step clarification
-before handing work to an implementation agent.
+Turns a rough feature idea into a **small feature prompt** for one or more
+codebase projects. Designed as a handoff to
+`grill-with-docs`, which does the detailed challenge pass.
 
 ```bash
 npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature-prompt
@@ -252,26 +252,24 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
 
 **What it does**
 
-- Interviews the user one section at a time: Projects, Need, Integration,
-  Reason, Constraints, and optional Acceptance
-- Presents four numbered pre-made answers plus a custom option for each step
-- Challenges vague answers before moving on
-- Inspects the codebase when local context can answer or sharpen a section
-- Sends the draft prompt to the user for review before finalizing it
+- Converts rough intake into a minimal `grill-with-docs` handoff
+- Asks only when the requested change or project/context is unclear
+- Uses cheap repo evidence such as project matrix, cwd, `CONTEXT.md`, and ADR names
+- Sends non-trivial or inferred drafts to the user for one correction pass
 - Saves the final prompt to `<artifacts-root>/docs/prompt/NNNN-<feature-slug>-prompt.md` (sibling of `docs/adr/`; numbering is shared globally across both folders). `<artifacts-root>` is the VS Code workspace root when present, otherwise the repo root — artifacts stay out of individual project repos whenever a workspace exists.
 - Asks the user to pass the final prompt to `grill-with-docs`
-- Produces a short final prompt in the same section order
+- Produces a short final prompt with only the needed sections
 
 **Prompt sections**
 
 | Section | Purpose |
 | --- | --- |
-| Projects | Project codes or repos affected by the change |
-| Need | What needs to be built or changed |
-| Integration | Where the change connects in code, UI, APIs, DB, jobs, or services |
-| Reason | Why the change is needed |
-| Constraints | Limits, exclusions, compatibility needs, or `none` |
-| Acceptance | Optional done-state; inferred if skipped |
+| Project | Project code, repo, path, or context |
+| What is needed | The requested change |
+| Why it is needed | The problem, value, or workflow gap |
+| Expected end result | Observable done state |
+| Known limits | Optional hard constraints or non-goals |
+| Open questions | Optional unresolved questions for `grill-with-docs` |
 
 **Example prompts**
 

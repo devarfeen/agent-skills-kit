@@ -65,10 +65,10 @@ Every `AGENTS.md` must include a project matrix with this exact heading and colu
 ```markdown
 ## Project Matrix
 
-| Project Name (Code)                               | Path                         | Tech Stack              |
-| ------------------------------------------------- | ---------------------------- | ----------------------- |
-| Example Workspace (EXAMPLE-WORKSPACE)             | .                            | Meta workspace, no code |
-| API Service (API-SERVICE)                         | ../api-service               | PHP, Laravel            |
+| Project Name (Code)                   | Path           | Tech Stack              |
+| ------------------------------------- | -------------- | ----------------------- |
+| Example Workspace (EXAMPLE-WORKSPACE) | .              | Meta workspace, no code |
+| API Service (API-SERVICE)             | ../api-service | PHP, Laravel            |
 ```
 
 Project code rules:
@@ -88,7 +88,7 @@ Project code rules:
 
 Generate `AGENTS.md` with this structure:
 
-````markdown
+```markdown
 # Agent Instructions
 
 ## Non-Negotiable Rules
@@ -131,7 +131,7 @@ Follow these 13 rules. They are non-negotiable and must be fully enforced. Bias 
   - Keep the corresponding GitHub issue updated with the current status of internal cycles and slices as work progresses.
   - Follow every relevant `AGENTS.md` in the workspace.
   - If context approaches 200K tokens, prefer handing off to a new session; otherwise operate as an orchestrator dispatching sub-agents in parallel.
-````
+```
 
 Preserve any useful existing local instructions when updating `AGENTS.md`, but reorganize duplicated content into this structure.
 
@@ -182,7 +182,7 @@ Do not duplicate the full `AGENTS.md` content into shims.
 2. **Behavioral Trace (Negative Constraints):**
    - Did the agent **refrain** from implementing anything until Rule #1 (Invoke Caveman) was fulfilled?
    - Did the agent **refrain** from cleaning adjacent code (Rule #5) or patching symptoms (Rule #6)?
-3. **Deterministic Review:** 
+3. **Deterministic Review:**
    - Rule #1: Tool name matches the detected agent?
    - Rule #12: State anchoring (`[verified]`, `[current]`, `[todo]`) present in every significant response?
 4. **Outcome Validation:** If a bug is being fixed, did the agent perform the "Red" (verify failure) step before the "Green" (verify fix) step?

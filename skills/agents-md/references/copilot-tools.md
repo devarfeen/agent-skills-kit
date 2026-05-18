@@ -11,5 +11,6 @@
 | `TodoWrite` | `sql` with built-in `todos` table |
 
 **Key Notes:**
+
 - Supports async shell sessions (`bash` with `async: true`).
 - Auto-discovers skills from installed plugins.

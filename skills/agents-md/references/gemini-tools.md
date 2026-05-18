@@ -13,6 +13,7 @@
 | `Task` tool (dispatch subagent) | `@agent-name` (e.g., `@generalist`) |
 
 **Key Notes:**
+
 - Subagents are invoked using the `@` syntax (e.g., `@generalist`, `@code-reviewer`).
 - Supports parallel subagent dispatch by requesting multiple `@agent` tasks in one prompt.
 - Includes unique tools like `list_directory`, `save_memory`, `ask_user`, and `enter_plan_mode`.

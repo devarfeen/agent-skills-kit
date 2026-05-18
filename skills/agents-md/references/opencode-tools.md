@@ -7,4 +7,5 @@
 | `Skill` tool (invoke a skill) | Loads via `.opencode/skills/` |
 
 **Key Notes:**
+
 - Opencode CLI uses POSIX-style tool naming for its internal mapping.
