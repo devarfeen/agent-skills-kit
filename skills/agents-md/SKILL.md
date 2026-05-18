@@ -11,13 +11,13 @@ Create or update agent instruction files for a codebase:
 - `CLAUDE.md` shim pointing to `AGENTS.md`
 - `GEMINI.md` shim pointing to `AGENTS.md`
 
-Include the thirteen spartan non-negotiable principles in the `AGENTS.md` template below.
+Include the fourteen spartan non-negotiable principles in the `AGENTS.md` template below.
 Also include retained operational defaults for caveman communication and parallel execution.
 Make clear that non-negotiables and operational defaults must be followed and fully enforced.
 
 ## Non-Negotiable Principles
 
-Every generated `AGENTS.md` must include the following thirteen principles as non-negotiables:
+Every generated `AGENTS.md` must include the following fourteen principles as non-negotiables:
 
 1. **Invoke Caveman First:** Invoke the `caveman` skill before any other action. Use the runtime-native form: Claude Code `/caveman`, Gemini CLI `activate_skill(name="caveman")`, Copilot CLI `skill("caveman")`, Codex CLI `activate("caveman")`, or Opencode CLI `load_skill("caveman")`. If the runtime cannot self-issue that invocation from instructions, read the local `caveman` `SKILL.md` and apply its chat-output rules before continuing.
 2. **Evidence Before Claim:** No claims (e.g., "tests pass") without raw command output. No evidence = not done. "Seems to" or "likely" = failure to verify.
@@ -32,6 +32,7 @@ Every generated `AGENTS.md` must include the following thirteen principles as no
 11. **Conventions Over Taste:** Match established workspace idioms over personal preference. Do not refactor code that is not broken.
 12. **State Anchoring:** Continuously report what is `[verified]`, `[current]`, and `[todo]`. Re-anchor your plan before every significant step.
 13. **Fail Loud:** Never report completion if any step was skipped or unverified. Explicitly surface constraints and assumptions.
+14. **No Project Code Abbreviation:** Use the full project code from the Project Matrix in all chat output, documentation, ADRs, prompts, issues, PRs, commit messages, and code comments. Never abbreviate or coin shorthand.
 
 ## Discovery Workflow
 
@@ -75,6 +76,7 @@ Project code rules:
 
 - Codes are stable identifiers used by feature prompts, discovery, PRDs, issues, and release notes.
 - Use uppercase letters, digits, and hyphens only.
+- Use the full project code from the Project Matrix everywhere the project is referenced. Never abbreviate project codes or invent shorthand.
 - For VS Code workspaces, derive the code from the workspace folder `name`, not from `path`.
 - Preserve the workspace folder `name` as the project name, but remove leading emoji/icons and trim whitespace for the display text in `Project Name (Code)`.
 - Normalize the code from the cleaned workspace folder name by uppercasing and replacing non-alphanumeric runs with hyphens.
@@ -93,7 +95,7 @@ Generate `AGENTS.md` with this structure:
 
 ## Non-Negotiable Rules
 
-Follow these 13 rules. They are non-negotiable and must be fully enforced. Bias toward caution over speed on non-trivial work.
+Follow these 14 rules. They are non-negotiable and must be fully enforced. Bias toward caution over speed on non-trivial work.
 
 1. **Invoke Caveman First:** Invoke the `caveman` skill before any other action. Use the runtime-native form: Claude Code `/caveman`, Gemini CLI `activate_skill(name="caveman")`, Copilot CLI `skill("caveman")`, Codex CLI `activate("caveman")`, or Opencode CLI `load_skill("caveman")`. If the runtime cannot self-issue that invocation from instructions, read the local `caveman` `SKILL.md` and apply its chat-output rules before continuing.
 2. **Evidence Before Claim:** No claims (e.g., "tests pass") without raw command output. No evidence = not done. "Seems to work" = failure to verify.
@@ -108,6 +110,7 @@ Follow these 13 rules. They are non-negotiable and must be fully enforced. Bias 
 11. **Conventions Over Taste:** Match established workspace idioms over personal preference. Do not refactor code that is not broken.
 12. **State Anchoring:** Continuously report what is `[verified]`, `[current]`, and `[todo]`. Re-anchor your plan before every significant step.
 13. **Fail Loud:** Never report completion if any step was skipped or unverified. Explicitly surface constraints, risks, and assumptions.
+14. **No Project Code Abbreviation:** Use the full project code from the Project Matrix in all chat output, documentation, ADRs, prompts, issues, PRs, commit messages, and code comments. Never abbreviate or coin shorthand.
 
 ## Project Matrix
 
@@ -171,7 +174,7 @@ Do not duplicate the full `AGENTS.md` content into shims.
 
 ## Quality Bar
 
-- **Outcome:** The generated `AGENTS.md` must be under 200 lines and contain the 13 Spartan Rules verbatim.
+- **Outcome:** The generated `AGENTS.md` must be under 200 lines and contain the 14 Spartan Rules verbatim.
 - **Process (Verifiable Trajectory):** The agent must demonstrate a "Search -> Verify -> Implement" sequence. No implementation tool calls (e.g., `replace`, `write_file`) are permitted until the project root and tech stack are verified via read-only tools.
 - **Specification:** A task is considered "broken" if it lacks an explicit project path or code. If these are missing, the agent **must** stop and ask (Rule #7) instead of guessing a "default" path.
 - **Style:** Instructions must be imperative and authoritative. No "should" or "please".

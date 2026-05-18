@@ -15,7 +15,7 @@ Final prompts use this shape:
 
 ```markdown
 Project:
-[Project code, repo, path, or context. Use one line.]
+[Full Project Matrix code, repo, path, or context. Use one line.]
 
 What is needed:
 [The change to make. One short paragraph or 2-4 bullets.]
@@ -37,7 +37,7 @@ Only `Project`, `What is needed`, `Why it is needed`, and `Expected end result` 
 
 ## Why These Sections
 
-- **Project:** Routes the next skill to the right repo, context, or project code.
+- **Project:** Routes the next skill to the right repo, context, or project code. When a Project Matrix code exists, use the full code exactly as written.
 - **What is needed:** Defines the requested change.
 - **Why it is needed:** Gives motivation so `grill-with-docs` can challenge tradeoffs instead of only wording.
 - **Expected end result:** Defines success in observable terms. This becomes the seed for later acceptance criteria.
@@ -49,6 +49,7 @@ Only `Project`, `What is needed`, `Why it is needed`, and `Expected end result` 
 - Start from free-form intake. Accept a sentence, paragraph, bullet list, or brain dump.
 - Infer first. Ask only when `What is needed` is unclear or project/context cannot be inferred safely.
 - Use repo evidence when cheap: project matrix, cwd, `CONTEXT.md`, `CONTEXT-MAP.md`, and ADR names. Do not run a broad code scan by default.
+- Use the full Project Matrix code in the final prompt whenever one exists. Never abbreviate project codes or invent shorthand.
 - Do not create `Domain terms`, `Decisions`, `Dependents`, `Risks`, `Doc anchors`, `Integration`, `Constraints`, or `Acceptance` sections. Fold useful facts into the six sections above.
 - Keep domain words intact. Do not invent glossary definitions; `grill-with-docs` owns that.
 - If the user states a hard decision or limit, preserve it under `Known limits`.

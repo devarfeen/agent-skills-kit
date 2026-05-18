@@ -97,13 +97,13 @@ Example prompts:
 
 - Generate release notes for 11 March 2026
 - Create changelog for 11 March for all projects
-- Generate release notes for Partners App on 11 March
+- Generate release notes for PARTNERS-APP on 11 March
 
 Behavior:
 
 1. Read git commit history
 2. Filter commits by the requested date
-3. Group commits by product, app, or module
+3. Group commits by full project code, app, or module
 4. Combine related commits into a single logical improvement summary
 
 ### 2. Session-Based Development Summary
@@ -121,7 +121,7 @@ Behavior:
 1. Review files modified in the session
 2. Review developer notes, markdown previews, and code diffs
 3. Combine related edits into logical improvements
-4. Present them grouped by product or app
+4. Present them grouped by full project code
 
 ### 3. Feature-Based Summary
 
@@ -158,7 +158,7 @@ If the workspace contains multiple repositories (multi-root workspace with sever
 
 1. **Find all git roots.** Walk the workspace folder tree and identify every directory that contains a `.git` folder. Each is a separate project repo.
 2. **Run `git log` in each repo separately.** Do not assume the workspace root is the only git repo.
-3. **Collect commits from all repos**, then group by product/project.
+3. **Collect commits from all repos**, then group by full project code.
 
 Missing a repo means missing an entire project's release notes. Always scan for all git roots.
 
@@ -218,7 +218,7 @@ Problem → Change → Impact
 
 Every release notes file must start with a **Stakeholder Summary** section at the top, before the detailed notes.
 
-This section is the quick-read version for PMs and stakeholders. It combines the Summary and Change from each feature entry into short bullet points grouped by date and project code.
+This section is the quick-read version for PMs and stakeholders. It combines the Summary and Change from each feature entry into short bullet points grouped by date and full project code.
 
 ### Format
 
@@ -227,12 +227,12 @@ This section is the quick-read version for PMs and stakeholders. It combines the
 
 Date: DD Month YYYY
 
-PRODUCT-CODE-1
+FULL-PROJECT-CODE-1
 
 - What changed + why it matters in one sentence
 - What changed + why it matters in one sentence
 
-PRODUCT-CODE-2
+FULL-PROJECT-CODE-2
 
 - What changed + why it matters in one sentence
 ```
@@ -240,11 +240,11 @@ PRODUCT-CODE-2
 ### Rules
 
 - Start with `Date: DD Month YYYY` (omit for session summaries that have no date).
-- Product codes in ALL CAPS (e.g., `PARTNERS-APP`, `PORTFOLIO-WEB`, `SERVER-REVERSE-PROXY`). No markdown heading syntax — plain text on its own line.
+- Use full project codes from the Project Matrix (e.g., `PARTNERS-APP`, `PORTFOLIO-WEB`, `SERVER-REVERSE-PROXY`). Never abbreviate or invent shorthand. No markdown heading syntax — plain text on its own line.
 - Each change is a **markdown bullet** (`- `). One bullet per feature.
 - Each bullet combines Summary + Change into one sentence that answers: "What changed and what does that mean for the user?"
 - Write bullets so a PM can scan the entire list in under 30 seconds.
-- Group by product/app, same grouping as the detailed section below.
+- Group by full project code, same grouping as the detailed section below.
 - Separate the Stakeholder Summary from the Detailed Release Notes with a horizontal rule (`---`).
 - The detailed section follows under a `# Detailed Release Notes` heading.
 
@@ -285,11 +285,14 @@ For each cluster:
 
 Project names and codes may be found from:
 
+- Project Matrix entries in `AGENTS.md`
 - repository documentation
 - workspace metadata
 - git repository paths
 - folder structure
 - user-provided context
+
+When a Project Matrix code exists, use the full code exactly as written in chat output, saved release notes, and any related issue, PR, commit, or code-comment text.
 
 ## Output Format
 
@@ -299,7 +302,7 @@ For date-based release notes, include a date line at the top.
 
 `Date: <DD Month YYYY>`
 
-## <Product / App Name>
+## <Full Project Code>
 
 ### <Feature or Improvement Name>
 

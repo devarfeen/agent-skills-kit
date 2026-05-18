@@ -1,6 +1,6 @@
 # Stakeholder Summary
 
-<PRODUCT-CODE>
+<FULL-PROJECT-CODE>
 
 - <What changed + why it matters — combines Summary and Change into one sentence>
 
@@ -8,7 +8,7 @@
 
 # Detailed Release Notes
 
-## <Product / App Name>
+## <Full Project Code>
 
 ### <Improvement Name>
 

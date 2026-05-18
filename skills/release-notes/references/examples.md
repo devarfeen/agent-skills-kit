@@ -90,7 +90,7 @@ PARTNERS-APP
 ## Example 2: Single Project on a Date
 
 ### User Request
-Generate release notes for Partners App on 11 March
+Generate release notes for PARTNERS-APP on 11 March
 
 ### Example Output
 
@@ -262,18 +262,18 @@ Write release notes for the RFID scanning improvements
 Generate release notes for 12 March 2026 across all projects
 
 ### Example Input
-- Partners App commits found for 12 March 2026
-- Warehouse Admin commits found for 12 March 2026
-- No commits found for Customer Portal on 12 March 2026
+- PARTNERS-APP commits found for 12 March 2026
+- WAREHOUSE-ADMIN commits found for 12 March 2026
+- No commits found for CUSTOMER-PORTAL on 12 March 2026
 
 ### Example Output Rule
-- Include Partners App and Warehouse Admin sections.
-- Do not include Customer Portal because it has no confirmed changes.
+- Include PARTNERS-APP and WAREHOUSE-ADMIN sections.
+- Do not include CUSTOMER-PORTAL because it has no confirmed changes.
 
 ### Example Output
 Date: 12 March 2026
 
-## Partners App
+## PARTNERS-APP
 
 ### RFID Scanner Reliability
 
@@ -291,12 +291,12 @@ Date: 12 March 2026
 - Fewer failed first-scan attempts.
 
 **Scope**
-- RFID-enabled operational flows in Partners App.
+- RFID-enabled operational flows in PARTNERS-APP.
 
 **Commits Included**
 - 148cfb8f, f626e8fa
 
-## Warehouse Admin
+## WAREHOUSE-ADMIN
 
 ### Intake Validation Clarity
 

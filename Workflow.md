@@ -12,7 +12,7 @@ Combine skills from this kit and the wider ecosystem to move from idea to shippe
 
 ## Non-Negotiable Core (Spartan Rules)
 
-Every session follows these 13 rules (enforced by `AGENTS.md`):
+Every session follows these 14 rules (enforced by `AGENTS.md`):
 
 1. **Invoke Caveman First:** Immediate `/caveman` (or tool call) is mandatory.
 2. **Evidence Before Claim:** No status claims without raw command output.
@@ -27,6 +27,7 @@ Every session follows these 13 rules (enforced by `AGENTS.md`):
 11. **Conventions Over Taste:** Local idioms beat personal preference.
 12. **State Anchoring:** Continuously report `[verified]`, `[current]`, and `[todo]`.
 13. **Fail Loud:** No silent skips. Completion requires full verification.
+14. **No Project Code Abbreviation:** Use full Project Matrix codes in chat, docs, ADRs, prompts, issues, PRs, commit messages, and code comments. No shorthand.
 
 Operational default: caveman applies to chat output only. Do not caveman-compress code, docs, PRDs, release notes, PR bodies, generated prompts, or persisted artifacts. Use 5th-grade English in chat unless a technical term is required; keep exact terms like `API`, `DB`, `auth`, `null`, `array`, `timeout`, and `race condition`.
 

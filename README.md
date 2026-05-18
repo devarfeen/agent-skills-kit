@@ -86,7 +86,7 @@ skills from the wider agent-skills ecosystem.
   guide.
 - The non-negotiable discipline in `agents-md` was originally seeded by
   Forrest Chang's Karpathy-inspired `CLAUDE.md` guidelines and later expanded
-  in this repo into a 13-rule core plus retained operational defaults:
+  in this repo into a 14-rule core plus retained operational defaults:
   https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md
   The upstream repository is MIT licensed. This repo records credit here rather
   than emitting source notes into generated `AGENTS.md` files.
@@ -130,11 +130,11 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 
 **What it does**
 
-- Includes a 13-rule non-negotiable core in `AGENTS.md`, plus retained operational defaults for chat-only, 5th-grade-English caveman activation and parallel execution
+- Includes a 14-rule non-negotiable core in `AGENTS.md`, plus retained operational defaults for chat-only, 5th-grade-English caveman activation, full Project Matrix code usage, and parallel execution
 - Detects VS Code workspaces and uses each folder `name` as the project name/code source
 - Treats the workspace folder with `path: "."` as a meta workspace with no code
 - Builds a project matrix: `Project Name (Code) | Path | Tech Stack`
-- Establishes stable project codes for use across prompt, PRD, issue, discovery, and release-note skills
+- Establishes stable project codes for use across prompt, PRD, issue, discovery, release-note, PR, commit, and code-comment contexts
 - References `CONTEXT.md` and `docs/adr/` as required domain context when available (and legacy `UBIQUITOUS_LANGUAGE.md` if it exists)
 
 **Example prompts**
@@ -162,7 +162,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill release
 - Clusters related commits into a single logical change instead of
   commit-by-commit narration
 - Produces a single markdown file with two sections:
-  1. **Stakeholder Summary** — bullet list grouped by product code, one
+  1. **Stakeholder Summary** — bullet list grouped by full Project Matrix code, one
      sentence per change
   2. **Detailed Release Notes** — full Problem → Change → Impact → Scope →
      Manual QA Steps → Commits Included blocks per feature
@@ -172,7 +172,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill release
 | Mode | Example prompt |
 | --- | --- |
 | Date-based (single date or range) | `Generate release notes for 11 March 2026` |
-| Single project on a date | `Generate release notes for Partners App on 11 March` |
+| Single project on a date | `Generate release notes for PARTNERS-APP on 11 March` |
 | All projects on a date | `Create changelog for all projects on 15 April` |
 | Current dev session | `Summarize today's development session` |
 | Specific feature | `Write release notes for the QR scanning improvements` |
@@ -236,9 +236,9 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
 
 | Mode | Example prompt |
 | --- | --- |
-| Feature lookup | `Explain how asset lookup works in APP` |
-| Issue trace | `Investigate why RFID scans fail in APP` |
-| Workflow audit | `Trace the invite-user workflow across Admin and API` |
+| Feature lookup | `Explain how asset lookup works in MOBILE-APP` |
+| Issue trace | `Investigate why RFID scans fail in PARTNERS-APP` |
+| Workflow audit | `Trace the invite-user workflow across ADMIN-WEB and API-SERVICE` |
 
 ### `feature-prompt`
 
@@ -264,7 +264,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
 
 | Section | Purpose |
 | --- | --- |
-| Project | Project code, repo, path, or context |
+| Project | Full Project Matrix code, repo, path, or context |
 | What is needed | The requested change |
 | Why it is needed | The problem, value, or workflow gap |
 | Expected end result | Observable done state |
@@ -276,8 +276,8 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
 | Mode | Example prompt |
 | --- | --- |
 | New feature | `Help me create a feature prompt for stock transfer approvals` |
-| Change request | `Turn this rough request into a dev prompt for APP and API` |
-| Multi-project work | `Create a feature prompt for Admin, Mobile, and Backend` |
+| Change request | `Turn this rough request into a dev prompt for MOBILE-APP and API-SERVICE` |
+| Multi-project work | `Create a feature prompt for ADMIN-WEB, MOBILE-APP, and API-SERVICE` |
 
 ### `commit-push-close`
 
@@ -382,7 +382,7 @@ delivery chain: `/grill-with-docs`, `/to-prd`, `/to-issues`, and `/tdd`.
 | Mode | Example prompt |
 | --- | --- |
 | Full delivery chain (legacy) | `Create a full feature prompt for stock transfer approvals` |
-| PRD-ready feature (legacy) | `Use feature-prompt-full for Admin and API invite changes` |
+| PRD-ready feature (legacy) | `Use feature-prompt-full for ADMIN-WEB and API-SERVICE invite changes` |
 | TDD-ready handoff (legacy) | `Prepare a full feature chain for scanner reliability work` |
 
 ### `ubiquitous-language` (deprecated)
@@ -417,7 +417,7 @@ deprecated `ubiquitous-language` skill.
 
 1. **Install:** run the `npx skills install …` command for the skill you want.
 2. **Ask your agent:** use a natural request that matches the skill — e.g.
-   "Generate release notes for today" or "Create a feature prompt for APP".
+   "Generate release notes for today" or "Create a feature prompt for MOBILE-APP".
 3. **Review the output:** feature prompts and release notes write markdown
    files under `docs/adr/` (sharing the ADR numbering sequence); discovery
    skills return structured markdown in the conversation.
