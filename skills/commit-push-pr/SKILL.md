@@ -1,6 +1,6 @@
 ---
 name: commit-push-pr
-description: Ship one iteration of work on a GitHub issue as a pull request — stage and commit with a structured message, push the current branch, and open a PR that uses `Closes #N` to auto-close the linked issue on merge. If no GitHub issue can be located, the skill creates one inline before committing. The commit subject prefix is chosen by the issue's state label (`HITL:` for `ready-for-human`, `AKF:` for `ready-for-agent`). Use when the user says "commit, push, and open a PR", "ship this as a PR", "PR this issue", or otherwise wants to wrap up issue work as a reviewable PR rather than a direct close.
+description: Ship one iteration of work on a GitHub issue as a pull request — stage and commit with a structured message, push the current branch, and open a PR that uses `Closes #N` to auto-close the linked issue on merge. If no GitHub issue can be located, the skill creates one inline before committing. The commit subject prefix is chosen by the issue's state label (`HITL:` for `ready-for-human`, `AFK:` for `ready-for-agent`). Use when the user says "commit, push, and open a PR", "ship this as a PR", "PR this issue", or otherwise wants to wrap up issue work as a reviewable PR rather than a direct close.
 ---
 
 # commit-push-pr
@@ -19,7 +19,7 @@ The subject prefix depends on the linked issue's state label:
 | Issue state          | Prefix  |
 | -------------------- | ------- |
 | `ready-for-human`    | `HITL:` |
-| `ready-for-agent`    | `AKF:`  |
+| `ready-for-agent`    | `AFK:`  |
 | neither              | ask the user |
 | no linked issue      | create one inline (see **Inline issue creation**) — the user picks the state label during creation, which fixes the prefix |
 
@@ -30,11 +30,11 @@ Read state with: `gh issue view <num> --json state,labels,title,url`. Match labe
 When step 2 of the workflow can't locate an issue, create one before committing. Do **not** invent an issue number, and do **not** continue without an issue.
 
 1. Draft from the diff:
-   - **Title** — imperative, ≤ 72 chars, no `HITL:`/`AKF:` prefix (the prefix belongs to the commit/PR, not the issue title).
+   - **Title** — imperative, ≤ 72 chars, no `HITL:`/`AFK:` prefix (the prefix belongs to the commit/PR, not the issue title).
    - **Body** — short problem/intent statement + what this change does + how to test. Keep under ~15 lines. The PR body's `Closes #N` will reference this issue.
 2. Ask the user to pick the state label so the commit prefix is determined:
    - `ready-for-human` → commit/PR prefix `HITL:`
-   - `ready-for-agent` → commit/PR prefix `AKF:`
+   - `ready-for-agent` → commit/PR prefix `AFK:`
 3. Show the user the draft (title + body + chosen state) and wait for approval. This is folded into the single combined approval in step 7 of the workflow — don't ask twice.
 4. Create with:
    ```bash
@@ -68,7 +68,7 @@ Notes:
 ```
 
 Rules:
-- Subject ≤ 72 chars, starts with `HITL:` or `AKF:` + space, imperative mood.
+- Subject ≤ 72 chars, starts with `HITL:` or `AFK:` + space, imperative mood.
 - Always keep the subject and the `Issue:` line. Omit any other section that has nothing to say.
 - Body under ~20 lines.
 
@@ -121,11 +121,11 @@ The `Closes #N` line is mandatory and must be on its own line near the top of th
 
 2. **Resolve or create the issue** — branch name → recent commits → conversation context. If none, switch to **Inline issue creation** (see section above): draft title/body from the diff, ask the user for the state label, fold the issue draft into the combined approval, then `gh issue create`. Use the returned number for the rest of the workflow.
 
-3. **Read issue state** — for issues that already existed, run `gh issue view <num> --json state,labels,title,url` and pick `HITL:` or `AKF:` per the table. If neither label is present, ask. For issues just created inline, skip this step — the prefix is already fixed by the label set at creation.
+3. **Read issue state** — for issues that already existed, run `gh issue view <num> --json state,labels,title,url` and pick `HITL:` or `AFK:` per the table. If neither label is present, ask. For issues just created inline, skip this step — the prefix is already fixed by the label set at creation.
 
 4. **Branch handling** — if the current branch is `main` or `master` (or the detected default branch):
    - Stop before staging anything.
-   - Propose a feature branch name: `<prefix-lc>/<issue-num>-<slug>` where `<prefix-lc>` is `hitl` or `akf` and `<slug>` is a short kebab-case derivation of the issue title (≤ 5 words).
+   - Propose a feature branch name: `<prefix-lc>/<issue-num>-<slug>` where `<prefix-lc>` is `hitl` or `afk` and `<slug>` is a short kebab-case derivation of the issue title (≤ 5 words).
    - Wait for the user to confirm the name (offer to edit).
    - `git checkout -b <branch>` — uncommitted changes follow the checkout into the new branch.
    Otherwise, continue on the current branch.
@@ -146,7 +146,7 @@ The `Closes #N` line is mandatory and must be on its own line near the top of th
 9. **Commit** with HEREDOC:
    ```bash
    git commit -m "$(cat <<'EOF'
-   AKF: <subject>
+   AFK: <subject>
 
    Issue: #123
 
@@ -168,7 +168,7 @@ The `Closes #N` line is mandatory and must be on its own line near the top of th
     gh pr create \
       --base "<default-branch>" \
       --head "<current-branch>" \
-      --title "AKF: <subject>" \
+      --title "AFK: <subject>" \
       --body "$(cat <<'EOF'
     Closes #123
 
@@ -188,11 +188,11 @@ The `Closes #N` line is mandatory and must be on its own line near the top of th
 
 ## Examples
 
-### Minimal — `AKF:`
+### Minimal — `AFK:`
 
 Commit:
 ```
-AKF: wire signup form to /api/users
+AFK: wire signup form to /api/users
 
 Issue: #204
 
@@ -201,7 +201,7 @@ Files:
 - lib/api/users.ts — POST /users client
 ```
 
-PR title: `AKF: wire signup form to /api/users`
+PR title: `AFK: wire signup form to /api/users`
 
 PR body:
 ```
@@ -262,7 +262,7 @@ Checkout charges are now idempotent on `x-request-id`; replays return the origin
 ## Checklist
 
 Before reporting done, verify:
-- [ ] Issue resolved (or created inline) + state read → correct prefix (`HITL:` or `AKF:`)
+- [ ] Issue resolved (or created inline) + state read → correct prefix (`HITL:` or `AFK:`)
 - [ ] If on default branch, a feature branch was created and confirmed
 - [ ] Commit subject ≤ 72 chars, starts with prefix + space
 - [ ] `Issue:` line present in commit body

@@ -1,6 +1,6 @@
 ---
 name: commit-push-close
-description: Ship one iteration of work on a GitHub issue — stage and commit with a structured message, push to the current branch, then close the linked GitHub issue with a comment that explains how to test the change. If no GitHub issue can be located, the skill creates one inline before committing. The commit subject prefix is chosen by the issue's state label (`HITL:` for `ready-for-human`, `AKF:` for `ready-for-agent`). Use when the user says "commit, push, and close", "ship this issue", "I'm done with this issue", or otherwise wants to wrap up work on a GitHub issue in one step.
+description: Ship one iteration of work on a GitHub issue — stage and commit with a structured message, push to the current branch, then close the linked GitHub issue with a comment that explains how to test the change. If no GitHub issue can be located, the skill creates one inline before committing. The commit subject prefix is chosen by the issue's state label (`HITL:` for `ready-for-human`, `AFK:` for `ready-for-agent`). Use when the user says "commit, push, and close", "ship this issue", "I'm done with this issue", or otherwise wants to wrap up work on a GitHub issue in one step.
 ---
 
 # commit-push-close
@@ -19,7 +19,7 @@ The subject prefix depends on the linked issue's state label:
 | Issue state          | Prefix  |
 | -------------------- | ------- |
 | `ready-for-human`    | `HITL:` |
-| `ready-for-agent`    | `AKF:`  |
+| `ready-for-agent`    | `AFK:`  |
 | neither              | ask the user which to use |
 | no linked issue      | create one inline (see **Inline issue creation**) — the user picks the state label during creation, which fixes the prefix |
 
@@ -30,11 +30,11 @@ Read state with: `gh issue view <num> --json state,labels,title,url`. Match labe
 When step 2 of the workflow can't locate an issue, create one before committing. Do **not** invent an issue number, and do **not** continue without an issue.
 
 1. Draft from the diff:
-   - **Title** — imperative, ≤ 72 chars, no `HITL:`/`AKF:` prefix (the prefix belongs to the commit, not the issue title).
+   - **Title** — imperative, ≤ 72 chars, no `HITL:`/`AFK:` prefix (the prefix belongs to the commit, not the issue title).
    - **Body** — short problem/intent statement + what this change does + how to test (mirrors the close-comment shape so the closing comment can extend it). Keep under ~15 lines.
 2. Ask the user to pick the state label so the commit prefix is determined:
    - `ready-for-human` → commit prefix `HITL:`
-   - `ready-for-agent` → commit prefix `AKF:`
+   - `ready-for-agent` → commit prefix `AFK:`
 3. Show the user the draft (title + body + chosen state) and wait for approval. This is folded into the single combined approval in step 6 of the workflow — don't ask twice.
 4. Create with:
    ```bash
@@ -68,7 +68,7 @@ Notes:
 ```
 
 Rules:
-- Subject ≤ 72 chars, starts with `HITL:` or `AKF:` + space, imperative mood.
+- Subject ≤ 72 chars, starts with `HITL:` or `AFK:` + space, imperative mood.
 - Always keep the subject and the `Issue:` line. Omit any other section that has nothing to say.
 - `Files:` lists meaningful changes, not every touched file.
 - `Notes:` is for the next iteration. Skip if truly nothing.
@@ -114,7 +114,7 @@ Rules for **How to test**:
    - Conversation context
    If no issue can be located, switch to **Inline issue creation** (see section above): draft title/body from the diff, ask the user for the state label, fold the issue draft into the combined approval, then `gh issue create`. Use the returned number for the rest of the workflow.
 
-3. **Read issue state** — for issues that already existed, run `gh issue view <num> --json state,labels,title,url` and pick `HITL:` or `AKF:` per the table. If neither label is present, ask. For issues just created inline, skip this step — the prefix is already fixed by the label set at creation.
+3. **Read issue state** — for issues that already existed, run `gh issue view <num> --json state,labels,title,url` and pick `HITL:` or `AFK:` per the table. If neither label is present, ask. For issues just created inline, skip this step — the prefix is already fixed by the label set at creation.
 
 4. **Draft the commit message** from the diff (subject, decisions, files, notes per format above).
 
@@ -132,7 +132,7 @@ Rules for **How to test**:
 8. **Commit** with HEREDOC:
    ```bash
    git commit -m "$(cat <<'EOF'
-   AKF: <subject>
+   AFK: <subject>
 
    Issue: #123
 
@@ -172,11 +172,11 @@ Rules for **How to test**:
 
 ## Examples
 
-### Minimal — `AKF:`
+### Minimal — `AFK:`
 
 Commit:
 ```
-AKF: wire signup form to /api/users
+AFK: wire signup form to /api/users
 
 Issue: #204
 
@@ -237,7 +237,7 @@ Notes: Stripe webhook path still unguarded — see follow-up #419.
 ## Checklist
 
 Before marking the iteration done, verify:
-- [ ] Issue resolved (or created inline) + state read → correct prefix (`HITL:` or `AKF:`)
+- [ ] Issue resolved (or created inline) + state read → correct prefix (`HITL:` or `AFK:`)
 - [ ] Commit subject ≤ 72 chars, starts with prefix + space
 - [ ] `Issue:` line present in commit body
 - [ ] No secret files staged

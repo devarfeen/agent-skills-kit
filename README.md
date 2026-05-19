@@ -294,7 +294,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill commit-
 - Resolves the linked GitHub issue from the branch name, recent commits, or conversation context (asks if it cannot find one)
 - Reads issue state via `gh issue view --json state,labels,title` and picks the commit subject prefix from the state label:
   - `ready-for-human` → `HITL:`
-  - `ready-for-agent` → `AKF:`
+  - `ready-for-agent` → `AFK:`
   - neither label or no issue → asks the user; never guesses
 - Writes a structured commit message: `<PREFIX> <subject>` + `Issue:` line + optional `Decisions:` / `Files:` / `Notes:` sections
 - Honors hooks (no `--no-verify`), refuses to stage secret-pattern files, and stages explicitly by path (no `git add -A`)
@@ -332,9 +332,9 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill commit-
 - Resolves the linked GitHub issue from the branch name, recent commits, or conversation context (asks if it cannot find one)
 - Reads issue state via `gh issue view --json state,labels,title,url` and picks the commit subject prefix from the state label:
   - `ready-for-human` → `HITL:`
-  - `ready-for-agent` → `AKF:`
+  - `ready-for-agent` → `AFK:`
   - neither label or no issue → asks the user; never guesses
-- If the current branch is the repo default (`main` / `master`), proposes a feature branch (`hitl/<num>-<slug>` or `akf/<num>-<slug>`) and waits for the user to confirm before checking it out
+- If the current branch is the repo default (`main` / `master`), proposes a feature branch (`hitl/<num>-<slug>` or `afk/<num>-<slug>`) and waits for the user to confirm before checking it out
 - Writes a structured commit message: `<PREFIX> <subject>` + `Issue:` line + optional `Decisions:` / `Files:` / `Notes:` sections
 - Honors hooks (no `--no-verify`), refuses to stage secret-pattern files, and stages explicitly by path (no `git add -A`)
 - Pushes with `-u origin <branch>` if no upstream is set
