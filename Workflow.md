@@ -56,6 +56,15 @@ Subagent default: before substantial work, split the task into independent lanes
 /agents-md -> /setup-matt-pocock-skills -> /feature-discovery -> /feature-prompt -> /grill-with-docs -> /to-prd -> /to-issues -> /triage -> /tdd -> /commit-push-pr -> /release-notes
 ```
 
+## Planned Vs Ad Hoc Issue Flow
+
+Use two valid issue paths:
+
+- **Planned work:** `/feature-discovery` -> `/to-issues` -> `/triage` -> `/tdd` -> `/commit-push-*`. The GitHub issue exists before coding. Matt Pocock's `/triage` owns readiness, labels, and agent brief quality. Implementation starts only when the issue has exactly one category label (`bug` or `enhancement`) and a ready state label (`ready-for-agent` or `ready-for-human`).
+- **Ad hoc work:** one-line request -> `/diagnose` or direct fix -> `/tdd` when useful -> `/commit-push-*`. Do not fabricate a detailed GitHub issue before coding. The ship skill creates the issue at the end from the original request, final diff, decisions, and validation.
+
+If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, stop and route it through `/triage`, `/feature-prompt`, or `/to-issues` before continuing.
+
 ## Workflow Gates
 
 | Gate | Skill | Continue When |
@@ -69,7 +78,7 @@ Subagent default: before substantial work, split the task into independent lanes
 | Triage | `/triage` | Issue state is clear and Agent Brief is present. |
 | Build | `/tdd` | Failure verified (Red), Fix verified (Green). |
 | Ship | `/commit-push-*` | Branch pushed and issue/PR linked with test proof. |
-| Release | `/release-notes` | PM-friendly summary saved to `docs/adr/`. |
+| Release | `/release-notes` | PM-friendly summary saved to `docs/release-notes/`. |
 
 ## Recovery Loops
 

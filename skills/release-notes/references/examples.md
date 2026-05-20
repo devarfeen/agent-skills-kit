@@ -34,7 +34,7 @@ PARTNERS-APP
 
 # Detailed Release Notes
 
-## Partners App
+## PARTNERS-APP
 
 ### Scanner Now Checks Readiness Before Scanning
 
@@ -52,7 +52,7 @@ PARTNERS-APP
 - Fewer failed scans and retries during busy shifts.
 
 **Scope**
-- Stock Lookup screen in Partners App.
+- Stock Lookup screen in PARTNERS-APP.
 
 **Manual QA Steps**
 1. Open Stock Lookup and start a scan → "Ready" status should appear before the scan begins.
@@ -77,7 +77,7 @@ PARTNERS-APP
 - Support can troubleshoot without calling the partner.
 
 **Scope**
-- Field Support screen in Partners App.
+- Field Support screen in PARTNERS-APP.
 
 **Manual QA Steps**
 1. Log in as field support and open a partner's Activity Log → Recent actions should appear with timestamps.
@@ -106,7 +106,7 @@ PARTNERS-APP
 
 # Detailed Release Notes
 
-## Partners App
+## PARTNERS-APP
 
 ### Scanner Now Checks Readiness Before Scanning
 
@@ -124,7 +124,7 @@ PARTNERS-APP
 - Fewer failed scans during stock checks.
 
 **Scope**
-- Stock Lookup screen in Partners App.
+- Stock Lookup screen in PARTNERS-APP.
 
 **Manual QA Steps**
 1. Open Stock Lookup and start a scan → "Ready" indicator should appear first.
@@ -151,7 +151,7 @@ PARTNERS-APP
 
 # Detailed Release Notes
 
-## Partners App
+## PARTNERS-APP
 
 ### Consistent Scanner Setup Across All Screens
 
@@ -168,7 +168,7 @@ PARTNERS-APP
 - Scanning works the same way no matter which screen you're on.
 
 **Scope**
-- All scanner-enabled screens in Partners App.
+- All scanner-enabled screens in PARTNERS-APP.
 
 **Manual QA Steps**
 1. Open any scanner screen and start a scan → Scanner should finish setup before scan begins.
@@ -232,7 +232,7 @@ This example shows the same work described in bad (verbose/corporate) style vs g
 Write release notes for the RFID scanning improvements
 
 ### Example Output
-## Partners App
+## PARTNERS-APP
 
 ### RFID Scanning Improvements
 
@@ -271,7 +271,21 @@ Generate release notes for 12 March 2026 across all projects
 - Do not include CUSTOMER-PORTAL because it has no confirmed changes.
 
 ### Example Output
+# Stakeholder Summary
+
 Date: 12 March 2026
+
+PARTNERS-APP
+
+- Scanner startup is more consistent, so teams see fewer failed first scans
+
+WAREHOUSE-ADMIN
+
+- Intake warnings are clearer, so users can fix missing fields before submitting
+
+---
+
+# Detailed Release Notes
 
 ## PARTNERS-APP
 
@@ -292,6 +306,11 @@ Date: 12 March 2026
 
 **Scope**
 - RFID-enabled operational flows in PARTNERS-APP.
+
+**Manual QA Steps**
+1. Open an RFID scan screen -> Scan status should be visible before scanning.
+2. Start a scan -> The first scan should complete without a startup failure.
+3. Leave and return to the scan screen -> Scanner setup should still behave the same way.
 
 **Commits Included**
 - 148cfb8f, f626e8fa
@@ -316,12 +335,17 @@ Date: 12 March 2026
 **Scope**
 - Intake flow for warehouse supervisors.
 
+**Manual QA Steps**
+1. Open the intake page with a missing required field -> A clear warning should appear.
+2. Fill the missing field -> The warning should clear.
+3. Submit a complete intake form -> The form should submit normally.
+
 **Commits Included**
 - a1b2c3d4
 
 ## Example 6: Output File Naming
 
-Release notes live in `<artifacts-root>/docs/adr/` alongside ADRs. The `-release-notes` suffix distinguishes them from ADRs (no suffix). Feature prompts (`-prompt`) live in the sibling `<artifacts-root>/docs/prompt/` folder. Numbering is shared globally across both folders — replace `0042` below with the next available number across `<artifacts-root>/docs/adr/` and `<artifacts-root>/docs/prompt/` combined.
+Release notes live in `<artifacts-root>/docs/release-notes/`. They are on-demand date files and do not use the ADR/prompt `NNNN` sequence. Feature prompts (`-prompt`) live in the sibling `<artifacts-root>/docs/prompts/` folder.
 
 `<artifacts-root>` resolves to (1) the directory containing the `*.code-workspace` file when a VS Code workspace is present, (2) the per-context root in a multi-context repo (`CONTEXT-MAP.md` at root), or (3) the repo root for single-repo projects. Workspace mode is preferred — it keeps artifacts out of individual project repos.
 
@@ -329,12 +353,12 @@ Release notes live in `<artifacts-root>/docs/adr/` alongside ADRs. The `-release
 Generate release notes for 12 March 2026
 
 ### Expected Output File
-- Workspace mode: `<workspace-dir>/docs/adr/0042-12-march-2026-release-notes.md`
-- Single repo: `docs/adr/0042-12-march-2026-release-notes.md`
+- Workspace mode: `<workspace-dir>/docs/release-notes/12-March-2026.md`
+- Single repo: `docs/release-notes/12-March-2026.md`
 
 ### User Request
-Write release notes for RFID Scanner Reliability
+Write release notes for RFID Scanner Reliability for 12 March 2026
 
 ### Expected Output File
-- Workspace mode: `<workspace-dir>/docs/adr/0042-rfid-scanner-reliability-release-notes.md`
-- Single repo: `docs/adr/0042-rfid-scanner-reliability-release-notes.md`
+- Workspace mode: `<workspace-dir>/docs/release-notes/12-March-2026.md`
+- Single repo: `docs/release-notes/12-March-2026.md`

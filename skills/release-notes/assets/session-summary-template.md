@@ -8,9 +8,12 @@
 
 # Detailed Release Notes
 
-## <Full Project Code>
+## <FULL-PROJECT-CODE>
 
 ### <Improvement Name>
+
+**Summary**
+- <One sentence: what is better now>
 
 **Problem**
 - <What issue or limitation existed>
@@ -21,5 +24,13 @@
 **Impact**
 - <What improved as a result>
 
+**Scope**
+- <Which screen/app/user group is affected>
+
 **Manual QA Steps**
-- <Generate 3-5 steps inline: Action → Expected Result>
+1. <Do X → Y should happen>
+2. <Do X → Y should happen>
+3. <Do X → Y should happen>
+
+**Commits Included**
+- <commit-hash-1>, <commit-hash-2>

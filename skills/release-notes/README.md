@@ -15,7 +15,7 @@ npx skills update https://github.com/devarfeen/agent-skills-kit --skill release-
 ```
 
 ## Supports
-- Date-based changelogs (single date or date range)
+- Date-based release notes (single date or date range)
 - All-project or single-project summaries
 - Session summaries (current dev session)
 - Feature summaries (completed feature/task)
@@ -26,7 +26,7 @@ npx skills update https://github.com/devarfeen/agent-skills-kit --skill release-
 ## Example Requests
 - Generate release notes for 11 March 2026
 - Generate release notes for PARTNERS-APP on 11 March
-- Create changelog for all projects on 15 April
+- Generate release notes for all projects on 15 April
 - Summarize today's development session
 - Write release notes for the RFID scanning improvements
 - Summarize what we changed this session
@@ -51,7 +51,7 @@ Full structured entries per feature:
 - Manual QA Steps
 - Commits Included
 
-Required section order is strict: Date -> Stakeholder Summary -> --- -> Detailed Release Notes -> Project -> Feature -> Child sections.
+Required section order is strict: Stakeholder Summary -> optional Date -> --- -> Detailed Release Notes -> Project -> Feature -> Child sections.
 
 Only include project sections that have confirmed changes in the selected commit/session scope.
 
@@ -67,11 +67,11 @@ Each feature entry includes a **Manual QA Steps** section:
 - If a detail is not present in commit history, state that clearly instead of guessing.
 
 ## Output File Location
-- Save all generated notes under `<artifacts-root>/docs/adr/`, alongside ADRs. Suffix `-release-notes` distinguishes them from ADRs (no suffix). Feature prompts (`-prompt`) live in the sibling `<artifacts-root>/docs/prompt/` folder.
+- Save all generated notes under `<artifacts-root>/docs/release-notes/`. Release notes are on-demand date files and do not share the ADR/prompt `NNNN` sequence. Feature prompts (`-prompt`) live in the sibling `<artifacts-root>/docs/prompts/` folder.
 - Resolve `<artifacts-root>` in this order: (1) directory containing a `*.code-workspace` file if one exists, (2) per-context root in a multi-context repo (`CONTEXT-MAP.md` at root), (3) the single repo root. Workspace mode is preferred — it keeps artifacts out of individual project repos.
-- Date-based or session summary: `<artifacts-root>/docs/adr/NNNN-DD-month-YYYY-release-notes.md` (workspace example: `<workspace-dir>/docs/adr/0042-12-march-2026-release-notes.md`; single repo: `docs/adr/0042-12-march-2026-release-notes.md`)
-- Feature-based summary: `<artifacts-root>/docs/adr/NNNN-<feature-slug>-release-notes.md` (workspace example: `<workspace-dir>/docs/adr/0042-rfid-scanner-reliability-release-notes.md`; single repo: `docs/adr/0042-rfid-scanner-reliability-release-notes.md`)
-- Slug is kebab-case, ASCII; `NNNN` is one greater than the highest existing number across **both** `<artifacts-root>/docs/adr/` and `<artifacts-root>/docs/prompt/` (numbering is shared globally across all artifact types).
+- Date-based, feature, or session summary: `<artifacts-root>/docs/release-notes/D-Month-YYYY.md` (workspace example: `<workspace-dir>/docs/release-notes/10-March-2026.md`; single repo: `docs/release-notes/10-March-2026.md`)
+- Date range summary: `<artifacts-root>/docs/release-notes/D-Month-YYYY-to-D-Month-YYYY.md` (example: `10-March-2026-to-12-March-2026.md`)
+- Date filenames use no leading zero for the day and Title Case English month names.
 
 The output is designed for Project Managers and other non-technical stakeholders.
 

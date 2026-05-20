@@ -110,26 +110,26 @@ Save the final artifact so `grill-with-docs`, `to-prd`, `to-issues`, and `releas
 ### Path
 
 ```text
-<artifacts-root>/docs/prompt/NNNN-<feature-slug>-prompt.md
+<artifacts-root>/docs/prompts/NNNN-<feature-slug>-prompt.md
 ```
 
-Prompts live in `docs/prompt/`, a sibling of `docs/adr/`. Prompts, ADRs, and release notes share one number sequence. The `-prompt` suffix marks the artifact type.
+Prompts live in `docs/prompts/`, a sibling of `docs/adr/`. Prompt and ADR filenames both start with the same four-digit `NNNN-<slug>` shape; prompts add the `-prompt` suffix to mark the artifact type. Prompts and ADRs share one `NNNN` number sequence. Release notes are on-demand artifacts under `docs/release-notes/` and do not use this sequence.
 
 #### Resolve `<artifacts-root>`
 
 1. **VS Code workspace:** If a `*.code-workspace` file is found at or above cwd, write to the directory containing it.
-2. **Multi-context repo:** If no workspace exists but root `CONTEXT-MAP.md` exists, write to the relevant context's `docs/prompt/`.
-3. **Single repo:** Fall back to repo root `docs/prompt/`.
+2. **Multi-context repo:** If no workspace exists but root `CONTEXT-MAP.md` exists, write to the relevant context's `docs/prompts/`.
+3. **Single repo:** Fall back to repo root `docs/prompts/`.
 
-Use the same `<artifacts-root>` for numbering. Scan `<artifacts-root>/docs/adr/` and `<artifacts-root>/docs/prompt/` for the highest existing number, then increment by one.
+Use the same `<artifacts-root>` for numbering. Scan `<artifacts-root>/docs/adr/` and `<artifacts-root>/docs/prompts/` for the highest existing number, then increment by one.
 
-- **`NNNN`:** four-digit sequence shared across prompt, ADR, and release-note artifacts.
+- **`NNNN`:** four-digit sequence shared across prompt and ADR artifacts only.
 - **`<feature-slug>`:** kebab-case from `What is needed`, max 4 words, ASCII only.
 - **`-prompt`:** fixed suffix.
 
 ### Conflict Handling
 
-- Create `docs/prompt/` lazily.
+- Create `docs/prompts/` lazily.
 - Never overwrite a number already used by another artifact.
 - If an unchanged prior `*-prompt.md` exists for the same slug, overwrite in place.
 - If a same-slug prompt has hand edits, show the diff and ask whether to overwrite, write a new numbered revision, or abort.

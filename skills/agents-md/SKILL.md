@@ -49,13 +49,13 @@ Every generated `AGENTS.md` must include the following fourteen principles as no
    - `pyproject.toml`, `requirements.txt`, `uv.lock`, `poetry.lock`
    - `go.mod`, `Cargo.toml`, `Gemfile`, `composer.json`
    - `Dockerfile`, `docker-compose.yml`, Terraform files, mobile app configs
-8. Check whether `CONTEXT.md` or any artifacts under `docs/adr/` and `docs/prompt/` exist. Look first at the `<artifacts-root>` (see below); fall back to the repo root only when no workspace is present. Three artifact types live in sibling folders, distinguished by location and filename suffix:
+8. Check whether `CONTEXT.md` or any artifacts under `docs/adr/`, `docs/prompts/`, and `docs/release-notes/` exist. Look first at the `<artifacts-root>` (see below); fall back to the repo root only when no workspace is present. Three artifact types live in sibling folders, distinguished by location and filename suffix:
    - `<artifacts-root>/docs/adr/NNNN-<slug>.md` — ADR (no suffix), written by `grill-with-docs`.
-   - `<artifacts-root>/docs/prompt/NNNN-<slug>-prompt.md` — feature prompt, written by `feature-prompt`.
-   - `<artifacts-root>/docs/adr/NNNN-<slug>-release-notes.md` — release notes, written by `release-notes`.
-     All three share one global numbering sequence across both folders so the union reads chronologically. Reference them as required domain context when present. If none exists and terminology matters, note that domain language is sharpened inline by the `grill-with-docs` skill, which writes to `CONTEXT.md` and ADRs as decisions crystallise.
+   - `<artifacts-root>/docs/prompts/NNNN-<slug>-prompt.md` — feature prompt, written by `feature-prompt`.
+   - `<artifacts-root>/docs/release-notes/D-Month-YYYY.md` — on-demand release notes, written by `release-notes`.
+     ADRs and prompts share one global `NNNN` numbering sequence across `docs/adr/` and `docs/prompts/`. Release notes do not use that sequence; they are date-based and live under `docs/release-notes/`. Reference these artifacts as required domain context when present. If none exists and terminology matters, note that domain language is sharpened inline by the `grill-with-docs` skill, which writes to `CONTEXT.md` and ADRs as decisions crystallise.
 
-   `<artifacts-root>` resolves as: (1) the directory containing the `*.code-workspace` file if a VS Code workspace is detected — this is the same location as the meta-workspace folder (`path: "."`); (2) else the per-context root for multi-context repos with a root `CONTEXT-MAP.md`; (3) else the repo root for single-repo projects. Workspace mode is preferred: it keeps prompts/ADRs/release notes centralized instead of scattering them across project repos.
+   `<artifacts-root>` resolves as: (1) the directory containing the `*.code-workspace` file if a VS Code workspace is detected — this is the same location as the meta-workspace folder (`path: "."`); (2) else the per-context root for multi-context repos with a root `CONTEXT-MAP.md`; (3) else the repo root for single-repo projects. Workspace mode is preferred: it keeps prompts, ADRs, and release notes centralized instead of scattering them across project repos.
 
 Use structured parsing when available. For `.code-workspace`, prefer JSON parsing that tolerates comments if the local toolchain supports it. If not, read carefully and avoid corrupting paths.
 
@@ -85,6 +85,21 @@ Project code rules:
 - If two projects collide, add a qualifier: `ADMIN-WEB`, `ADMIN-API`.
 - Do not rename existing project codes in an existing `AGENTS.md` unless the user asks.
 - Mark the VS Code workspace folder with `path: "."` as `Meta workspace, no code`.
+
+## GitHub Issue Title Conventions
+
+Generated `AGENTS.md` files must include issue-title rules that make PRD and slice issues easy to locate from GitHub search and from the ADR filename:
+
+- **PRD issues:** title exactly starts with `PRD: <adr-name>`.
+  - Use the ADR basename exactly as it appears under `docs/adr/`, but remove the `.md` extension.
+  - Example: `PRD: 0042-stock-transfer-approvals`.
+- **PRD slice issues:** title exactly starts with `Slice NNNN of PRD: <adr-name> - <Short heading>`.
+  - `NNNN` is a zero-padded four-digit slice number local to that PRD, starting at `0001`.
+  - Keep `<Short heading>` concise, action-oriented, and specific enough to scan in an issue list.
+  - Example: `Slice 0001 of PRD: 0042-stock-transfer-approvals - Add approval state model`.
+- **Labels:** Follow Matt Pocock's triage roles. Every triaged issue should have exactly one category label (`bug` or `enhancement`) and exactly one state label (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, or `wontfix`).
+- **Routing state:** Do not encode `HITL:` or `AFK:` in GitHub issue titles, commit subjects, PR titles, or branch names. Use state labels instead: `ready-for-human` for human-ready work and `ready-for-agent` for agent-ready work.
+- **Non-PRD implementation issues:** prefer `<PROJECT-CODE>: <short imperative heading>` when the issue is not tied to a PRD. Keep the full Project Matrix code; never abbreviate it.
 
 ## AGENTS.md Structure
 
@@ -118,6 +133,14 @@ Follow these 14 rules. They are non-negotiable and must be fully enforced. Bias 
 | ------------------- | ---- | ---------- |
 | ...                 | ...  | ...        |
 
+## GitHub Issue Titles
+
+- PRD issues: `PRD: <adr-name>`. Use the ADR basename exactly as it appears under `docs/adr/`, but remove `.md`.
+- PRD slice issues: `Slice NNNN of PRD: <adr-name> - <Short heading>`. Use four digits, local to the PRD, starting at `0001`.
+- Every triaged issue needs exactly one category label (`bug` or `enhancement`) and exactly one state label (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, or `wontfix`).
+- Do not put `HITL:` or `AFK:` in issue titles, commit subjects, PR titles, or branch names. Use `ready-for-human` or `ready-for-agent` state labels for routing.
+- Non-PRD implementation issues: prefer `<PROJECT-CODE>: <short imperative heading>` and keep the full Project Matrix code.
+
 ## Operating Protocol
 
 - **Discovery:** Map project codes to roots via package/config files. Use efficient search tools.
@@ -126,11 +149,12 @@ Follow these 14 rules. They are non-negotiable and must be fully enforced. Bias 
 - **Domain:** Read `CONTEXT.md` and `docs/adr/` before implementation. ADRs are binding.
 - **Validation:** Run targeted tests and workspace-standard checks (`tsc`, `lint`, `build`) after every edit.
 - **Completion:** Final report must include explicit validation performed and any remaining risks.
+- **Planned vs Ad Hoc Issues:** Planned work starts from a GitHub issue that has passed Matt Pocock's `/triage`: exactly one category label (`bug` or `enhancement`) and a ready state label (`ready-for-agent` or `ready-for-human`). Small ad hoc work may start from a one-line request without a GitHub issue; in that case, do the work first and let `commit-push-pr` or `commit-push-close` create the issue at ship time from the original request, final diff, decisions, and validation. If ad hoc work becomes large, ambiguous, cross-project, or multi-slice, stop and route it through `/triage`, `/feature-prompt`, or `/to-issues`.
 - **TDD Skill Defaults:** When the `tdd` skill is invoked, apply these standing defaults unless the user overrides them in the same turn:
-  - Slices already have GitHub issues. Work through every slice; do not stop after one unless instructed.
+  - Slices already have GitHub issues. PRD slices use titles like `Slice NNNN of PRD: <adr-name> - <Short heading>` where `<adr-name>` excludes `.md`. Work through every slice for the PRD; do not stop after one unless instructed.
   - Fully complete a slice before moving on. After each slice, produce a hand-off document and a kickoff prompt, then ask the user to start a new session for the next slice.
   - Parallelize with sub-agents or agents whenever steps are independent.
-  - **Decision points (HITL vs AFK):** Only ask the user a question or present recommendations when the GitHub issue title is prefixed `HITL:` — and even then, present a short menu of recommended options that best fit the concern rather than open-ended questions. For all other issues (default/`AFK:` prefix), treat the work as fully autonomous: auto-select the recommended option at every decision point and proceed. Surface the choices made in the hand-off document at the end of the slice instead of mid-flight. **Recommended options must be sourced from ADRs (`docs/adr/`), the GitHub issue body/comments, or the slice definition itself — never self-invented.** If no grounded option exists, stop and surface the gap rather than fabricating one.
+  - **Decision points (HITL vs AFK):** Only ask the user a question or present recommendations when the GitHub issue has the `ready-for-human` label — and even then, present a short menu of recommended options that best fit the concern rather than open-ended questions. For `ready-for-agent` issues, treat the work as fully autonomous: auto-select the recommended option at every decision point and proceed. Surface the choices made in the hand-off document at the end of the slice instead of mid-flight. **Recommended options must be sourced from ADRs (`docs/adr/`), the GitHub issue body/comments, or the slice definition itself — never self-invented.** If no grounded option exists, stop and surface the gap rather than fabricating one.
   - Keep the corresponding GitHub issue updated with the current status of internal cycles and slices as work progresses.
   - Follow every relevant `AGENTS.md` in the workspace.
   - If context approaches 200K tokens, prefer handing off to a new session; otherwise operate as an orchestrator dispatching sub-agents in parallel.
@@ -210,5 +234,5 @@ Project codes:
 Notes:
 
 - [VS Code workspace detected / not detected.]
-- [CONTEXT.md / \`docs/adr/\` (ADRs, \`*-release-notes.md\`) / \`docs/prompt/\` (\`*-prompt.md\`) artifacts referenced, or noted as to-be-produced inline by \`grill-with-docs\` / \`feature-prompt\` / \`release-notes\`.]
+- [CONTEXT.md / \`docs/adr/\` (ADRs) / \`docs/prompts/\` (\`*-prompt.md\`) / \`docs/release-notes/\` (\`D-Month-YYYY.md\`) artifacts referenced, or noted as to-be-produced inline by \`grill-with-docs\` / \`feature-prompt\` / \`release-notes\`.]
 ```

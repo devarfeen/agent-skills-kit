@@ -1,6 +1,6 @@
 ---
 name: commit-push-pr
-description: Ship one iteration of work on a GitHub issue as a pull request — stage and commit with a structured message, push the current branch, and open a PR that uses `Closes #N` to auto-close the linked issue on merge. If no GitHub issue can be located, the skill creates one inline before committing. The commit subject prefix is chosen by the issue's state label (`HITL:` for `ready-for-human`, `AFK:` for `ready-for-agent`). Use when the user says "commit, push, and open a PR", "ship this as a PR", "PR this issue", or otherwise wants to wrap up issue work as a reviewable PR rather than a direct close.
+description: Ship one iteration of work on a GitHub issue as a pull request — stage and commit with a structured message, push the current branch, and open a PR that uses `Closes #N` to auto-close the linked issue on merge. If no GitHub issue can be located, the skill creates one inline before committing for valid small ad hoc work. Routing state lives in issue labels, not commit or PR title markers. Use when the user says "commit, push, and open a PR", "ship this as a PR", "PR this issue", or otherwise wants to wrap up issue work as a reviewable PR rather than a direct close.
 ---
 
 # commit-push-pr
@@ -8,34 +8,36 @@ description: Ship one iteration of work on a GitHub issue as a pull request — 
 Ship one GitHub-issue iteration as a reviewable PR (with an inline create-if-missing step for the issue):
 
 1. **Resolve or create** the GitHub issue.
-2. **Commit** the diff with a structured message (prefix chosen by issue state).
+2. **Commit** the diff with a structured message.
 3. **Push** the current branch (auto-create one off `main`/`master` first).
 4. **Open a PR** with `Closes #N`, a summary, and a how-to-test plan.
 
-## Prefix selection
+## Label validation
 
-The subject prefix depends on the linked issue's state label:
+Routing state lives in the linked issue's labels. Do not add `HITL:` or `AFK:` to commit subjects, PR titles, branch names, or GitHub issue titles.
 
-| Issue state          | Prefix  |
-| -------------------- | ------- |
-| `ready-for-human`    | `HITL:` |
-| `ready-for-agent`    | `AFK:`  |
-| neither              | ask the user |
-| no linked issue      | create one inline (see **Inline issue creation**) — the user picks the state label during creation, which fixes the prefix |
+| Issue labels        | Action |
+| ------------------- | ------ |
+| exactly one category label (`bug` or `enhancement`) and state `ready-for-agent` | proceed |
+| exactly one category label (`bug` or `enhancement`) and state `ready-for-human` | proceed, keeping any human-decision notes in the commit/PR body |
+| missing/conflicting labels, `needs-triage`, `needs-info`, or `wontfix` | stop and route through `/triage` unless this is valid ad hoc inline issue creation |
+| no linked issue | create one inline only for valid ad hoc work (see **Inline issue creation**) |
 
 Read state with: `gh issue view <num> --json state,labels,title,url`. Match label names exactly.
 
 ## Inline issue creation
 
-When step 2 of the workflow can't locate an issue, create one before committing. Do **not** invent an issue number, and do **not** continue without an issue.
+Inline issue creation is only for small ad hoc work that started from a short request with no linked GitHub issue. Planned work should already have gone through Matt Pocock's `/triage`; if a planned issue is missing, not ready, ambiguous, cross-project, or multi-slice, stop and route back to `/triage`, `/feature-prompt`, or `/to-issues` instead of fabricating a ship-time issue.
+
+When step 2 of the workflow can't locate an issue for valid ad hoc work, create one before committing. Do **not** invent an issue number, and do **not** continue without an issue.
 
 1. Draft from the diff:
-   - **Title** — imperative, ≤ 72 chars, no `HITL:`/`AFK:` prefix (the prefix belongs to the commit/PR, not the issue title).
-   - **Body** — short problem/intent statement + what this change does + how to test. Keep under ~15 lines. The PR body's `Closes #N` will reference this issue.
-2. Ask the user to pick the state label so the commit prefix is determined:
-   - `ready-for-human` → commit/PR prefix `HITL:`
-   - `ready-for-agent` → commit/PR prefix `AFK:`
-3. Show the user the draft (title + body + chosen state) and wait for approval. This is folded into the single combined approval in step 7 of the workflow — don't ask twice.
+   - **Title** — imperative, concise, no `HITL:`/`AFK:` marker. This title becomes the commit subject and PR title, so make it specific and traceable.
+   - **Body** — generate from the original request, final diff, decisions made during the fix, files changed, and validation/how-to-test. Keep under ~20 lines. The PR body's `Closes #N` will reference this issue.
+2. Choose labels:
+   - Category: `bug` for broken behavior; `enhancement` for new feature/improvement. If unclear, ask.
+   - State: `ready-for-agent` when the agent completed the work autonomously; `ready-for-human` when human judgment, external access, or manual review was required.
+3. Show the user the draft (title + body + chosen labels) and wait for approval. This is folded into the single combined approval in step 7 of the workflow — don't ask twice.
 4. Create with:
    ```bash
    gh issue create \
@@ -44,14 +46,24 @@ When step 2 of the workflow can't locate an issue, create one before committing.
    <body>
    EOF
    )" \
+     --label "<category-label>" \
      --label "<state-label>"
    ```
 5. Capture the returned issue number from the URL/output and use it as `<num>` for the rest of the workflow (commit `Issue:` line, PR `Closes #<num>`). Skip the "read state" call — the label was set at creation.
 
+## Naming anchor
+
+Use the GitHub issue title as the naming anchor:
+
+- Existing issue: commit subject and PR title should match the issue title as closely as practical.
+- PRD slice issue: preserve `Slice NNNN` and the short heading. If the full `Slice NNNN of PRD: <adr-name> - <Short heading>` title is too long for a commit subject, shorten only the PRD name portion; keep the slice number and short heading intact.
+- Ad hoc inline issue: the new issue title, commit subject, and PR title must be the same text unless a hard tool limit prevents it.
+- Never add `HITL:` or `AFK:` to any of these names.
+
 ## Commit message format
 
 ```
-<PREFIX> <one-line summary of the task completed>
+<issue title or closest practical match>
 
 Issue: #<num>
 
@@ -68,16 +80,16 @@ Notes:
 ```
 
 Rules:
-- Subject ≤ 72 chars, starts with `HITL:` or `AFK:` + space, imperative mood.
+- Subject mirrors the GitHub issue title as closely as practical, no `HITL:` or `AFK:` marker.
 - Always keep the subject and the `Issue:` line. Omit any other section that has nothing to say.
 - Body under ~20 lines.
 
 ## PR title and body
 
-**Title** mirrors the commit subject, including prefix:
+**Title** mirrors the commit subject:
 
 ```
-<PREFIX> <one-line summary>
+<same text as commit subject>
 ```
 
 **Body**:
@@ -119,24 +131,24 @@ The `Closes #N` line is mandatory and must be on its own line near the top of th
    - `git remote get-url origin`
    - Detect default branch: `gh repo view --json defaultBranchRef -q .defaultBranchRef.name` (fallback: `main`).
 
-2. **Resolve or create the issue** — branch name → recent commits → conversation context. If none, switch to **Inline issue creation** (see section above): draft title/body from the diff, ask the user for the state label, fold the issue draft into the combined approval, then `gh issue create`. Use the returned number for the rest of the workflow.
+2. **Resolve or create the issue** — branch name → recent commits → conversation context. If none, switch to **Inline issue creation** only for valid small ad hoc work (see section above): draft title/body from the original request + diff, choose category/state labels, fold the issue draft into the combined approval, then `gh issue create`. Use the returned number for the rest of the workflow.
 
-3. **Read issue state** — for issues that already existed, run `gh issue view <num> --json state,labels,title,url` and pick `HITL:` or `AFK:` per the table. If neither label is present, ask. For issues just created inline, skip this step — the prefix is already fixed by the label set at creation.
+3. **Read issue labels** — for issues that already existed, run `gh issue view <num> --json state,labels,title,url`. The issue must have exactly one category label (`bug` or `enhancement`) and a ready state label (`ready-for-agent` or `ready-for-human`). If labels are missing, conflicting, or the state is `needs-triage`, `needs-info`, or `wontfix`, stop and route back to `/triage`. For issues just created inline, skip this step — labels were set at creation.
 
 4. **Branch handling** — if the current branch is `main` or `master` (or the detected default branch):
    - Stop before staging anything.
-   - Propose a feature branch name: `<prefix-lc>/<issue-num>-<slug>` where `<prefix-lc>` is `hitl` or `afk` and `<slug>` is a short kebab-case derivation of the issue title (≤ 5 words).
+   - Propose a feature branch name: `issue/<issue-num>-<slug>` where `<slug>` is a short kebab-case derivation of the issue title (≤ 5 words).
    - Wait for the user to confirm the name (offer to edit).
    - `git checkout -b <branch>` — uncommitted changes follow the checkout into the new branch.
    Otherwise, continue on the current branch.
 
-5. **Draft the commit message** from the diff (subject, decisions, files, notes per format above).
+5. **Draft the commit message** from the issue title and diff (subject, decisions, files, notes per format above). For ad hoc inline issues, the new issue title and commit subject must match.
 
-6. **Draft the PR title and body** — same prefix in title; body has `Closes #N`, summary, optional decisions, how-to-test, optional notes. If the test plan isn't obvious, ask the user before continuing.
+6. **Draft the PR title and body** — title mirrors the commit subject with no routing marker; body has `Closes #N`, summary, optional decisions, how-to-test, optional notes. If the test plan isn't obvious, ask the user before continuing.
 
 7. **Show the user the drafts** and wait for one combined approval. Do not stage, push, or call `gh pr create` before approval. The drafts shown depend on whether an issue was just created inline:
    - Existing issue: commit message + PR title + PR body.
-   - Inline-created issue: new-issue title + new-issue body + chosen state label + commit message + PR title + PR body. After approval, create the issue first, then commit/push/PR in order.
+   - Inline-created issue: new-issue title + new-issue body + chosen category/state labels + commit message + PR title + PR body. After approval, create the issue first, then commit/push/PR in order.
 
 8. **Pre-commit safety**:
    - Refuse to stage secret-pattern files: `.env`, `.env.*` (except `.env.example`), `*.pem`, `*.key`, `id_rsa*`, `credentials*.json`, `*secret*`. Warn and skip.
@@ -146,7 +158,7 @@ The `Closes #N` line is mandatory and must be on its own line near the top of th
 9. **Commit** with HEREDOC:
    ```bash
    git commit -m "$(cat <<'EOF'
-   AFK: <subject>
+   <subject>
 
    Issue: #123
 
@@ -168,7 +180,7 @@ The `Closes #N` line is mandatory and must be on its own line near the top of th
     gh pr create \
       --base "<default-branch>" \
       --head "<current-branch>" \
-      --title "AFK: <subject>" \
+      --title "<subject>" \
       --body "$(cat <<'EOF'
     Closes #123
 
@@ -184,15 +196,15 @@ The `Closes #N` line is mandatory and must be on its own line near the top of th
     ```
     - If a PR already exists for this branch (`gh pr list --head <branch> --json number`), do not create a duplicate. Update the existing PR's title/body with `gh pr edit <num>` instead, and report that path back.
 
-12. **Report** — one line: `<prefix> <SHA> pushed to <branch>; PR #<pr-num> opened (Closes #<issue-num>)`. Done.
+12. **Report** — one line: `<SHA> pushed to <branch>; PR #<pr-num> opened (Closes #<issue-num>)`. Done.
 
 ## Examples
 
-### Minimal — `AFK:`
+### Minimal
 
 Commit:
 ```
-AFK: wire signup form to /api/users
+wire signup form to /api/users
 
 Issue: #204
 
@@ -201,7 +213,7 @@ Files:
 - lib/api/users.ts — POST /users client
 ```
 
-PR title: `AFK: wire signup form to /api/users`
+PR title: `wire signup form to /api/users`
 
 PR body:
 ```
@@ -216,11 +228,11 @@ Signup form now POSTs to /api/users and surfaces server errors inline.
 3. Submit with a fresh email — expect redirect to /welcome
 ```
 
-### Full — `HITL:`
+### Full
 
 Commit:
 ```
-HITL: add idempotency keys to checkout flow
+add idempotency keys to checkout flow
 
 Issue: #418
 
@@ -237,7 +249,7 @@ Notes:
 - Stripe webhook path still unguarded — next iteration
 ```
 
-PR title: `HITL: add idempotency keys to checkout flow`
+PR title: `add idempotency keys to checkout flow`
 
 PR body:
 ```
@@ -262,9 +274,9 @@ Checkout charges are now idempotent on `x-request-id`; replays return the origin
 ## Checklist
 
 Before reporting done, verify:
-- [ ] Issue resolved (or created inline) + state read → correct prefix (`HITL:` or `AFK:`)
+- [ ] Issue resolved (or created inline) + labels read/created → one category label + ready state label
 - [ ] If on default branch, a feature branch was created and confirmed
-- [ ] Commit subject ≤ 72 chars, starts with prefix + space
+- [ ] Commit subject mirrors the GitHub issue title as closely as practical and has no routing marker
 - [ ] `Issue:` line present in commit body
 - [ ] No secret files staged
 - [ ] Hooks ran (no `--no-verify`)

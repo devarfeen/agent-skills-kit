@@ -173,30 +173,25 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill release
 | --- | --- |
 | Date-based (single date or range) | `Generate release notes for 11 March 2026` |
 | Single project on a date | `Generate release notes for PARTNERS-APP on 11 March` |
-| All projects on a date | `Create changelog for all projects on 15 April` |
+| All projects on a date | `Generate release notes for all projects on 15 April` |
 | Current dev session | `Summarize today's development session` |
 | Specific feature | `Write release notes for the QR scanning improvements` |
 
 **Output location**
 
-Generated files land in `<artifacts-root>/docs/adr/`, sharing the numbering
-sequence with ADRs and feature prompts (which live in the sibling
-`<artifacts-root>/docs/prompt/`). `<artifacts-root>` resolves to the VS Code
-workspace root when a `*.code-workspace` file is present, otherwise the repo
-root — so artifacts stay centralized and out of individual project repos
-whenever a workspace exists. Suffix `-release-notes` distinguishes release
-notes from ADRs (no suffix) and feature prompts (`-prompt`):
+Generated files land in `<artifacts-root>/docs/release-notes/`. Release notes
+are on-demand date files and do not share the ADR/prompt `NNNN` sequence.
+`<artifacts-root>` resolves to the VS Code workspace root when a
+`*.code-workspace` file is present, otherwise the repo root — so artifacts stay
+centralized and out of individual project repos whenever a workspace exists.
 
-- Date or session: `<artifacts-root>/docs/adr/NNNN-DD-month-YYYY-release-notes.md`
-  (workspace example: `<workspace-dir>/docs/adr/0042-12-march-2026-release-notes.md`;
-  single repo: `docs/adr/0042-12-march-2026-release-notes.md`)
-- Feature: `<artifacts-root>/docs/adr/NNNN-<feature-slug>-release-notes.md`
-  (workspace example: `<workspace-dir>/docs/adr/0042-rfid-scanner-reliability-release-notes.md`;
-  single repo: `docs/adr/0042-rfid-scanner-reliability-release-notes.md`)
-
-`NNNN` is one greater than the highest existing number across all artifact
-types in **both** `<artifacts-root>/docs/adr/` and `<artifacts-root>/docs/prompt/`,
-so the union reads chronologically.
+- Date, feature, or session:
+  `<artifacts-root>/docs/release-notes/D-Month-YYYY.md`
+  (workspace example: `<workspace-dir>/docs/release-notes/10-March-2026.md`;
+  single repo: `docs/release-notes/10-March-2026.md`)
+- Date range:
+  `<artifacts-root>/docs/release-notes/D-Month-YYYY-to-D-Month-YYYY.md`
+  (example: `10-March-2026-to-12-March-2026.md`)
 
 **Manual QA steps**
 
@@ -263,7 +258,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
   `CONTEXT.md` updates with short descriptions for user approval
 - Applies approved `CONTEXT.md` updates only as a separate documentation step
 - Sends non-trivial or inferred drafts to the user for one correction pass
-- Saves the final prompt to `<artifacts-root>/docs/prompt/NNNN-<feature-slug>-prompt.md` (sibling of `docs/adr/`; numbering is shared globally across both folders). `<artifacts-root>` is the VS Code workspace root when present, otherwise the repo root — artifacts stay out of individual project repos whenever a workspace exists.
+- Saves the final prompt to `<artifacts-root>/docs/prompts/NNNN-<feature-slug>-prompt.md` (sibling of `docs/adr/`; prompt and ADR filenames both start with `NNNN-<slug>`, and numbering is shared with ADRs only). `<artifacts-root>` is the VS Code workspace root when present, otherwise the repo root — artifacts stay out of individual project repos whenever a workspace exists.
 - Asks the user to pass the final prompt to `grill-with-docs`
 - Produces a short final prompt with only the needed sections
 
@@ -298,12 +293,14 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill commit-
 
 **What it does**
 
-- Resolves the linked GitHub issue from the branch name, recent commits, or conversation context (asks if it cannot find one)
-- Reads issue state via `gh issue view --json state,labels,title` and picks the commit subject prefix from the state label:
-  - `ready-for-human` → `HITL:`
-  - `ready-for-agent` → `AFK:`
-  - neither label or no issue → asks the user; never guesses
-- Writes a structured commit message: `<PREFIX> <subject>` + `Issue:` line + optional `Decisions:` / `Files:` / `Notes:` sections
+- Resolves the linked GitHub issue from the branch name, recent commits, or conversation context. If none exists, creates one inline only for small ad hoc work; planned work routes back to `/triage`, `/feature-prompt`, or `/to-issues`.
+- Reads issue labels via `gh issue view --json state,labels,title`; routing state stays in labels, not title prefixes:
+  - `ready-for-human` → proceed with human-decision context in the body/comment
+  - `ready-for-agent` → proceed autonomously
+  - missing/conflicting labels or non-ready state → stop and route through `/triage`
+- Inline-created ad hoc issues get one category label (`bug` or `enhancement`) and one ready state label (`ready-for-agent` or `ready-for-human`)
+- Writes a structured commit message whose subject mirrors the GitHub issue title as closely as practical, plus an `Issue:` line and optional `Decisions:` / `Files:` / `Notes:` sections
+- For ad hoc inline issues, the new GitHub issue title and commit subject must match unless a hard tool limit prevents it
 - Honors hooks (no `--no-verify`), refuses to stage secret-pattern files, and stages explicitly by path (no `git add -A`)
 - Pushes the current branch (`-u origin <branch>` if no upstream); requires a separate confirmation when the branch is `main` / `master`
 - Closes the issue with `gh issue close <num> --comment` — the comment includes the commit SHA, branch, a one-line summary, and a 3–6 step **How to test** plan derived from the diff
@@ -313,7 +310,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill commit-
 
 - You wrap up an iteration on a GitHub issue and want to commit, push, and close in one step
 - You are working directly on a branch and do not need a PR review step
-- The work is issue-driven and the issue uses `ready-for-human` / `ready-for-agent` state labels
+- The work is issue-driven and the issue uses `ready-for-human` / `ready-for-agent` state labels, or the work is a small ad hoc request ready to ship
 
 **Example prompts**
 
@@ -336,16 +333,18 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill commit-
 
 **What it does**
 
-- Resolves the linked GitHub issue from the branch name, recent commits, or conversation context (asks if it cannot find one)
-- Reads issue state via `gh issue view --json state,labels,title,url` and picks the commit subject prefix from the state label:
-  - `ready-for-human` → `HITL:`
-  - `ready-for-agent` → `AFK:`
-  - neither label or no issue → asks the user; never guesses
-- If the current branch is the repo default (`main` / `master`), proposes a feature branch (`hitl/<num>-<slug>` or `afk/<num>-<slug>`) and waits for the user to confirm before checking it out
-- Writes a structured commit message: `<PREFIX> <subject>` + `Issue:` line + optional `Decisions:` / `Files:` / `Notes:` sections
+- Resolves the linked GitHub issue from the branch name, recent commits, or conversation context. If none exists, creates one inline only for small ad hoc work; planned work routes back to `/triage`, `/feature-prompt`, or `/to-issues`.
+- Reads issue labels via `gh issue view --json state,labels,title,url`; routing state stays in labels, not title prefixes:
+  - `ready-for-human` → proceed with human-decision context in the body/comment
+  - `ready-for-agent` → proceed autonomously
+  - missing/conflicting labels or non-ready state → stop and route through `/triage`
+- Inline-created ad hoc issues get one category label (`bug` or `enhancement`) and one ready state label (`ready-for-agent` or `ready-for-human`)
+- If the current branch is the repo default (`main` / `master`), proposes a feature branch (`issue/<num>-<slug>`) and waits for the user to confirm before checking it out
+- Writes a structured commit message whose subject mirrors the GitHub issue title as closely as practical, plus an `Issue:` line and optional `Decisions:` / `Files:` / `Notes:` sections
+- For ad hoc inline issues, the new GitHub issue title, commit subject, and PR title must match unless a hard tool limit prevents it
 - Honors hooks (no `--no-verify`), refuses to stage secret-pattern files, and stages explicitly by path (no `git add -A`)
 - Pushes with `-u origin <branch>` if no upstream is set
-- Opens a PR against the detected default branch (`gh repo view --json defaultBranchRef`) with the same prefix in the title and a body containing `Closes #N`, **Summary**, optional **Decisions**, **How to test** (3–6 steps), and optional **Notes**
+- Opens a PR against the detected default branch (`gh repo view --json defaultBranchRef`) with a title matching the commit subject and a body containing `Closes #N`, **Summary**, optional **Decisions**, **How to test** (3–6 steps), and optional **Notes**
 - Detects an existing PR for the branch and edits it (`gh pr edit`) instead of creating a duplicate
 - Asks before opening the PR if the test plan cannot be derived from the diff
 
@@ -425,9 +424,10 @@ deprecated `ubiquitous-language` skill.
 1. **Install:** run the `npx skills install …` command for the skill you want.
 2. **Ask your agent:** use a natural request that matches the skill — e.g.
    "Generate release notes for today" or "Create a feature prompt for MOBILE-APP".
-3. **Review the output:** feature prompts and release notes write markdown
-   files under `docs/adr/` (sharing the ADR numbering sequence); discovery
-   skills return structured markdown in the conversation.
+3. **Review the output:** feature prompts write markdown files under
+   `docs/prompts/` while release notes write date files under
+   `docs/release-notes/`; discovery skills return structured markdown in the
+   conversation.
 
 The skills avoid changing your git state unless their own instructions say
 otherwise. Skills that inspect history only read commits already available on

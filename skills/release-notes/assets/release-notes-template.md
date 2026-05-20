@@ -15,7 +15,7 @@ Date: <DD Month YYYY>
 
 # Detailed Release Notes
 
-## <Full Project Code>
+## <FULL-PROJECT-CODE>
 
 ### <Plain-language name for the change — what the user sees, not how it was built>
 
@@ -37,7 +37,6 @@ Date: <DD Month YYYY>
 - <Which screen/app/user group is affected>
 
 **Manual QA Steps**
-- <3-5 steps inline: Action → Expected result>
 1. <Do X → Y should happen>
 2. <Do X → Y should happen>
 3. <Do X → Y should happen>

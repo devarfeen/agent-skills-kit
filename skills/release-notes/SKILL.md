@@ -96,7 +96,7 @@ Generate release notes from Git commits for a specific date.
 Example prompts:
 
 - Generate release notes for 11 March 2026
-- Create changelog for 11 March for all projects
+- Generate release notes for 11 March for all projects
 - Generate release notes for PARTNERS-APP on 11 March
 
 Behavior:
@@ -114,7 +114,7 @@ Example prompts:
 
 - Summarize what we changed this session
 - Create PM update for today's work
-- Generate session changelog
+- Generate session release notes
 
 Behavior:
 
@@ -298,43 +298,53 @@ When a Project Matrix code exists, use the full code exactly as written in chat 
 
 Output must follow the exact structure below. Do not reorder sections.
 
-For date-based release notes, include a date line at the top.
+```markdown
+# Stakeholder Summary
 
-`Date: <DD Month YYYY>`
+Date: <DD Month YYYY>
 
-## <Full Project Code>
+<FULL-PROJECT-CODE>
+
+- <one sentence summary>
+
+---
+
+# Detailed Release Notes
+
+## <FULL-PROJECT-CODE>
 
 ### <Feature or Improvement Name>
 
 **Summary**
 
-- One sentence: what is now better in day-to-day operations.
+- <one sentence: what is now better in day-to-day operations>
 
 **Problem**
 
-- What users or operations teams were experiencing before this change
-- Include the business consequence (delays, rework, missed scans, confusion, etc.)
+- <what users or operations teams were experiencing before this change>
 
 **Change**
 
-- Explain the solution in product/workflow language
-- Name affected workflows or screens in plain language
-- Include 1 to 3 concrete user-visible touchpoints when available: setting, view/page, component/screen section, URL/route, or visible UI element
-- If logic changed, add one simple sentence in plain language for a 5th grader
-- Do not include file paths, class names, package names, or internal module names
+- <what changed in product/workflow language>
 
 **Impact**
 
-- State concrete outcomes, not generic claims
-- Prefer specific statements such as "fewer failed scans during stock take" over "improved reliability"
+- <concrete outcome>
 
 **Scope**
 
-- Who is affected (teams, roles, or flows) and where the change applies
+- <who is affected and where the change applies>
+
+**Manual QA Steps**
+
+1. <Action> -> <Expected result>
 
 **Commits Included**
 
-- List commit hashes only at the end for traceability
+- <hash>
+```
+
+For session summaries without a known date, omit only the `Date:` line.
 
 If there are multiple features under one project, repeat the feature block:
 
@@ -345,6 +355,7 @@ If there are multiple features under one project, repeat the feature block:
 - Change
 - Impact
 - Scope
+- Manual QA Steps
 - Commits Included
 
 Do not place feature sections above the project header.
@@ -357,62 +368,67 @@ Do not include unchanged projects in the final generated file.
 
 ## File Output Rules
 
-Always save the generated markdown under `<artifacts-root>/docs/adr/`, alongside ADRs (see `grill-with-docs/ADR-FORMAT.md`). Release notes use the `-release-notes` suffix as the type discriminator. ADRs have no suffix and also live in `docs/adr/`; feature prompts use `-prompt` and live in the sibling `docs/prompt/` folder. Numbering is shared globally across all three artifact types and both folders so the union reads chronologically.
+Always save the generated markdown under `<artifacts-root>/docs/release-notes/`. Release notes are on-demand date-based artifacts; they do not share the ADR/prompt `NNNN` sequence and they do not live beside ADRs. ADRs live in `docs/adr/` with `NNNN-<slug>.md`; feature prompts live in `docs/prompts/` with `NNNN-<slug>-prompt.md`; release notes live separately under `docs/release-notes/` with calendar-date filenames like `10-March-2026.md`.
 
 ### Resolving `<artifacts-root>`
 
 Centralize artifacts when a workspace exists; only fall back to a project repo when there's no workspace. Resolve in this order:
 
-1. **VS Code workspace (preferred when present).** If a `*.code-workspace` file is found at or above the cwd, write to the directory containing it. All projects in the workspace share one `docs/adr/` and `docs/prompt/`.
-2. **Multi-context single repo.** If no workspace file but a root `CONTEXT-MAP.md` exists, use the `docs/adr/` of the context the change belongs to.
+1. **VS Code workspace (preferred when present).** If a `*.code-workspace` file is found at or above the cwd, write to the directory containing it. All projects in the workspace share one `docs/release-notes/`.
+2. **Multi-context single repo.** If no workspace file but a root `CONTEXT-MAP.md` exists, use the `docs/release-notes/` of the context the change belongs to.
 3. **Single-repo project.** Fall back to the repo root.
 
-For multi-repo workspaces *without* a `.code-workspace` file, write one file per repo under that repo's own `docs/adr/`.
+For multi-repo workspaces *without* a `.code-workspace` file, write one file per repo under that repo's own `docs/release-notes/`.
 
 ### Path shape
 
 ```
-<artifacts-root>/docs/adr/NNNN-<slug>-release-notes.md
+<artifacts-root>/docs/release-notes/<date-slug>.md
 ```
 
-- **`docs/adr/`** — relative to `<artifacts-root>` resolved above.
-- **`NNNN`** — four-digit sequential. Scan **both** `<artifacts-root>/docs/adr/` and `<artifacts-root>/docs/prompt/` for the highest existing number across all artifact types (ADRs, prompts, release notes), then increment by one.
-- **`<slug>`** — kebab-case, ASCII only. Choice depends on mode (see below).
-- **`-release-notes`** — fixed suffix.
+- **`docs/release-notes/`** — relative to `<artifacts-root>` resolved above.
+- **`<date-slug>`** — `D-Month-YYYY`, using no leading zero for the day and Title Case English month names. Example: `10-March-2026`.
+- Do not add `NNNN`, `-release-notes`, or a feature slug to the default filename.
 
 ### Slug per mode
 
 1. **Date-based release notes (`Date: <DD Month YYYY>`):**
-   - Slug: `DD-month-YYYY` (lowercase month, kebab-case)
-   - Example (workspace): `<workspace-dir>/docs/adr/0042-12-march-2026-release-notes.md`
-   - Example (single repo): `docs/adr/0042-12-march-2026-release-notes.md`
+   - Path: `<artifacts-root>/docs/release-notes/D-Month-YYYY.md`
+   - Example (workspace): `<workspace-dir>/docs/release-notes/10-March-2026.md`
+   - Example (single repo): `docs/release-notes/10-March-2026.md`
 2. **Feature-based summary:**
-   - Slug: kebab-case feature name, ≤ 4 words
-   - Example (workspace): `<workspace-dir>/docs/adr/0042-rfid-scanner-reliability-release-notes.md`
-   - Example (single repo): `docs/adr/0042-rfid-scanner-reliability-release-notes.md`
+   - Use the release date as the filename, not the feature name. If the user does not provide a release date, ask for one unless they clearly mean today's current session.
+   - Example (workspace): `<workspace-dir>/docs/release-notes/10-March-2026.md`
+   - Example (single repo): `docs/release-notes/10-March-2026.md`
 3. **Session summary without explicit feature name:**
-   - Slug: `DD-month-YYYY-session` if a date is available, otherwise prompt the user for a short slug
-   - Example (workspace): `<workspace-dir>/docs/adr/0042-12-march-2026-session-release-notes.md`
-   - Example (single repo): `docs/adr/0042-12-march-2026-session-release-notes.md`
+   - If the user says "today" or "current session", use the current local date.
+   - Example (workspace): `<workspace-dir>/docs/release-notes/10-March-2026.md`
+   - Example (single repo): `docs/release-notes/10-March-2026.md`
+4. **Date range release notes:**
+   - Path: `<artifacts-root>/docs/release-notes/D-Month-YYYY-to-D-Month-YYYY.md`
+   - Example: `10-March-2026-to-12-March-2026.md`
 
 ### Conflict handling
 
-- If `<artifacts-root>/docs/adr/` does not exist, create it lazily before writing.
-- If a file with the chosen number already exists in `<artifacts-root>/docs/adr/` **or** `<artifacts-root>/docs/prompt/`, recompute the next number — never overwrite a number assigned to another artifact, even across folders.
-- If a prior `*-release-notes.md` exists for the same slug and contains only generated content from this skill, overwrite in place (keep the same number).
-- If the existing file contains hand-edits, show the diff and ask the user whether to overwrite, write a new numbered revision, or abort.
-- Never delete unrelated files in `docs/adr/`.
+- If `<artifacts-root>/docs/release-notes/` does not exist, create it lazily before writing.
+- If a release note file already exists for the same date and contains only generated content from this skill, overwrite in place.
+- If the existing file contains hand edits, show the diff and ask the user whether to overwrite, append/update the existing date file, or abort.
+- Never delete unrelated files in `docs/release-notes/`.
 
 ## Section Hierarchy Rule
 
 The hierarchy must be:
 
-1. Date line (date-based only)
-2. Project Name
-3. Feature Name
-4. Child sections under feature: Summary, Problem, Change, Impact, Scope, Commits Included
+1. `# Stakeholder Summary`
+2. Optional `Date: DD Month YYYY`
+3. Full project code with summary bullets
+4. `---`
+5. `# Detailed Release Notes`
+6. Full project code heading
+7. Feature name heading
+8. Child sections under feature: Summary, Problem, Change, Impact, Scope, Manual QA Steps, Commits Included
 
-Never output child sections directly under the date line or without a feature heading.
+Never output child sections directly under the date line, stakeholder summary, detailed notes heading, or project heading.
 
 ## Writing Guidelines
 
@@ -438,7 +454,7 @@ Look for and report in plain language:
 
 Prefer naming what users see over code object names.
 
-If details are not available in commits/diffs, say "Not explicitly visible in commit history" instead of guessing.
+If details are not available in commits/diffs, omit that detail and keep the note grounded in what is visible. Do not write "Not explicitly visible in commit history" in the release notes output.
 
 ## Simple Logic Explanation Rule
 
@@ -473,8 +489,8 @@ Before returning output, verify:
 3. At least one bullet names affected workflows or teams.
 4. Technical identifiers are removed from the main narrative.
 5. Commit hashes, if included, appear in a final traceability line only.
-6. Output follows Date -> Project -> Feature -> Child sections hierarchy.
-7. File is saved in `docs/adr/` with the `NNNN-<slug>-release-notes.md` naming convention, sharing the ADR numbering sequence.
+6. Output follows Stakeholder Summary -> Detailed Release Notes -> Project -> Feature -> Child sections hierarchy.
+7. File is saved in `docs/release-notes/` with the `D-Month-YYYY.md` naming convention, independent of the ADR/prompt number sequence.
 8. Change section includes user-visible touchpoints when commit history provides them.
 9. Logic changes include one simple sentence understandable by non-technical readers.
 10. Final file includes only projects that have confirmed changes.
