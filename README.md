@@ -228,9 +228,13 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
 - Maps project codes to likely repo, app, or package roots
 - Searches code, tests, docs, configs, routes, jobs, and feature flags
 - Traces definitions to callers and user-facing flows
+- Flags code-discovered domain terms that may be missing from or stale in
+  `CONTEXT.md`, with short descriptions and evidence for user approval
+- Updates `CONTEXT.md` only as an explicit follow-up after the user approves
+  specific terms or accepts the full candidate list
 - Uses recent git history only when code scanning is not enough
 - Produces a structured report covering summary, behavior, implementation,
-  usage sites, rationale, risks, gaps, and next checks
+  usage sites, rationale, candidate context terms, risks, gaps, and next checks
 
 **Example prompts**
 
@@ -255,6 +259,9 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
 - Converts rough intake into a minimal `grill-with-docs` handoff
 - Asks only when the requested change or project/context is unclear
 - Uses cheap repo evidence such as project matrix, cwd, `CONTEXT.md`, and ADR names
+- When cheap exploration reveals missing or stale domain terms, shows candidate
+  `CONTEXT.md` updates with short descriptions for user approval
+- Applies approved `CONTEXT.md` updates only as a separate documentation step
 - Sends non-trivial or inferred drafts to the user for one correction pass
 - Saves the final prompt to `<artifacts-root>/docs/prompt/NNNN-<feature-slug>-prompt.md` (sibling of `docs/adr/`; numbering is shared globally across both folders). `<artifacts-root>` is the VS Code workspace root when present, otherwise the repo root — artifacts stay out of individual project repos whenever a workspace exists.
 - Asks the user to pass the final prompt to `grill-with-docs`

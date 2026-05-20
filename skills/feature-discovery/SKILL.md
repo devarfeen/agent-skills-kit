@@ -1,6 +1,6 @@
 ---
 name: feature-discovery
-description: Use when the user asks to investigate, audit, trace, or explain how a feature, issue, module, workflow, API, config, or behavior works across one or more codebase projects.
+description: Use when the user asks to investigate, audit, trace, or explain how a feature, issue, module, workflow, API, config, or behavior works across one or more codebase projects. Also surfaces code-discovered domain terms that may be missing from or stale in CONTEXT.md so the user can approve follow-up context updates.
 ---
 
 # Feature Discovery
@@ -20,7 +20,8 @@ What:
 
 ## Rules
 
-- Stay read-only. Do not edit files.
+- Stay read-only during discovery. Do not edit files while producing the discovery report.
+- `CONTEXT.md` edits are a separate follow-up action. Only update `CONTEXT.md` after the user explicitly approves specific candidate terms or accepts the full candidate list.
 - Prefer CLI tools over MCP.
 - Use `rg` first for text search.
 - Use `git`, `git grep`, `find`, `gh`, package metadata, local docs, issues, and tests as needed.
@@ -38,6 +39,8 @@ What:
 - Back concrete claims with file paths, symbols, commands, tests, docs, GitHub issues, or commits.
 - Separate confirmed facts from inference.
 - Do not invent memory or rationale.
+- When code exploration reveals domain terms, compare them with available `CONTEXT.md` content and flag missing, stale, renamed, overloaded, or ambiguous terms.
+- Candidate context terms must be meaningful to product or domain experts: roles, workflows, states, business rules, events, integrations, user-facing concepts, or project-specific names. Skip generic programming terms, helper names, low-level class names, and package names unless they carry domain meaning.
 - Do not give the final discovery report until findings have passed two validation scans.
 
 ## Workflow
@@ -67,17 +70,37 @@ What:
    - If memory does not exist or is too vague to bound the search, pause and ask the user to approve a broad GitHub issue scan before running it.
    - Summarize which issues were read, which were excluded as unrelated, and whether broad scanning was skipped.
 
-5. Use git history only if needed:
+5. Track candidate `CONTEXT.md` terms:
+   - Locate the relevant `CONTEXT.md` by checking the project root, workspace root, root `CONTEXT-MAP.md`, and nearby docs.
+   - Compare discovered domain terms against existing context language.
+   - For each candidate, capture:
+     - **Term:** the current code or product term.
+     - **Suggested action:** add, clarify, rename, deprecate, or ask user.
+     - **Short description:** one sentence grounded in observed code behavior.
+     - **Evidence:** file paths, symbols, routes, configs, tests, issues, or docs.
+     - **Why it matters:** how missing or stale context could confuse future planning or implementation.
+   - Prefer a small, high-confidence list over a broad glossary dump.
+   - If no relevant `CONTEXT.md` exists, still report candidate terms and recommend creating or locating the context file before editing.
+
+6. Use git history only if needed:
    - Limit to the last 2 months.
    - Look for commits touching discovered files or mentioning the topic.
    - Use commit history to explain why or when behavior changed, not as the primary source of truth.
 
-6. Validate findings twice:
+7. Validate findings twice:
    - First pass: cross-check the main explanation against code, tests, docs, configs, usage sites, internal memory, related GitHub issues, and git history where used.
    - Second pass: repeat the scan with aliases and reverse lookups, re-open the strongest evidence, look for contradictory code paths, issue comments, docs, commits, and stale assumptions, then tighten or downgrade claims.
-   - Mark dead code, unclear ownership, missing tests, contradictory evidence, skipped issue scans, and unverified assumptions.
+   - Validate candidate context terms against `CONTEXT.md` and the strongest code evidence before presenting them.
+   - Mark dead code, unclear ownership, missing tests, contradictory evidence, skipped issue scans, stale context terms, and unverified assumptions.
    - Avoid broad claims when evidence is partial.
    - Keep a short validation note for the final report that states what was checked in each pass.
+
+8. Update `CONTEXT.md` only after approval:
+   - After the report, if the user approves terms, inspect the target `CONTEXT.md` structure and preserve its style.
+   - Apply only the approved additions, clarifications, renames, or deprecations.
+   - Keep descriptions short and evidence-backed. Do not add implementation-only symbols as domain language.
+   - Report exactly which terms changed and which file was edited.
+   - If the user approves with edits to wording, use the user's wording unless it conflicts with code evidence; if it conflicts, explain the mismatch before editing.
 
 ## Search Defaults
 
@@ -128,13 +151,20 @@ Use this structure exactly.
 - [Use conversation memory, local docs, comments, issues, or recent commits if available.]
 - [If not found: "No reliable rationale found in available memory, docs, comments, or recent git history."]
 
-## 6. Risks, Gaps, And Recommended Next Checks
+## 6. Candidate CONTEXT.md Terms
+
+- [If candidates exist, list each as: `Term` — suggested action; short description; evidence; why it matters.]
+- [If existing context may be stale, state the current context wording and the code evidence that may contradict it.]
+- [End with: "Reply with the term names to approve, wording changes, or `approve all` if these should be applied to CONTEXT.md."]
+- [If no candidates: "No candidate CONTEXT.md term updates found."]
+
+## 7. Risks, Gaps, And Recommended Next Checks
 
 - [Risk, ambiguity, dead code, missing test, or unclear owner.]
 - [Recommended next check.]
 - [State what could not be verified.]
 
-## 7. Validation Performed
+## 8. Validation Performed
 
 - [Pass 1: code/tests/docs/configs/memory/issues/history checked.]
 - [Pass 2: aliases/reverse lookups/contradictions/stale assumptions checked.]

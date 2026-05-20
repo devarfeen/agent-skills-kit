@@ -1,6 +1,6 @@
 ---
 name: feature-prompt
-description: Use when the user wants to turn a feature idea, change request, or rough requirement into a small prompt for grill-with-docs.
+description: Use when the user wants to turn a feature idea, change request, or rough requirement into a small prompt for grill-with-docs. When cheap repo exploration reveals domain terms missing from or stale in CONTEXT.md, surface those candidate terms for user approval before any context update.
 ---
 
 # Feature Prompt
@@ -49,13 +49,39 @@ Only `Project`, `What is needed`, `Why it is needed`, and `Expected end result` 
 - Start from free-form intake. Accept a sentence, paragraph, bullet list, or brain dump.
 - Infer first. Ask only when `What is needed` is unclear or project/context cannot be inferred safely.
 - Use repo evidence when cheap: project matrix, cwd, `CONTEXT.md`, `CONTEXT-MAP.md`, and ADR names. Do not run a broad code scan by default.
+- If cheap repo evidence or user-requested code exploration reveals domain terms that are missing from or stale in `CONTEXT.md`, show a short candidate list before finalizing the prompt.
 - Use the full Project Matrix code in the final prompt whenever one exists. Never abbreviate project codes or invent shorthand.
 - Do not create `Domain terms`, `Decisions`, `Dependents`, `Risks`, `Doc anchors`, `Integration`, `Constraints`, or `Acceptance` sections. Fold useful facts into the six sections above.
 - Keep domain words intact. Do not invent glossary definitions; `grill-with-docs` owns that.
 - If the user states a hard decision or limit, preserve it under `Known limits`.
 - If a decision is unclear, preserve it under `Open questions`.
-- Do not implement the feature. Do not create a PRD. Do not edit `CONTEXT.md` or ADRs.
+- Do not implement the feature. Do not create a PRD. Do not edit ADRs.
+- Do not edit `CONTEXT.md` while drafting the prompt. `CONTEXT.md` edits are allowed only as a separate, explicit follow-up after the user approves specific candidate terms or accepts the full candidate list.
 - Keep the final prompt spartan, direct, and plain English. The final prompt is a generated artifact and must not be caveman-compressed.
+
+## Candidate Context Terms
+
+Use this only when code or local docs reveal terminology that may be missing from or stale in `CONTEXT.md`. Do not run extra exploration solely to fill this section.
+
+Candidate terms should be meaningful to product or domain experts: roles, workflows, states, business rules, events, integrations, user-facing concepts, or project-specific names. Skip generic programming terms, helper names, low-level class names, and package names unless they carry domain meaning.
+
+Before finalizing the prompt, show the user a compact review:
+
+```markdown
+Candidate CONTEXT.md terms:
+- `Term` — suggested action; short description; evidence; why it matters.
+
+Reply with the term names to approve, wording changes, `approve all`, or `skip context updates`.
+```
+
+If the user approves context updates:
+
+1. Inspect the target `CONTEXT.md` structure and preserve its style.
+2. Apply only the approved additions, clarifications, renames, or deprecations.
+3. Keep descriptions short and evidence-backed.
+4. Report the edited `CONTEXT.md` path before saving the final prompt.
+
+Do not add a `Domain terms` section to the generated prompt. If terms still need `grill-with-docs` review, preserve that uncertainty under `Open questions`.
 
 ## Agent Use
 
@@ -67,10 +93,12 @@ Once the minimal prompt is clear:
 
 1. Draft the final prompt.
 2. For non-trivial or inferred prompts, show it once for correction.
-3. Save the final prompt to disk.
-4. Add only:
+3. If candidate context terms were found, show them for approval and apply only approved `CONTEXT.md` updates.
+4. Save the final prompt to disk.
+5. Add only:
 
 ```markdown
+Context updated: <relative CONTEXT.md path> [only if edited]
 Saved to: <relative path written>
 Next: pass this final prompt to the `grill-with-docs` skill.
 ```
