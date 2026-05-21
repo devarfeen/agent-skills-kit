@@ -1,4 +1,4 @@
-| Skill Reference | Gemini CLI Equivalent |
+| Skill Reference | Antigravity CLI Equivalent |
 | :--- | :--- |
 | `Read` (file reading) | `read_file` |
 | `Write` (file creation) | `write_file` |

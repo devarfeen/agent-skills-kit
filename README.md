@@ -17,7 +17,7 @@ agent-skills-kit/
 ├── README.md                 # This file
 ├── LICENSE                   # MIT
 └── skills/
-    ├── agents-md/            # Generate AGENTS.md plus CLAUDE.md/GEMINI.md shims
+    ├── agents-md/            # Generate AGENTS.md plus CLAUDE.md/Antigravity-compatible GEMINI.md shims
     │   └── SKILL.md          # Required: metadata + instructions
     ├── release-notes/        # The release-notes skill
     │   ├── SKILL.md          # Required: metadata + instructions
@@ -122,7 +122,7 @@ skills from the wider agent-skills ecosystem.
 ### `agents-md`
 
 Generates `AGENTS.md` as the canonical agent instruction file and creates
-`CLAUDE.md` / `GEMINI.md` shims that point to it.
+`CLAUDE.md` / Antigravity-compatible `GEMINI.md` shims that point to it.
 
 ```bash
 npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-md
@@ -131,6 +131,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 **What it does**
 
 - Includes a 14-rule non-negotiable core in `AGENTS.md`, plus retained operational defaults for chat-only, 5th-grade-English caveman activation, full Project Matrix code usage, and parallel execution
+- Creates `GEMINI.md` as an Antigravity CLI compatibility shim because Antigravity CLI reads it as workspace context
 - Detects VS Code workspaces and uses each folder `name` as the project name/code source
 - Treats the workspace folder with `path: "."` as a meta workspace with no code
 - Builds a project matrix: `Project Name (Code) | Path | Tech Stack`
@@ -301,6 +302,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill commit-
 - Inline-created ad hoc issues get one category label (`bug` or `enhancement`) and one ready state label (`ready-for-agent` or `ready-for-human`)
 - Writes a structured commit message whose subject mirrors the GitHub issue title as closely as practical, plus an `Issue:` line and optional `Decisions:` / `Files:` / `Notes:` sections
 - For ad hoc inline issues, the new GitHub issue title and commit subject must match unless a hard tool limit prevents it
+- Never adds `Co-authored-by:` or generated co-author attribution to commit messages
 - Honors hooks (no `--no-verify`), refuses to stage secret-pattern files, and stages explicitly by path (no `git add -A`)
 - Pushes the current branch (`-u origin <branch>` if no upstream); requires a separate confirmation when the branch is `main` / `master`
 - Closes the issue with `gh issue close <num> --comment` — the comment includes the commit SHA, branch, a one-line summary, and a 3–6 step **How to test** plan derived from the diff
@@ -342,6 +344,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill commit-
 - If the current branch is the repo default (`main` / `master`), proposes a feature branch (`issue/<num>-<slug>`) and waits for the user to confirm before checking it out
 - Writes a structured commit message whose subject mirrors the GitHub issue title as closely as practical, plus an `Issue:` line and optional `Decisions:` / `Files:` / `Notes:` sections
 - For ad hoc inline issues, the new GitHub issue title, commit subject, and PR title must match unless a hard tool limit prevents it
+- Never adds `Co-authored-by:` or generated co-author attribution to commit messages
 - Honors hooks (no `--no-verify`), refuses to stage secret-pattern files, and stages explicitly by path (no `git add -A`)
 - Pushes with `-u origin <branch>` if no upstream is set
 - Opens a PR against the detected default branch (`gh repo view --json defaultBranchRef`) with a title matching the commit subject and a body containing `Closes #N`, **Summary**, optional **Decisions**, **How to test** (3–6 steps), and optional **Notes**

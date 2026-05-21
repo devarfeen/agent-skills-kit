@@ -82,6 +82,7 @@ Notes:
 Rules:
 - Subject mirrors the GitHub issue title as closely as practical, no `HITL:` or `AFK:` marker.
 - Always keep the subject and the `Issue:` line. Omit any other section that has nothing to say.
+- Never add a `Co-authored-by:` trailer or any other generated co-author attribution.
 - `Files:` lists meaningful changes, not every touched file.
 - `Notes:` is for the next iteration. Skip if truly nothing.
 - Body under ~20 lines.
@@ -139,6 +140,7 @@ Rules for **How to test**:
 7. **Pre-commit safety**:
    - Refuse to stage secret-pattern files: `.env`, `.env.*` (except `.env.example`), `*.pem`, `*.key`, `id_rsa*`, `credentials*.json`, `*secret*`. Warn and skip.
    - Stage explicitly by path — never `git add -A` / `git add .`.
+   - Verify the drafted commit message has no `Co-authored-by:` trailer or generated co-author attribution.
    - Honor hooks. Never `--no-verify`. If a hook fails, fix the underlying issue and create a NEW commit (do not amend).
 
 8. **Commit** with HEREDOC:
@@ -252,6 +254,7 @@ Before marking the iteration done, verify:
 - [ ] Issue resolved (or created inline) + labels read/created → one category label + ready state label
 - [ ] Commit subject mirrors the GitHub issue title as closely as practical and has no routing marker
 - [ ] `Issue:` line present in commit body
+- [ ] No `Co-authored-by:` or generated co-author attribution in the commit message
 - [ ] No secret files staged
 - [ ] Hooks ran (no `--no-verify`)
 - [ ] Push succeeded (or, on `main`/`master`, was confirmed separately)

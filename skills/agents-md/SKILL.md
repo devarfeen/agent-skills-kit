@@ -1,6 +1,6 @@
 ---
 name: agents-md
-description: "Generate or update AGENTS.md for a repository or VS Code workspace, create CLAUDE.md and GEMINI.md shims, build a project matrix with stable project codes, and reference CONTEXT.md / ADRs as required domain context."
+description: "Generate or update AGENTS.md for a repository or VS Code workspace, create CLAUDE.md and Antigravity-compatible GEMINI.md shims, build a project matrix with stable project codes, and reference CONTEXT.md / ADRs as required domain context."
 ---
 
 # AGENTS.md Generator
@@ -9,7 +9,7 @@ Create or update agent instruction files for a codebase:
 
 - `AGENTS.md` as the canonical instruction file
 - `CLAUDE.md` shim pointing to `AGENTS.md`
-- `GEMINI.md` shim pointing to `AGENTS.md`
+- Antigravity-compatible `GEMINI.md` shim pointing to `AGENTS.md`
 
 Include the fourteen spartan non-negotiable principles in the `AGENTS.md` template below.
 Also include retained operational defaults for caveman communication and parallel execution.
@@ -19,7 +19,7 @@ Make clear that non-negotiables and operational defaults must be followed and fu
 
 Every generated `AGENTS.md` must include the following fourteen principles as non-negotiables:
 
-1. **Invoke Caveman First:** Invoke the `caveman` skill before any other action. Use the runtime-native form: Claude Code `/caveman`, Gemini CLI `activate_skill(name="caveman")`, Copilot CLI `skill("caveman")`, Codex CLI `activate("caveman")`, or Opencode CLI `load_skill("caveman")`. If the runtime cannot self-issue that invocation from instructions, read the local `caveman` `SKILL.md` and apply its chat-output rules before continuing.
+1. **Invoke Caveman First:** Invoke the `caveman` skill before any other action. Use the runtime-native form: Claude Code `/caveman`, Antigravity CLI `activate_skill(name="caveman")`, Copilot CLI `skill("caveman")`, Codex CLI `activate("caveman")`, or Opencode CLI `load_skill("caveman")`. If the runtime cannot self-issue that invocation from instructions, read the local `caveman` `SKILL.md` and apply its chat-output rules before continuing.
 2. **Evidence Before Claim:** No claims (e.g., "tests pass") without raw command output. No evidence = not done. "Seems to" or "likely" = failure to verify.
 3. **Task Isolation:** For each independent task, use a fresh subagent, agent, worker, or isolated tool pass when the runtime supports it and the work can be split without shared-file conflicts. Do not carry bloated history into isolated jobs.
 4. **Goal-Driven Execution:** Define verifiable success criteria. For bug fixes, always verify the failure (Red) before applying the fix (Green).
@@ -112,7 +112,7 @@ Generate `AGENTS.md` with this structure:
 
 Follow these 14 rules. They are non-negotiable and must be fully enforced. Bias toward caution over speed on non-trivial work.
 
-1. **Invoke Caveman First:** Invoke the `caveman` skill before any other action. Use the runtime-native form: Claude Code `/caveman`, Gemini CLI `activate_skill(name="caveman")`, Copilot CLI `skill("caveman")`, Codex CLI `activate("caveman")`, or Opencode CLI `load_skill("caveman")`. If the runtime cannot self-issue that invocation from instructions, read the local `caveman` `SKILL.md` and apply its chat-output rules before continuing.
+1. **Invoke Caveman First:** Invoke the `caveman` skill before any other action. Use the runtime-native form: Claude Code `/caveman`, Antigravity CLI `activate_skill(name="caveman")`, Copilot CLI `skill("caveman")`, Codex CLI `activate("caveman")`, or Opencode CLI `load_skill("caveman")`. If the runtime cannot self-issue that invocation from instructions, read the local `caveman` `SKILL.md` and apply its chat-output rules before continuing.
 2. **Evidence Before Claim:** No claims (e.g., "tests pass") without raw command output. No evidence = not done. "Seems to work" = failure to verify.
 3. **Task Isolation:** For each independent task, use a fresh subagent, agent, worker, or isolated tool pass when the runtime supports it and the work can be split without shared-file conflicts. Do not carry bloated history into isolated jobs.
 4. **Goal-Driven Execution:** Success = empirical proof. Bug fixes require Red-Green-Refactor: verify the failure (Red) before applying the fix (Green).
@@ -164,7 +164,7 @@ Preserve any useful existing local instructions when updating `AGENTS.md`, but r
 
 ## Shim Files
 
-Create or update `CLAUDE.md` and `GEMINI.md` as shims.
+Create or update `CLAUDE.md` and `GEMINI.md` as shims. Antigravity CLI reads both `AGENTS.md` and `GEMINI.md` from the active workspace, so keep `GEMINI.md` for Antigravity compatibility.
 
 Use this content for `CLAUDE.md` unless the workspace or repository already has important Claude-specific instructions:
 
@@ -178,14 +178,14 @@ Before any other action in Claude Code, invoke `/caveman`. If `/caveman` is unav
 This file is a Claude Code shim for tool compatibility.
 ```
 
-Use this content for `GEMINI.md` unless the workspace or repository already has important Gemini-specific instructions:
+Use this content for `GEMINI.md` unless the workspace or repository already has important Antigravity-specific instructions:
 
 ```markdown
 # Agent Instructions
 
 Read `AGENTS.md` first. It is the canonical instruction file for this workspace.
 
-This file is a Gemini CLI shim for tool compatibility.
+This file is an Antigravity CLI compatibility shim. Antigravity CLI reads `GEMINI.md` as a supported workspace context file.
 ```
 
 If an existing shim contains valuable tool-specific rules, keep them under:
@@ -234,5 +234,6 @@ Project codes:
 Notes:
 
 - [VS Code workspace detected / not detected.]
+- [`GEMINI.md` retained for Antigravity CLI compatibility.]
 - [CONTEXT.md / \`docs/adr/\` (ADRs) / \`docs/prompts/\` (\`*-prompt.md\`) / \`docs/release-notes/\` (\`D-Month-YYYY.md\`) artifacts referenced, or noted as to-be-produced inline by \`grill-with-docs\` / \`feature-prompt\` / \`release-notes\`.]
 ```

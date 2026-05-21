@@ -4,7 +4,7 @@ To increase the probability of `caveman` mode being active at the start of a ses
 
 | Agent | Invocation Command / Action |
 | :--- | :--- |
-| **Gemini CLI** | `activate_skill(name="caveman")` |
+| **Antigravity CLI** | `activate_skill(name="caveman")` |
 | **Claude Code** | `/caveman` |
 | **Copilot CLI** | `skill("caveman")` |
 | **Codex CLI** | `activate("caveman")` |
