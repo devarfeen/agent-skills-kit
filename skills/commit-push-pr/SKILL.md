@@ -25,6 +25,10 @@ Routing state lives in the linked issue's labels. Do not add `HITL:` or `AFK:` t
 
 Read state with: `gh issue view <num> --json state,labels,title,url`. Match label names exactly.
 
+## Response Footer
+
+End the final response with `Suggested next skills (optional)` containing 1-3 advisory recommendations. Keep it recommendation-only (no gating). Choose next steps from workflow context, for example `/release-notes`, `/handoff`, or `/triage` for follow-up work.
+
 ## Inline issue creation
 
 Inline issue creation is only for small ad hoc work that started from a short request with no linked GitHub issue. Planned work should already have gone through Matt Pocock's `/triage`; if a planned issue is missing, not ready, ambiguous, cross-project, or multi-slice, stop and route back to `/triage`, `/feature-prompt`, or `/to-issues` instead of fabricating a ship-time issue.
@@ -198,7 +202,7 @@ The `Closes #N` line is mandatory and must be on its own line near the top of th
     ```
     - If a PR already exists for this branch (`gh pr list --head <branch> --json number`), do not create a duplicate. Update the existing PR's title/body with `gh pr edit <num>` instead, and report that path back.
 
-12. **Report** — one line: `<SHA> pushed to <branch>; PR #<pr-num> opened (Closes #<issue-num>)`. Done.
+12. **Report** — one line: `<SHA> pushed to <branch>; PR #<pr-num> opened (Closes #<issue-num>)`. Then append `Suggested next skills (optional)` with 1-3 advisory suggestions.
 
 ## Examples
 
@@ -288,3 +292,4 @@ Before reporting done, verify:
 - [ ] PR body has **Summary** + **How to test**
 - [ ] No duplicate PR created (existing PR was edited instead)
 - [ ] Final report line printed
+- [ ] Optional `Suggested next skills` footer included (1-3 advisory suggestions, no gating)

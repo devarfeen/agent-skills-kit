@@ -81,6 +81,7 @@ Use this structure:
 - In `Aliases to avoid`, list words that should not be used for that concept.
 - If two terms are truly distinct, explain the boundary in `Notes` or `Flagged Ambiguities`.
 - Do not invent business rules. Mark uncertain relationships as open questions.
+- End non-trivial responses with `Suggested next skills (optional)` using 1-3 advisory suggestions only (no gating).
 
 ## Examples
 
@@ -138,4 +139,7 @@ Flagged:
 
 Open questions:
 - [Question or "None"]
+
+Suggested next skills (optional):
+- /grill-with-docs: continue domain-language sharpening in `CONTEXT.md` and ADRs.
 ```

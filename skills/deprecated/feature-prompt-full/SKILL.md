@@ -91,6 +91,7 @@ Acceptance:
 - Do not add extra sections unless the user asks.
 - Do not implement the feature.
 - Do not create the PRD, issues, or TDD implementation inside this skill.
+- End non-trivial responses with `Suggested next skills (optional)` using 1-3 advisory suggestions only (no gating).
 
 ## Grilling Behavior
 
@@ -168,3 +169,4 @@ Next:
 ```
 
 Keep the final prompt spartan. No preface. No filler.
+After the final prompt, append `Suggested next skills (optional)` with 1-3 advisory suggestions.

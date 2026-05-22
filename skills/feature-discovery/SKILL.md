@@ -43,6 +43,7 @@ What:
 - When code exploration reveals domain terms, compare them with available `CONTEXT.md` content and flag missing, stale, renamed, overloaded, or ambiguous terms.
 - Candidate context terms must be meaningful to product or domain experts: roles, workflows, states, business rules, events, integrations, user-facing concepts, or project-specific names. Skip generic programming terms, helper names, low-level class names, and package names unless they carry domain meaning.
 - Do not give the final discovery report until findings have passed two validation scans.
+- End the final response with `Suggested next skills (optional)` containing 1-3 recommendations. Keep them advisory only (no gating) and base them on findings plus the workspace workflow.
 
 ## Workflow
 
@@ -171,6 +172,12 @@ Use this structure exactly.
 - [Pass 1: code/tests/docs/configs/memory/issues/history checked.]
 - [Pass 2: aliases/reverse lookups/contradictions/stale assumptions checked.]
 - [State whether broad GitHub issue scanning was approved, bounded by memory, skipped, or unavailable.]
+
+## 9. Suggested Next Skills (Optional)
+
+- [/skill-name: reason tied to this report.]
+- [Prefer adjacent workflow steps; include only 1-3.]
+- [Examples: `/feature-prompt` to frame a change request, `/diagnose` when a reproducible bug is identified, `/understand-diff` before larger refactors.]
 ```
 
 ## Evidence Style

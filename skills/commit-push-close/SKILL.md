@@ -25,6 +25,10 @@ Routing state lives in the linked issue's labels. Do not add `HITL:` or `AFK:` t
 
 Read state with: `gh issue view <num> --json state,labels,title,url`. Match label names exactly.
 
+## Response Footer
+
+End the final response with `Suggested next skills (optional)` containing 1-3 advisory recommendations. Keep it recommendation-only (no gating). Choose next steps from workflow context, for example `/release-notes`, `/handoff`, or `/triage` for follow-up work.
+
 ## Inline issue creation
 
 Inline issue creation is only for small ad hoc work that started from a short request with no linked GitHub issue. Planned work should already have gone through Matt Pocock's `/triage`; if a planned issue is missing, not ready, ambiguous, cross-project, or multi-slice, stop and route back to `/triage`, `/feature-prompt`, or `/to-issues` instead of fabricating a ship-time issue.
@@ -182,7 +186,7 @@ Rules for **How to test**:
     ```
     Use an unquoted heredoc (`<<EOF`, not `<<'EOF'`) so `${SHA}` interpolates. Escape any literal backticks/`$` inside the body.
 
-11. **Report** — one line: `<SHA> pushed to <branch>; issue #<num> closed`. Done.
+11. **Report** — one line: `<SHA> pushed to <branch>; issue #<num> closed`. Then append `Suggested next skills (optional)` with 1-3 advisory suggestions.
 
 ## Examples
 
@@ -260,3 +264,4 @@ Before marking the iteration done, verify:
 - [ ] Push succeeded (or, on `main`/`master`, was confirmed separately)
 - [ ] Issue closed with comment containing **Summary** + **How to test**
 - [ ] Final report line printed
+- [ ] Optional `Suggested next skills` footer included (1-3 advisory suggestions, no gating)

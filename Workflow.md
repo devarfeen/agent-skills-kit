@@ -94,6 +94,29 @@ Use local-only policy when needed by adding generated files to local git exclude
 /agents-md -> /setup-matt-pocock-skills -> /feature-discovery -> /feature-prompt -> /grill-with-docs -> /to-prd -> /to-issues -> /triage -> /tdd -> /commit-push-pr -> /release-notes
 ```
 
+## Suggested Next Skills Footer (Optional)
+
+To reduce memory load during ad hoc usage, append a short recommendation block at the end of non-trivial responses:
+
+```markdown
+Suggested next skills (optional):
+- /skill-name: why this is likely useful now.
+```
+
+Guidelines:
+
+- Keep it recommendation-only. Do not enforce a gate or auto-chain.
+- Apply this footer after any substantial step, including local and third-party skills.
+- Keep it short: 1-3 suggestions maximum.
+- Use workflow adjacency first (current step -> likely next step).
+- Prefer evidence-raising suggestions before risky edits:
+  - before larger refactors: `/understand-diff`
+  - after discovery of unclear behavior: `/feature-prompt` or `/diagnose`
+  - after prompt drafting: `/grill-with-docs`
+  - after issue slicing: `/triage`
+  - after implementation completion: `/commit-push-pr` or `/commit-push-close`, then `/release-notes`
+- If confidence is low, suggest one conservative next step instead of a long list.
+
 ## Planned Vs Ad Hoc Issue Flow
 
 Use two valid issue paths:

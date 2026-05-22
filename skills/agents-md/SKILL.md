@@ -13,6 +13,7 @@ Create or update agent instruction files for a codebase:
 
 Include the fourteen spartan non-negotiable principles in the `AGENTS.md` template below.
 Also include retained operational defaults for caveman communication and parallel execution.
+Also include an optional "Suggested next skills" footer convention so agents provide lightweight before/after reminders without enforcing hard gates, including after third-party skills.
 Make clear that non-negotiables and operational defaults must be followed and fully enforced.
 
 ## Non-Negotiable Principles
@@ -161,6 +162,7 @@ Follow these 14 rules. They are non-negotiable and must be fully enforced. Bias 
 - **Discovery:** Map project codes to roots via package/config files. Use efficient search tools.
 - **Caveman Chat:** Caveman applies to chat output only. Do not caveman-compress code, docs, PRDs, release notes, PR bodies, generated prompts, or persisted artifacts. Use 5th-grade English in chat unless a technical term is required. Prefer `guess` over `speculate`, `join words` over `conjunctions`, `short sentence` over `fragment`, `because` or `so` over `causality`, `simple` over `shallow`, and `combine` over `synthesize`. Keep exact technical words such as `API`, `DB`, `auth`, `null`, `array`, `timeout`, and `race condition`.
 - **Subagent Dispatch:** Before substantial work, split the task into independent lanes. Dispatch fresh subagents, agents, workers, or isolated tool passes for lanes that can run in parallel without blocking the next local step. Use lanes for research, critique, comparison, risk checks, source checks, outline, terminology, audience fit, codebase search, multi-project mapping, test-failure investigation, and review. Main agent owns final judgment and conflict resolution. Keep work local when the task is tiny, sequential, tightly coupled, or likely to create edit conflicts. If the runtime lacks subagents, run separate focused tool passes.
+- **Suggested Next Skills Footer:** End non-trivial responses with an optional `Suggested next skills (optional)` block containing 1-3 advisory recommendations. Keep it recommendation-only (no enforced gating). This applies after any substantial step, including local skills and third-party skills. Prefer workflow-adjacent next steps and uncertainty-reducing helpers (for example `/understand-diff` before larger refactors).
 - **Domain:** Read `CONTEXT.md` and `docs/adr/` before implementation. ADRs are binding.
 - **Validation:** Run targeted tests and workspace-standard checks (`tsc`, `lint`, `build`) after every edit.
 - **Completion:** Final report must include explicit validation performed and any remaining risks.

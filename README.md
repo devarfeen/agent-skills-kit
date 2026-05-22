@@ -83,7 +83,10 @@ workspace setup and spec creation through issues, TDD implementation, PR
 shipping, and release notes. If you use Matt's engineering skills, run
 `/setup-matt-pocock-skills` once per repo before `/to-prd`, `/to-issues`,
 `/triage`, `/diagnose`, `/tdd`, `/improve-codebase-architecture`, or
-`/zoom-out`.
+`/zoom-out`. The workflow also defines an optional `Suggested next skills`
+footer pattern (recommendations only) so agents can append lightweight
+before/after reminders at the end of non-trivial responses, including after
+third-party skills.
 
 ## Credits And Provenance
 
