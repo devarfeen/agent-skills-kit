@@ -78,6 +78,12 @@ Tool allow/deny uses pattern strings, for example:
 
 Project overrides: `.cursor/cli.json` merged from git root to cwd (deeper wins).
 
+### MCP config (Cursor)
+
+- Project scope: `.cursor/mcp.json`
+- Global scope: `~/.cursor/mcp.json`
+- CLI + editor share MCP config discovery (project -> global -> nested parent directories).
+
 ### Kit mapping (generic → Cursor)
 
 See [`cursor-tools.md`](cursor-tools.md) for the full skill-kit → Cursor equivalence table.
