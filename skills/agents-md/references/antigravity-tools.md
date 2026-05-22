@@ -1,3 +1,5 @@
+Tool-calling index: [`tool-calling.md`](tool-calling.md).
+
 | Skill Reference | Antigravity CLI Equivalent |
 | :--- | :--- |
 | `Read` (file reading) | `read_file` |

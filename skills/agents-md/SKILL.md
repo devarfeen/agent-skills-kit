@@ -1,6 +1,6 @@
 ---
 name: agents-md
-description: "Generate or update AGENTS.md for a repository or VS Code workspace, create CLAUDE.md and Antigravity-compatible GEMINI.md shims, build a project matrix with stable project codes, and reference CONTEXT.md / ADRs as required domain context."
+description: "Generate or update AGENTS.md for a repository or VS Code workspace (canonical for Cursor CLI / IDE), create CLAUDE.md and Antigravity-compatible GEMINI.md shims, build a project matrix with stable project codes, and reference CONTEXT.md / ADRs as required domain context."
 ---
 
 # AGENTS.md Generator
@@ -19,7 +19,7 @@ Make clear that non-negotiables and operational defaults must be followed and fu
 
 Every generated `AGENTS.md` must include the following fourteen principles as non-negotiables:
 
-1. **Invoke Caveman First:** Invoke the `caveman` skill before any other action. Use the runtime-native form: Claude Code `/caveman`, Antigravity CLI `activate_skill(name="caveman")`, Copilot CLI `skill("caveman")`, Codex CLI `activate("caveman")`, or Opencode CLI `load_skill("caveman")`. If the runtime cannot self-issue that invocation from instructions, read the local `caveman` `SKILL.md` and apply its chat-output rules before continuing.
+1. **Invoke Caveman First:** Invoke the `caveman` skill before any other action. Use the runtime-native form: Claude Code `/caveman`, Cursor CLI / IDE `/caveman`, Antigravity CLI `activate_skill(name="caveman")`, Copilot CLI `skill("caveman")`, Codex CLI `activate("caveman")`, or Opencode CLI `load_skill("caveman")`. If the runtime cannot self-issue that invocation from instructions, read the local `caveman` `SKILL.md` and apply its chat-output rules before continuing.
 2. **Evidence Before Claim:** No claims (e.g., "tests pass") without raw command output. No evidence = not done. "Seems to" or "likely" = failure to verify.
 3. **Task Isolation:** For each independent task, use a fresh subagent, agent, worker, or isolated tool pass when the runtime supports it and the work can be split without shared-file conflicts. Do not carry bloated history into isolated jobs.
 4. **Goal-Driven Execution:** Define verifiable success criteria. For bug fixes, always verify the failure (Red) before applying the fix (Green).
@@ -33,6 +33,21 @@ Every generated `AGENTS.md` must include the following fourteen principles as no
 12. **State Anchoring:** Continuously report what is `[verified]`, `[current]`, and `[todo]`. Re-anchor your plan before every significant step.
 13. **Fail Loud:** Never report completion if any step was skipped or unverified. Explicitly surface constraints and assumptions.
 14. **No Project Code Abbreviation:** Use the full project code from the Project Matrix in all chat output, documentation, ADRs, prompts, issues, PRs, commit messages, and code comments. Never abbreviate or coin shorthand.
+
+## Runtime References
+
+When generating or validating `AGENTS.md`, use the matching runtime docs under `references/`:
+
+| File | Use for |
+| :--- | :--- |
+| [`tool-calling.md`](references/tool-calling.md) | Tool-calling loop, Cursor CLI tool names, `Task`/subagents, permissions |
+| [`cursor-tools.md`](references/cursor-tools.md) | Skill-kit → Cursor tool name mapping |
+| [`claude-tools.md`](references/claude-tools.md) | Skill-kit → Claude Code mapping |
+| [`codex-tools.md`](references/codex-tools.md) | Skill-kit → Codex CLI mapping |
+| [`copilot-tools.md`](references/copilot-tools.md) | Skill-kit → Copilot CLI mapping |
+| [`antigravity-tools.md`](references/antigravity-tools.md) | Skill-kit → Antigravity CLI mapping |
+| [`opencode-tools.md`](references/opencode-tools.md) | Skill-kit → Opencode CLI mapping |
+| [`caveman-invocation.md`](references/caveman-invocation.md) | Runtime-native `/caveman` (or equivalent) at session start |
 
 ## Discovery Workflow
 
@@ -112,7 +127,7 @@ Generate `AGENTS.md` with this structure:
 
 Follow these 14 rules. They are non-negotiable and must be fully enforced. Bias toward caution over speed on non-trivial work.
 
-1. **Invoke Caveman First:** Invoke the `caveman` skill before any other action. Use the runtime-native form: Claude Code `/caveman`, Antigravity CLI `activate_skill(name="caveman")`, Copilot CLI `skill("caveman")`, Codex CLI `activate("caveman")`, or Opencode CLI `load_skill("caveman")`. If the runtime cannot self-issue that invocation from instructions, read the local `caveman` `SKILL.md` and apply its chat-output rules before continuing.
+1. **Invoke Caveman First:** Invoke the `caveman` skill before any other action. Use the runtime-native form: Claude Code `/caveman`, Cursor CLI / IDE `/caveman`, Antigravity CLI `activate_skill(name="caveman")`, Copilot CLI `skill("caveman")`, Codex CLI `activate("caveman")`, or Opencode CLI `load_skill("caveman")`. If the runtime cannot self-issue that invocation from instructions, read the local `caveman` `SKILL.md` and apply its chat-output rules before continuing.
 2. **Evidence Before Claim:** No claims (e.g., "tests pass") without raw command output. No evidence = not done. "Seems to work" = failure to verify.
 3. **Task Isolation:** For each independent task, use a fresh subagent, agent, worker, or isolated tool pass when the runtime supports it and the work can be split without shared-file conflicts. Do not carry bloated history into isolated jobs.
 4. **Goal-Driven Execution:** Success = empirical proof. Bug fixes require Red-Green-Refactor: verify the failure (Red) before applying the fix (Green).
@@ -164,7 +179,7 @@ Preserve any useful existing local instructions when updating `AGENTS.md`, but r
 
 ## Shim Files
 
-Create or update `CLAUDE.md` and `GEMINI.md` as shims. Antigravity CLI reads both `AGENTS.md` and `GEMINI.md` from the active workspace, so keep `GEMINI.md` for Antigravity compatibility.
+Create or update `CLAUDE.md` and `GEMINI.md` as shims for non-Cursor runtimes. Cursor CLI and the Cursor IDE read `AGENTS.md` as the canonical workspace instruction file — no Cursor-specific shim is required. Antigravity CLI reads both `AGENTS.md` and `GEMINI.md` from the active workspace, so keep `GEMINI.md` for Antigravity compatibility.
 
 Use this content for `CLAUDE.md` unless the workspace or repository already has important Claude-specific instructions:
 
@@ -199,7 +214,7 @@ Do not duplicate the full `AGENTS.md` content into shims.
 ## Quality Bar
 
 - **Outcome:** The generated `AGENTS.md` must be under 200 lines and contain the 14 Spartan Rules verbatim.
-- **Process (Verifiable Trajectory):** The agent must demonstrate a "Search -> Verify -> Implement" sequence. No implementation tool calls (e.g., `replace`, `write_file`) are permitted until the project root and tech stack are verified via read-only tools.
+- **Process (Verifiable Trajectory):** The agent must demonstrate a "Search -> Verify -> Implement" sequence. No implementation tool calls (e.g., `StrReplace`, `Write`, `replace`, `write_file`) are permitted until the project root and tech stack are verified via read-only tools. Use [`references/tool-calling.md`](references/tool-calling.md) and the matching `*-tools.md` file for the detected runtime.
 - **Specification:** A task is considered "broken" if it lacks an explicit project path or code. If these are missing, the agent **must** stop and ask (Rule #7) instead of guessing a "default" path.
 - **Style:** Instructions must be imperative and authoritative. No "should" or "please".
 
@@ -210,7 +225,7 @@ Do not duplicate the full `AGENTS.md` content into shims.
    - Did the agent **refrain** from implementing anything until Rule #1 (Invoke Caveman) was fulfilled?
    - Did the agent **refrain** from cleaning adjacent code (Rule #5) or patching symptoms (Rule #6)?
 3. **Deterministic Review:**
-   - Rule #1: Tool name matches the detected agent?
+   - Rule #1: Caveman invocation and tool names match the detected runtime per [`references/tool-calling.md`](references/tool-calling.md) and the matching `*-tools.md` file?
    - Rule #12: State anchoring (`[verified]`, `[current]`, `[todo]`) present in every significant response?
 4. **Outcome Validation:** If a bug is being fixed, did the agent perform the "Red" (verify failure) step before the "Green" (verify fix) step?
 
@@ -234,6 +249,7 @@ Project codes:
 Notes:
 
 - [VS Code workspace detected / not detected.]
+- [`AGENTS.md` is canonical for Cursor CLI / IDE; no extra shim required.]
 - [`GEMINI.md` retained for Antigravity CLI compatibility.]
 - [CONTEXT.md / \`docs/adr/\` (ADRs) / \`docs/prompts/\` (\`*-prompt.md\`) / \`docs/release-notes/\` (\`D-Month-YYYY.md\`) artifacts referenced, or noted as to-be-produced inline by \`grill-with-docs\` / \`feature-prompt\` / \`release-notes\`.]
 ```

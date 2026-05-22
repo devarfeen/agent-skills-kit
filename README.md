@@ -1,6 +1,6 @@
 # Agent Skills Kit
 
-A collection of reusable **skills** for AI coding agents (Claude Code, Cursor,
+A collection of reusable **skills** for AI coding agents (Claude Code, Cursor CLI / IDE,
 and any agent runtime that supports the [`skills`](https://www.npmjs.com/package/skills)
 package format).
 
@@ -17,8 +17,13 @@ agent-skills-kit/
 ├── README.md                 # This file
 ├── LICENSE                   # MIT
 └── skills/
-    ├── agents-md/            # Generate AGENTS.md plus CLAUDE.md/Antigravity-compatible GEMINI.md shims
-    │   └── SKILL.md          # Required: metadata + instructions
+    ├── agents-md/            # Generate AGENTS.md (Cursor canonical) plus CLAUDE.md/GEMINI.md shims
+    │   ├── SKILL.md          # Required: metadata + instructions
+    │   └── references/
+    │       ├── tool-calling.md       # Tool-calling hub (Cursor CLI names, Task, permissions)
+    │       ├── cursor-tools.md       # Skill-kit → Cursor mapping
+    │       ├── caveman-invocation.md # Per-runtime caveman invoke
+    │       └── *-tools.md            # claude, codex, copilot, antigravity, opencode
     ├── release-notes/        # The release-notes skill
     │   ├── SKILL.md          # Required: metadata + instructions
     │   ├── README.md         # Human-readable docs for this skill
@@ -64,6 +69,12 @@ The `skills` CLI fetches the named subfolder from this repo and installs it
 into your agent's local skills directory. After install, just talk to your
 agent normally — it will invoke the skill when your request matches one of
 its trigger phrases.
+
+**Cursor CLI / IDE:** Install with `npx skills install` (skills land in
+`~/.cursor/skills/` or `.cursor/skills/`), or add the repo under Cursor Settings →
+Rules → Remote Rule (GitHub). Invoke a skill with `/skill-name` in Agent chat
+(for example `/release-notes`). Run the CLI with `agent` for interactive sessions
+or `agent -p "..."` for scripts and CI.
 
 ## Workflow Guide
 
@@ -116,6 +127,10 @@ skills from the wider agent-skills ecosystem.
   https://github.com/vercel-labs/agent-skills
 - `/sentry` refers to Sentry's CLI for developers and agents:
   https://cli.sentry.dev/
+- **Cursor CLI / IDE:** `AGENTS.md` is the canonical workspace context file;
+  skills use `/skill-name` invocation and the `Task` tool for subagents.
+  https://cursor.com/docs/cli/overview
+  https://cursor.com/docs/context/skills
 
 ## Available Skills
 
@@ -131,7 +146,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 **What it does**
 
 - Includes a 14-rule non-negotiable core in `AGENTS.md`, plus retained operational defaults for chat-only, 5th-grade-English caveman activation, full Project Matrix code usage, and parallel execution
-- Creates `GEMINI.md` as an Antigravity CLI compatibility shim because Antigravity CLI reads it as workspace context
+- Uses `AGENTS.md` as canonical for Cursor CLI / IDE (no extra shim); creates `GEMINI.md` as an Antigravity CLI compatibility shim because Antigravity CLI reads it as workspace context
 - Detects VS Code workspaces and uses each folder `name` as the project name/code source
 - Treats the workspace folder with `path: "."` as a meta workspace with no code
 - Builds a project matrix: `Project Name (Code) | Path | Tech Stack`
@@ -443,8 +458,20 @@ skills may use multiple read-only explorer agents for independent discovery
 work. This is most useful for multi-repo workspaces, separate modules, or
 parallel evidence gathering.
 
+| Runtime | Subagent dispatch | Skill invocation |
+| --- | --- | --- |
+| Cursor CLI / IDE | `Task` tool (`subagent_type`) or `.cursor/agents/*.md` | `/skill-name` |
+| Claude Code | Native sub-agents | `/skill-name` |
+| Codex CLI | `spawn_agent` / `wait_agent` | `activate("skill")` |
+| Copilot CLI | `task` with `agent_type` | `skill("name")` |
+| Antigravity CLI | `@agent-name` | `activate_skill(name="...")` |
+
 The main agent still owns final judgment and output quality. Explorer agents
 collect facts; they do not replace the final synthesis.
+
+Runtime-specific tool calling docs for `agents-md` live under
+`skills/agents-md/references/` — start with [`tool-calling.md`](skills/agents-md/references/tool-calling.md)
+(Cursor CLI tool names, `Task`/subagents, permissions), then `cursor-tools.md`, `claude-tools.md`, etc.
 
 ## Contributing a New Skill
 

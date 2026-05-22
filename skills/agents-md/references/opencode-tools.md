@@ -1,3 +1,5 @@
+Tool-calling index: [`tool-calling.md`](tool-calling.md).
+
 | Skill Reference | Opencode Equivalent |
 | :--- | :--- |
 | `Read` (file reading) | `cat` |

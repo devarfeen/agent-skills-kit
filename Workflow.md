@@ -9,12 +9,13 @@ Combine skills from this kit and the wider ecosystem to move from idea to shippe
 - **Forrest Chang:** Seeding logic for `/agents-md` non-negotiable principles.
 - **Anthropic:** Source for `/skill-creator`.
 - **Vercel Labs:** Source for `/agent-browser`, `skills` CLI, and React/React Native best practices.
+- **Cursor:** Cursor CLI / IDE Agent (`agent` command, `/skill-name`, `AGENTS.md` as canonical context, `Task` for subagents). Tool names and permissions: [`skills/agents-md/references/tool-calling.md`](skills/agents-md/references/tool-calling.md). https://cursor.com/docs/cli/overview
 
 ## Non-Negotiable Core (Spartan Rules)
 
 Every session follows these 14 rules (enforced by `AGENTS.md`):
 
-1. **Invoke Caveman First:** Immediate `/caveman` (or tool call) is mandatory.
+1. **Invoke Caveman First:** Immediate `/caveman` (Cursor CLI / IDE, Claude Code) or runtime-native skill call is mandatory.
 2. **Evidence Before Claim:** No status claims without raw command output.
 3. **Task Isolation:** Fresh context per independent task. Use subagents, agents, workers, or isolated tool passes when work can split without file conflicts.
 4. **Goal-Driven Execution:** Empirical proof only. Bug fixes require Red-Green-Refactor.
@@ -31,12 +32,49 @@ Every session follows these 14 rules (enforced by `AGENTS.md`):
 
 Operational default: caveman applies to chat output only. Do not caveman-compress code, docs, PRDs, release notes, PR bodies, generated prompts, or persisted artifacts. Use 5th-grade English in chat unless a technical term is required; keep exact terms like `API`, `DB`, `auth`, `null`, `array`, `timeout`, and `race condition`.
 
-Subagent default: before substantial work, split the task into independent lanes. Dispatch fresh agents for research, critique, comparison, risk checks, source checks, outline, terminology, audience fit, codebase search, mapping, test-failure investigation, and review. Main agent owns final judgment. Keep work local when tiny, sequential, tightly coupled, or conflict-prone. If the runtime lacks subagents, use separate focused tool passes.
+Subagent default: before substantial work, split the task into independent lanes. Dispatch fresh agents for research, critique, comparison, risk checks, source checks, outline, terminology, audience fit, codebase search, mapping, test-failure investigation, and review. Main agent owns final judgment. Keep work local when tiny, sequential, tightly coupled, or conflict-prone. If the runtime lacks subagents, use separate focused tool passes. On Cursor CLI / IDE, use the `Task` tool (`explore`, `shell`, `generalPurpose`, or custom `.cursor/agents/`); see [`tool-calling.md`](skills/agents-md/references/tool-calling.md).
 
 ## First-Time Setup
 
 1. **`/agents-md`**: Creates `AGENTS.md`, shims, and project matrix.
 2. **`/setup-matt-pocock-skills`**: Configures tracker, labels, and `## Agent skills` block.
+
+## Optional Agent Tooling
+
+Use these when you want faster orientation and persistent memory across sessions.
+
+### Understand-Anything (global skills)
+
+Install once per machine for agent-wide skills:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Lum1104/Understand-Anything/main/install.sh | bash -s codex
+```
+
+Then invoke:
+
+- `/understand` for first-pass architecture mapping on unfamiliar repos.
+- `/understand-diff` before large refactors to preview blast radius.
+- `/understand-explain <path>` when you need a focused explanation for one file or symbol.
+
+### memtrace (global binary, project-scoped wiring)
+
+Install once per machine:
+
+```bash
+brew install memtrace-dev/tap/memtrace
+```
+
+Wire per repo:
+
+```bash
+cd <repo>
+memtrace init --no-import
+memtrace setup claude-code
+memtrace setup vscode
+```
+
+Use local-only policy when needed by adding generated files to local git exclude (`.git/info/exclude`) instead of committing them.
 
 ## Choosing A Starting Point
 
@@ -96,3 +134,5 @@ When unsure, run this sequence manually:
 3. `/grill-with-docs` (Challenge)
 
 No auto-chains. Trigger each step based on gate completion.
+
+If `memtrace` is connected, run `memory_recall` before step 1 with query terms from the task. If repo is unfamiliar or large, run `/understand` before step 1.

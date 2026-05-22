@@ -1,3 +1,5 @@
+Tool-calling index: [`tool-calling.md`](tool-calling.md).
+
 | Skill Reference | Codex Equivalent |
 | :--- | :--- |
 | `Task` tool (dispatch subagent) | `spawn_agent` |

@@ -1,3 +1,5 @@
+Tool-calling index: [`tool-calling.md`](tool-calling.md).
+
 | Skill Reference | Claude Code Equivalent |
 | :--- | :--- |
 | `Read` (file reading) | `read_file` |
