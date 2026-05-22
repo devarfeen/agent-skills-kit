@@ -89,7 +89,7 @@ Do not add a `Domain terms` section to the generated prompt. If terms still need
 
 When the runtime supports subagents and the user has allowed them, use read-only agents only for fast, independent context checks. Keep the main session responsible for judgment and final wording. Do not use worker agents or make code edits.
 
-If `Understand-Anything` skills are installed and the request targets a large or unfamiliar repo, optionally run `/understand` before drafting to improve terminology and architecture framing. Treat this as optional acceleration, not a hard gate.
+If `Understand-Anything` skills are installed and the request targets a large or unfamiliar repo, optionally run `/understand` before drafting to improve terminology and architecture framing. Use the target repo root (not workspace root) so the graph is stored in `<project-root>/.understand-anything/knowledge-graph.json`. Treat this as optional acceleration, not a hard gate.
 
 ## Final Output
 

@@ -56,8 +56,11 @@ Then invoke:
 - `/understand` for first-pass architecture mapping on unfamiliar repos.
 - `/understand-diff` before large refactors to preview blast radius.
 - `/understand-explain <path>` when you need a focused explanation for one file or symbol.
+- Knowledge-base placement: keep graph at `<project-root>/.understand-anything/knowledge-graph.json` (not workspace root).
+- First usage in a task: check graph exists for target project repo; if missing, run `/understand` in that repo.
+- Next usage during implementation: run `/understand-diff` after meaningful edits and `/understand-explain` for focused files/symbols.
 
-### memtrace (global binary, project-scoped wiring)
+### memtrace (global binary, workspace-scoped for multi-repo)
 
 Install once per machine:
 
@@ -65,14 +68,34 @@ Install once per machine:
 brew install memtrace-dev/tap/memtrace
 ```
 
-Wire per repo:
+Wire for multi-repo workspaces:
 
 ```bash
-cd <repo>
+cd <workspace-root>
 memtrace init --no-import
 memtrace setup claude-code
 memtrace setup vscode
 ```
+
+Run one shared server from workspace root:
+
+```bash
+memtrace serve --dir <workspace-root>
+```
+
+Use workspace-root memtrace as single source of truth for all project codes in that workspace. Avoid repo-level memtrace MCP entries in nested repos.
+
+### Supported Coding Tools Matrix (single source of truth)
+
+| Tool Runtime | Workspace MCP file(s) | Notes |
+| :--- | :--- | :--- |
+| Cursor CLI / IDE | `<workspace-root>/.cursor/mcp.json` | Keep `~/.cursor/mcp.json` only as user-global fallback. |
+| Claude Code | `<workspace-root>/.claude/settings.local.json` | Enable workspace MCP servers from root config files. |
+| Antigravity CLI | `<workspace-root>/.agents/mcp_config.json` | Remote HTTP MCP entries must use `serverUrl`. |
+| Codex CLI | `<workspace-root>/.codex/config.toml` | Keep memtrace server at workspace root. |
+| Legacy MCP readers | `<workspace-root>/.mcp.json` | Compatibility file for runtimes that read legacy MCP config. |
+| memtrace (all supported tools) | `memtrace serve --dir <workspace-root>` | Single source of truth. No repo-level memtrace servers. |
+| Understand-Anything (all supported tools) | `<project-root>/.understand-anything/knowledge-graph.json` | Keep project graph at repo root, never at workspace root. |
 
 Use local-only policy when needed by adding generated files to local git exclude (`.git/info/exclude`) instead of committing them.
 

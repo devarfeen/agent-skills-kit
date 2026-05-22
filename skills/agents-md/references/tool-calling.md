@@ -78,12 +78,6 @@ Tool allow/deny uses pattern strings, for example:
 
 Project overrides: `.cursor/cli.json` merged from git root to cwd (deeper wins).
 
-### MCP config (Cursor)
-
-- Project scope: `.cursor/mcp.json`
-- Global scope: `~/.cursor/mcp.json`
-- CLI + editor share MCP config discovery (project -> global -> nested parent directories).
-
 ### Kit mapping (generic → Cursor)
 
 See [`cursor-tools.md`](cursor-tools.md) for the full skill-kit → Cursor equivalence table.
@@ -98,3 +92,22 @@ See [`cursor-tools.md`](cursor-tools.md) for the full skill-kit → Cursor equiv
 | Copilot CLI | [`copilot-tools.md`](copilot-tools.md) | `skill("caveman")` |
 | Antigravity CLI | [`antigravity-tools.md`](antigravity-tools.md) | `activate_skill(name="caveman")` |
 | Opencode CLI | [`opencode-tools.md`](opencode-tools.md) | `load_skill("caveman")` |
+
+### MCP placement (multi-repo workspaces)
+
+Keep MCP configuration at workspace root for supported coding tools:
+
+- Cursor CLI / IDE: `<workspace-root>/.cursor/mcp.json` (plus optional `~/.cursor/mcp.json` fallback)
+- Claude Code: `<workspace-root>/.claude/settings.local.json`
+- Legacy MCP readers: `<workspace-root>/.mcp.json`
+- Antigravity CLI: `<workspace-root>/.agents/mcp_config.json`
+- Codex CLI: `<workspace-root>/.codex/config.toml`
+
+For memtrace, define one workspace-root server (`memtrace serve --dir <workspace-root>`) and avoid repo-level memtrace MCP entries.
+
+### Understand-Anything knowledge base placement
+
+- Keep code knowledge graphs at project-repo root: `<project-root>/.understand-anything/knowledge-graph.json`.
+- In multi-repo workspaces, do not place project code knowledge graphs at workspace root.
+- First use in a task: check the target project graph exists; if missing, run `/understand` for that project repo.
+- Follow-up use: run `/understand-diff` after major edits and `/understand-explain <path>` for targeted deep dives in the same repo.

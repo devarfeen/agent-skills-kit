@@ -32,6 +32,7 @@ What:
 - Scan the codebase before using git history.
 - Check available internal memory before doing broad GitHub issue discovery. Internal memory can include conversation memory, AGENTS.md, CONTEXT.md, ADRs under `docs/adr/`, local docs, local issue caches, prior issue references, or project-specific memory files.
 - If memtrace MCP tools are available, call `memory_recall` once before broad discovery using the main topic terms. Treat recalled decisions as hints that must still be verified against code.
+- If an Understand-Anything graph exists, read it from the target project repo path `<project-root>/.understand-anything/knowledge-graph.json` (not workspace root) before broad code traversal.
 - If internal memory identifies relevant GitHub issue numbers, URLs, titles, labels, milestones, or search terms, read all GitHub issues in that bounded set.
 - If no reliable internal memory exists for the topic, ask the user for approval before scanning broadly across GitHub issues. Explain that reading all related issues can take a long time.
 - If approval for broad GitHub issue scanning is not granted, continue with code, docs, tests, local memory, and git history, and state that broad GitHub issue scanning was skipped.
