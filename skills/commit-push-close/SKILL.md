@@ -60,7 +60,7 @@ When step 2 of the workflow can't locate an issue for valid ad hoc work, create 
 Use the GitHub issue title as the naming anchor:
 
 - Existing issue: commit subject should match the issue title as closely as practical.
-- PRD slice issue: preserve `Slice NNNN` and the short heading. If the full `Slice NNNN of PRD: <adr-name> - <Short heading>` title is too long for a commit subject, shorten only the PRD name portion; keep the slice number and short heading intact.
+- PRD slice issue: preserve `Slice NNNN`, `<PROJECT-CODE>`, `ADR-<adr-number>`, `(#<prd-issue-number>)`, and the short heading. If the full `Slice NNNN of <PROJECT-CODE> ADR-<adr-number> <adr-name> (#<prd-issue-number>): <Short heading>` title is too long for a commit subject, shorten only the `<adr-name>` portion; keep the slice number, project code, ADR number, PRD issue number, and short heading intact.
 - Ad hoc inline issue: the new issue title and commit subject must be the same text unless a hard tool limit prevents it.
 - Never add `HITL:` or `AFK:` to any of these names.
 

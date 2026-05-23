@@ -106,13 +106,14 @@ Project code rules:
 
 Generated `AGENTS.md` files must include issue-title rules that make PRD and slice issues easy to locate from GitHub search and from the ADR filename:
 
-- **PRD issues:** title exactly starts with `PRD: <adr-name>`.
-  - Use the ADR basename exactly as it appears under `docs/adr/`, but remove the `.md` extension.
-  - Example: `PRD: 0042-stock-transfer-approvals`.
-- **PRD slice issues:** title exactly starts with `Slice NNNN of PRD: <adr-name> - <Short heading>`.
+- **PRD issues:** title exactly starts with `PRD: <PROJECT-CODE> ADR-<adr-number> <adr-name>`.
+  - Derive `<adr-number>` and `<adr-name>` from the ADR filename under `docs/adr/` (without `.md`), where `0042-stock-transfer-approvals.md` maps to `ADR-0042 stock-transfer-approvals`.
+  - Example: `PRD: PAYMENTS ADR-0042 stock-transfer-approvals`.
+- **PRD slice issues:** title exactly starts with `Slice NNNN of <PROJECT-CODE> ADR-<adr-number> <adr-name> (#<prd-issue-number>): <Short heading>`.
   - `NNNN` is a zero-padded four-digit slice number local to that PRD, starting at `0001`.
+  - `<prd-issue-number>` is the numeric GitHub issue number of the parent PRD issue.
   - Keep `<Short heading>` concise, action-oriented, and specific enough to scan in an issue list.
-  - Example: `Slice 0001 of PRD: 0042-stock-transfer-approvals - Add approval state model`.
+  - Example: `Slice 0001 of PAYMENTS ADR-0042 stock-transfer-approvals (#4812): Add approval state model`.
 - **Labels:** Follow Matt Pocock's triage roles. Every triaged issue should have exactly one category label (`bug` or `enhancement`) and exactly one state label (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, or `wontfix`).
 - **Routing state:** Do not encode `HITL:` or `AFK:` in GitHub issue titles, commit subjects, PR titles, or branch names. Use state labels instead: `ready-for-human` for human-ready work and `ready-for-agent` for agent-ready work.
 - **Non-PRD implementation issues:** prefer `<PROJECT-CODE>: <short imperative heading>` when the issue is not tied to a PRD. Keep the full Project Matrix code; never abbreviate it.
@@ -151,8 +152,8 @@ Follow these 14 rules. They are non-negotiable and must be fully enforced. Bias 
 
 ## GitHub Issue Titles
 
-- PRD issues: `PRD: <adr-name>`. Use the ADR basename exactly as it appears under `docs/adr/`, but remove `.md`.
-- PRD slice issues: `Slice NNNN of PRD: <adr-name> - <Short heading>`. Use four digits, local to the PRD, starting at `0001`.
+- PRD issues: `PRD: <PROJECT-CODE> ADR-<adr-number> <adr-name>`.
+- PRD slice issues: `Slice NNNN of <PROJECT-CODE> ADR-<adr-number> <adr-name> (#<prd-issue-number>): <Short heading>`. Use four digits, local to the PRD, starting at `0001`.
 - Every triaged issue needs exactly one category label (`bug` or `enhancement`) and exactly one state label (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, or `wontfix`).
 - Do not put `HITL:` or `AFK:` in issue titles, commit subjects, PR titles, or branch names. Use `ready-for-human` or `ready-for-agent` state labels for routing.
 - Non-PRD implementation issues: prefer `<PROJECT-CODE>: <short imperative heading>` and keep the full Project Matrix code.
@@ -171,7 +172,7 @@ Follow these 14 rules. They are non-negotiable and must be fully enforced. Bias 
 - **Completion:** Final report must include explicit validation performed and any remaining risks.
 - **Planned vs Ad Hoc Issues:** Planned work starts from a GitHub issue that has passed Matt Pocock's `/triage`: exactly one category label (`bug` or `enhancement`) and a ready state label (`ready-for-agent` or `ready-for-human`). Small ad hoc work may start from a one-line request without a GitHub issue; in that case, do the work first and let `commit-push-pr` or `commit-push-close` create the issue at ship time from the original request, final diff, decisions, and validation. If ad hoc work becomes large, ambiguous, cross-project, or multi-slice, stop and route it through `/triage`, `/feature-prompt`, or `/to-issues`.
 - **TDD Skill Defaults:** When the `tdd` skill is invoked, apply these standing defaults unless the user overrides them in the same turn:
-  - Slices already have GitHub issues. PRD slices use titles like `Slice NNNN of PRD: <adr-name> - <Short heading>` where `<adr-name>` excludes `.md`. Work through every slice for the PRD; do not stop after one unless instructed.
+  - Slices already have GitHub issues. PRD slices use titles like `Slice NNNN of <PROJECT-CODE> ADR-<adr-number> <adr-name> (#<prd-issue-number>): <Short heading>`. Work through every slice for the PRD; do not stop after one unless instructed.
   - Fully complete a slice before moving on. After each slice, produce a hand-off document and a kickoff prompt, then ask the user to start a new session for the next slice.
   - Parallelize with sub-agents or agents whenever steps are independent.
   - **Decision points (HITL vs AFK):** Only ask the user a question or present recommendations when the GitHub issue has the `ready-for-human` label — and even then, present a short menu of recommended options that best fit the concern rather than open-ended questions. For `ready-for-agent` issues, treat the work as fully autonomous: auto-select the recommended option at every decision point and proceed. Surface the choices made in the hand-off document at the end of the slice instead of mid-flight. **Recommended options must be sourced from ADRs (`docs/adr/`), the GitHub issue body/comments, or the slice definition itself — never self-invented.** If no grounded option exists, stop and surface the gap rather than fabricating one.
