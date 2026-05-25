@@ -85,6 +85,12 @@ Acceptance:
 - Optional section: `Acceptance`.
 - If the user skips `Acceptance`, infer it and mark it as inferred.
 - If an answer is vague, ask one sharp follow-up before moving on.
+- Keep the human in charge. This is a guided conversation, not an unbounded interview loop.
+- Keep scope thin. If intake is broad, split into smaller slices and complete the first slice prompt before expanding.
+- Classify unclear decisions:
+  - Grillable (low fidelity): keep in prompt questions/constraints.
+  - Ungrillable (high fidelity, "needs to feel/see it"): route to `/handoff` + `/prototype`, then return.
+- Treat `~120K` tokens as a planning caution threshold. Near this point, split scope or handoff.
 - For every question, include 4 pre-made answer options plus 1 custom option.
 - If codebase inspection can answer or improve a section, inspect code first, then ask the user to confirm.
 - Preserve the user's section order in final output.

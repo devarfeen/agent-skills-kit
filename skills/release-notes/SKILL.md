@@ -145,12 +145,12 @@ The skill must NOT run `git fetch`, `git pull`, or any command that modifies the
 
 ### Agent Use
 
-When the active agent runtime supports sub-agents and the user has allowed them, use read-only explorer agents for independent collection and summarization work.
+When the runtime supports subagents and the user has allowed them, act as the orchestrator and use read-only **Explorer** lanes for independent collection and summarization. Use local subagents only — never cloud agents. See the `agents-md` `tool-calling.md` reference for the role-to-mechanism map per runtime.
 
-- Use multiple explorer agents in parallel for separate repos, date ranges, or clearly independent feature clusters.
-- Ask explorers to return commit hashes, affected files, visible user-facing changes, likely grouping, and uncertainty.
-- Keep the main session responsible for final clustering, plain-language rewriting, QA-step quality, and file output.
-- Do not use worker agents for release notes unless the user explicitly asks for file-writing delegation.
+- Run multiple Explorer lanes in parallel for separate repos, date ranges, or clearly independent feature clusters; push long history scans to local background where supported.
+- Ask each Explorer to return commit hashes, affected files, visible user-facing changes, likely grouping, and uncertainty — summaries, not raw transcripts.
+- Keep the main session responsible for final clustering, plain-language rewriting, QA-step quality, conflict resolution, and file output.
+- Do not use Implementer (write) lanes for release notes unless the user explicitly asks for file-writing delegation.
 
 ### Multi-Repo Workspaces
 

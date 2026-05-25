@@ -21,6 +21,35 @@ Combine skills from this kit and the wider ecosystem to move from idea to shippe
 - Keep architecture healthy. Regularly run planning and refactor loops.
 - Preserve decisions. Move from prompt -> grill -> PRD -> issues -> implementation in traceable steps.
 
+## Local Parallel & Background Agents (No Cloud)
+
+These skills treat the main chat as an **orchestrator**. It splits work into
+role-typed lanes and hands each to a local subagent, runs independent lanes at
+the same time, and pushes long or noisy work to local background so the main
+chat stays responsive and uncluttered.
+
+- **Roles:** Explorer (read-only codebase search), Researcher (web / docs /
+  dependency source), Planner (read-only plan), Implementer (writes code),
+  Reviewer (read-only critique), Tester (runs tests / build / lint), and
+  Tool-runner (isolated shell / MCP batches). The main session is the
+  Orchestrator and keeps the only merge and final-judgment seat.
+- **Parallel by default:** independent lanes run together; only conflict-prone
+  edits and final integration stay serialized.
+- **Local background:** long lanes run in the background (Claude Code
+  `run_in_background`, Cursor `is_background` + `Await`, Codex worktrees,
+  Copilot `Ctrl+X -> b`, opencode `task(background=true)`) and report back when
+  done.
+- **No cloud agents.** Never hand work to remote background-agent products —
+  Cursor Cloud Agents, GitHub Copilot cloud coding agent, Codex Cloud, or
+  Antigravity managed/remote execution. Local worktree-isolated agents are
+  fine; remote ones are not.
+
+Per-runtime mechanics and the role-to-mechanism map live in
+[`skills/agents-md/references/tool-calling.md`](skills/agents-md/references/tool-calling.md)
+and each `*-tools.md`. Understand-Anything fits here: its indexing pipeline
+runs several file analyzers in parallel, so a pre-built graph lets Explorer
+lanes skip re-reading the whole repo.
+
 ## Matt + Mickey Pattern
 
 - Treat skills as strict process rails, not optional flavor text.
@@ -88,7 +117,9 @@ Use workspace-root memtrace as single source of truth for all project codes in t
 | Claude Code | `<workspace-root>/.claude/settings.local.json` | Enable workspace MCP servers from root config files. |
 | Antigravity CLI | `<workspace-root>/.agents/mcp_config.json` | Remote HTTP MCP entries must use `serverUrl`. |
 | Codex CLI | `<workspace-root>/.codex/config.toml` | Keep memtrace server at workspace root. |
-| Legacy MCP readers | `<workspace-root>/.mcp.json` | Compatibility file for runtimes that read legacy MCP config. |
+| GitHub Copilot CLI | `<workspace-root>/.mcp.json` (or Copilot MCP config) | Also reads `AGENTS.md` / `CLAUDE.md` / `GEMINI.md`; custom agents in `.github/agents/*.agent.md`. |
+| VS Code (Copilot agent mode) | `<workspace-root>/.vscode/mcp.json` | Custom agents in `.github/agents/*.agent.md`; parallel local sessions in the Agents window. |
+| Legacy MCP readers | `<workspace-root>/.mcp.json` | Compatibility file for runtimes that read legacy MCP config. No subagents; use sequential in-process tool passes. |
 | memtrace (all supported tools) | `memtrace serve --dir <workspace-root>` | Single source of truth. No repo-level memtrace servers. |
 | Understand-Anything (all supported tools) | `<project-root>/.understand-anything/knowledge-graph.json` | Keep project graph at repo root, never at workspace root. |
 

@@ -30,7 +30,7 @@ Known limits:
 [Conditional. Hard constraints, non-goals, compatibility needs, or exclusions already known.]
 
 Open questions:
-[Conditional. Real unresolved questions for grill-with-docs to attack.]
+[Conditional. Real unresolved questions for grill-with-docs to attack. Keep this short and high-leverage.]
 ```
 
 Only `Project`, `What is needed`, `Why it is needed`, and `Expected end result` are normal sections. Emit `Known limits` and `Open questions` only when useful.
@@ -44,21 +44,64 @@ Only `Project`, `What is needed`, `Why it is needed`, and `Expected end result` 
 - **Known limits:** Preserves hard boundaries without forcing a full constraints section.
 - **Open questions:** Hands uncertainty to `grill-with-docs` instead of pretending the prompt is complete.
 
+## Grilling Lenses
+
+Use these lenses when turning rough intake into a `grill-with-docs` handoff:
+
+- **Question fidelity:** low-fidelity questions are grillable; high-fidelity "feel" questions are often ungrillable without a prototype.
+- **Scope:** smaller slices reduce hidden high-fidelity risk and keep the grilling session practical.
+- **Context budget:** preserve room so grilling can stay in the model's smart zone; large prompts that force very long grilling sessions degrade quality. Use ~120K tokens as a caution threshold for many frontier models, not a hard rule.
+- **Active steering:** the user should guide tradeoffs, not passively absorb endless low-value questions.
+- **Decision preservation:** the session output is valuable; shape the prompt so decisions can be carried forward into implementation or handoff artifacts.
+
+## Agentic Engineering Add-Ons
+
+Apply these defaults when drafting prompts for coding agents:
+
+- **Code-first context:** prefer concrete code references over generic docs. If relevant, point to existing modules, symbols, routes, or tests.
+- **Reuse before rewrite:** steer toward extending existing seams/functions/services before adding parallel implementations.
+- **PR-sized slices:** draft one small, reviewable, mergeable slice. If intake is broad, split and draft slice 1 only.
+- **Non-obvious context only:** include constraints, architecture quirks, and domain rules the model cannot infer cheaply from repo scans.
+- **Convergence signals:** define observable completion so review loops can stop (behavior visible, checks passing, or demo path complete).
+- **Parallel-safe slicing (optional):** if the user intends parallel agent threads, split slices so they minimize shared-file coupling.
+
 ## Rules
+
+### Intake and inference
 
 - Start from free-form intake. Accept a sentence, paragraph, bullet list, or brain dump.
 - Infer first. Ask only when `What is needed` is unclear or project/context cannot be inferred safely.
 - Use repo evidence when cheap: project matrix, cwd, `CONTEXT.md`, `CONTEXT-MAP.md`, and ADR names. Do not run a broad code scan by default.
 - If memtrace MCP tools are available, run one `memory_recall` query using the feature nouns before drafting. Use results only as hints and confirm with local evidence before including them.
-- If cheap repo evidence or user-requested code exploration reveals domain terms that are missing from or stale in `CONTEXT.md`, show a short candidate list before finalizing the prompt.
+
+### Scope and slicing
+
+- Default to one thin vertical slice. If intake is broad, split it into smaller slices and draft this prompt for the first slice only.
+- Keep slices PR-sized: small enough to review and merge independently.
+- If this prompt would likely force a very long grilling session, call it out and ask to split scope before finalizing.
+
+### Context and evidence
+
 - Use the full Project Matrix code in the final prompt whenever one exists. Never abbreviate project codes or invent shorthand.
-- Do not create `Domain terms`, `Decisions`, `Dependents`, `Risks`, `Doc anchors`, `Integration`, `Constraints`, or `Acceptance` sections. Fold useful facts into the six sections above.
+- Prefer code-as-truth language in the prompt body: reference existing files/modules/seams when known.
+- Include only non-obvious context in the prompt. Omit stack facts the model can infer from code.
+- If dependency internals are central and unclear, suggest fetching source with `opensrc` as a follow-up context step before deep grilling.
+- If cheap repo evidence or user-requested code exploration reveals domain terms that are missing from or stale in `CONTEXT.md`, show a short candidate list before finalizing the prompt.
 - Keep domain words intact. Do not invent glossary definitions; `grill-with-docs` owns that.
+
+### Questions and output discipline
+
+- Do not create `Domain terms`, `Decisions`, `Dependents`, `Risks`, `Doc anchors`, `Integration`, `Constraints`, or `Acceptance` sections. Fold useful facts into the six sections above.
 - If the user states a hard decision or limit, preserve it under `Known limits`.
-- If a decision is unclear, preserve it under `Open questions`.
+- If a decision is unclear, classify it first:
+  - Grillable (low fidelity): keep under `Open questions`.
+  - Ungrillable (high fidelity, "needs to feel/see it"): describe the uncertainty under `Open questions` and route to `/handoff` + `/prototype` before continuing deep grilling.
+- Keep `Open questions` to the highest-leverage unknowns (usually 1-5). Drop trivia that can be decided during implementation.
+- When uncertainty is "reuse existing seam vs create new seam", keep it in `Open questions` explicitly to prevent duplicate logic.
+- Use `Expected end result` and `Known limits` to set stopping conditions so the next grilling session does not drift into 200-question loops.
 - Do not implement the feature. Do not create a PRD. Do not edit ADRs.
 - Do not edit `CONTEXT.md` while drafting the prompt. `CONTEXT.md` edits are allowed only as a separate, explicit follow-up after the user approves specific candidate terms or accepts the full candidate list.
-- Keep the final prompt spartan, direct, and plain English. The final prompt is a generated artifact and must not be caveman-compressed.
+- Keep the final prompt spartan, direct, and plain English. The final prompt is a generated artifact and must not be compressed shorthand.
 - End the response with `Suggested next skills (optional)` containing 1-3 advisory recommendations, based on workflow adjacency and remaining uncertainty.
 
 ## Candidate Context Terms
@@ -107,6 +150,7 @@ Saved to: <relative path written>
 Next: pass this final prompt to the `grill-with-docs` skill.
 Suggested next skills (optional):
 - /grill-with-docs: challenge assumptions, sharpen domain terms, and confirm decisions.
+- /handoff + /prototype: when open questions are ungrillable and require a higher-fidelity spike.
 - /to-prd: if this needs a formal spec after grilling.
 ```
 

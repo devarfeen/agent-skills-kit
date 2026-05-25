@@ -20,10 +20,9 @@ agent-skills-kit/
     ├── agents-md/            # Generate AGENTS.md (Cursor canonical) plus CLAUDE.md/GEMINI.md shims
     │   ├── SKILL.md          # Required: metadata + instructions
     │   └── references/
-    │       ├── tool-calling.md       # Tool-calling hub (Cursor CLI names, Task, permissions)
+    │       ├── tool-calling.md       # Orchestration model, role lanes, local-only policy, Cursor names
     │       ├── cursor-tools.md       # Skill-kit → Cursor mapping
-    │       ├── caveman-invocation.md # Per-runtime caveman invoke
-    │       └── *-tools.md            # claude, codex, copilot, antigravity, opencode
+    │       └── *-tools.md            # claude, codex, copilot, antigravity, opencode, vscode
     ├── release-notes/        # The release-notes skill
     │   ├── SKILL.md          # Required: metadata + instructions
     │   ├── README.md         # Human-readable docs for this skill
@@ -78,7 +77,7 @@ or `agent -p "..."` for scripts and CI.
 
 ## Workflow Guide
 
-See [Workflow.md](Workflow.md) for the recommended workflow from
+See [GUIDE.md](GUIDE.md) for the recommended workflow from
 workspace setup and spec creation through issues, TDD implementation, PR
 shipping, and release notes. If you use Matt's engineering skills, run
 `/setup-matt-pocock-skills` once per repo before `/to-prd`, `/to-issues`,
@@ -100,7 +99,7 @@ skills from the wider agent-skills ecosystem.
   guide.
 - The non-negotiable discipline in `agents-md` was originally seeded by
   Forrest Chang's Karpathy-inspired `CLAUDE.md` guidelines and later expanded
-  in this repo into a 14-rule core plus retained operational defaults:
+  in this repo into a 17-rule core plus retained operational defaults:
   https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md
   The upstream repository is MIT licensed. This repo records credit here rather
   than emitting source notes into generated `AGENTS.md` files.
@@ -111,16 +110,15 @@ skills from the wider agent-skills ecosystem.
   Domain-language sharpening is now covered by Matt's `/grill-with-docs`,
   which updates `CONTEXT.md` and ADRs inline.
 - The workflow guide references companion skills from Matt Pocock's skills repo,
-  including `setup-matt-pocock-skills`, `grill-me`, `grill-with-docs`,
+  including `setup-matt-pocock-skills`, `grill-with-docs`,
   `to-prd`, `to-issues`, `tdd`, `diagnose`, `triage`,
   `improve-codebase-architecture`, `zoom-out`, `prototype`, and `handoff`:
   https://github.com/mattpocock/skills
 - `/caveman` is credited to Matt Pocock's `caveman` skill, MIT License,
   Copyright 2026 Matt Pocock:
   https://github.com/mattpocock/skills/blob/main/skills/productivity/caveman/SKILL.md
-  Generated `AGENTS.md` files invoke caveman as a
-  non-negotiable rule for chat output only — never for code, docs, PRDs,
-  release notes, PR bodies, or any persisted artifact.
+  `caveman` is available as an optional ad-hoc skill for chat brevity and is
+  never applied to code, docs, PRDs, release notes, PR bodies, or persisted artifacts.
 - `/skill-creator` is credited to Anthropic's public skills repository:
   https://github.com/anthropics/skills/tree/main/skills/skill-creator
 - `/agent-browser`, the `skills` CLI, `find-skills`, and Vercel React/React
@@ -148,8 +146,9 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 
 **What it does**
 
-- Includes a 14-rule non-negotiable core in `AGENTS.md`, plus retained operational defaults for chat-only, 5th-grade-English caveman activation, full Project Matrix code usage, and parallel execution
+- Includes a 17-rule non-negotiable core in `AGENTS.md` (now covering local background execution and the orchestrator + role-lane model), plus retained operational defaults for full Project Matrix code usage and parallel execution
 - Uses `AGENTS.md` as canonical for Cursor CLI / IDE (no extra shim); creates `GEMINI.md` as an Antigravity CLI compatibility shim because Antigravity CLI reads it as workspace context
+- Enforces instruction economy: keep `AGENTS.md` concise with stable, non-obvious invariants; keep detailed procedures in skills/references
 - Detects VS Code workspaces and uses each folder `name` as the project name/code source
 - Treats the workspace folder with `path: "."` as a meta workspace with no code
 - Builds a project matrix: `Project Name (Code) | Path | Tech Stack`
@@ -242,6 +241,8 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
 - Maps project codes to likely repo, app, or package roots
 - Searches code, tests, docs, configs, routes, jobs, and feature flags
 - Traces definitions to callers and user-facing flows
+- Uses code as primary source of truth; highlights reuse seams and duplication risks
+- Optionally uses targeted `opensrc` dependency source pulls when external internals are required and local evidence is insufficient
 - Flags code-discovered domain terms that may be missing from or stale in
   `CONTEXT.md`, with short descriptions and evidence for user approval
 - Updates `CONTEXT.md` only as an explicit follow-up after the user approves
@@ -273,6 +274,12 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
 - Converts rough intake into a minimal `grill-with-docs` handoff
 - Asks only when the requested change or project/context is unclear
 - Uses cheap repo evidence such as project matrix, cwd, `CONTEXT.md`, and ADR names
+- Defaults to a thin vertical slice and prompts scope-splitting when the request is too broad
+- Keeps scope PR-sized (small, reviewable, mergeable slice)
+- Favors code-reference-first context and non-obvious constraints over generic stack restatement
+- Promotes reuse-before-rewrite and surfaces seam-reuse uncertainty in `Open questions`
+- Distinguishes grillable (low-fidelity) vs ungrillable (high-fidelity/feel) unknowns before drafting `Open questions`
+- Routes ungrillable unknowns toward `/handoff` + `/prototype` instead of forcing endless grilling
 - When cheap exploration reveals missing or stale domain terms, shows candidate
   `CONTEXT.md` updates with short descriptions for user approval
 - Applies approved `CONTEXT.md` updates only as a separate documentation step
@@ -458,25 +465,38 @@ your machine.
 
 ## Agent Runtime Behavior
 
-When the agent runtime supports sub-agents and the user allows them, these
-skills may use multiple read-only explorer agents for independent discovery
-work. This is most useful for multi-repo workspaces, separate modules, or
-parallel evidence gathering.
+The main session acts as an **orchestrator**: it splits work into role-typed
+lanes (Explorer, Researcher, Planner, Implementer, Reviewer, Tester,
+Tool-runner), dispatches each to a **local** subagent, runs independent lanes
+in parallel, and pushes long or noisy lanes to local background/async — so the
+main chat stays responsive and its context stays clean. Subagents return
+summaries; the main session keeps the only merge and final-judgment seat.
 
-| Runtime | Subagent dispatch | Skill invocation |
+**Local only — no cloud agents.** These skills never delegate to cloud or
+remote background-agent products (Cursor Cloud Agents, GitHub Copilot cloud
+coding agent, Codex Cloud, Antigravity managed/remote execution). Local
+worktree-isolated parallel agents are fine; remote ones are not.
+
+| Runtime | Parallel dispatch | Local background |
 | --- | --- | --- |
-| Cursor CLI / IDE | `Task` tool (`subagent_type`) or `.cursor/agents/*.md` | `/skill-name` |
-| Claude Code | Native sub-agents | `/skill-name` |
-| Codex CLI | `spawn_agent` / `wait_agent` | `activate("skill")` |
-| Copilot CLI | `task` with `agent_type` | `skill("name")` |
-| Antigravity CLI | `@agent-name` | `activate_skill(name="...")` |
+| Cursor CLI / IDE | Multiple `Task` calls (cap ~4); local worktree agents | `is_background` subagent + `Await` |
+| Claude Code | Multiple `Agent` calls in one turn | `run_in_background` Bash; `background:` subagents; `isolation: worktree` |
+| Codex CLI | `[features] multi_agent` + `spawn_agent` (≤6 threads) | local worktrees; Automations |
+| GitHub Copilot CLI | `/fleet` (parallel subagents) | `Ctrl+X → b` background shell |
+| VS Code | parallel sessions in the Agents window | background sessions in the Chat view |
+| Antigravity CLI | `/goal` dynamic subagents (Agent Manager, ~5) | `/schedule` local background |
+| Opencode CLI | multiple `task` calls (`subagent_type`) | `task(background=true)` + `task_status` |
+| Legacy MCP readers | none — sequential in-process tool passes | none |
 
-The main agent still owns final judgment and output quality. Explorer agents
-collect facts; they do not replace the final synthesis.
+The main agent still owns final judgment and output quality. Subagents collect
+facts and run lanes; they do not replace the final synthesis.
 
-Runtime-specific tool calling docs for `agents-md` live under
+Runtime-specific tool-calling docs for `agents-md` live under
 `skills/agents-md/references/` — start with [`tool-calling.md`](skills/agents-md/references/tool-calling.md)
-(Cursor CLI tool names, `Task`/subagents, permissions), then `cursor-tools.md`, `claude-tools.md`, etc.
+(agent orchestration model, canonical role lanes, local-only policy, Cursor
+tool names, permissions), then `cursor-tools.md`, `claude-tools.md`,
+`codex-tools.md`, `copilot-tools.md`, `antigravity-tools.md`,
+`opencode-tools.md`, and `vscode-tools.md`.
 
 ## Contributing a New Skill
 

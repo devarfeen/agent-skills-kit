@@ -25,14 +25,18 @@ What:
 - Prefer CLI tools over MCP for codebase evidence, except project memory retrieval via memtrace when available.
 - Use `rg` first for text search.
 - Use `git`, `git grep`, `find`, `gh`, package metadata, local docs, issues, and tests as needed.
-- When the active agent runtime supports sub-agents and the user has allowed them, use explorer agents for independent read-only discovery work.
-- Use multiple explorer agents in parallel when projects, modules, or evidence streams can be investigated independently.
-- Keep the main session responsible for synthesis, evidence quality, uncertainty calls, and final reporting.
+- Keep discovery scope thin. If intake spans many workflows or projects, split into slices and discover the first slice before expanding.
+- Keep the human in charge. Discovery questions are for blocking clarifications only, not open-ended interrogation.
+- Prefer code-as-source-of-truth over prose docs when evidence conflicts.
+- When the runtime supports subagents and the user has allowed them, act as the orchestrator: dispatch read-only **Explorer** lanes for independent codebase discovery and **Researcher** lanes for external docs or dependency source. Use local subagents only — never cloud agents. See the `agents-md` `tool-calling.md` reference for the role-to-mechanism map per runtime.
+- Run independent Explorer/Researcher lanes in parallel — by project, module, or evidence stream — and push long scans to local background where the runtime supports it.
+- Keep the main session responsible for synthesis, evidence quality, uncertainty calls, conflict resolution, and final reporting. Subagents return summaries, not raw transcripts.
 - Do not run `git fetch`, `git pull`, installs, migrations, or destructive commands.
 - Scan the codebase before using git history.
 - Check available internal memory before doing broad GitHub issue discovery. Internal memory can include conversation memory, AGENTS.md, CONTEXT.md, ADRs under `docs/adr/`, local docs, local issue caches, prior issue references, or project-specific memory files.
 - If memtrace MCP tools are available, call `memory_recall` once before broad discovery using the main topic terms. Treat recalled decisions as hints that must still be verified against code.
 - If an Understand-Anything graph exists, read it from the target project repo path `<project-root>/.understand-anything/knowledge-graph.json` (not workspace root) before broad code traversal.
+- If external dependency internals are critical and local evidence is insufficient, optionally fetch targeted dependency source with `opensrc` and cite concrete files/functions. Keep fetch scope minimal.
 - If internal memory identifies relevant GitHub issue numbers, URLs, titles, labels, milestones, or search terms, read all GitHub issues in that bounded set.
 - If no reliable internal memory exists for the topic, ask the user for approval before scanning broadly across GitHub issues. Explain that reading all related issues can take a long time.
 - If approval for broad GitHub issue scanning is not granted, continue with code, docs, tests, local memory, and git history, and state that broad GitHub issue scanning was skipped.
@@ -43,6 +47,11 @@ What:
 - Do not invent memory or rationale.
 - When code exploration reveals domain terms, compare them with available `CONTEXT.md` content and flag missing, stale, renamed, overloaded, or ambiguous terms.
 - Candidate context terms must be meaningful to product or domain experts: roles, workflows, states, business rules, events, integrations, user-facing concepts, or project-specific names. Skip generic programming terms, helper names, low-level class names, and package names unless they carry domain meaning.
+- Classify unresolved unknowns by fidelity:
+  - Grillable (low fidelity): keep as concise open decisions for `/feature-prompt` or `/grill-with-docs`.
+  - Ungrillable (high fidelity, "needs to feel/see it"): recommend `/handoff` + `/prototype` instead of speculative discovery.
+- Flag duplication risks explicitly: when similar behavior exists in multiple paths, call out likely seam reuse opportunities for the next planning step.
+- Treat `~120K` tokens as a context-budget caution point for planning-heavy sessions. If unresolved core unknowns remain near this point, stop and recommend scope split or handoff.
 - Do not give the final discovery report until findings have passed two validation scans.
 - End the final response with `Suggested next skills (optional)` containing 1-3 recommendations. Keep them advisory only (no gating) and base them on findings plus the workspace workflow.
 
@@ -64,7 +73,7 @@ What:
    - Trace definitions to callers.
    - Trace user-facing flows from entry points to lower-level services.
    - Include tests, docs, configs, migrations, routes, background jobs, and feature flags when relevant.
-   - If using explorer agents, split work by project, module, or evidence type and require each explorer to return file paths, symbols, commands, and uncertainty.
+   - If using Explorer/Researcher lanes, split work by project, module, or evidence type and require each lane to return file paths, symbols, commands, and uncertainty (summaries, not raw transcripts).
 
 4. Discover related memory and GitHub issues:
    - If memtrace MCP tools exist, run `memory_recall` with topic keywords first and fold high-confidence items into the bounded search set.
