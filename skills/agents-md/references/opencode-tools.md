@@ -17,7 +17,7 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 
 **Key Notes:**
 
-- opencode exposes plain tool names (`read`, `write`, `edit`, `bash`, `grep`, `glob`, `task`, …) — no POSIX (`cat` / `tee` / `sed` / `sh`) aliasing. Discovery walks up for `AGENTS.md` (preferred) then `CLAUDE.md` (Claude-Code compat); globals at `~/.config/opencode/AGENTS.md` and `~/.claude/CLAUDE.md`. Other files (e.g. `CONTEXT.md`) must be wired via `opencode.json` `instructions` (supports globs and remote URLs).
+- opencode exposes plain tool names (`read`, `write`, `edit`, `bash`, `grep`, `glob`, `task`, …) — no POSIX (`cat` / `tee` / `sed` / `sh`) aliasing. Discovery walks up for `AGENTS.md` (preferred) then `CLAUDE.md` (Claude-Code compat); globals at `~/.config/opencode/AGENTS.md` and `~/.claude/CLAUDE.md`. Other files (e.g. `CONTEXT.md`, `MEMORY.md`) must be wired via `opencode.json` `instructions` (supports globs and remote URLs).
 - `websearch` requires the opencode provider or `OPENCODE_ENABLE_EXA`.
 - Skills resolve from `.opencode/skills/`, `~/.config/opencode/skills/`, plus compat dirs `.claude/skills/`, `.agents/skills/`, `~/.claude/skills/`, `~/.agents/skills/`.
 - Multi-repo workspace policy: use workspace-root MCP config.

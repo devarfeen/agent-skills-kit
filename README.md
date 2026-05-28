@@ -147,8 +147,8 @@ skills from the wider agent-skills ecosystem.
 
 ### `agents-md`
 
-Generates `AGENTS.md` as the canonical agent instruction file and creates
-`CLAUDE.md` plus Antigravity-compatible `GEMINI.md` shims that point to it.
+Generates `AGENTS.md` as the canonical agent instruction file and creates a
+`CLAUDE.md` shim that imports it (and `CONTEXT.md` / `MEMORY.md` when present).
 
 ```bash
 npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-md
@@ -157,13 +157,13 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 **What it does**
 
 - Includes a 17-rule non-negotiable core in `AGENTS.md` (now covering local background execution and the orchestrator + role-lane model), plus retained operational defaults for full Project Matrix code usage and parallel execution
-- Uses `AGENTS.md` as the canonical instruction file for supported runtimes that read it directly; creates `CLAUDE.md` for Claude CLI and `GEMINI.md` only as an Antigravity CLI compatibility shim because Antigravity CLI reads it as workspace context
+- Uses `AGENTS.md` as the canonical instruction file for supported runtimes that read it directly; creates `CLAUDE.md` for Claude CLI with `@` imports for `AGENTS.md`, `CONTEXT.md`, and `MEMORY.md` when those files exist
 - Enforces instruction economy: keep `AGENTS.md` concise with stable, non-obvious invariants; keep detailed procedures in skills/references
 - Detects `*.code-workspace` manifests and uses each folder `name` as the project name/code source
 - Treats the workspace folder with `path: "."` as a meta workspace with no code
 - Builds a project matrix: `Project Name (Code) | Path | Tech Stack`
 - Establishes stable project codes for use across prompt, PRD, issue, discovery, release-note, PR, commit, and code-comment contexts
-- References `CONTEXT.md` and `docs/adr/` as required domain context when available (and legacy `UBIQUITOUS_LANGUAGE.md` if it exists)
+- References `CONTEXT.md` (domain terms) and `MEMORY.md` (cross-session recall) at `<artifacts-root>`, plus `docs/adr/` when available (and legacy `UBIQUITOUS_LANGUAGE.md` if it exists)
 
 **Example prompts**
 
