@@ -115,4 +115,4 @@ Rules:
 
 ## Response footer
 
-End the final response with `Suggested next skills (optional)` containing 1-6 advisory recommendations. Keep it recommendation-only (no gating). Choose next steps from workflow context, for example `/release-notes`, `/handoff`, `/triage`, or `/memory-steward` when a PRD closed or repo `MEMORY.md` should be compacted/promoted.
+End the final response with `Suggested next skills (optional)` containing 1-6 advisory recommendations. Keep it recommendation-only (no gating). Choose next steps from workflow context, for example `/release-notes`, `/handoff`, `/triage`, or `/memory-steward` when a PRD closed or repo `MEMORY.md` should be compacted/promoted. After ship with material diffs, suggest `/understand` on affected repo roots when UA is installed; consider `/understand-diff` when the diff crosses layers or modules. After ship with material diffs, suggest `/understand` on affected repo roots when UA is installed; consider `/understand-diff` when the diff crosses layers or modules.

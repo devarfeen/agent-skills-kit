@@ -58,6 +58,8 @@ When generating or validating `AGENTS.md`, use the matching runtime docs under `
 
 ## Discovery Workflow
 
+Two modes: **workspace** (`*.code-workspace` manifest present) or **single-repo** (fallback). Project Matrix, `<artifacts-root>`, project-code derivation, and shim imports adapt per mode — see notes inline below.
+
 1. Identify the workspace root.
 2. Detect whether this has a `*.code-workspace` manifest:
    - Look for `*.code-workspace` in the current directory.
@@ -89,7 +91,7 @@ When generating or validating `AGENTS.md`, use the matching runtime docs under `
 
    If `MEMORY.md` is missing at a code repo root and recall would help, scaffold using [MEMORY.md scaffold](#memorymd-scaffold) at that **`<repo-root>`** (not the meta-workspace). Do not duplicate `AGENTS.md` build/test commands or glossary entries (those live in `CONTEXT.md` / ADRs).
 
-   **`<artifacts-root>`** resolves as: (1) the directory containing the `*.code-workspace` file (`path: "."` meta folder); (2) else the per-context root for multi-context repos with root `CONTEXT-MAP.md`; (3) else the repo root for single-repo projects. Workspace mode keeps prompts, ADRs, release notes, and `CONTEXT.md` centralized; **MEMORY stays per repo**.
+   **`<artifacts-root>`** resolves as: (1) the directory containing the `*.code-workspace` file (`path: "."` meta folder); (2) else the per-context root for multi-context repos with root `CONTEXT-MAP.md`; (3) else the repo root for single-repo projects. Workspace mode keeps prompts, ADRs, release notes, and `CONTEXT.md` centralized; **MEMORY stays per repo**. In single-repo mode `<artifacts-root>` == `<repo-root>`, so `CONTEXT.md`, `docs/adr/`, and `MEMORY.md` all live at the repo root — do not create a nested artifacts subdirectory.
 
    **`<repo-root>`** resolves from Project Matrix `Path` + cwd (git root walk-up). Meta workspace (`path: "."`) has no `MEMORY.md`.
 
@@ -99,7 +101,9 @@ Use structured parsing when available. For `.code-workspace`, use JSON parsing t
 
 ## Project Matrix
 
-Every `AGENTS.md` must include a project matrix with this exact heading and columns:
+Every `AGENTS.md` must include a project matrix with this exact heading and columns.
+
+**Workspace mode** (`*.code-workspace` manifest present) — include the meta-workspace row plus one row per sibling repo:
 
 ```markdown
 ## Project Matrix
@@ -110,12 +114,23 @@ Every `AGENTS.md` must include a project matrix with this exact heading and colu
 | API Service (API-SERVICE)             | ../api-service | PHP, Laravel            |
 ```
 
+**Single-repo mode** (no manifest) — one row only, `Path: .`, no meta-workspace row:
+
+```markdown
+## Project Matrix
+
+| Project Name (Code)       | Path | Tech Stack   |
+| ------------------------- | ---- | ------------ |
+| API Service (API-SERVICE) | .    | PHP, Laravel |
+```
+
 Project code rules:
 
 - Codes are stable identifiers used by feature prompts, discovery, PRDs, issues, and release notes.
 - Use uppercase letters, digits, and hyphens only.
 - Use the full project code from the Project Matrix everywhere the project is referenced. Never abbreviate project codes or invent shorthand.
 - For `*.code-workspace` manifests, derive the code from the workspace folder `name`, not from `path`.
+- For single-repo mode, derive the code from `package.json` `name`, `pyproject.toml` `[project].name`, `Cargo.toml` `[package].name`, or the repo directory name — in that order of preference. Apply the same uppercasing + hyphen normalization.
 - Preserve the workspace folder `name` as the project name, but remove leading emoji/icons and trim whitespace for the display text in `Project Name (Code)`.
 - Normalize the code from the cleaned workspace folder name by uppercasing and replacing non-alphanumeric runs with hyphens.
 - Example: `🔌 API Service` becomes `API Service (API-SERVICE)`.
@@ -152,7 +167,7 @@ Generate `AGENTS.md` with this structure:
 
 These 17 rules are mandatory. Enforce them before speed, convenience, or local habit.
 
-1. **Plain-Language Default:** Chat in plain teammate English. Cut filler, hedging, and repetition. Keep exact code, DB, and API names; explain ideas without jargon. Applies to chat only, not code/docs/PRDs/release notes/PR bodies/prompts. Optional brevity skills, including `caveman`, are user-invoked only.
+1. **Plain-Language Default:** Chat in plain teammate English. Be extremely concise. Sacrifice grammar for the sake of concision. Drop articles, filler, pleasantries, and hedging. Keep every technical detail, code block, error string, symbol, and exact code/DB/API name verbatim; explain ideas without jargon. Auto-clarity exception: drop back to normal prose for security warnings, irreversible-action confirmations, multi-step sequences where fragment ambiguity risks misread, and when the user repeats a question. Applies to chat only, not code/docs/PRDs/release notes/PR bodies/prompts. Optional brevity skills, including `caveman`, are user-invoked only.
 2. **Evidence Before Claim:** Claim nothing without raw command output. No output means not verified. "Seems to work" means unverified.
 3. **Task Isolation:** Put each independent lane in a fresh local subagent/agent/worker/isolated pass when supported and conflict-free. Do not drag bloated history into focused work.
 4. **Goal-Driven Execution:** Success requires empirical proof. Bug fixes require Red-Green-Refactor: prove the failure before the fix, then prove the fix.
@@ -196,7 +211,7 @@ These 17 rules are mandatory. Enforce them before speed, convenience, or local h
 - **Planning/Grilling:** Human steers scope. No unbounded interview loops. Use thin vertical slices. Split broad scope before PRD expansion.
 - **Fidelity Routing:** Grill low-fidelity decisions. Route visual/interaction uncertainty to `/handoff` + `/prototype`.
 - **Context Budget:** At ~120K tokens, split scope, compact, or hand off.
-- **Suggested Next Skills:** For non-trivial responses, optionally end with `Suggested next skills (optional)` and 1-3 advisory next steps. No gates. No auto-chaining.
+- **Suggested Next Skills:** For non-trivial responses, optionally end with `Suggested next skills (optional)` and 1-3 advisory next steps. No gates. No auto-chaining. When [Understand-Anything](https://github.com/Lum1104/Understand-Anything) is installed (optional companion), you may suggest `/understand`, `/understand-chat`, `/understand-knowledge`, or `/understand-diff` ad-hoc — never auto-chain UA skills and never use `/understand --auto-update` by default. UA adjacency (advisory): after substantial code exploration → `/understand` on `<active-repo-root>` if graph missing or many files touched; after ADR acceptance or cross-repo work → `/understand` on affected matrix `Path` roots and `/understand-knowledge` on `<artifacts-root>` if docs/wiki changed; before broad structural discovery → `/understand-chat` if a graph exists; before architectural ship → `/understand-diff`.
 - **Domain:** Read `<artifacts-root>/CONTEXT.md` and `<artifacts-root>/docs/adr/` before implementation. ADRs bind. Terminology in `CONTEXT.md` overrides informal usage elsewhere.
 - **Memory file:** Read `<repo-root>/MEMORY.md` for the repo you are editing (Project Matrix + cwd). Not the meta-workspace folder. Keep ≤ ~300 lines; index only; use `ADR-NNNN:` tags for promotion. Never store secrets.
 - **Memory steward:** At session start, after reading repo `MEMORY.md`, run `/memory-steward` light pass (or follow `memory-steward` skill if auto-loaded). On user requests to remember, sync, compact, or promote memory, run `/memory-steward` full pass immediately.
@@ -205,6 +220,18 @@ These 17 rules are mandatory. Enforce them before speed, convenience, or local h
 - **Evidence:** Run targeted validation when useful and available. Final report names validation run, skipped checks with reasons, and remaining risk.
 - **Issues:** Planned work starts from a triaged GitHub issue with exactly one category label and one ready state. Small ad hoc work may start from the request; ship skills create the issue later. If ad hoc work grows large, ambiguous, cross-project, or multi-slice, stop and route through `/triage`, `/feature-prompt`, or `/to-issues`. Before creating/editing issues, select the title pattern, labels, state, and remove routing markers. Stop if any item is missing.
 - **TDD Defaults:** Existing GitHub issues are source of work. Finish one slice fully before the next. No large sequential single-agent TDD when independent parallel lanes exist. Produce hand-off and kickoff prompt after each slice. Use ADR -> PRD -> issue/comments -> approved memory as source order. For `ready-for-agent`, decide autonomously from grounded sources; if no grounded option exists, stop. For `ready-for-human`, present a short sourced option menu. Keep the issue updated. Complete only after lanes reconcile, checks pass, and AGENTS rules hold.
+
+## Knowledge retrieval order
+
+1. `<artifacts-root>/CONTEXT.md` and `docs/adr/` — binding.
+2. Active `<repo-root>/MEMORY.md` when present (Project Matrix + cwd).
+3. If present, UA graphs (optional Tier 1.5):
+   - **Code:** `<active-repo-root>/.understand-anything/knowledge-graph.json`
+   - **Docs/wiki:** `<artifacts-root>/.understand-anything/knowledge-graph.json` (when `/understand-knowledge` was run)
+   Prefer `/understand-chat` for orientation; verify against code and ADRs.
+4. UA never overrides CONTEXT or ADRs. After material code or ADR changes, consider re-running `/understand` on affected repo roots (advisory only).
+
+`<active-repo-root>` is the git root for cwd or the matrix row being edited. UA is optional — if `.understand-anything/` is absent, skip Tier 1.5 without error.
 
 ## Supported Coding Tools Matrix
 

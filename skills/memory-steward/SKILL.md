@@ -39,7 +39,7 @@ Run when the user asks to remember/sync/compact/promote, on explicit `/memory-st
 3. **Promote:** For each `ADR-NNNN:` bullet tied to a **closed** PRD (or accepted ADR):
    - Ensure `<artifacts-root>/docs/adr/NNNN-*.md` contains the decision.
    - Remove promoted detail from MEMORY; leave `- See ADR-NNNN for <topic>.` index lines.
-4. **Compact:** If **> ~300 lines**, dedupe, drop stale WIP, move long prose into ADR (not MEMORY). Target ≤ ~300 lines, index-only.
+4. **Compact:** If **> ~300 lines**, dedupe, drop stale WIP, move long prose into ADR (not MEMORY). Target ≤ ~300 lines, index-only. Do not copy UA graph prose into MEMORY — index pointers only (e.g. `See ADR-NNNN` or `See .understand-anything graph for <area>`).
 5. **Sync private stores (best effort):**
    - Claude: `~/.claude/projects/<project>/memory/MEMORY.md` — merge new durable facts into repo MEMORY; trim duplicate private bullets.
    - Codex: note `~/.codex/memories/` is personal; team facts belong in repo MEMORY / ADRs only.
@@ -73,7 +73,7 @@ Memory steward (full):
 - Skipped: <reason>
 ```
 
-End with `Suggested next skills (optional)` when non-trivial (e.g. `/grill-with-docs` if terminology drifted, `/release-notes` after shipped PRD).
+End with `Suggested next skills (optional)` when non-trivial (e.g. `/grill-with-docs` if terminology drifted, `/release-notes` after shipped PRD). After ADR promotion, suggest `/understand` on matrix `Path` roots touched by that ADR when UA is installed (advisory only). After ADR promotion, suggest `/understand` on matrix `Path` roots touched by that ADR when UA is installed (advisory only).
 
 ## Do not
 

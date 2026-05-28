@@ -158,6 +158,29 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill memory-
 
 Skill: [`skills/memory-steward/SKILL.md`](skills/memory-steward/SKILL.md).
 
+## Understand-Anything (companion, optional)
+
+[Understand-Anything](https://github.com/Lum1104/Understand-Anything) (UA) adds **Tier 1.5** structural retrieval via git-committed knowledge graphs. It complements — never replaces — CONTEXT, ADRs, and MEMORY.
+
+| Topology | Code graph | Docs / wiki graph |
+| :--- | :--- | :--- |
+| Single repo | `<repo-root>/.understand-anything/knowledge-graph.json` | Same root if docs live there |
+| Monorepo | Root or package path per matrix | `<artifacts-root>/.understand-anything/…` if centralized |
+| VS Code multi-root | One graph per Project Matrix `Path` | `<artifacts-root>/.understand-anything/…` |
+| Meta-workspace | Per code repo in matrix | `<artifacts-root>/.understand-anything/…` after `/understand-knowledge` |
+
+Install UA globally:
+
+```bash
+npx skills add Lum1104/Understand-Anything -g -y
+```
+
+Per repo root, bootstrap `.understand-anything/config.json` and `.gitignore` (ignore `intermediate/`, `tmp/`, `diff-overlay.json`, `fingerprints.json`; commit `knowledge-graph.json`, `meta.json`, `config.json`). Run `/understand <active-repo-root>` per matrix row; `/understand-knowledge <artifacts-root>` when a docs wiki exists.
+
+Refresh is **ad-hoc only** — kit skills suggest `/understand` via `Suggested next skills (optional)` footers; never auto-invoke at session start and never use `--auto-update` by default.
+
+Full integration reference: [`docs/UNDERSTAND-ANYTHING-INTEGRATION.md`](docs/UNDERSTAND-ANYTHING-INTEGRATION.md).
+
 ## Planned Vs Ad Hoc Issue Flow
 
 Use two valid issue paths:

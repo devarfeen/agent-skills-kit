@@ -119,6 +119,7 @@ skills from the wider agent-skills ecosystem.
   `to-prd`, `to-issues`, `tdd`, `diagnose`, `triage`,
   `improve-codebase-architecture`, `zoom-out`, `prototype`, and `handoff`:
   https://github.com/mattpocock/skills
+- Optional structural retrieval companion: [Understand-Anything](https://github.com/Lum1104/Understand-Anything) — git-committed knowledge graphs as Tier 1.5 alongside CONTEXT, ADRs, and MEMORY. See [`docs/UNDERSTAND-ANYTHING-INTEGRATION.md`](docs/UNDERSTAND-ANYTHING-INTEGRATION.md) and [`GUIDE.md`](GUIDE.md#understand-anything-companion-optional).
 - `/caveman` is credited to Matt Pocock's `caveman` skill, MIT License,
   Copyright 2026 Matt Pocock:
   https://github.com/mattpocock/skills/blob/main/skills/productivity/caveman/SKILL.md

@@ -151,6 +151,7 @@ Suggested next skills (optional):
 - /grill-with-docs: challenge assumptions, sharpen domain terms, and confirm decisions.
 - /handoff + /prototype: when open questions are ungrillable and require a higher-fidelity spike.
 - /to-prd: if this needs a formal spec after grilling.
+- /understand-domain: when `Projects Affected` spans 2+ Project Matrix rows and UA is installed (optional).
 ```
 
 ## File Output
