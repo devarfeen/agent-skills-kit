@@ -16,8 +16,7 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 **Key Notes:**
 
 - opencode exposes plain tool names (`read`, `write`, `edit`, `bash`, `grep`, `glob`, `task`, …) verified from source — there is no POSIX (`cat` / `tee` / `sed` / `sh`) aliasing. It reads `AGENTS.md` (lookup order `AGENTS.md` → `CLAUDE.md` → `CONTEXT.md`).
-- Multi-repo workspace policy: use workspace-root MCP config and one workspace memtrace server (`memtrace serve --dir <workspace-root>`), not repo-level memtrace MCP entries.
-- Understand-Anything policy: keep each project graph in `<project-root>/.understand-anything/knowledge-graph.json`, not workspace root.
+- Multi-repo workspace policy: use workspace-root MCP config.
 - For exact config-file placement by tool, use [`tool-calling.md`](tool-calling.md).
 
 ## Agents: parallel, background & roles

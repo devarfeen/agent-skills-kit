@@ -1,6 +1,6 @@
 ---
 name: agents-md
-description: "Generate or update AGENTS.md for a repository or VS Code workspace (canonical for Cursor CLI / IDE), create CLAUDE.md and Antigravity-compatible GEMINI.md shims, build a project matrix with stable project codes, and reference CONTEXT.md / ADRs as required domain context."
+description: "Generate or update AGENTS.md for a repository or code-workspace manifest (canonical for Cursor CLI), create CLAUDE.md and Antigravity-compatible GEMINI.md shims, build a project matrix with stable project codes, and reference CONTEXT.md / ADRs as required domain context."
 ---
 
 # AGENTS.md Generator
@@ -18,7 +18,7 @@ Make clear that non-negotiables and operational defaults must be followed and fu
 
 ## Mandatory Attribution Rule
 
-Every generated or updated `AGENTS.md` must contain an explicit zero-attribution policy that applies across supported coding-agent paths (Cursor CLI / IDE, Claude Code, Codex CLI, Copilot CLI, Antigravity CLI, Opencode CLI, and equivalent wrappers/services).
+Every generated or updated `AGENTS.md` must contain an explicit zero-attribution policy that applies across supported coding-agent paths only: Codex CLI, Claude CLI, Antigravity CLI, Cursor CLI, Opencode CLI, and GitHub Copilot CLI.
 
 Required policy behavior:
 
@@ -45,39 +45,39 @@ Every generated `AGENTS.md` must include seventeen non-negotiable principles, em
 
 When generating or validating `AGENTS.md`, use the matching runtime docs under `references/`:
 
-| File | Use for |
-| :--- | :--- |
-| [`tool-calling.md`](references/tool-calling.md) | Tool-calling loop, agent orchestration model, canonical role lanes, local-only (no-cloud) policy, Cursor tool names, permissions |
-| [`cursor-tools.md`](references/cursor-tools.md) | Skill-kit → Cursor tool name mapping |
-| [`claude-tools.md`](references/claude-tools.md) | Skill-kit → Claude Code mapping |
-| [`codex-tools.md`](references/codex-tools.md) | Skill-kit → Codex CLI mapping |
-| [`copilot-tools.md`](references/copilot-tools.md) | Skill-kit → Copilot CLI mapping |
-| [`antigravity-tools.md`](references/antigravity-tools.md) | Skill-kit → Antigravity CLI mapping |
-| [`opencode-tools.md`](references/opencode-tools.md) | Skill-kit → Opencode CLI mapping |
-| [`vscode-tools.md`](references/vscode-tools.md) | Skill-kit → VS Code (Copilot agent mode) mapping |
+| File                                                      | Use for                                                                                                                          |
+| :-------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------- |
+| [`tool-calling.md`](references/tool-calling.md)           | Tool-calling loop, agent orchestration model, canonical role lanes, local-only (no-cloud) policy, CLI tool names, permissions    |
+| [`cursor-tools.md`](references/cursor-tools.md)           | Skill-kit → Cursor CLI mapping                                                                                                   |
+| [`claude-tools.md`](references/claude-tools.md)           | Skill-kit → Claude CLI mapping                                                                                                   |
+| [`codex-tools.md`](references/codex-tools.md)             | Skill-kit → Codex CLI mapping                                                                                                    |
+| [`copilot-tools.md`](references/copilot-tools.md)         | Skill-kit → GitHub Copilot CLI mapping                                                                                           |
+| [`antigravity-tools.md`](references/antigravity-tools.md) | Skill-kit → Antigravity CLI mapping                                                                                              |
+| [`opencode-tools.md`](references/opencode-tools.md)       | Skill-kit → Opencode CLI mapping                                                                                                 |
 
 ## Discovery Workflow
 
 1. Identify the workspace root.
-2. Detect whether this is a VS Code workspace:
+2. Detect whether this has a `*.code-workspace` manifest:
    - Look for `*.code-workspace` in the current directory.
    - Look for `.vscode/` settings when no `.code-workspace` file exists.
 3. If a `.code-workspace` file exists, parse its `folders` entries and build the project matrix from those folders.
-4. For VS Code workspace folders, use each folder's `name` field as the source of truth for the project display name and project code. Do not replace it with the filesystem folder name unless `name` is missing.
+4. For `*.code-workspace` folders, use each folder's `name` field as the source of truth for the project display name and project code. Do not replace it with the filesystem folder name unless `name` is missing.
 5. Treat any workspace folder whose `path` is `.` as the meta workspace, not a code project. Also mention the `.code-workspace` file itself, if present, as workspace metadata. Add the meta workspace to `AGENTS.md` with no tech stack.
-6. If no VS Code workspace is detected, infer projects from repo roots, package files, app folders, and README files.
+6. If no `*.code-workspace` manifest is detected, infer projects from repo roots, package files, app folders, and README files.
 7. Detect each project's tech stack from files such as:
    - `package.json`, `pnpm-workspace.yaml`, `yarn.lock`, `vite.config.*`, `next.config.*`
    - `pyproject.toml`, `requirements.txt`, `uv.lock`, `poetry.lock`
    - `go.mod`, `Cargo.toml`, `Gemfile`, `composer.json`
    - `Dockerfile`, `docker-compose.yml`, Terraform files, mobile app configs
-8. Check whether `CONTEXT.md` or any artifacts under `docs/adr/`, `docs/prompts/`, and `docs/release-notes/` exist. Look first at the `<artifacts-root>` (see below); fall back to the repo root only when no workspace is present. Three artifact types live in sibling folders, distinguished by location and filename suffix:
+8. Check whether `CONTEXT.md` or any artifacts under `docs/adr/`, `docs/prompts/`, `docs/qa/`, and `docs/release-notes/` exist. Look first at the `<artifacts-root>` (see below); fall back to the repo root only when no workspace is present. Four artifact types live in sibling folders, distinguished by location and filename suffix:
    - `<artifacts-root>/docs/adr/NNNN-<slug>.md` — ADR (no suffix), written by `grill-with-docs`.
    - `<artifacts-root>/docs/prompts/NNNN-<slug>-prompt.md` — feature prompt, written by `feature-prompt`.
+   - `<artifacts-root>/docs/qa/NNNN-<slug>-qa.md` — manual QA instructions paired to an ADR (`-qa` suffix on the ADR base filename).
    - `<artifacts-root>/docs/release-notes/D-Month-YYYY.md` — on-demand release notes, written by `release-notes`.
-     ADRs and prompts share one global `NNNN` numbering sequence across `docs/adr/` and `docs/prompts/`. Release notes do not use that sequence; they are date-based and live under `docs/release-notes/`. Reference these artifacts as required domain context when present. If none exists and terminology matters, note that domain language is sharpened inline by the `grill-with-docs` skill, which writes to `CONTEXT.md` and ADRs as decisions crystallise.
+     ADRs, prompts, and QA docs share one global ADR base naming (`NNNN-<slug>`). Prompts append `-prompt` and QA docs append `-qa`. Release notes do not use that sequence; they are date-based and live under `docs/release-notes/`. Reference these artifacts as required domain context when present. If none exists and terminology matters, note that domain language is sharpened inline by the `grill-with-docs` skill, which writes to `CONTEXT.md` and ADRs as decisions crystallise.
 
-   `<artifacts-root>` resolves as: (1) the directory containing the `*.code-workspace` file if a VS Code workspace is detected — this is the same location as the meta-workspace folder (`path: "."`); (2) else the per-context root for multi-context repos with a root `CONTEXT-MAP.md`; (3) else the repo root for single-repo projects. Workspace mode is preferred: it keeps prompts, ADRs, and release notes centralized instead of scattering them across project repos.
+   `<artifacts-root>` resolves as: (1) the directory containing the `*.code-workspace` file if a code-workspace manifest is detected — this is the same location as the meta-workspace folder (`path: "."`); (2) else the per-context root for multi-context repos with a root `CONTEXT-MAP.md`; (3) else the repo root for single-repo projects. Workspace mode is preferred: it keeps prompts, ADRs, and release notes centralized instead of scattering them across project repos.
 
 Use structured parsing when available. For `.code-workspace`, prefer JSON parsing that tolerates comments if the local toolchain supports it. If not, read carefully and avoid corrupting paths.
 
@@ -99,14 +99,14 @@ Project code rules:
 - Codes are stable identifiers used by feature prompts, discovery, PRDs, issues, and release notes.
 - Use uppercase letters, digits, and hyphens only.
 - Use the full project code from the Project Matrix everywhere the project is referenced. Never abbreviate project codes or invent shorthand.
-- For VS Code workspaces, derive the code from the workspace folder `name`, not from `path`.
+- For `*.code-workspace` manifests, derive the code from the workspace folder `name`, not from `path`.
 - Preserve the workspace folder `name` as the project name, but remove leading emoji/icons and trim whitespace for the display text in `Project Name (Code)`.
 - Normalize the code from the cleaned workspace folder name by uppercasing and replacing non-alphanumeric runs with hyphens.
 - Example: `🔌 API Service` becomes `API Service (API-SERVICE)`.
 - Example: `🧩 Example Workspace` with path `.` becomes `Example Workspace (EXAMPLE-WORKSPACE)` and is marked as meta workspace.
 - If two projects collide, add a qualifier: `ADMIN-WEB`, `ADMIN-API`.
 - Do not rename existing project codes in an existing `AGENTS.md` unless the user asks.
-- Mark the VS Code workspace folder with `path: "."` as `Meta workspace, no code`.
+- Mark the `*.code-workspace` folder with `path: "."` as `Meta workspace, no code`.
 
 ## GitHub Issue Title Conventions
 
@@ -124,6 +124,7 @@ Generated `AGENTS.md` files must include issue-title rules that make PRD and sli
 - **Routing state:** Do not encode `HITL:` or `AFK:` in GitHub issue titles, commit subjects, PR titles, or branch names. Use state labels instead: `ready-for-human` for human-ready work and `ready-for-agent` for agent-ready work.
 - **Authorship policy:** Do not include co-author or AI/tool attribution in issue titles, commit subjects, PR titles/bodies, comments, release notes, docs, or code comments.
 - **Non-PRD implementation issues:** prefer `<PROJECT-CODE>: <short imperative heading>` when the issue is not tied to a PRD. Keep the full Project Matrix code; never abbreviate it.
+- **Issue-writing hard gate:** Before drafting, renaming, or publishing any issue, verify the naming rule and both required labels from local workspace instructions (`AGENTS.md`; `CLAUDE.md` / `GEMINI.md` shims). If the tracker vocabulary is not loaded, run `/setup-matt-pocock-skills` first. If either check is missing, stop and do not publish.
 
 ## AGENTS.md Structure
 
@@ -167,15 +168,14 @@ Follow these 17 rules. They are non-negotiable and must be fully enforced. Bias 
 - Every triaged issue needs exactly one category label (`bug` or `enhancement`) and exactly one state label (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, or `wontfix`).
 - Do not put `HITL:` or `AFK:` in issue titles, commit subjects, PR titles, or branch names. Use `ready-for-human` or `ready-for-agent` state labels for routing.
 - Non-PRD implementation issues: prefer `<PROJECT-CODE>: <short imperative heading>` and keep the full Project Matrix code.
+- Hard gate: before drafting or publishing any issue, verify title format and both required labels from local workspace instructions; if vocabulary is missing, run `/setup-matt-pocock-skills` first and stop until it is available.
 
 ## Operating Protocol
 
 - **Discovery:** Map project codes to roots via package/config files. Use efficient search tools.
-- **Agent Entry Files:** `AGENTS.md` is canonical for Cursor CLI / IDE and should remain the primary workspace instruction file. `CLAUDE.md` and `GEMINI.md` are compatibility shims.
+- **Agent Entry Files:** `AGENTS.md` is canonical for Cursor CLI and should remain the primary workspace instruction file. `CLAUDE.md` and `GEMINI.md` are compatibility shims.
 - **No Attribution Policy:** Never add or keep co-author/AI attribution text in authored output. Strip any auto-injected lines such as `Co-authored-by:`, `Made with [Cursor]`, `Made-with:`, `Generated by`, or `AI-assisted` before publishing.
-- **MCP Config:** In multi-repo workspaces, keep MCP config for supported coding tools at workspace root and do not maintain repo-level memtrace MCP configs. See the `Supported Coding Tools Matrix` section below for the canonical per-runtime file placement.
-- **memtrace Memory:** When memtrace is connected, run one `memory_recall` query with the task's key terms before broad discovery, planning, or implementation. Treat recalled items as hints to verify against code, never as ground truth.
-- **Understand-Anything Knowledge Base:** Keep Understand-Anything knowledge graphs at each project-repo root (`<project-root>/.understand-anything/knowledge-graph.json`), never at workspace root. On an unfamiliar or large repo, build the graph with `/understand` if it is missing and consult it before broad traversal; run `/understand-diff` before large refactors.
+- **MCP Config:** In multi-repo workspaces, keep MCP config for supported coding tools at workspace root. See the `Supported Coding Tools Matrix` section below for the canonical per-runtime file placement.
 - **Optional Compression Skill:** `caveman` is ad hoc chat-only mode. Use it only when the user asks for brevity or fewer tokens. Never compress code, docs, PRDs, release notes, PR bodies, generated prompts, or persisted artifacts.
 - **Agent Orchestration:** The main session is the orchestrator: decompose substantial work into role-typed lanes (Explorer, Researcher, Planner, Implementer, Reviewer, Tester, Tool-runner) and dispatch each to a local subagent with a fitting read-only / write / shell tool profile. Run independent lanes in parallel and push long or noisy lanes to local background/async (background subagents, `run_in_background` / async shells, worktree isolation) so the main context stays clean. Spawn local parallel/background agents automatically when work splits cleanly and safely; do not ask first. Subagents return summaries; the main session owns the only merge, conflict-resolution, and final-judgment seat and never delegates final synthesis. Keep conflict-prone edits and integration serialized. If the runtime lacks subagents, run separate focused tool passes. See [`references/tool-calling.md`](references/tool-calling.md) and the runtime's `*-tools.md` for the role-to-mechanism map. During `tdd`, treat parallel dispatch as required behavior for all independently executable tasks.
 - **No Cloud Agents:** Use only local subagents and local background/async execution. Never delegate work to cloud or remote background-agent products — Cursor Cloud Agents, GitHub Copilot cloud coding agent, Codex Cloud / Codex web, or Antigravity managed/remote execution — even when the runtime makes them easy to launch. Local worktree-isolated parallel agents are allowed; remote ones are not.
@@ -184,11 +184,13 @@ Follow these 17 rules. They are non-negotiable and must be fully enforced. Bias 
 - **Question Fidelity Routing:** Grill low-fidelity decisions. Route high-fidelity "needs to feel/see it" decisions to `/handoff` + `/prototype`.
 - **Context Budget Caution:** Treat `~120K` tokens as a caution threshold for planning-heavy sessions. Near this point, prefer scope split, compacting, or handoff.
 - **TDD Anti-Pattern:** Do not run large sequential single-agent TDD flows when independent parallel lanes are available.
-- **Suggested Next Skills Footer:** End non-trivial responses with an optional `Suggested next skills (optional)` block containing 1-3 advisory recommendations. Keep it recommendation-only (no enforced gating). This applies after any substantial step, including local skills and third-party skills. Prefer workflow-adjacent next steps and uncertainty-reducing helpers (for example `/understand-diff` before larger refactors).
+- **Suggested Next Skills Footer:** End non-trivial responses with an optional `Suggested next skills (optional)` block containing 1-3 advisory recommendations. Keep it recommendation-only (no enforced gating). This applies after any substantial step, including local skills and third-party skills. Prefer workflow-adjacent next steps and uncertainty-reducing helpers.
 - **Domain:** Read `CONTEXT.md` and `docs/adr/` before implementation. ADRs are binding.
+- **Manual QA Doc Naming:** Standalone manual QA instruction docs live in `docs/qa/` and must use the ADR filename plus `-qa` suffix: `NNNN-<slug>-qa.md`.
 - **Validation:** Run targeted tests and workspace-standard checks (`tsc`, `lint`, `build`) after every edit.
 - **Completion:** Final report must include explicit validation performed and any remaining risks.
 - **Planned vs Ad Hoc Issues:** Planned work starts from a GitHub issue that has passed Matt Pocock's `/triage`: exactly one category label (`bug` or `enhancement`) and a ready state label (`ready-for-agent` or `ready-for-human`). Small ad hoc work may start from a one-line request without a GitHub issue; in that case, do the work first and let `commit-push-pr` or `commit-push-close` create the issue at ship time from the original request, final diff, decisions, and validation. If ad hoc work becomes large, ambiguous, cross-project, or multi-slice, stop and route it through `/triage`, `/feature-prompt`, or `/to-issues`.
+- **Issue-writing preflight:** For any workflow step that creates or edits issues (`to-prd`, `to-issues`, `triage`, ship-time inline issue creation), run a preflight check first: (1) title pattern is selected from the `GitHub Issue Titles` section, (2) exactly one category label and one state label are selected, (3) routing markers are not in names. If any item fails, stop and fix before publishing.
 - **TDD Skill Defaults:** When the `tdd` skill is invoked, apply these standing defaults unless the user overrides them in the same turn:
   - Slices already have GitHub issues. PRD slices use titles like `Slice NNNN of <PROJECT-CODE> ADR-<adr-number> <adr-name> (#<prd-issue-number>): <Short heading>`. Work through every slice for the PRD; do not stop after one unless instructed.
   - Fully complete a slice before moving on. After each slice, produce a hand-off document and a kickoff prompt, then ask the user to start a new session for the next slice.
@@ -204,19 +206,15 @@ Follow these 17 rules. They are non-negotiable and must be fully enforced. Bias 
 
 ## Supported Coding Tools Matrix
 
-Single source of truth for MCP/config file placement across supported runtimes. Keep MCP config at workspace root; do not maintain repo-level MCP config or repo-level memtrace servers.
+Single source of truth for MCP/config file placement across the six supported CLI runtimes. Keep MCP config at workspace root.
 
-| Tool Runtime | Workspace MCP file(s) | Notes |
-| :--- | :--- | :--- |
-| Cursor CLI / IDE | `<workspace-root>/.cursor/mcp.json` | Keep `~/.cursor/mcp.json` only as user-global fallback. |
-| Claude Code | `<workspace-root>/.claude/settings.local.json` | Enable workspace MCP servers from root config files. |
-| Antigravity CLI | `<workspace-root>/.agents/mcp_config.json` | Remote HTTP MCP entries must use `serverUrl`. |
-| Codex CLI | `<workspace-root>/.codex/config.toml` | Keep memtrace server at workspace root. |
-| GitHub Copilot CLI | `<workspace-root>/.mcp.json` (or Copilot MCP config) | Also reads `AGENTS.md` / `CLAUDE.md` / `GEMINI.md`; custom agents in `.github/agents/*.agent.md`. |
-| VS Code (Copilot agent mode) | `<workspace-root>/.vscode/mcp.json` | Custom agents in `.github/agents/*.agent.md`; parallel local sessions in the Agents window. |
-| Legacy MCP readers | `<workspace-root>/.mcp.json` | Compatibility file for runtimes that read legacy MCP config. No subagents; use sequential in-process tool passes. |
-| memtrace (all supported tools) | `memtrace serve --dir <workspace-root>` | Single source of truth. Do not add repo-level memtrace servers. |
-| Understand-Anything (all supported tools) | `<project-root>/.understand-anything/knowledge-graph.json` | Keep project graph at repo root, never at workspace root. |
+| Tool Runtime                              | Workspace MCP file(s)                                      | Notes                                                                                                             |
+| :---------------------------------------- | :--------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------- |
+| Cursor CLI                                | `<workspace-root>/.cursor/mcp.json`                        | Keep `~/.cursor/mcp.json` only as user-global fallback.                                                           |
+| Claude CLI                                | `<workspace-root>/.claude/settings.local.json`             | Enable workspace MCP servers from root config files.                                                              |
+| Antigravity CLI                           | `<workspace-root>/.agents/mcp_config.json`                 | Remote HTTP MCP entries must use `serverUrl`.                                                                     |
+| Codex CLI                                 | `<workspace-root>/.codex/config.toml`                      | Codex MCP configuration.                                                                                         |
+| GitHub Copilot CLI                        | `<workspace-root>/.mcp.json` (or Copilot MCP config)       | Also reads `AGENTS.md` / `CLAUDE.md` / `GEMINI.md`; custom agents in `.github/agents/*.agent.md`.                 |
 ```
 
 Preserve any useful existing local instructions when updating `AGENTS.md`, but reorganize duplicated content into this structure.
@@ -225,7 +223,7 @@ If it is missing, add it explicitly under `## Operating Protocol`.
 
 ## Shim Files
 
-Create or update `CLAUDE.md` and `GEMINI.md` as shims for non-Cursor runtimes. Cursor CLI and the Cursor IDE read `AGENTS.md` as the canonical workspace instruction file — no Cursor-specific shim is required. Antigravity CLI reads both `AGENTS.md` and `GEMINI.md` from the active workspace, so keep `GEMINI.md` for Antigravity compatibility.
+Create or update `CLAUDE.md` and `GEMINI.md` as shims for non-Cursor runtimes. Cursor CLI reads `AGENTS.md` as the canonical workspace instruction file, so no Cursor-specific shim is required. Antigravity CLI reads both `AGENTS.md` and `GEMINI.md` from the active workspace, so keep `GEMINI.md` for Antigravity compatibility.
 
 Use this content for `CLAUDE.md` unless the workspace or repository already has important Claude-specific instructions:
 
@@ -234,7 +232,7 @@ Use this content for `CLAUDE.md` unless the workspace or repository already has 
 
 Read `AGENTS.md` first. It is the canonical instruction file for this workspace.
 
-This file is a Claude Code shim for tool compatibility.
+This file is a Claude CLI shim for tool compatibility.
 ```
 
 Use this content for `GEMINI.md` unless the workspace or repository already has important Antigravity-specific instructions:
@@ -294,8 +292,8 @@ Project codes:
 
 Notes:
 
-- [VS Code workspace detected / not detected.]
-- [`AGENTS.md` is canonical for Cursor CLI / IDE; no extra shim required.]
+- [`*.code-workspace` manifest detected / not detected.]
+- [`AGENTS.md` is canonical for Cursor CLI; no extra shim required.]
 - [`GEMINI.md` retained for Antigravity CLI compatibility.]
-- [CONTEXT.md / \`docs/adr/\` (ADRs) / \`docs/prompts/\` (\`*-prompt.md\`) / \`docs/release-notes/\` (\`D-Month-YYYY.md\`) artifacts referenced, or noted as to-be-produced inline by \`grill-with-docs\` / \`feature-prompt\` / \`release-notes\`.]
+- [CONTEXT.md / \`docs/adr/\` (ADRs) / \`docs/prompts/\` (\`*-prompt.md\`) / \`docs/qa/\` (\`*-qa.md\`) / \`docs/release-notes/\` (\`D-Month-YYYY.md\`) artifacts referenced, or noted as to-be-produced inline by \`grill-with-docs\` / \`feature-prompt\` / \`release-notes\`.]
 ```

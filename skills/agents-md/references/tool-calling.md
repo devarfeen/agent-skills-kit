@@ -1,6 +1,6 @@
 # Tool Calling Reference
 
-How agent runtimes invoke tools, and how this kit maps generic skill instructions to each runtime.
+How the six supported CLI runtimes invoke tools, and how this kit maps generic skill instructions to each runtime.
 
 ## Agent Orchestration Model
 
@@ -12,14 +12,12 @@ Use only **local** subagents and **local** background/async execution. Local wor
 
 | Runtime | Cloud/remote product to AVOID | Local equivalent to use instead |
 | :--- | :--- | :--- |
-| Cursor | Cloud Agents (formerly "Background Agents"), `&`-prefixed cloud hand-off, cursor.com/agents | `Task` subagents; `is_background` subagents + `Await`; local worktree agents |
-| Claude Code | (no first-party cloud agent) | `Agent` subagents; `run_in_background` Bash; `background: true` subagents; `isolation: worktree` |
+| Cursor CLI | Cloud Agents (formerly "Background Agents"), `&`-prefixed cloud hand-off, cursor.com/agents | `Task` subagents; `is_background` subagents + `Await`; local worktree agents |
+| Claude CLI | (no first-party cloud agent) | `Agent` subagents; `run_in_background` Bash; `background: true` subagents; `isolation: worktree` |
 | Codex CLI | Codex Cloud / Codex web delegated tasks | `[features] multi_agent` subagents; local worktrees; local Automations |
 | GitHub Copilot CLI | Cloud coding agent (GitHub Actions) | `/fleet` parallel subagents; `Ctrl+X → b` background shell |
-| VS Code | Cloud coding agent (assign issue / `@copilot`) | Agents window local + background sessions |
-| Antigravity | Managed Agents API / remote managed execution | Agent Manager local parallel instances; `/schedule` local background |
-| Opencode | (verify against opencode docs) | local subagents / sessions |
-| Legacy MCP readers | n/a (no agent system) | sequential in-process tool passes |
+| Antigravity CLI | Managed Agents API / remote managed execution | Agent Manager local parallel instances; `/schedule` local background |
+| Opencode CLI | (verify against opencode docs) | local subagents / sessions |
 
 ### Canonical role lanes
 
@@ -40,20 +38,18 @@ Standard lane roles used across this kit. Each runtime's `*-tools.md` maps these
 
 | Runtime | Parallel dispatch | Local background / async | Custom agent files |
 | :--- | :--- | :--- | :--- |
-| Cursor CLI / IDE | Multiple `Task` calls in one turn (practical cap ~4); local worktree agents (up to 8) | `is_background: true` subagent + `Await`; `bash` subagent isolates output | `.cursor/agents/<name>.md` |
-| Claude Code | Multiple `Agent` calls in one turn | `run_in_background` Bash; `background: true` subagents; `isolation: worktree` | `.claude/agents/<name>.md` |
+| Cursor CLI | Multiple `Task` calls in one turn (practical cap ~4); local worktree agents (up to 8) | `is_background: true` subagent + `Await`; `bash` subagent isolates output | `.cursor/agents/<name>.md` |
+| Claude CLI | Multiple `Agent` calls in one turn | `run_in_background` Bash; `background: true` subagents; `isolation: worktree` | `.claude/agents/<name>.md` |
 | Codex CLI | `[features] multi_agent` + `spawn_agent` / `spawn_agents_on_csv` (`agents.max_threads`, default 6; `max_depth` 1) | local git worktrees; Automations | `[agents.<name>]` in `config.toml`, or `.codex/agents/<name>.toml` |
 | GitHub Copilot CLI | `/fleet` (orchestrated parallel subagents) | `Ctrl+X → b` promotes a shell to background | `.github/agents/<name>.agent.md` |
-| VS Code | Multiple parallel sessions in the Agents window | Background sessions surfaced in the Chat view | `.github/agents/<name>.agent.md` |
-| Antigravity | `/goal` orchestrator-spawned dynamic subagents (Agent Manager, ~5 parallel) | `/schedule` local background; Artifacts for review | `.agents/agents.md` personas |
-| Opencode | (verify in [`opencode-tools.md`](opencode-tools.md)) | (verify) | (verify) |
-| Legacy MCP readers | none — sequential in-process tool passes | none | n/a |
+| Antigravity CLI | `/goal` orchestrator-spawned dynamic subagents (Agent Manager, ~5 parallel) | `/schedule` local background; Artifacts for review | `.agents/agents.md` personas |
+| Opencode CLI | (verify in [`opencode-tools.md`](opencode-tools.md)) | (verify) | (verify) |
 
 Per-runtime role-to-mechanism maps and corrections live in each `*-tools.md`.
 
-## Cursor CLI / IDE
+## Cursor CLI
 
-Cursor Agent (editor and `agent` CLI) uses the same tool-calling loop: the model emits a structured tool request, the runtime executes it, and results are appended to context before the next turn. There is no practical limit on tool calls per task.
+Cursor CLI uses the `agent` command and the same tool-calling loop: the model emits a structured tool request, the runtime executes it, and results are appended to context before the next turn. There is no practical limit on tool calls per task.
 
 Docs: [Tool calling fundamentals](https://cursor.com/learn/tool-calling), [Agent tools overview](https://cursor.com/docs/agent/overview), [CLI usage](https://cursor.com/docs/cli/using), [Subagents](https://cursor.com/docs/subagents).
 
@@ -109,7 +105,7 @@ Parallel work: multiple `Task` calls in one assistant turn (practical cap ~4 par
 
 Cursor **Cloud Agents** (formerly "Background Agents") run remotely and are out of policy here — use local subagents/worktrees instead (see [Agent Orchestration Model](#agent-orchestration-model)).
 
-CLI and editor share subagent support per [Subagents](https://cursor.com/docs/subagents).
+Cursor CLI subagent support is documented in [Subagents](https://cursor.com/docs/subagents).
 
 ### Modes and write access
 
@@ -138,30 +134,20 @@ See [`cursor-tools.md`](cursor-tools.md) for the full skill-kit → Cursor equiv
 
 | Runtime | Tool mapping | Skill invocation |
 | :--- | :--- | :--- |
-| **Cursor CLI / IDE** | [`cursor-tools.md`](cursor-tools.md) (details in [Cursor section](#cursor-cli--ide) above) | `/skill-name` |
-| Claude Code | [`claude-tools.md`](claude-tools.md) | `/skill-name` |
+| **Cursor CLI** | [`cursor-tools.md`](cursor-tools.md) (details in [Cursor section](#cursor-cli) above) | `/skill-name` |
+| Claude CLI | [`claude-tools.md`](claude-tools.md) | `/skill-name` |
 | Codex CLI | [`codex-tools.md`](codex-tools.md) | runtime skill activation command |
-| Copilot CLI | [`copilot-tools.md`](copilot-tools.md) | runtime skill activation command |
+| GitHub Copilot CLI | [`copilot-tools.md`](copilot-tools.md) | runtime skill activation command |
 | Antigravity CLI | [`antigravity-tools.md`](antigravity-tools.md) | runtime skill activation command |
 | Opencode CLI | [`opencode-tools.md`](opencode-tools.md) | runtime skill activation command |
-| VS Code (Copilot agent mode) | [`vscode-tools.md`](vscode-tools.md) | custom `.agent.md` + agent mode |
 
 ### MCP placement (multi-repo workspaces)
 
 Keep MCP configuration at workspace root for supported coding tools:
 
-- Cursor CLI / IDE: `<workspace-root>/.cursor/mcp.json` (plus optional `~/.cursor/mcp.json` fallback)
-- Claude Code: `<workspace-root>/.claude/settings.local.json`
-- Legacy MCP readers: `<workspace-root>/.mcp.json`
+- Cursor CLI: `<workspace-root>/.cursor/mcp.json` (plus optional `~/.cursor/mcp.json` fallback)
+- Claude CLI: `<workspace-root>/.claude/settings.local.json`
+- GitHub Copilot CLI: `<workspace-root>/.mcp.json` (or Copilot MCP config)
 - Antigravity CLI: `<workspace-root>/.agents/mcp_config.json`
 - Codex CLI: `<workspace-root>/.codex/config.toml`
-- VS Code (Copilot agent mode): `<workspace-root>/.vscode/mcp.json`
-
-For memtrace, define one workspace-root server (`memtrace serve --dir <workspace-root>`) and avoid repo-level memtrace MCP entries.
-
-### Understand-Anything knowledge base placement
-
-- Keep code knowledge graphs at project-repo root: `<project-root>/.understand-anything/knowledge-graph.json`.
-- In multi-repo workspaces, do not place project code knowledge graphs at workspace root.
-- First use in a task: check the target project graph exists; if missing, run `/understand` for that project repo.
-- Follow-up use: run `/understand-diff` after major edits and `/understand-explain <path>` for targeted deep dives in the same repo.
+- Opencode CLI: workspace-root `opencode.json` / MCP config where used

@@ -22,7 +22,7 @@ What:
 
 - Stay read-only during discovery. Do not edit files while producing the discovery report.
 - `CONTEXT.md` edits are a separate follow-up action. Only update `CONTEXT.md` after the user explicitly approves specific candidate terms or accepts the full candidate list.
-- Prefer CLI tools over MCP for codebase evidence, except project memory retrieval via memtrace when available.
+- Prefer CLI tools over MCP for codebase evidence.
 - Use `rg` first for text search.
 - Use `git`, `git grep`, `find`, `gh`, package metadata, local docs, issues, and tests as needed.
 - Keep discovery scope thin. If intake spans many workflows or projects, split into slices and discover the first slice before expanding.
@@ -34,8 +34,6 @@ What:
 - Do not run `git fetch`, `git pull`, installs, migrations, or destructive commands.
 - Scan the codebase before using git history.
 - Check available internal memory before doing broad GitHub issue discovery. Internal memory can include conversation memory, AGENTS.md, CONTEXT.md, ADRs under `docs/adr/`, local docs, local issue caches, prior issue references, or project-specific memory files.
-- If memtrace MCP tools are available, call `memory_recall` once before broad discovery using the main topic terms. Treat recalled decisions as hints that must still be verified against code.
-- If an Understand-Anything graph exists, read it from the target project repo path `<project-root>/.understand-anything/knowledge-graph.json` (not workspace root) before broad code traversal.
 - If external dependency internals are critical and local evidence is insufficient, optionally fetch targeted dependency source with `opensrc` and cite concrete files/functions. Keep fetch scope minimal.
 - If internal memory identifies relevant GitHub issue numbers, URLs, titles, labels, milestones, or search terms, read all GitHub issues in that bounded set.
 - If no reliable internal memory exists for the topic, ask the user for approval before scanning broadly across GitHub issues. Explain that reading all related issues can take a long time.
@@ -76,7 +74,6 @@ What:
    - If using Explorer/Researcher lanes, split work by project, module, or evidence type and require each lane to return file paths, symbols, commands, and uncertainty (summaries, not raw transcripts).
 
 4. Discover related memory and GitHub issues:
-   - If memtrace MCP tools exist, run `memory_recall` with topic keywords first and fold high-confidence items into the bounded search set.
    - First inspect available internal memory for issue references or topic clues. Search AGENTS.md, CONTEXT.md, ADRs under `docs/adr/`, docs, local issue folders, prior prompt context, and memory files.
    - If memory gives a bounded GitHub issue set, read every issue in that set with `gh issue view` or equivalent.
    - If memory gives reliable labels, milestones, titles, or exact search terms, use them to perform a bounded GitHub issue search and read every matching issue that is plausibly related.
@@ -187,7 +184,7 @@ Use this structure exactly.
 
 - [/skill-name: reason tied to this report.]
 - [Prefer adjacent workflow steps; include only 1-3.]
-- [Examples: `/feature-prompt` to frame a change request, `/diagnose` when a reproducible bug is identified, `/understand-diff` before larger refactors.]
+- [Examples: `/feature-prompt` to frame a change request, `/diagnose` when a reproducible bug is identified.]
 ```
 
 ## Evidence Style

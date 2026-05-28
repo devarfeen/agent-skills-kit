@@ -11,7 +11,7 @@ Combine skills from this kit and the wider ecosystem to move from idea to shippe
 - **Forrest Chang:** Seeding logic for `/agents-md` non-negotiable principles.
 - **Anthropic:** Source for `/skill-creator`.
 - **Vercel Labs:** Source for `/agent-browser`, `skills` CLI, and React/React Native best practices.
-- **Cursor:** Cursor CLI / IDE Agent (`agent` command, `/skill-name`, `AGENTS.md` as canonical context, `Task` for subagents). Tool names and permissions: [`skills/agents-md/references/tool-calling.md`](skills/agents-md/references/tool-calling.md). https://cursor.com/docs/cli/overview
+- **Cursor:** Cursor CLI (`agent` command, `/skill-name`, `AGENTS.md` as canonical context, `Task` for subagents). Tool names and permissions: [`skills/agents-md/references/tool-calling.md`](skills/agents-md/references/tool-calling.md). https://cursor.com/docs/cli/overview
 
 ## Usage Principles
 
@@ -35,7 +35,7 @@ chat stays responsive and uncluttered.
   Orchestrator and keeps the only merge and final-judgment seat.
 - **Parallel by default:** independent lanes run together; only conflict-prone
   edits and final integration stay serialized.
-- **Local background:** long lanes run in the background (Claude Code
+- **Local background:** long lanes run in the background (Claude CLI
   `run_in_background`, Cursor `is_background` + `Await`, Codex worktrees,
   Copilot `Ctrl+X -> b`, opencode `task(background=true)`) and report back when
   done.
@@ -46,9 +46,7 @@ chat stays responsive and uncluttered.
 
 Per-runtime mechanics and the role-to-mechanism map live in
 [`skills/agents-md/references/tool-calling.md`](skills/agents-md/references/tool-calling.md)
-and each `*-tools.md`. Understand-Anything fits here: its indexing pipeline
-runs several file analyzers in parallel, so a pre-built graph lets Explorer
-lanes skip re-reading the whole repo.
+and each `*-tools.md`.
 
 ## Matt + Mickey Pattern
 
@@ -63,65 +61,15 @@ lanes skip re-reading the whole repo.
 1. **`/agents-md`**: Creates `AGENTS.md`, shims, and project matrix.
 2. **`/setup-matt-pocock-skills`**: Configures tracker, labels, and `## Agent skills` block.
 
-## Optional Agent Tooling
-
-Use these when you want faster orientation and persistent memory across sessions.
-
-### Understand-Anything (global skills)
-
-Install once per machine for agent-wide skills:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/Lum1104/Understand-Anything/main/install.sh | bash -s codex
-```
-
-Then invoke:
-
-- `/understand` for first-pass architecture mapping on unfamiliar repos.
-- `/understand-diff` before large refactors to preview blast radius.
-- `/understand-explain <path>` when you need a focused explanation for one file or symbol.
-- Knowledge-base placement: keep graph at `<project-root>/.understand-anything/knowledge-graph.json` (not workspace root).
-- First usage in a task: check graph exists for target project repo; if missing, run `/understand` in that repo.
-- Next usage during implementation: run `/understand-diff` after meaningful edits and `/understand-explain` for focused files/symbols.
-
-### memtrace (global binary, workspace-scoped for multi-repo)
-
-Install once per machine:
-
-```bash
-brew install memtrace-dev/tap/memtrace
-```
-
-Wire for multi-repo workspaces:
-
-```bash
-cd <workspace-root>
-memtrace init --no-import
-memtrace setup claude-code
-memtrace setup vscode
-```
-
-Run one shared server from workspace root:
-
-```bash
-memtrace serve --dir <workspace-root>
-```
-
-Use workspace-root memtrace as single source of truth for all project codes in that workspace. Avoid repo-level memtrace MCP entries in nested repos.
-
 ### Supported Coding Tools Matrix (single source of truth)
 
 | Tool Runtime | Workspace MCP file(s) | Notes |
 | :--- | :--- | :--- |
-| Cursor CLI / IDE | `<workspace-root>/.cursor/mcp.json` | Keep `~/.cursor/mcp.json` only as user-global fallback. |
-| Claude Code | `<workspace-root>/.claude/settings.local.json` | Enable workspace MCP servers from root config files. |
+| Cursor CLI | `<workspace-root>/.cursor/mcp.json` | Keep `~/.cursor/mcp.json` only as user-global fallback. |
+| Claude CLI | `<workspace-root>/.claude/settings.local.json` | Enable workspace MCP servers from root config files. |
 | Antigravity CLI | `<workspace-root>/.agents/mcp_config.json` | Remote HTTP MCP entries must use `serverUrl`. |
-| Codex CLI | `<workspace-root>/.codex/config.toml` | Keep memtrace server at workspace root. |
+| Codex CLI | `<workspace-root>/.codex/config.toml` | Codex MCP configuration. |
 | GitHub Copilot CLI | `<workspace-root>/.mcp.json` (or Copilot MCP config) | Also reads `AGENTS.md` / `CLAUDE.md` / `GEMINI.md`; custom agents in `.github/agents/*.agent.md`. |
-| VS Code (Copilot agent mode) | `<workspace-root>/.vscode/mcp.json` | Custom agents in `.github/agents/*.agent.md`; parallel local sessions in the Agents window. |
-| Legacy MCP readers | `<workspace-root>/.mcp.json` | Compatibility file for runtimes that read legacy MCP config. No subagents; use sequential in-process tool passes. |
-| memtrace (all supported tools) | `memtrace serve --dir <workspace-root>` | Single source of truth. No repo-level memtrace servers. |
-| Understand-Anything (all supported tools) | `<project-root>/.understand-anything/knowledge-graph.json` | Keep project graph at repo root, never at workspace root. |
 
 Use local-only policy when needed by adding generated files to local git exclude (`.git/info/exclude`) instead of committing them.
 
@@ -143,6 +91,18 @@ Use local-only policy when needed by adding generated files to local git exclude
 /agents-md -> /setup-matt-pocock-skills -> /feature-discovery -> /feature-prompt -> /grill-with-docs -> /to-prd -> /to-issues -> /triage -> /tdd -> /commit-push-pr -> /release-notes
 ```
 
+## Issue Naming And Label Preflight (Hard Gate)
+
+Before creating, editing, or renaming any GitHub issue:
+
+1. Read local workspace instructions (`AGENTS.md`; `CLAUDE.md` / `GEMINI.md` shims).
+2. Select the exact issue title pattern (`PRD`, `Slice`, or non-PRD implementation form).
+3. Select exactly one category label (`bug` or `enhancement`) and one state label.
+4. Confirm no routing marker (`HITL:` / `AFK:`) is present in issue titles.
+
+If tracker vocabulary is missing, stop and run `/setup-matt-pocock-skills` first.
+Do not publish issues with inferred naming patterns or partial labels.
+
 ## Suggested Next Skills Footer (Optional)
 
 To reduce memory load during ad hoc usage, append a short recommendation block at the end of non-trivial responses:
@@ -159,7 +119,6 @@ Guidelines:
 - Keep it short: 1-3 suggestions maximum.
 - Use workflow adjacency first (current step -> likely next step).
 - Prefer evidence-raising suggestions before risky edits:
-  - before larger refactors: `/understand-diff`
   - after discovery of unclear behavior: `/feature-prompt` or `/diagnose`
   - after prompt drafting: `/grill-with-docs`
   - after issue slicing: `/triage`
@@ -180,6 +139,7 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 | Gate | Skill | Continue When |
 | :--- | :--- | :--- |
 | Workspace | `/agents-md` | Project codes and Spartan Rules are active. |
+| Issue preflight | `Issue-writing skills` | Title pattern and both required labels are validated from local workspace instructions. |
 | Discovery | `/feature-discovery` | Evidence-backed report explains current behavior. |
 | Prompt | `/feature-prompt` | Implementation-ready prompt is reviewed by user. |
 | Grill | `/grill-with-docs` | Ambiguities resolved against ADRs and domain language. |
@@ -210,4 +170,4 @@ When unsure, run this sequence manually:
 
 No auto-chains. Trigger each step based on gate completion.
 
-If `memtrace` is connected, run `memory_recall` before step 1 with query terms from the task. If repo is unfamiliar or large, run `/understand` before step 1.
+If the repo is unfamiliar or large, run `/feature-discovery` before step 1.

@@ -72,7 +72,6 @@ Apply these defaults when drafting prompts for coding agents:
 - Start from free-form intake. Accept a sentence, paragraph, bullet list, or brain dump.
 - Infer first. Ask only when `What is needed` is unclear or project/context cannot be inferred safely.
 - Use repo evidence when cheap: project matrix, cwd, `CONTEXT.md`, `CONTEXT-MAP.md`, and ADR names. Do not run a broad code scan by default.
-- If memtrace MCP tools are available, run one `memory_recall` query using the feature nouns before drafting. Use results only as hints and confirm with local evidence before including them.
 
 ### Scope and slicing
 
@@ -131,8 +130,6 @@ Do not add a `Domain terms` section to the generated prompt. If terms still need
 ## Agent Use
 
 When the runtime supports subagents and the user has allowed them, use read-only agents only for fast, independent context checks. Keep the main session responsible for judgment and final wording. Do not use worker agents or make code edits.
-
-If `Understand-Anything` skills are installed and the request targets a large or unfamiliar repo, optionally run `/understand` before drafting to improve terminology and architecture framing. Use the target repo root (not workspace root) so the graph is stored in `<project-root>/.understand-anything/knowledge-graph.json`. Treat this as optional acceleration, not a hard gate.
 
 ## Final Output
 

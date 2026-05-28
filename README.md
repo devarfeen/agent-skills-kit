@@ -1,8 +1,8 @@
 # Agent Skills Kit
 
-A collection of reusable **skills** for AI coding agents (Claude Code, Cursor CLI / IDE,
-and any agent runtime that supports the [`skills`](https://www.npmjs.com/package/skills)
-package format).
+A collection of reusable **skills** for six supported AI coding CLIs:
+Codex CLI, Claude CLI, Antigravity CLI, Cursor CLI, Opencode CLI, and
+GitHub Copilot CLI.
 
 A *skill* is a small, self-contained bundle of instructions, examples, and
 templates that teaches an agent how to do one specific job well — for example,
@@ -17,12 +17,12 @@ agent-skills-kit/
 ├── README.md                 # This file
 ├── LICENSE                   # MIT
 └── skills/
-    ├── agents-md/            # Generate AGENTS.md (Cursor canonical) plus CLAUDE.md/GEMINI.md shims
+    ├── agents-md/            # Generate AGENTS.md (Cursor CLI canonical) plus CLAUDE.md/GEMINI.md shims
     │   ├── SKILL.md          # Required: metadata + instructions
     │   └── references/
-    │       ├── tool-calling.md       # Orchestration model, role lanes, local-only policy, Cursor names
+    │       ├── tool-calling.md       # Orchestration model, role lanes, local-only policy, CLI mappings
     │       ├── cursor-tools.md       # Skill-kit → Cursor mapping
-    │       └── *-tools.md            # claude, codex, copilot, antigravity, opencode, vscode
+    │       └── *-tools.md            # claude, codex, copilot, antigravity, opencode
     ├── release-notes/        # The release-notes skill
     │   ├── SKILL.md          # Required: metadata + instructions
     │   ├── README.md         # Human-readable docs for this skill
@@ -69,11 +69,10 @@ into your agent's local skills directory. After install, just talk to your
 agent normally — it will invoke the skill when your request matches one of
 its trigger phrases.
 
-**Cursor CLI / IDE:** Install with `npx skills install` (skills land in
-`~/.cursor/skills/` or `.cursor/skills/`), or add the repo under Cursor Settings →
-Rules → Remote Rule (GitHub). Invoke a skill with `/skill-name` in Agent chat
-(for example `/release-notes`). Run the CLI with `agent` for interactive sessions
-or `agent -p "..."` for scripts and CI.
+**Cursor CLI:** Install with `npx skills install` (skills land in
+`~/.cursor/skills/` or `.cursor/skills/`). Invoke a skill with `/skill-name`
+(for example `/release-notes`). Run the CLI with `agent` for interactive
+sessions or `agent -p "..."` for scripts and CI.
 
 ## Workflow Guide
 
@@ -86,6 +85,12 @@ shipping, and release notes. If you use Matt's engineering skills, run
 footer pattern (recommendations only) so agents can append lightweight
 before/after reminders at the end of non-trivial responses, including after
 third-party skills.
+
+Issue-writing hard gate (required): before drafting, renaming, or publishing
+any GitHub issue, verify both the title format and labels from local workspace
+instructions (`AGENTS.md` and its shims). If issue-tracker vocabulary is not
+loaded, stop and run `/setup-matt-pocock-skills` first. Never publish with
+inferred title patterns or partial labels.
 
 ## Credits And Provenance
 
@@ -128,7 +133,7 @@ skills from the wider agent-skills ecosystem.
   https://github.com/vercel-labs/agent-skills
 - `/sentry` refers to Sentry's CLI for developers and agents:
   https://cli.sentry.dev/
-- **Cursor CLI / IDE:** `AGENTS.md` is the canonical workspace context file;
+- **Cursor CLI:** `AGENTS.md` is the canonical workspace context file;
   skills use `/skill-name` invocation and the `Task` tool for subagents.
   https://cursor.com/docs/cli/overview
   https://cursor.com/docs/context/skills
@@ -147,9 +152,9 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 **What it does**
 
 - Includes a 17-rule non-negotiable core in `AGENTS.md` (now covering local background execution and the orchestrator + role-lane model), plus retained operational defaults for full Project Matrix code usage and parallel execution
-- Uses `AGENTS.md` as canonical for Cursor CLI / IDE (no extra shim); creates `GEMINI.md` as an Antigravity CLI compatibility shim because Antigravity CLI reads it as workspace context
+- Uses `AGENTS.md` as canonical for Cursor CLI (no extra shim); creates `GEMINI.md` as an Antigravity CLI compatibility shim because Antigravity CLI reads it as workspace context
 - Enforces instruction economy: keep `AGENTS.md` concise with stable, non-obvious invariants; keep detailed procedures in skills/references
-- Detects VS Code workspaces and uses each folder `name` as the project name/code source
+- Detects `*.code-workspace` manifests and uses each folder `name` as the project name/code source
 - Treats the workspace folder with `path: "."` as a meta workspace with no code
 - Builds a project matrix: `Project Name (Code) | Path | Tech Stack`
 - Establishes stable project codes for use across prompt, PRD, issue, discovery, release-note, PR, commit, and code-comment contexts
@@ -160,7 +165,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 | Mode | Example prompt |
 | --- | --- |
 | New instructions | `Generate AGENTS.md for this workspace` |
-| VS Code workspace | `Create AGENTS.md and shims from my VS Code workspace` |
+| Workspace manifest | `Create AGENTS.md and shims from my code-workspace manifest` |
 | Refresh project matrix | `Update AGENTS.md project codes and tech stacks` |
 
 ### `release-notes`
@@ -199,7 +204,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill release
 
 Generated files land in `<artifacts-root>/docs/release-notes/`. Release notes
 are on-demand date files and do not share the ADR/prompt `NNNN` sequence.
-`<artifacts-root>` resolves to the VS Code workspace root when a
+`<artifacts-root>` resolves to the `*.code-workspace` manifest root when a
 `*.code-workspace` file is present, otherwise the repo root — so artifacts stay
 centralized and out of individual project repos whenever a workspace exists.
 
@@ -284,7 +289,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
   `CONTEXT.md` updates with short descriptions for user approval
 - Applies approved `CONTEXT.md` updates only as a separate documentation step
 - Sends non-trivial or inferred drafts to the user for one correction pass
-- Saves the final prompt to `<artifacts-root>/docs/prompts/NNNN-<feature-slug>-prompt.md` (sibling of `docs/adr/`; prompt and ADR filenames both start with `NNNN-<slug>`, and numbering is shared with ADRs only). `<artifacts-root>` is the VS Code workspace root when present, otherwise the repo root — artifacts stay out of individual project repos whenever a workspace exists.
+- Saves the final prompt to `<artifacts-root>/docs/prompts/NNNN-<feature-slug>-prompt.md` (sibling of `docs/adr/`; prompt and ADR filenames both start with `NNNN-<slug>`, and numbering is shared with ADRs only). `<artifacts-root>` is the `*.code-workspace` manifest root when present, otherwise the repo root — artifacts stay out of individual project repos whenever a workspace exists.
 - Asks the user to pass the final prompt to `grill-with-docs`
 - Produces a short final prompt with only the needed sections
 
@@ -327,7 +332,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill commit-
 - Inline-created ad hoc issues get one category label (`bug` or `enhancement`) and one ready state label (`ready-for-agent` or `ready-for-human`)
 - Writes a structured commit message whose subject mirrors the GitHub issue title as closely as practical, plus an `Issue:` line and optional `Decisions:` / `Files:` / `Notes:` sections
 - For ad hoc inline issues, the new GitHub issue title and commit subject must match unless a hard tool limit prevents it
-- Enforces zero-attribution output across supported coding-agent paths (Cursor, Claude Code, Codex, Copilot, Antigravity, Opencode, and equivalent wrappers): no `Co-authored-by`, `Made-with`, `Generated by`, or AI signature lines
+- Enforces zero-attribution output across supported coding-agent paths (Cursor CLI, Claude CLI, Codex CLI, GitHub Copilot CLI, Antigravity CLI, and Opencode CLI): no `Co-authored-by`, `Made-with`, `Generated by`, or AI signature lines
 - Honors hooks (no `--no-verify`), refuses to stage secret-pattern files, and stages explicitly by path (no `git add -A`)
 - If env keys change, enforces synchronized add/remove/change across `.env`, `.env.staging`, `.env.production`, keeps `.sample.env`/`.example.env` current, and requires README/docs reference updates (with local-only reporting when env files are gitignored)
 - Pushes the current branch (`-u origin <branch>` if no upstream); requires a separate confirmation when the branch is `main` / `master`
@@ -370,7 +375,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill commit-
 - If the current branch is the repo default (`main` / `master`), proposes a feature branch (`issue/<num>-<slug>`) and waits for the user to confirm before checking it out
 - Writes a structured commit message whose subject mirrors the GitHub issue title as closely as practical, plus an `Issue:` line and optional `Decisions:` / `Files:` / `Notes:` sections
 - For ad hoc inline issues, the new GitHub issue title, commit subject, and PR title must match unless a hard tool limit prevents it
-- Enforces zero-attribution output across supported coding-agent paths (Cursor, Claude Code, Codex, Copilot, Antigravity, Opencode, and equivalent wrappers): no `Co-authored-by`, `Made-with`, `Generated by`, or AI signature lines
+- Enforces zero-attribution output across supported coding-agent paths (Cursor CLI, Claude CLI, Codex CLI, GitHub Copilot CLI, Antigravity CLI, and Opencode CLI): no `Co-authored-by`, `Made-with`, `Generated by`, or AI signature lines
 - Honors hooks (no `--no-verify`), refuses to stage secret-pattern files, and stages explicitly by path (no `git add -A`)
 - If env keys change, enforces synchronized add/remove/change across `.env`, `.env.staging`, `.env.production`, keeps `.sample.env`/`.example.env` current, and requires README/docs reference updates (with local-only reporting when env files are gitignored)
 - Pushes with `-u origin <branch>` if no upstream is set
@@ -479,24 +484,22 @@ worktree-isolated parallel agents are fine; remote ones are not.
 
 | Runtime | Parallel dispatch | Local background |
 | --- | --- | --- |
-| Cursor CLI / IDE | Multiple `Task` calls (cap ~4); local worktree agents | `is_background` subagent + `Await` |
-| Claude Code | Multiple `Agent` calls in one turn | `run_in_background` Bash; `background:` subagents; `isolation: worktree` |
+| Cursor CLI | Multiple `Task` calls (cap ~4); local worktree agents | `is_background` subagent + `Await` |
+| Claude CLI | Multiple `Agent` calls in one turn | `run_in_background` Bash; `background:` subagents; `isolation: worktree` |
 | Codex CLI | `[features] multi_agent` + `spawn_agent` (≤6 threads) | local worktrees; Automations |
 | GitHub Copilot CLI | `/fleet` (parallel subagents) | `Ctrl+X → b` background shell |
-| VS Code | parallel sessions in the Agents window | background sessions in the Chat view |
 | Antigravity CLI | `/goal` dynamic subagents (Agent Manager, ~5) | `/schedule` local background |
 | Opencode CLI | multiple `task` calls (`subagent_type`) | `task(background=true)` + `task_status` |
-| Legacy MCP readers | none — sequential in-process tool passes | none |
 
 The main agent still owns final judgment and output quality. Subagents collect
 facts and run lanes; they do not replace the final synthesis.
 
 Runtime-specific tool-calling docs for `agents-md` live under
 `skills/agents-md/references/` — start with [`tool-calling.md`](skills/agents-md/references/tool-calling.md)
-(agent orchestration model, canonical role lanes, local-only policy, Cursor
+(agent orchestration model, canonical role lanes, local-only policy, CLI
 tool names, permissions), then `cursor-tools.md`, `claude-tools.md`,
 `codex-tools.md`, `copilot-tools.md`, `antigravity-tools.md`,
-`opencode-tools.md`, and `vscode-tools.md`.
+and `opencode-tools.md`.
 
 ## Contributing a New Skill
 
