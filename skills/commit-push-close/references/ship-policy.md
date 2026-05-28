@@ -52,6 +52,7 @@ When the workflow can't locate an issue for valid ad hoc work, create one before
    - State: `ready-for-agent` when the agent completed the work autonomously; `ready-for-human` when human judgment, external access, or manual review was required.
 3. Show the user the draft (title + body + chosen labels) and wait for approval. Fold this into the single combined approval in the workflow — don't ask twice.
 4. Create with:
+
    ```bash
    gh issue create \
      --title "<title>" \
@@ -62,6 +63,7 @@ When the workflow can't locate an issue for valid ad hoc work, create one before
      --label "<category-label>" \
      --label "<state-label>"
    ```
+
 5. Capture the returned issue number from the URL/output and use it as `<num>` for the rest of the workflow. Skip the "read state" call — the label was set at creation.
 
 ## Naming anchor
@@ -93,6 +95,7 @@ Notes:
 ```
 
 Rules:
+
 - Subject mirrors the GitHub issue title as closely as practical, no `HITL:` or `AFK:` marker.
 - Always keep the subject and the `Issue:` line. Omit any other section that has nothing to say.
 - Never add co-author or AI/tool attribution anywhere in authored output (commit message, PR title/body, issue body, comments, release notes, docs) across all supported coding agents.
@@ -112,4 +115,4 @@ Rules:
 
 ## Response footer
 
-End the final response with `Suggested next skills (optional)` containing 1-3 advisory recommendations. Keep it recommendation-only (no gating). Choose next steps from workflow context, for example `/release-notes`, `/handoff`, or `/triage` for follow-up work.
+End the final response with `Suggested next skills (optional)` containing 1-6 advisory recommendations. Keep it recommendation-only (no gating). Choose next steps from workflow context, for example `/release-notes`, `/handoff`, `/triage`, or `/memory-steward` when a PRD closed or repo `MEMORY.md` should be compacted/promoted.

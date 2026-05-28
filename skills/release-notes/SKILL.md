@@ -378,7 +378,7 @@ Centralize artifacts when a workspace exists; only fall back to a project repo w
 2. **Multi-context single repo.** If no workspace file but a root `CONTEXT-MAP.md` exists, use the `docs/release-notes/` of the context the change belongs to.
 3. **Single-repo project.** Fall back to the repo root.
 
-For multi-repo workspaces *without* a `.code-workspace` file, write one file per repo under that repo's own `docs/release-notes/`.
+For multi-repo workspaces _without_ a `.code-workspace` file, write one file per repo under that repo's own `docs/release-notes/`.
 
 ### Path shape
 
@@ -494,7 +494,7 @@ Before returning output, verify:
 8. Change section includes user-visible touchpoints when commit history provides them.
 9. Logic changes include one simple sentence understandable by non-technical readers.
 10. Final file includes only projects that have confirmed changes.
-11. End the response with `Suggested next skills (optional)` using 1-3 advisory suggestions only (no gating), based on what the user should likely do next.
+11. End the response with `Suggested next skills (optional)` using 1-6 advisory suggestions only (no gating), based on what the user should likely do next. Suggest `/memory-steward` when shipped work closed a PRD or left durable prefs in repo `MEMORY.md`.
 
 ## Fallback
 

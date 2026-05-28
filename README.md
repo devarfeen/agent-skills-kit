@@ -148,7 +148,7 @@ skills from the wider agent-skills ecosystem.
 ### `agents-md`
 
 Generates `AGENTS.md` as the canonical agent instruction file and creates a
-`CLAUDE.md` shim that imports it (and `CONTEXT.md` / `MEMORY.md` when present).
+`CLAUDE.md` shim that imports it (`CONTEXT.md` at artifacts-root; repo `MEMORY.md` when present).
 
 ```bash
 npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-md
@@ -157,13 +157,14 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 **What it does**
 
 - Includes a 17-rule non-negotiable core in `AGENTS.md` (now covering local background execution and the orchestrator + role-lane model), plus retained operational defaults for full Project Matrix code usage and parallel execution
-- Uses `AGENTS.md` as the canonical instruction file for supported runtimes that read it directly; creates `CLAUDE.md` for Claude CLI with `@` imports for `AGENTS.md`, `CONTEXT.md`, and `MEMORY.md` when those files exist
+- Uses `AGENTS.md` as the canonical instruction file for supported runtimes that read it directly; creates `CLAUDE.md` for Claude CLI with `@` imports for `AGENTS.md`, `<artifacts-root>/CONTEXT.md`, and active repo `MEMORY.md` when those files exist
 - Enforces instruction economy: keep `AGENTS.md` concise with stable, non-obvious invariants; keep detailed procedures in skills/references
 - Detects `*.code-workspace` manifests and uses each folder `name` as the project name/code source
 - Treats the workspace folder with `path: "."` as a meta workspace with no code
 - Builds a project matrix: `Project Name (Code) | Path | Tech Stack`
 - Establishes stable project codes for use across prompt, PRD, issue, discovery, release-note, PR, commit, and code-comment contexts
-- References `CONTEXT.md` (domain terms) and `MEMORY.md` (cross-session recall) at `<artifacts-root>`, plus `docs/adr/` when available (and legacy `UBIQUITOUS_LANGUAGE.md` if it exists)
+- References `CONTEXT.md` at `<artifacts-root>`; **`MEMORY.md` at each repo root** (Project Matrix row); `docs/adr/` at `<artifacts-root>` when available
+- Wires `/memory-steward` at session start (light pass) in generated `AGENTS.md`
 
 **Example prompts**
 
@@ -172,6 +173,30 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 | New instructions | `Generate AGENTS.md for this workspace` |
 | Workspace manifest | `Create AGENTS.md and shims from my code-workspace manifest` |
 | Refresh project matrix | `Update AGENTS.md project codes and tech stacks` |
+
+### `memory-steward`
+
+Keeps repo-root `MEMORY.md` (≤ ~300 lines) in sync across CLIs, compacts stale bullets, and promotes `ADR-NNNN:` items to workspace `docs/adr/` when PRDs close.
+
+```bash
+npx skills install https://github.com/devarfeen/agent-skills-kit --skill memory-steward
+```
+
+**What it does**
+
+- **Light pass (auto at session start):** line count and promotion-queue scan after reading repo `MEMORY.md`
+- **Full pass (on request):** compact, sync Claude/Codex private memory into repo file, promote closed PRD memory to ADRs
+- Resolves active `<repo-root>` from Project Matrix + cwd; leaves `CONTEXT.md` / ADRs at `<artifacts-root>`
+
+**Example prompts**
+
+| Mode | Example prompt |
+| --- | --- |
+| Session start | *(automatic light pass when `AGENTS.md` is active)* |
+| Remember / sync | `Remember that we use pnpm only in this repo` |
+| Compact / promote | `/memory-steward` or `Compact MEMORY and promote closed PRD items to ADR` |
+
+Global CLI memory defaults: [`skills/agents-md/references/memory-global-defaults.md`](skills/agents-md/references/memory-global-defaults.md).
 
 ### `release-notes`
 

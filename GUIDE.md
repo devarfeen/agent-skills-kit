@@ -23,7 +23,8 @@ Combine skills from this kit and the wider ecosystem to move from idea to shippe
 
 - Keep scope thin. Use small vertical slices, not big-bang plans.
 - Stay evidence-first. Use discovery and grilling before broad implementation.
-- Use optional skills ad hoc. Do not auto-invoke compression skills.
+- Use optional skills ad hoc. Do not auto-invoke compression skills (`caveman` stays user-invoked only).
+- **Exception:** `/memory-steward` auto-invokes a **light pass** at session start (after reading repo `MEMORY.md`). Full pass on user remember/sync/compact requests or explicit `/memory-steward`.
 - Keep architecture healthy. Regularly run planning and refactor loops.
 - Preserve decisions. Move from prompt -> grill -> PRD -> issues -> implementation in traceable steps.
 
@@ -64,8 +65,11 @@ and each `*-tools.md`.
 
 ## First-Time Setup
 
-1. **`/agents-md`**: Creates `AGENTS.md`, shims, and project matrix.
-2. **`/setup-matt-pocock-skills`**: Configures tracker, labels, and `## Agent skills` block.
+1. **`/agents-md`**: Creates `AGENTS.md`, shims, project matrix, and repo-level `MEMORY.md` scaffolds.
+2. **`/memory-steward`**: Syncs/scaffolds repo `MEMORY.md` per matrix row; run once after setup and at every session start (light pass).
+3. **`/setup-matt-pocock-skills`**: Configures tracker, labels, and `## Agent skills` block.
+
+Enable built-in CLI memory globally when desired: [`skills/agents-md/references/memory-global-defaults.md`](skills/agents-md/references/memory-global-defaults.md).
 
 ### Supported Coding Tools Matrix (single source of truth)
 
@@ -85,6 +89,7 @@ Use local-only policy when needed by adding generated files to local git exclude
 | Situation | Start With | Why |
 | :--- | :--- | :--- |
 | New Workspace | `/agents-md` | Establish codes, paths, and Non-Negotiable Rules. |
+| Session start / memory hygiene | `/memory-steward` | Light pass after reading repo `MEMORY.md`; full pass on request. |
 | Unclear Behavior | `/feature-discovery` | Read-only audit before planning. |
 | Rough Idea | `/feature-prompt` | Section-by-section clarification interview. |
 | Broken Behavior | `/diagnose` | Systematic root cause analysis. |
@@ -95,8 +100,10 @@ Use local-only policy when needed by adding generated files to local git exclude
 ## Core Progression
 
 ```text
-/agents-md -> /setup-matt-pocock-skills -> /feature-discovery -> /feature-prompt -> /grill-with-docs -> /to-prd -> /to-issues -> /triage -> /tdd -> /commit-push-pr -> /release-notes
+/agents-md -> /memory-steward -> /setup-matt-pocock-skills -> /feature-discovery -> /feature-prompt -> /grill-with-docs -> /to-prd -> /to-issues -> /triage -> /tdd -> /commit-push-pr -> /memory-steward -> /release-notes
 ```
+
+(`/memory-steward` after ship when PRD closes or MEMORY grows; not a hard gate.)
 
 ## Issue Naming And Label Preflight (Hard Gate)
 
@@ -130,7 +137,26 @@ Guidelines:
   - after prompt drafting: `/grill-with-docs`
   - after issue slicing: `/triage`
   - after implementation completion: `/commit-push-pr` or `/commit-push-close`, then `/release-notes`
+  - after `/agents-md` or memory edits: `/memory-steward`
+  - after PRD close or ADR acceptance: `/memory-steward` (promote queue → `docs/adr/`)
 - If confidence is low, suggest one conservative next step instead of a long list.
+
+## Memory steward (`/memory-steward`)
+
+Maintains **repo-root `MEMORY.md`** (≤ ~300 lines). Workspace **`CONTEXT.md`** and **`docs/adr/`** stay at `<artifacts-root>`.
+
+| Pass | When | Work |
+| :--- | :--- | :--- |
+| Light | Session start (auto) | Line count, promotion-queue scan; compact only if > ~300 lines or queue non-empty |
+| Full | User asks to remember/sync/compact/promote; PRD closed; explicit `/memory-steward` | Promote `ADR-NNNN:` bullets to ADRs, compact, sync Claude private memory into repo file |
+
+Install:
+
+```bash
+npx skills install https://github.com/devarfeen/agent-skills-kit --skill memory-steward
+```
+
+Skill: [`skills/memory-steward/SKILL.md`](skills/memory-steward/SKILL.md).
 
 ## Planned Vs Ad Hoc Issue Flow
 
@@ -167,6 +193,7 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 - **Broken Tests:** Stay in `/tdd` or pivot to `/diagnose`.
 - **Large Issues:** Back to `/to-issues` for smaller slices.
 - **Production Error:** Start with `/sentry` -> `/diagnose`.
+- **MEMORY too large / stale / post-PRD close:** `/memory-steward` (full pass).
 
 ## Practical Default
 

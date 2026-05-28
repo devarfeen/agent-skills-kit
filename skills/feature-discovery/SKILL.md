@@ -33,7 +33,7 @@ What:
 - Keep the main session responsible for synthesis, evidence quality, uncertainty calls, conflict resolution, and final reporting. Subagents return summaries, not raw transcripts.
 - Do not run `git fetch`, `git pull`, installs, migrations, or destructive commands.
 - Scan the codebase before using git history.
-- Check available internal memory before doing broad GitHub issue discovery. Internal memory can include conversation memory, AGENTS.md, CONTEXT.md, MEMORY.md, ADRs under `docs/adr/`, local docs, local issue caches, prior issue references, or project-specific memory files.
+- Check available internal memory before doing broad GitHub issue discovery. Internal memory can include conversation memory, AGENTS.md, `<artifacts-root>/CONTEXT.md`, **`<repo-root>/MEMORY.md`** (active repo from Project Matrix + cwd), ADRs under `<artifacts-root>/docs/adr/`, local docs, local issue caches, prior issue references, or project-specific memory files.
 - If external dependency internals are critical and local evidence is insufficient, optionally fetch targeted dependency source with `opensrc` and cite concrete files/functions. Keep fetch scope minimal.
 - If internal memory identifies relevant GitHub issue numbers, URLs, titles, labels, milestones, or search terms, read all GitHub issues in that bounded set.
 - If no reliable internal memory exists for the topic, ask the user for approval before scanning broadly across GitHub issues. Explain that reading all related issues can take a long time.
@@ -51,7 +51,7 @@ What:
 - Flag duplication risks explicitly: when similar behavior exists in multiple paths, call out likely seam reuse opportunities for the next planning step.
 - Treat `~120K` tokens as a context-budget caution point for planning-heavy sessions. If unresolved core unknowns remain near this point, stop and recommend scope split or handoff.
 - Do not give the final discovery report until findings have passed two validation scans.
-- End the final response with `Suggested next skills (optional)` containing 1-3 recommendations. Keep them advisory only (no gating) and base them on findings plus the workspace workflow.
+- End the final response with `Suggested next skills (optional)` containing 1-3 recommendations. Keep them advisory only (no gating) and base them on findings plus the workspace workflow. Suggest `/memory-steward` when repo `MEMORY.md` has a non-empty promotion queue, exceeds ~300 lines, or discovery surfaced durable prefs worth persisting.
 
 ## Workflow
 
@@ -74,7 +74,7 @@ What:
    - If using Explorer/Researcher lanes, split work by project, module, or evidence type and require each lane to return file paths, symbols, commands, and uncertainty (summaries, not raw transcripts).
 
 4. Discover related memory and GitHub issues:
-   - First inspect available internal memory for issue references or topic clues. Search AGENTS.md, CONTEXT.md, MEMORY.md, ADRs under `docs/adr/`, docs, local issue folders, prior prompt context, and memory files.
+   - First inspect available internal memory for issue references or topic clues. Search AGENTS.md, `<artifacts-root>/CONTEXT.md`, active **`<repo-root>/MEMORY.md`**, ADRs under `<artifacts-root>/docs/adr/`, docs, local issue folders, prior prompt context, and memory files.
    - If memory gives a bounded GitHub issue set, read every issue in that set with `gh issue view` or equivalent.
    - If memory gives reliable labels, milestones, titles, or exact search terms, use them to perform a bounded GitHub issue search and read every matching issue that is plausibly related.
    - If memory does not exist or is too vague to bound the search, pause and ask the user to approve a broad GitHub issue scan before running it.

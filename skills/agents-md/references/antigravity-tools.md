@@ -19,6 +19,7 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 - `@` references files/context (e.g. `@src/main.go`), not agents.
 - Parallelism comes from the Agent Manager and `start_subagent`: the orchestrator decomposes a goal and spawns dynamic subagents that can share the parent's workspace or run in an isolated Git worktree (clean context window, same model).
 - Antigravity CLI reads `AGENTS.md` directly from the active workspace as a supported context file. This kit treats `AGENTS.md` as the canonical instruction file for Antigravity CLI and emits no Antigravity-specific shim.
+- **Memory:** No native memory file. Team SSOT: `<repo-root>/MEMORY.md` per `AGENTS.md`; `/memory-steward` at session start. Optional MCP in `~/.gemini/config/mcp_config.json` (supplementary). See [`memory-global-defaults.md`](memory-global-defaults.md).
 - Multi-repo workspace policy: use workspace-root MCP config.
 - For exact config-file placement by tool, use [`tool-calling.md`](tool-calling.md).
 

@@ -11,7 +11,7 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 | `Glob` (search by name) | `glob` |
 | `Task` tool (dispatch subagent) | `task` tool + `/fleet` (orchestrated parallel subagents); built-in agents `explore` / `task` / `general-purpose` / `code-review` / `research` / `rubber-duck` |
 | Long-running shell management | `list_bash` / `read_bash` / `stop_bash` / `write_bash` |
-| Ask user / memory | `ask_user`, `memory` |
+| Ask user / memory | `ask_user`, `memory` (Copilot Memory tool — not repo `MEMORY.md`) |
 | `WebFetch` | `web_fetch` |
 | Skill invocation | `skill` |
 
@@ -23,6 +23,7 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 - Cloud handoff: `/delegate` ships a task to the remote Copilot coding agent (opens PRs). Kit policy: do not use.
 - The GitHub MCP server ships built in; custom MCP servers add to it.
 - Multi-repo workspace policy: use workspace-root MCP config.
+- **Memory:** Enable in GitHub Copilot settings (account); CLI: `/memory on`, `/memory off`, `/memory show` (persists). `store_memory` tool stores user/repo facts in GitHub — distinct from git `<repo-root>/MEMORY.md`. Team SSOT: repo `MEMORY.md`; personal prefs may use Copilot Memory. `/memory-steward` syncs and promotes. See [`memory-global-defaults.md`](memory-global-defaults.md).
 - For exact config-file placement by tool, use [`tool-calling.md`](tool-calling.md).
 
 ## Agents: parallel, background & roles

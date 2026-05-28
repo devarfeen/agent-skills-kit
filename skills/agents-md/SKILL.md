@@ -1,6 +1,6 @@
 ---
 name: agents-md
-description: "Generate or update AGENTS.md for a repository or code-workspace manifest, create a Claude CLI compatibility shim, build a project matrix with stable project codes, and reference CONTEXT.md / MEMORY.md / ADRs as required domain context."
+description: "Generate or update AGENTS.md for a repository or code-workspace manifest, create a Claude CLI compatibility shim, build a project matrix with stable project codes, reference CONTEXT.md and ADRs at artifacts-root, repo-root MEMORY.md per project, and wire /memory-steward at session start."
 ---
 
 # AGENTS.md Generator
@@ -54,6 +54,7 @@ When generating or validating `AGENTS.md`, use the matching runtime docs under `
 | [`copilot-tools.md`](references/copilot-tools.md)         | Skill-kit → GitHub Copilot CLI mapping                                                                                        |
 | [`antigravity-tools.md`](references/antigravity-tools.md) | Skill-kit → Antigravity CLI mapping                                                                                           |
 | [`opencode-tools.md`](references/opencode-tools.md)       | Skill-kit → Opencode CLI mapping                                                                                              |
+| [`memory-global-defaults.md`](references/memory-global-defaults.md) | Per-CLI global memory enable snippets; repo `MEMORY.md` as SSOT                                                          |
 
 ## Discovery Workflow
 
@@ -70,7 +71,13 @@ When generating or validating `AGENTS.md`, use the matching runtime docs under `
    - `pyproject.toml`, `requirements.txt`, `uv.lock`, `poetry.lock`
    - `go.mod`, `Cargo.toml`, `Gemfile`, `composer.json`
    - `Dockerfile`, `docker-compose.yml`, Terraform files, mobile app configs
-8. Check whether `CONTEXT.md`, `MEMORY.md`, or any artifacts under `docs/adr/`, `docs/prompts/`, `docs/qa/`, and `docs/release-notes/` exist. Look first at the `<artifacts-root>` (see below); fall back to the repo root only when no workspace is present. Four artifact types live in sibling folders, distinguished by location and filename suffix:
+8. Check whether `CONTEXT.md`, repo-level `MEMORY.md`, or any artifacts under `docs/adr/`, `docs/prompts/`, `docs/qa/`, and `docs/release-notes/` exist.
+
+   **`<artifacts-root>`** (workspace / meta-workspace / CONTEXT-MAP context): `CONTEXT.md`, `docs/adr/`, `docs/prompts/`, `docs/qa/`, `docs/release-notes/` — not repo `MEMORY.md`.
+
+   **`<repo-root>`** (each Project Matrix row with code, excluding meta `path: "."`): `MEMORY.md` at `<Path>/MEMORY.md` resolved from the matrix.
+
+   Four artifact types under `<artifacts-root>`:
    - `<artifacts-root>/docs/adr/NNNN-<slug>.md` — ADR (no suffix), written by `grill-with-docs`.
    - `<artifacts-root>/docs/prompts/NNNN-<slug>-prompt.md` — feature prompt, written by `feature-prompt`.
    - `<artifacts-root>/docs/qa/NNNN-<slug>-qa.md` — manual QA instructions paired to an ADR (`-qa` suffix on the ADR base filename).
@@ -78,13 +85,15 @@ When generating or validating `AGENTS.md`, use the matching runtime docs under `
      ADRs, prompts, and QA docs share one global ADR base naming (`NNNN-<slug>`). Prompts append `-prompt` and QA docs append `-qa`. Release notes do not use that sequence; they are date-based and live under `docs/release-notes/`. Reference these artifacts as required domain context when present. If none exists and terminology matters, note that domain language is sharpened inline by the `grill-with-docs` skill, which writes to `CONTEXT.md` and ADRs as decisions crystallise.
 
    - **`CONTEXT.md`** (at `<artifacts-root>`): canonical domain language — terms, meanings, boundaries. Commit to git. Do not invent new terms in chat; propose additions here first.
-   - **`MEMORY.md`** (at `<artifacts-root>`): cross-session agent recall — stable prefs, short decisions, gotchas, where-things-live. Commit to git unless the user opts out. Keep ≤ ~150 lines; index only — detail belongs in ADRs or topic files under `docs/`. Never store secrets. If `MEMORY.md` and `CONTEXT.md` conflict on terminology, `CONTEXT.md` wins; reconcile `MEMORY.md` after.
+   - **`MEMORY.md`** (at **`<repo-root>`** per Project Matrix row): cross-session agent recall for that repo — stable prefs, short decisions, gotchas, where-things-live. Commit to git unless the user opts out. Keep ≤ ~300 lines; index only — detail belongs in `<artifacts-root>/docs/adr/` or topic files. Never store secrets. Prefix ADR-linked bullets with `ADR-NNNN:`. If `MEMORY.md` and `CONTEXT.md` conflict on terminology, `CONTEXT.md` wins; reconcile `MEMORY.md` after.
 
-   If `MEMORY.md` is missing and the workspace would benefit from durable recall, scaffold it using [MEMORY.md scaffold](#memorymd-scaffold) at `<artifacts-root>`. Do not duplicate `AGENTS.md` build/test commands or full glossary entries (those live in `CONTEXT.md`).
+   If `MEMORY.md` is missing at a code repo root and recall would help, scaffold using [MEMORY.md scaffold](#memorymd-scaffold) at that **`<repo-root>`** (not the meta-workspace). Do not duplicate `AGENTS.md` build/test commands or glossary entries (those live in `CONTEXT.md` / ADRs).
 
-   `<artifacts-root>` resolves as: (1) the directory containing the `*.code-workspace` file if a code-workspace manifest is detected — this is the same location as the meta-workspace folder (`path: "."`); (2) else the per-context root for multi-context repos with a root `CONTEXT-MAP.md`; (3) else the repo root for single-repo projects. Workspace mode is preferred: it keeps prompts, ADRs, release notes, and shared context/memory centralized instead of scattering them across project repos.
+   **`<artifacts-root>`** resolves as: (1) the directory containing the `*.code-workspace` file (`path: "."` meta folder); (2) else the per-context root for multi-context repos with root `CONTEXT-MAP.md`; (3) else the repo root for single-repo projects. Workspace mode keeps prompts, ADRs, release notes, and `CONTEXT.md` centralized; **MEMORY stays per repo**.
 
-   Most runtimes do not auto-load `CONTEXT.md` or `MEMORY.md`. Wire them in generated `AGENTS.md` (read at session start) and in the Claude CLI shim via `@` imports when those files exist. For Opencode CLI, also add both paths to `opencode.json` `instructions` when that file exists or is created for MCP.
+   **`<repo-root>`** resolves from Project Matrix `Path` + cwd (git root walk-up). Meta workspace (`path: "."`) has no `MEMORY.md`.
+
+   Most runtimes do not auto-load `CONTEXT.md` or `MEMORY.md`. Wire them in generated `AGENTS.md` (read at session start), Claude shim `@` imports (`CONTEXT.md` from artifacts-root; `MEMORY.md` from active repo — use relative paths in multi-repo), and Opencode `opencode.json` `instructions` when created. Point users to [`memory-global-defaults.md`](references/memory-global-defaults.md) for per-CLI global memory enablement.
 
 Use structured parsing when available. For `.code-workspace`, use JSON parsing that tolerates comments if the local toolchain supports it. If not, read carefully and avoid corrupting paths.
 
@@ -188,8 +197,10 @@ These 17 rules are mandatory. Enforce them before speed, convenience, or local h
 - **Fidelity Routing:** Grill low-fidelity decisions. Route visual/interaction uncertainty to `/handoff` + `/prototype`.
 - **Context Budget:** At ~120K tokens, split scope, compact, or hand off.
 - **Suggested Next Skills:** For non-trivial responses, optionally end with `Suggested next skills (optional)` and 1-3 advisory next steps. No gates. No auto-chaining.
-- **Domain:** Read `CONTEXT.md` and `docs/adr/` before implementation. ADRs bind. Terminology in `CONTEXT.md` overrides informal usage elsewhere.
-- **Memory:** Read `MEMORY.md` at session start when present. Update it with durable prefs, gotchas, and short decisions that would save re-explaining next session. Keep it concise; never store secrets. On terminology conflicts, `CONTEXT.md` wins.
+- **Domain:** Read `<artifacts-root>/CONTEXT.md` and `<artifacts-root>/docs/adr/` before implementation. ADRs bind. Terminology in `CONTEXT.md` overrides informal usage elsewhere.
+- **Memory file:** Read `<repo-root>/MEMORY.md` for the repo you are editing (Project Matrix + cwd). Not the meta-workspace folder. Keep ≤ ~300 lines; index only; use `ADR-NNNN:` tags for promotion. Never store secrets.
+- **Memory steward:** At session start, after reading repo `MEMORY.md`, run `/memory-steward` light pass (or follow `memory-steward` skill if auto-loaded). On user requests to remember, sync, compact, or promote memory, run `/memory-steward` full pass immediately.
+- **Memory sync:** After material MEMORY edits, update the active repo `MEMORY.md` only. Do not maintain a copy under `<artifacts-root>`. When a PRD linked to ADR-NNNN closes, ensure the ADR is complete, then prune promoted bullets from repo `MEMORY.md`.
 - **Manual QA Docs:** Store standalone QA docs as `docs/qa/NNNN-<slug>-qa.md`.
 - **Evidence:** Run targeted validation when useful and available. Final report names validation run, skipped checks with reasons, and remaining risk.
 - **Issues:** Planned work starts from a triaged GitHub issue with exactly one category label and one ready state. Small ad hoc work may start from the request; ship skills create the issue later. If ad hoc work grows large, ambiguous, cross-project, or multi-slice, stop and route through `/triage`, `/feature-prompt`, or `/to-issues`. Before creating/editing issues, select the title pattern, labels, state, and remove routing markers. Stop if any item is missing.
@@ -215,12 +226,12 @@ If it is missing, add it explicitly under `## Operating Protocol`.
 
 ## MEMORY.md scaffold
 
-Use at `<artifacts-root>` when creating a new `MEMORY.md`. Keep under ~150 lines.
+Use at **`<repo-root>`** (per Project Matrix code repo) when creating a new `MEMORY.md`. Keep under ~300 lines.
 
 ```markdown
-# Memory — <workspace or project name>
+# Memory — <project name> (<PROJECT-CODE>)
 
-> Cross-session recall for agents. Index only; detail in ADRs/docs. No secrets.
+> Cross-session recall for this repo. Index only; binding detail in <artifacts-root>/docs/adr/. No secrets.
 
 ## Stable preferences
 
@@ -228,7 +239,11 @@ Use at `<artifacts-root>` when creating a new `MEMORY.md`. Keep under ~150 lines
 
 ## Decisions (short)
 
-- <!-- YYYY-MM-DD: decision + why; link ADR if any -->
+- <!-- YYYY-MM-DD: ADR-NNNN: short decision; why -->
+
+## Promotion queue
+
+- <!-- ADR-NNNN: bullets to move to docs/adr/ when PRD closes -->
 
 ## Gotchas
 
@@ -237,6 +252,10 @@ Use at `<artifacts-root>` when creating a new `MEMORY.md`. Keep under ~150 lines
 ## Where things are
 
 - <!-- entrypoints, configs, owner areas -->
+
+## Active ADR pointers
+
+- <!-- See ADR-NNNN for <topic> — after promotion -->
 ```
 
 ## Shim Files
@@ -253,12 +272,9 @@ Use this content for `CLAUDE.md` unless the workspace or repository already has 
 This file is a Claude CLI shim for tool compatibility.
 ```
 
-When `CONTEXT.md` and/or `MEMORY.md` exist at `<artifacts-root>`, add `@` imports immediately after `@AGENTS.md` (omit any file that does not exist):
+When `CONTEXT.md` exists at `<artifacts-root>`, add `@CONTEXT.md` after `@AGENTS.md`.
 
-```markdown
-@CONTEXT.md
-@MEMORY.md
-```
+When the active repo has `MEMORY.md`, add `@MEMORY.md` using a path relative to the shim (e.g. `@../api-service/MEMORY.md` from meta-workspace, or `@MEMORY.md` when shim lives in that repo). Omit imports for files that do not exist.
 
 If an existing shim contains valuable tool-specific rules, keep them under:
 
@@ -280,7 +296,7 @@ Do not duplicate the full `AGENTS.md` content into shims.
 
 1. **Evidence Check:** Verify every project path and tech stack entry with raw command output. Lying or guessing project details is a violation of Rule #2.
 2. **Behavioral Trace (Negative Constraints):**
-   - Did the agent avoid auto-invoking optional skills and keep plain-language chat by default (Rule #1)?
+   - Did the agent avoid auto-invoking optional skills except `/memory-steward` at session start, and keep plain-language chat by default (Rule #1)?
    - Did the agent **refrain** from cleaning adjacent code (Rule #5) or patching symptoms (Rule #6)?
 3. **Deterministic Review:**
    - Rule #1: Plain-language chat (everyday words, low fluff, technical names kept exact and explained); optional skills user-invoked only?
@@ -308,5 +324,5 @@ Notes:
 
 - [`*.code-workspace` manifest detected / not detected.]
 - [`AGENTS.md` is canonical for Codex CLI, Antigravity CLI, Cursor CLI, Opencode CLI, and GitHub Copilot CLI; `CLAUDE.md` is the only shim emitted.]
-- [CONTEXT.md / MEMORY.md at \`<artifacts-root>\` referenced or scaffolded; \`docs/adr/\` (ADRs) / \`docs/prompts/\` (\`*-prompt.md\`) / \`docs/qa/\` (\`*-qa.md\`) / \`docs/release-notes/\` (\`D-Month-YYYY.md\`) artifacts referenced, or noted as to-be-produced inline by \`grill-with-docs\` / \`feature-prompt\` / \`release-notes\`.]
+- [CONTEXT.md at \`<artifacts-root>\`; repo MEMORY.md per matrix row; \`docs/adr/\` / \`docs/prompts/\` / \`docs/qa/\` / \`docs/release-notes/\` referenced or noted as to-be-produced. Recommend \`/memory-steward\` after first scaffold.]
 ```

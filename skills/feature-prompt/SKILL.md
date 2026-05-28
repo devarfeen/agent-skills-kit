@@ -101,7 +101,7 @@ Apply these defaults when drafting prompts for coding agents:
 - Do not implement the feature. Do not create a PRD. Do not edit ADRs.
 - Do not edit `CONTEXT.md` while drafting the prompt. `CONTEXT.md` edits are allowed only as a separate, explicit follow-up after the user approves specific candidate terms or accepts the full candidate list.
 - Keep the final prompt spartan, direct, and plain English. The final prompt is a generated artifact and must not be compressed shorthand.
-- End the response with `Suggested next skills (optional)` containing 1-3 advisory recommendations, based on workflow adjacency and remaining uncertainty.
+- End the response with `Suggested next skills (optional)` containing 1-6 advisory recommendations, based on workflow adjacency and remaining uncertainty. Include `/memory-steward` when candidate terms or decisions should be persisted to repo `MEMORY.md` before grilling.
 
 ## Candidate Context Terms
 
@@ -113,6 +113,7 @@ Before finalizing the prompt, show the user a compact review:
 
 ```markdown
 Candidate CONTEXT.md terms:
+
 - `Term` — suggested action; short description; evidence; why it matters.
 
 Reply with the term names to approve, wording changes, `approve all`, or `skip context updates`.
@@ -146,6 +147,7 @@ Context updated: <relative CONTEXT.md path> [only if edited]
 Saved to: <relative path written>
 Next: pass this final prompt to the `grill-with-docs` skill.
 Suggested next skills (optional):
+
 - /grill-with-docs: challenge assumptions, sharpen domain terms, and confirm decisions.
 - /handoff + /prototype: when open questions are ungrillable and require a higher-fidelity spike.
 - /to-prd: if this needs a formal spec after grilling.
