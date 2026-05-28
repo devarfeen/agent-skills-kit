@@ -2,6 +2,12 @@
 
 Human-facing guide only. Do not load this file into `AGENTS.md`, shims, or model context.
 
+Supported runtime boundary: this kit supports Codex CLI, Claude CLI,
+Antigravity CLI, Cursor CLI, Opencode CLI, and GitHub Copilot CLI only.
+Compatibility files such as `GEMINI.md` are for supported runtimes that read
+those filenames and do not indicate support for Gemini CLI or any other
+runtime.
+
 Combine skills from this kit and the wider ecosystem to move from idea to shipped code and release notes. Prioritize context, evidence, and task isolation.
 
 ## Credits And Provenance
@@ -65,10 +71,11 @@ and each `*-tools.md`.
 
 | Tool Runtime | Workspace MCP file(s) | Notes |
 | :--- | :--- | :--- |
-| Cursor CLI | `<workspace-root>/.cursor/mcp.json` | Keep `~/.cursor/mcp.json` only as user-global fallback. |
+| Codex CLI | `<workspace-root>/.codex/config.toml` | Codex MCP configuration. |
 | Claude CLI | `<workspace-root>/.claude/settings.local.json` | Enable workspace MCP servers from root config files. |
 | Antigravity CLI | `<workspace-root>/.agents/mcp_config.json` | Remote HTTP MCP entries must use `serverUrl`. |
-| Codex CLI | `<workspace-root>/.codex/config.toml` | Codex MCP configuration. |
+| Cursor CLI | `<workspace-root>/.cursor/mcp.json` | Keep `~/.cursor/mcp.json` only as user-global fallback. |
+| Opencode CLI | `<workspace-root>/opencode.json` | Workspace-root opencode configuration where MCP servers are used. |
 | GitHub Copilot CLI | `<workspace-root>/.mcp.json` (or Copilot MCP config) | Also reads `AGENTS.md` / `CLAUDE.md` / `GEMINI.md`; custom agents in `.github/agents/*.agent.md`. |
 
 Use local-only policy when needed by adding generated files to local git exclude (`.git/info/exclude`) instead of committing them.
@@ -95,7 +102,7 @@ Use local-only policy when needed by adding generated files to local git exclude
 
 Before creating, editing, or renaming any GitHub issue:
 
-1. Read local workspace instructions (`AGENTS.md`; `CLAUDE.md` / `GEMINI.md` shims).
+1. Read local workspace instructions (`AGENTS.md`; Claude CLI `CLAUDE.md` / Antigravity CLI `GEMINI.md` shims).
 2. Select the exact issue title pattern (`PRD`, `Slice`, or non-PRD implementation form).
 3. Select exactly one category label (`bug` or `enhancement`) and one state label.
 4. Confirm no routing marker (`HITL:` / `AFK:`) is present in issue titles.

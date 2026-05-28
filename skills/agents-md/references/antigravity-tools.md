@@ -18,7 +18,7 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 
 - `@` references files/context (e.g. `@src/main.go`), not agents. There are no built-in `@generalist` / `@code-reviewer` personas.
 - Parallelism comes from the Agent Manager and `/goal`: the orchestrator decomposes a goal and spawns dynamic, auto-named subagents (dependency-aware). Reusable personas (`@pm`, `@engineer`, `@qa`) are user-defined in `.agents/agents.md`.
-- The tool names above are not confirmed against current Antigravity docs (some may be inherited from earlier Gemini CLI); verify before relying on exact names. Reads both `AGENTS.md` and `GEMINI.md` (GEMINI.md wins on conflict).
+- The tool names above are not confirmed against current Antigravity docs; verify before relying on exact names. Antigravity CLI reads both `AGENTS.md` and `GEMINI.md` (`GEMINI.md` wins on conflict). This compatibility file does not indicate Gemini CLI support.
 - Multi-repo workspace policy: use workspace-root MCP config.
 - For exact config-file placement by tool, use [`tool-calling.md`](tool-calling.md).
 

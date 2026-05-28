@@ -2,6 +2,10 @@
 
 How the six supported CLI runtimes invoke tools, and how this kit maps generic skill instructions to each runtime.
 
+Supported runtimes are Codex CLI, Claude CLI, Antigravity CLI, Cursor CLI,
+Opencode CLI, and GitHub Copilot CLI only. Compatibility filenames used by
+those tools do not imply support for any other runtime.
+
 ## Agent Orchestration Model
 
 The main session is the **orchestrator**. It decomposes work into role-typed lanes, dispatches each lane to a local subagent (or a focused in-process tool pass when the runtime has no subagents), runs independent lanes in parallel, pushes long or noisy lanes to local background/async, and keeps the only seat for merge, conflict resolution, and final judgment. Subagents return summaries, not raw transcripts. This model is enforced by `AGENTS.md` Rules 3, 15, 16, and 17.
@@ -12,12 +16,12 @@ Use only **local** subagents and **local** background/async execution. Local wor
 
 | Runtime | Cloud/remote product to AVOID | Local equivalent to use instead |
 | :--- | :--- | :--- |
-| Cursor CLI | Cloud Agents (formerly "Background Agents"), `&`-prefixed cloud hand-off, cursor.com/agents | `Task` subagents; `is_background` subagents + `Await`; local worktree agents |
-| Claude CLI | (no first-party cloud agent) | `Agent` subagents; `run_in_background` Bash; `background: true` subagents; `isolation: worktree` |
 | Codex CLI | Codex Cloud / Codex web delegated tasks | `[features] multi_agent` subagents; local worktrees; local Automations |
-| GitHub Copilot CLI | Cloud coding agent (GitHub Actions) | `/fleet` parallel subagents; `Ctrl+X → b` background shell |
+| Claude CLI | (no first-party cloud agent) | `Agent` subagents; `run_in_background` Bash; `background: true` subagents; `isolation: worktree` |
 | Antigravity CLI | Managed Agents API / remote managed execution | Agent Manager local parallel instances; `/schedule` local background |
-| Opencode CLI | (verify against opencode docs) | local subagents / sessions |
+| Cursor CLI | Cloud Agents (formerly "Background Agents"), `&`-prefixed cloud hand-off, cursor.com/agents | `Task` subagents; `is_background` subagents + `Await`; local worktree agents |
+| Opencode CLI | (no cloud agent in scope) | `task` subagents / child sessions; `task(background=true)` + `task_status` |
+| GitHub Copilot CLI | Cloud coding agent (GitHub Actions) | `/fleet` parallel subagents; `Ctrl+X → b` background shell |
 
 ### Canonical role lanes
 
@@ -38,12 +42,12 @@ Standard lane roles used across this kit. Each runtime's `*-tools.md` maps these
 
 | Runtime | Parallel dispatch | Local background / async | Custom agent files |
 | :--- | :--- | :--- | :--- |
-| Cursor CLI | Multiple `Task` calls in one turn (practical cap ~4); local worktree agents (up to 8) | `is_background: true` subagent + `Await`; `bash` subagent isolates output | `.cursor/agents/<name>.md` |
-| Claude CLI | Multiple `Agent` calls in one turn | `run_in_background` Bash; `background: true` subagents; `isolation: worktree` | `.claude/agents/<name>.md` |
 | Codex CLI | `[features] multi_agent` + `spawn_agent` / `spawn_agents_on_csv` (`agents.max_threads`, default 6; `max_depth` 1) | local git worktrees; Automations | `[agents.<name>]` in `config.toml`, or `.codex/agents/<name>.toml` |
-| GitHub Copilot CLI | `/fleet` (orchestrated parallel subagents) | `Ctrl+X → b` promotes a shell to background | `.github/agents/<name>.agent.md` |
+| Claude CLI | Multiple `Agent` calls in one turn | `run_in_background` Bash; `background: true` subagents; `isolation: worktree` | `.claude/agents/<name>.md` |
 | Antigravity CLI | `/goal` orchestrator-spawned dynamic subagents (Agent Manager, ~5 parallel) | `/schedule` local background; Artifacts for review | `.agents/agents.md` personas |
-| Opencode CLI | (verify in [`opencode-tools.md`](opencode-tools.md)) | (verify) | (verify) |
+| Cursor CLI | Multiple `Task` calls in one turn (practical cap ~4); local worktree agents (up to 8) | `is_background: true` subagent + `Await`; `bash` subagent isolates output | `.cursor/agents/<name>.md` |
+| Opencode CLI | Multiple `task` calls with `subagent_type` | `task(background=true)` + `task_status` | `.opencode/agents/<name>.md`, `~/.config/opencode/agents/<name>.md`, or inline `opencode.json` agents |
+| GitHub Copilot CLI | `/fleet` (orchestrated parallel subagents) | `Ctrl+X → b` promotes a shell to background | `.github/agents/<name>.agent.md` |
 
 Per-runtime role-to-mechanism maps and corrections live in each `*-tools.md`.
 
@@ -134,20 +138,20 @@ See [`cursor-tools.md`](cursor-tools.md) for the full skill-kit → Cursor equiv
 
 | Runtime | Tool mapping | Skill invocation |
 | :--- | :--- | :--- |
-| **Cursor CLI** | [`cursor-tools.md`](cursor-tools.md) (details in [Cursor section](#cursor-cli) above) | `/skill-name` |
-| Claude CLI | [`claude-tools.md`](claude-tools.md) | `/skill-name` |
 | Codex CLI | [`codex-tools.md`](codex-tools.md) | runtime skill activation command |
-| GitHub Copilot CLI | [`copilot-tools.md`](copilot-tools.md) | runtime skill activation command |
+| Claude CLI | [`claude-tools.md`](claude-tools.md) | `/skill-name` |
 | Antigravity CLI | [`antigravity-tools.md`](antigravity-tools.md) | runtime skill activation command |
+| Cursor CLI | [`cursor-tools.md`](cursor-tools.md) (details in [Cursor section](#cursor-cli) above) | `/skill-name` |
 | Opencode CLI | [`opencode-tools.md`](opencode-tools.md) | runtime skill activation command |
+| GitHub Copilot CLI | [`copilot-tools.md`](copilot-tools.md) | runtime skill activation command |
 
 ### MCP placement (multi-repo workspaces)
 
 Keep MCP configuration at workspace root for supported coding tools:
 
-- Cursor CLI: `<workspace-root>/.cursor/mcp.json` (plus optional `~/.cursor/mcp.json` fallback)
-- Claude CLI: `<workspace-root>/.claude/settings.local.json`
-- GitHub Copilot CLI: `<workspace-root>/.mcp.json` (or Copilot MCP config)
-- Antigravity CLI: `<workspace-root>/.agents/mcp_config.json`
 - Codex CLI: `<workspace-root>/.codex/config.toml`
+- Claude CLI: `<workspace-root>/.claude/settings.local.json`
+- Antigravity CLI: `<workspace-root>/.agents/mcp_config.json`
+- Cursor CLI: `<workspace-root>/.cursor/mcp.json` (plus optional `~/.cursor/mcp.json` fallback)
 - Opencode CLI: workspace-root `opencode.json` / MCP config where used
+- GitHub Copilot CLI: `<workspace-root>/.mcp.json` (or Copilot MCP config)
