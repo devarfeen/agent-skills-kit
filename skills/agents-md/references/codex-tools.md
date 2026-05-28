@@ -3,21 +3,25 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 | Skill Reference | Codex Equivalent |
 | :--- | :--- |
 | `Task` tool (dispatch subagent) | `spawn_agent` |
+| Send more input to a running subagent | `send_input` |
+| Resume a paused subagent thread | `resume_agent` |
 | Task returns result | `wait_agent` |
 | Task completes automatically | `close_agent` to free slot |
+| Batch fan-out from CSV | `spawn_agents_on_csv` (each worker calls `report_agent_job_result` once) |
 | `TodoWrite` (task tracking) | `update_plan` |
-| `Skill` tool (invoke a skill) | runtime skill activation (verify exact syntax in Codex docs) |
+| `Skill` tool (invoke a skill) | `/skills` slash command or `$skill-name` inline mention; auto-loaded from `.agents/skills/`, `~/.agents/skills/`, `/etc/codex/skills/` |
 
 **Key Notes:**
-- Requires `multi_agent = true` under the `[features]` table in `config.toml` (`~/.codex/config.toml` global or `.codex/config.toml` project); toggle at runtime with `/experimental`.
+- Subagent workflows are on by default. Config lives in `~/.codex/config.toml` (global) or `<workspace-root>/.codex/config.toml` (project).
+- Codex CLI reads `AGENTS.md` (and `AGENTS.override.md`, which wins) hierarchically from `~/.codex` and from repo root down to CWD, capped at `project_doc_max_bytes` (32 KiB default). The `child_agents_md` feature flag layers additional per-directory guidance.
 - Multi-repo workspace policy: use workspace-root MCP config.
 - For exact config-file placement by tool, use [`tool-calling.md`](tool-calling.md).
 
 ## Agents: parallel, background & roles
 
-With `[features] multi_agent = true`, the model dispatches workers via `spawn_agent` / `wait_agent` / `close_agent` (and `spawn_agents_on_csv` for batch fan-out, where each worker calls `report_agent_job_result` once). Limits live under `[agents]`: `max_threads` (default 6), `max_depth` (default 1 — workers cannot spawn workers), `job_max_runtime_seconds` (default 1800). Switch between live threads with `/agent`. Local background: git worktrees and local Automations. **Codex Cloud / Codex web** delegated tasks are remote — do not use them.
+The orchestrator dispatches workers via `spawn_agent` / `send_input` / `resume_agent` / `wait_agent` / `close_agent`, plus `spawn_agents_on_csv` for batch fan-out (each worker calls `report_agent_job_result` once). Limits live under `[agents]`: `max_threads` (default 6), `max_depth` (default 1 — workers cannot spawn workers), `job_max_runtime_seconds` (fallback 1800). Switch between live threads with `/agent`. **Worktrees** and **Automations** are Codex *app* features, not CLI features. **Codex Web** runs tasks remotely — kit policy is local-only, so do not use it.
 
-Built-in roles: `default`, `worker`, `explorer`, `monitor`. Custom roles: a `[agents.<name>]` block in `config.toml` pointing at a `config_file` (per-role TOML with `model`, `sandbox_mode`, `developer_instructions`, MCP servers), or a standalone `.codex/agents/<name>.toml` / `~/.codex/agents/<name>.toml`.
+Built-in roles: `default`, `worker`, `explorer`. Custom roles live in standalone `.codex/agents/<name>.toml` or `~/.codex/agents/<name>.toml` files. Required fields: `name`, `description`, `developer_instructions`. Optional: `model`, `model_reasoning_effort`, `sandbox_mode`, `mcp_servers`, `skills.config`, `nickname_candidates`.
 
 | Role | Codex mechanism |
 | :--- | :--- |
@@ -26,6 +30,6 @@ Built-in roles: `default`, `worker`, `explorer`, `monitor`. Custom roles: a `[ag
 | Researcher | `worker` or custom role + MCP / web |
 | Planner | Plan mode (`update_plan`) |
 | Implementer | `worker` role |
-| Reviewer | custom `[agents.<name>]` role, read-only sandbox |
+| Reviewer | custom `.codex/agents/<name>.toml` role, read-only sandbox |
 | Tester | `worker` role running tests/build |
-| Tool-runner | `worker` / `monitor` role |
+| Tool-runner | `worker` role |

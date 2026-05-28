@@ -16,12 +16,12 @@ Use only **local** subagents and **local** background/async execution. Local wor
 
 | Runtime | Cloud/remote product to AVOID | Local equivalent to use instead |
 | :--- | :--- | :--- |
-| Codex CLI | Codex Cloud / Codex web delegated tasks | `[features] multi_agent` subagents; local worktrees; local Automations |
-| Claude CLI | (no first-party cloud agent) | `Agent` subagents; `run_in_background` Bash; `background: true` subagents; `isolation: worktree` |
-| Antigravity CLI | Managed Agents API / remote managed execution | Agent Manager local parallel instances; `/schedule` local background |
+| Codex CLI | Codex Web delegated tasks | `spawn_agent` subagents (on by default); local git worktrees |
+| Claude CLI | Routines (`/schedule`), agent teams (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`), background agents on claude.ai | `Agent` subagents; `run_in_background` Bash; `background: true` subagents; `isolation: worktree` |
+| Antigravity CLI | Managed Agents API / remote managed execution | Agent Manager local parallel instances via `start_subagent`; `/schedule` local background |
 | Cursor CLI | Cloud Agents (formerly "Background Agents"), `&`-prefixed cloud hand-off, cursor.com/agents | `Task` subagents; `is_background` subagents + `Await`; local worktree agents |
 | Opencode CLI | (no cloud agent in scope) | `task` subagents / child sessions; `task(background=true)` + `task_status` |
-| GitHub Copilot CLI | Cloud coding agent (GitHub Actions) | `/fleet` parallel subagents; `Ctrl+X → b` background shell |
+| GitHub Copilot CLI | Cloud coding agent via `/delegate` (runs in GitHub Actions, opens PRs) | `task` tool + `/fleet` parallel subagents; `Ctrl+X → b` background task/shell |
 
 ### Canonical role lanes
 
@@ -42,12 +42,12 @@ Standard lane roles used across this kit. Each runtime's `*-tools.md` maps these
 
 | Runtime | Parallel dispatch | Local background / async | Custom agent files |
 | :--- | :--- | :--- | :--- |
-| Codex CLI | `[features] multi_agent` + `spawn_agent` / `spawn_agents_on_csv` (`agents.max_threads`, default 6; `max_depth` 1) | local git worktrees; Automations | `[agents.<name>]` in `config.toml`, or `.codex/agents/<name>.toml` |
+| Codex CLI | `spawn_agent` / `spawn_agents_on_csv` (`agents.max_threads`, default 6; `max_depth` 1) — on by default | local git worktrees (Worktrees / Automations are Codex app features, not CLI) | `.codex/agents/<name>.toml` (or `~/.codex/agents/<name>.toml`) |
 | Claude CLI | Multiple `Agent` calls in one turn | `run_in_background` Bash; `background: true` subagents; `isolation: worktree` | `.claude/agents/<name>.md` |
-| Antigravity CLI | `/goal` orchestrator-spawned dynamic subagents (Agent Manager, ~5 parallel) | `/schedule` local background; Artifacts for review | `.agents/agents.md` personas |
+| Antigravity CLI | `start_subagent` orchestrator-spawned dynamic subagents (Agent Manager); `browser_subagent` for browser tasks | `/schedule` local background; Artifacts for review | `.agents/agents.md` |
 | Cursor CLI | Multiple `Task` calls in one turn (practical cap ~4); local worktree agents (up to 8) | `is_background: true` subagent + `Await`; `bash` subagent isolates output | `.cursor/agents/<name>.md` |
 | Opencode CLI | Multiple `task` calls with `subagent_type` | `task(background=true)` + `task_status` | `.opencode/agents/<name>.md`, `~/.config/opencode/agents/<name>.md`, or inline `opencode.json` agents |
-| GitHub Copilot CLI | `/fleet` (orchestrated parallel subagents) | `Ctrl+X → b` promotes a shell to background | `.github/agents/<name>.agent.md` |
+| GitHub Copilot CLI | `task` tool + `/fleet` (orchestrated parallel subagents; built-ins `explore` / `task` / `general-purpose` / `code-review` / `research` / `rubber-duck`) | `Ctrl+X → b` promotes a task or shell to background | `.github/agents/<name>.md` or `.agent.md` (user-scope `~/.copilot/agents/`) |
 
 Per-runtime role-to-mechanism maps and corrections live in each `*-tools.md`.
 
@@ -78,7 +78,7 @@ These are the identifiers used in hook matchers (`preToolUse`, `postToolUse`) an
 | `GenerateImage` | Image generation from description |
 | `SwitchMode` | Switch to `plan` or `agent` interaction mode |
 | `ListMcpResources` / `FetchMcpResource` | MCP resource read |
-| MCP tools | `MCP:<server>:<tool>` in hook matchers (e.g. `MCP:github:search`) |
+| MCP tools | Hook matcher: `MCP:<tool>` (e.g. `MCP:search`). CLI permission pattern: `Mcp(server:tool)` (e.g. `Mcp(github:*)`) |
 | `EditNotebook` | Edit Jupyter notebook cells |
 | `Await` | Poll a background `Shell` session |
 | `TabRead` / `TabWrite` | Editor tab read/write (hook matchers only) |
@@ -90,10 +90,9 @@ Agent also uses built-in **Explore**, **Bash**, and **Browser** subagents automa
 Skills are separate from the table above:
 
 - Explicit: `/skill-name` in chat (e.g. `/release-notes`)
-- Context attach: `@skill-name`
 - Auto: agent loads skills whose `description` matches the request (unless `disable-model-invocation: true`)
 
-Skill directories: `.cursor/skills/`, `.agents/skills/`, `~/.cursor/skills/`, plus `.claude/skills/` and `.codex/skills/` for compatibility.
+Skill directories: project `.cursor/skills/`, `.agents/skills/`, `.claude/skills/`, `.codex/skills/`; user `~/.cursor/skills/`, `~/.agents/skills/`, `~/.claude/skills/`, `~/.codex/skills/` (compat).
 
 ### Subagents (`Task` tool)
 
@@ -102,7 +101,6 @@ Skill directories: `.cursor/skills/`, `.agents/skills/`, `~/.cursor/skills/`, pl
 | `explore` | Parallel codebase search; keeps noise out of main context |
 | `bash` | Isolated shell command batches (canonical type name; some community docs say `shell`) |
 | `browser` | Browser control via MCP; filters DOM/screenshot noise |
-| `generalPurpose` | General delegated work |
 | Custom | Any `name` from `.cursor/agents/<name>.md` |
 
 Parallel work: multiple `Task` calls in one assistant turn (practical cap ~4 parallel subagents). Local async: set `is_background: true` in a subagent's `.cursor/agents/<name>.md` frontmatter and rejoin with the `Await` tool. For heavier isolation, Cursor can run up to 8 local agents in separate git worktrees. Resume with the agent ID from a prior subagent run.
@@ -119,16 +117,23 @@ Cursor CLI subagent support is documented in [Subagents](https://cursor.com/docs
 | Plan | `--mode=plan`, `/plan` | Read-only / planning |
 | Ask | `--mode=ask`, `/ask` | Read-only Q&A |
 
-Non-interactive CLI: `agent -p "prompt"` (`--print`) runs with full tools unless mode restricts edits. Use `--force` / `--yolo` only when the user wants auto-approved shell.
+Non-interactive CLI: `agent -p "prompt"` (`--print`) runs with full tools unless mode restricts edits. Use `--sandbox=disabled` only when the user wants auto-approved shell.
+
+Headless output: `--output-format text|json|stream-json` (with `--stream-partial-output` for incremental deltas). Auth via `CURSOR_API_KEY`. Useful CLI flags: `--worktree`, `--workspace <path>`, `--resume [thread-id]`; sessions managed with `agent ls` / `agent resume`.
 
 ### Permissions
 
-Tool allow/deny uses pattern strings, for example:
+Tool allow/deny uses pattern strings. Examples:
 
-- `Shell(**)` — all shell commands
-- `Mcp(server-name, tool-name)` — specific MCP tool
+- `Shell(git)` — prefix match: any `git` subcommand. `Shell(**)` — all shell commands.
+- `Mcp(server:tool)` — colon-separated (e.g. `Mcp(datadog:*)`, `Mcp(*:read_*)`).
+- `Read(src/**/*.ts)`, `Write(<glob>)`, `WebFetch(*.example.com)` — file / web allowlists.
+- Deny rules take precedence over allow rules.
 
-The MCP auto-run allowlist lives in `~/.cursor/permissions.json`. Verify exact CLI permission-file names against the current [Cursor docs](https://cursor.com/docs); older `cli-config.json` / `.cursor/cli.json` paths are not confirmed in current docs.
+Permission files:
+
+- **CLI**: `~/.cursor/cli-config.json` (global) and `<root>/.cursor/cli.json` (per-project, layered git-root → cwd).
+- **IDE only** (separate auto-run allowlist for editor): `~/.cursor/permissions.json` — uses `server:tool` for MCP and prefix matching for shell.
 
 ### Kit mapping (generic → Cursor)
 

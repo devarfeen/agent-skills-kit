@@ -1,6 +1,6 @@
 ---
 name: agents-md
-description: "Generate or update AGENTS.md for a repository or code-workspace manifest, create Claude CLI and Antigravity CLI compatibility shims, build a project matrix with stable project codes, and reference CONTEXT.md / ADRs as required domain context."
+description: "Generate or update AGENTS.md for a repository or code-workspace manifest, create a Claude CLI compatibility shim, build a project matrix with stable project codes, and reference CONTEXT.md / ADRs as required domain context."
 ---
 
 # AGENTS.md Generator
@@ -9,9 +9,8 @@ Create or update agent instruction files for a codebase:
 
 - `AGENTS.md` as the canonical instruction file
 - `CLAUDE.md` shim for Claude CLI pointing to `AGENTS.md`
-- `GEMINI.md` shim for Antigravity CLI pointing to `AGENTS.md`
 
-- This kit supports Codex CLI, Claude CLI, Antigravity CLI, Cursor CLI, Opencode CLI, and GitHub Copilot CLI only. `GEMINI.md` is an Antigravity CLI compatibility file, not Gemini CLI support. Gemini CLI consumer/free access is scheduled to stop serving requests on June 18, 2026, while enterprise/API-key access may remain; do not use Gemini CLI for new kit work.
+- This kit supports Codex CLI, Claude CLI, Antigravity CLI, Cursor CLI, Opencode CLI, and GitHub Copilot CLI only. Only `CLAUDE.md` is emitted as a shim; every other supported runtime reads `AGENTS.md` directly.
 
 - Include the seventeen non-negotiable rules in the `AGENTS.md` template below.
 - Also include an optional "Suggested next skills" footer convention so agents provide lightweight before/after reminders without enforcing hard gates, including after third-party skills.
@@ -38,7 +37,7 @@ Every generated `AGENTS.md` and shim must prioritize instruction economy:
 - Keep the Supported Coding Tools Matrix inline in `AGENTS.md` (the canonical file), not in a separate agent-loaded document.
 - If a human-facing workflow or usage guide is created, mark it human-only (like this kit's `GUIDE.md`): do not reference it as required reading in `AGENTS.md` or any shim, and do not load it into model context.
 
-## Non-Negotiable Principles
+## Non-Negotiable Rules
 
 Every generated `AGENTS.md` must include the seventeen non-negotiable rules emitted verbatim from the `## Non-Negotiable Rules` block in the [AGENTS.md Structure](#agentsmd-structure) template below. That template is the single source of truth for exact wording. Do not paraphrase, re-order, or duplicate the numbered rules elsewhere.
 
@@ -121,10 +120,10 @@ Generated `AGENTS.md` files must include issue-title rules that make PRD and sli
   - `<prd-issue-number>` is the numeric GitHub issue number of the parent PRD issue.
   - Keep `<Short heading>` concise, action-oriented, and specific enough to scan in an issue list.
   - Example: `Slice 0001 of PAYMENTS ADR-0042 stock-transfer-approvals (#4812): Add approval state model`.
-- **Labels:** Follow Matt Pocock's triage roles. Every triaged issue must have exactly one category label (`bug` or `enhancement`) and exactly one state label (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, or `wontfix`).
-- **Routing state:** Do not encode `HITL:` or `AFK:` in GitHub issue titles, commit subjects, PR titles, or branch names. Use state labels instead: `ready-for-human` for human-ready work and `ready-for-agent` for agent-ready work.
+- **Labels:** Every triaged issue must have exactly one category label (`bug` or `enhancement`) and exactly one state label (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, or `wontfix`).
+- **Routing state:** Use state labels: `ready-for-human` for human-ready work and `ready-for-agent` for agent-ready work.
 - **Non-PRD implementation issues:** use `<PROJECT-CODE>: <short imperative heading>` when the issue is not tied to a PRD. Keep the full Project Matrix code; never abbreviate it.
-- **Issue-writing hard gate:** Before drafting, renaming, or publishing any issue, verify the naming rule and both required labels from local workspace instructions (`AGENTS.md`; Claude CLI `CLAUDE.md` / Antigravity CLI `GEMINI.md` shims). If the tracker vocabulary is not loaded, run `/setup-matt-pocock-skills` first. If either check is missing, stop and do not publish.
+- **Issue-writing hard gate:** Before drafting, renaming, or publishing any issue, verify the naming rule and both required labels from local workspace instructions (`AGENTS.md`, plus the Claude CLI `CLAUDE.md` shim).
 
 ## AGENTS.md Structure
 
@@ -168,13 +167,13 @@ These 17 rules are mandatory. Enforce them before speed, convenience, or local h
 - Every triaged issue needs exactly one category label (`bug` or `enhancement`) and exactly one state label (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, or `wontfix`).
 - Do not put `HITL:` or `AFK:` in issue titles, commit subjects, PR titles, or branch names. Use `ready-for-human` or `ready-for-agent` state labels for routing.
 - Non-PRD implementation issues: use `<PROJECT-CODE>: <short imperative heading>` and keep the full Project Matrix code.
-- Hard gate: before drafting or publishing any issue, verify title format and both required labels from local workspace instructions; if vocabulary is missing, run `/setup-matt-pocock-skills` first and stop until it is available.
+- Hard gate: before drafting or publishing any issue, verify title format and both required labels from local workspace instructions; check `AGENTS.md` and the Claude CLI `CLAUDE.md` shim for issue-writing rules.
 
 ## Operating Protocol
 
 - **Discovery:** Map project codes to roots from package/config files. Use fast search.
-- **Entry Files:** `AGENTS.md` is primary. `CLAUDE.md` is a Claude CLI shim. `GEMINI.md` is an Antigravity CLI shim only.
-- **No Attribution:** Enforce the mandatory zero-attribution policy before publish.
+- **Entry Files:** `AGENTS.md` is primary. `CLAUDE.md` is a Claude CLI shim. Codex CLI, Antigravity CLI, Cursor CLI, Opencode CLI, and GitHub Copilot CLI read `AGENTS.md` directly — no shim required.
+- **No Attribution:** Never add or keep co-author / AI / tool attribution in commit messages, PR titles or bodies, issue comments, release notes, generated docs, or code comments. Forbidden patterns include `Co-authored-by:`, `Co-Authored-By:`, `Made with [Cursor]`, `Made-with:`, `Generated by`, `AI-assisted`, and any agent / tool signature footer. If a tool injects attribution automatically, strip it before commit, push, PR create / edit, and issue close / comment.
 - **MCP Config:** Keep supported-tool MCP config at workspace root. Use the matrix below.
 - **Compression:** `caveman` is user-invoked chat-only. Never compress code, docs, PRDs, release notes, PR bodies, prompts, or persisted artifacts.
 - **Orchestration:** Enforce the parallel/background/orchestrator rules.
@@ -192,14 +191,14 @@ These 17 rules are mandatory. Enforce them before speed, convenience, or local h
 
 Single source of truth for MCP/config file placement across the six supported CLI runtimes. Keep MCP config at workspace root.
 
-| Tool Runtime       | Workspace MCP file(s)                                | Notes                                                                                             |
-| :----------------- | :--------------------------------------------------- | :------------------------------------------------------------------------------------------------ |
-| Codex CLI          | `<workspace-root>/.codex/config.toml`                | Codex MCP configuration.                                                                          |
-| Claude CLI         | `<workspace-root>/.claude/settings.local.json`       | Enable workspace MCP servers from root config files.                                              |
-| Antigravity CLI    | `<workspace-root>/.agents/mcp_config.json`           | Remote HTTP MCP entries must use `serverUrl`.                                                     |
-| Cursor CLI         | `<workspace-root>/.cursor/mcp.json`                  | Keep `~/.cursor/mcp.json` only as user-global fallback.                                           |
-| Opencode CLI       | `<workspace-root>/opencode.json`                     | Workspace-root opencode configuration where MCP servers are used.                                 |
-| GitHub Copilot CLI | `<workspace-root>/.mcp.json` or `<workspace-root>/.github/mcp.json` | User fallback: `~/.copilot/mcp-config.json`. Also reads `AGENTS.md` / `CLAUDE.md` / `GEMINI.md`; custom agents in `.github/agents/*.agent.md`. |
+| Tool Runtime       | Workspace MCP file(s)                                               | Notes                                                                                                                                            |
+| :----------------- | :------------------------------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Codex CLI          | `<workspace-root>/.codex/config.toml`                               | Codex MCP configuration.                                                                                                                         |
+| Claude CLI         | `<workspace-root>/.claude/settings.local.json`                      | Enable workspace MCP servers from root config files.                                                                                             |
+| Antigravity CLI    | `<workspace-root>/.agents/mcp_config.json`                          | Remote HTTP MCP entries must use `serverUrl`.                                                                                                    |
+| Cursor CLI         | `<workspace-root>/.cursor/mcp.json`                                 | Keep `~/.cursor/mcp.json` only as user-global fallback.                                                                                          |
+| Opencode CLI       | `<workspace-root>/opencode.json`                                    | Workspace-root opencode configuration where MCP servers are used.                                                                                |
+| GitHub Copilot CLI | `<workspace-root>/.mcp.json` or `<workspace-root>/.github/mcp.json` | User fallback: `~/.copilot/mcp-config.json`. Also reads `AGENTS.md` / `CLAUDE.md`; custom agents in `.github/agents/<name>.md` (or `.agent.md`). |
 ```
 
 Preserve any useful existing local instructions when updating `AGENTS.md`, but reorganize duplicated content into this structure.
@@ -208,7 +207,7 @@ If it is missing, add it explicitly under `## Operating Protocol`.
 
 ## Shim Files
 
-Create or update `CLAUDE.md` and `GEMINI.md` as shims for Claude CLI and Antigravity CLI. Cursor CLI and Opencode CLI read `AGENTS.md`, so no Cursor- or Opencode-specific shim is required. Antigravity CLI reads both `AGENTS.md` and `GEMINI.md` from the active workspace, so keep `GEMINI.md` for Antigravity compatibility only.
+Create or update `CLAUDE.md` as the only shim. Codex CLI, Antigravity CLI, Cursor CLI, Opencode CLI, and GitHub Copilot CLI all read `AGENTS.md` directly from the active workspace, so no other shim is required.
 
 Use this content for `CLAUDE.md` unless the workspace or repository already has important Claude-specific instructions:
 
@@ -218,16 +217,6 @@ Use this content for `CLAUDE.md` unless the workspace or repository already has 
 Read `AGENTS.md` first. It is the canonical instruction file for this workspace.
 
 This file is a Claude CLI shim for tool compatibility.
-```
-
-Use this content for `GEMINI.md` unless the workspace or repository already has important Antigravity-specific instructions:
-
-```markdown
-# Agent Instructions
-
-Read `AGENTS.md` first. It is the canonical instruction file for this workspace.
-
-This file is an Antigravity CLI compatibility shim. Antigravity CLI reads `GEMINI.md` as a supported workspace context file. This is not Gemini CLI support.
 ```
 
 If an existing shim contains valuable tool-specific rules, keep them under:
@@ -269,7 +258,6 @@ Files:
 
 - \`AGENTS.md\`
 - \`CLAUDE.md\`
-- \`GEMINI.md\`
 
 Project codes:
 
@@ -278,7 +266,6 @@ Project codes:
 Notes:
 
 - [`*.code-workspace` manifest detected / not detected.]
-- [`AGENTS.md` is canonical for supported runtimes that read it directly; no Cursor or Opencode shim required.]
-- [`GEMINI.md` retained only for Antigravity CLI compatibility.]
+- [`AGENTS.md` is canonical for Codex CLI, Antigravity CLI, Cursor CLI, Opencode CLI, and GitHub Copilot CLI; `CLAUDE.md` is the only shim emitted.]
 - [CONTEXT.md / \`docs/adr/\` (ADRs) / \`docs/prompts/\` (\`*-prompt.md\`) / \`docs/qa/\` (\`*-qa.md\`) / \`docs/release-notes/\` (\`D-Month-YYYY.md\`) artifacts referenced, or noted as to-be-produced inline by \`grill-with-docs\` / \`feature-prompt\` / \`release-notes\`.]
 ```

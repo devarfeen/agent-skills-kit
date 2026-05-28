@@ -5,36 +5,44 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 | `Read` (file reading) | `read_file` |
 | `Write` (file creation) | `write_file` |
 | `Edit` (file editing) | `replace` |
-| `Bash` (run commands) | `run_shell_command` |
+| `Bash` (run commands) | `run_command` |
 | `Grep` (search content) | `grep_search` |
 | `Glob` (search by name) | `glob` |
 | `TodoWrite` (task tracking) | `write_todos` |
-| `Skill` tool (invoke a skill) | `activate_skill` |
-| `WebSearch` | `google_web_search` |
-| `WebFetch` | `web_fetch` |
-| `Task` tool (dispatch subagent) | `/goal` → orchestrator auto-spawns dynamic subagents (no built-in `@agent` personas; `@` includes files/context) |
+| `Skill` tool (invoke a skill) | auto-activated from `SKILL.md` metadata (no explicit tool; mention skill name to force activation) |
+| `WebSearch` | `search_web` |
+| `WebFetch` | `read_url_content` |
+| `Task` tool (dispatch subagent) | `start_subagent` (proto field `invoke_subagent`); `browser_subagent` for browser tasks |
 
 **Key Notes:**
 
-- `@` references files/context (e.g. `@src/main.go`), not agents. There are no built-in `@generalist` / `@code-reviewer` personas.
-- Parallelism comes from the Agent Manager and `/goal`: the orchestrator decomposes a goal and spawns dynamic, auto-named subagents (dependency-aware). Reusable personas (`@pm`, `@engineer`, `@qa`) are user-defined in `.agents/agents.md`.
-- The tool names above are not confirmed against current Antigravity docs; verify before relying on exact names. Antigravity CLI reads both `AGENTS.md` and `GEMINI.md` (`GEMINI.md` wins on conflict). This compatibility file does not indicate Gemini CLI support.
+- `@` references files/context (e.g. `@src/main.go`), not agents.
+- Parallelism comes from the Agent Manager and `start_subagent`: the orchestrator decomposes a goal and spawns dynamic subagents that can share the parent's workspace or run in an isolated Git worktree (clean context window, same model).
+- Antigravity CLI reads `AGENTS.md` directly from the active workspace as a supported context file. This kit treats `AGENTS.md` as the canonical instruction file for Antigravity CLI and emits no Antigravity-specific shim.
 - Multi-repo workspace policy: use workspace-root MCP config.
 - For exact config-file placement by tool, use [`tool-calling.md`](tool-calling.md).
 
 ## Agents: parallel, background & roles
 
-Parallelism is built into the **Agent Manager**: `/goal` makes the orchestrator decompose work and spawn dynamic, auto-named subagents (dependency-aware; ~5 parallel instances typical). Local background: `/schedule` runs cron-style tasks that survive app close, and Artifacts (plans, diffs, walkthroughs) are written to a folder you review on return. **Managed Agents API / remote managed execution** is cloud — do not use it. Define reusable personas in `.agents/agents.md` (e.g. `@pm`, `@engineer`, `@qa`, `@devops`) and wire order via `.agents/workflows/`.
+Parallelism is built into the **Agent Manager**: `start_subagent` spawns dynamic, dependency-aware subagents (parallel execution; specific concurrency limit is not publicly documented). Local background: `/schedule` runs cron-style tasks that survive app close, and Artifacts (plans, diffs, walkthroughs) are written to a folder you review on return. **Managed Agents API / remote managed execution** is cloud — do not use it.
 
 | Role | Antigravity mechanism |
 | :--- | :--- |
-| Orchestrator | lead agent / `/goal` (owns merge + final judgment) |
-| Explorer | dynamic read-only subagent |
-| Researcher | dynamic subagent + web tools |
-| Planner | planning mode (`/goal` task groups, Artifacts) |
-| Implementer | dynamic worker subagent or `@engineer` persona |
-| Reviewer | `@qa` / reviewer persona in `.agents/agents.md` |
-| Tester | dynamic subagent running tests/build |
-| Tool-runner | dynamic subagent (shell) |
+| Orchestrator | lead agent / Agent Manager (owns merge + final judgment) |
+| Explorer | `start_subagent` with a read-only subagent definition |
+| Researcher | `start_subagent` + `search_web` / `read_url_content` |
+| Planner | planning mode (task groups, Artifacts) |
+| Implementer | `start_subagent` with a write-enabled subagent definition |
+| Reviewer | `start_subagent` with a read-only reviewer subagent definition |
+| Tester | `start_subagent` running tests / build |
+| Tool-runner | `start_subagent` scoped to shell; `browser_subagent` for browser sequences |
 
-MCP: project `.agents/mcp_config.json`; remote HTTP entries use `serverUrl`. Skills: `.agents/skills/<name>/SKILL.md`.
+MCP: project `.agents/mcp_config.json`; remote HTTP entries use `serverUrl`. Skills: project `.agents/skills/<name>/SKILL.md`; user-global `~/.gemini/antigravity/skills/<name>/` (also `.agent/skills/` accepted as a back-compat path).
+
+## Permissions, hooks, slash commands
+
+- **Permission resources** (config + `/permissions`): `read_file`, `write_file`, plus MCP-tool filtering. Rules use `action(target)` form with Allow / Deny / Ask lists.
+- **Permission modes**: `request-review` (default), `proceed-in-sandbox`, `always-proceed`, `strict`.
+- **Hooks**: `PreToolUse` / `PostToolUse` with regex `matcher` on tool name; JSON schema includes `toolCall.name`, `toolCall.args`, `stepIdx`, plus common fields (`conversationId`, `workspacePaths`, `transcriptPath`, `artifactDirectoryPath`). Hook decision values: `allow`, `deny`, `ask`.
+- **Useful slash commands**: `/goal`, `/grill-me`, `/schedule`, `/browser`, `/artifact`, `/permissions`, `/context`, `/btw`, `/model`, `/config`.
+- **Non-interactive**: `agy -p "<prompt>"` for pipelines.

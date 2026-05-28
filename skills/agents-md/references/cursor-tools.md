@@ -13,13 +13,13 @@ Mechanics and permissions: [`tool-calling.md`](tool-calling.md).
 | `Delete` (remove file) | `Delete` |
 | Semantic / codebase search | `SemanticSearch` (indexed workspace; agent may chain with `Grep`) |
 | `TodoWrite` (task tracking) | `TodoWrite` |
-| Skill invocation | `/skill-name` in chat, or `@skill-name` to attach as context |
-| `Task` tool (dispatch subagent) | `Task` with `subagent_type` (`explore`, `bash`, `browser`, `generalPurpose`, …) or custom `.cursor/agents/<name>.md` |
+| Skill invocation | `/skill-name` in chat (auto-discovery via skill `description`; set `disable-model-invocation: true` for slash-only) |
+| `Task` tool (dispatch subagent) | `Task` invoking built-in (`explore`, `bash`, `browser`) or custom `.cursor/agents/<name>.md` |
 | Custom subagents | `.cursor/agents/<name>.md` or `~/.cursor/agents/<name>.md`; also `/name` in chat |
 | `WebSearch` | `WebSearch` |
 | `WebFetch` | `WebFetch` |
 | `GenerateImage` | `GenerateImage` |
-| MCP tools | Configured MCP servers; hook matcher form `MCP:<server>:<tool>` |
+| MCP tools | Configured MCP servers; hook matcher `MCP:<tool>`; CLI permission pattern `Mcp(server:tool)` |
 | Background shell polling | `Await` (after `Shell` with background execution) |
 | Mode switch (plan vs agent) | `SwitchMode` or CLI `--mode=plan` / `--mode=ask` |
 
@@ -28,8 +28,9 @@ Mechanics and permissions: [`tool-calling.md`](tool-calling.md).
 - Cursor CLI command is `agent` (interactive: `agent`, non-interactive: `agent -p "..."`).
 - `AGENTS.md` is the canonical workspace instruction file; no extra shim is required for Cursor.
 - Cursor MCP config files: `<workspace-root>/.cursor/mcp.json` (recommended for multi-repo workspaces), `~/.cursor/mcp.json` (global fallback).
-- Skills load from `.cursor/skills/`, `.agents/skills/`, and user-level `~/.cursor/skills/` / `~/.agents/skills/`.
-- Project overrides: `.cursor/cli.json` layered from git root to cwd; home config: `~/.cursor/cli-config.json`.
+- Skills load from `.cursor/skills/`, `.agents/skills/`, `~/.cursor/skills/`, `~/.agents/skills/`, plus compat dirs `.claude/skills/`, `.codex/skills/`, `~/.claude/skills/`, `~/.codex/skills/`.
+- Subagent dirs: `.cursor/agents/`, `.claude/agents/`, `.codex/agents/` (project) and `~/.cursor/agents/`, `~/.claude/agents/`, `~/.codex/agents/` (user).
+- CLI permissions: per-project `<root>/.cursor/cli.json` (layered git-root → cwd), global `~/.cursor/cli-config.json`. IDE-only auto-run allowlist (separate): `~/.cursor/permissions.json`.
 - Built-in subagents **Explore**, **Bash**, and **Browser** are delegated automatically when appropriate; see [Subagents](https://cursor.com/docs/subagents).
 
 ## Agents: parallel, background & roles
@@ -40,11 +41,11 @@ Parallel: issue multiple `Task` calls in one turn (practical cap ~4). Local back
 | :--- | :--- |
 | Orchestrator | main `agent` session (owns merge + final judgment) |
 | Explorer | `Task` → `explore` subagent |
-| Researcher | `Task` → `generalPurpose` + `WebSearch` / `WebFetch` |
+| Researcher | `Task` → custom agent + `WebSearch` / `WebFetch` |
 | Planner | Plan mode (`--mode=plan` / `SwitchMode`) or a `readonly: true` custom agent |
-| Implementer | `Task` → `generalPurpose` or a write-enabled `.cursor/agents/<name>.md` |
+| Implementer | `Task` → write-enabled `.cursor/agents/<name>.md` |
 | Reviewer | `readonly: true` custom agent (e.g. `.cursor/agents/reviewer.md`) |
 | Tester | `Task` → `bash` subagent |
 | Tool-runner | `Task` → `bash` subagent; `Shell` + `Await` for background output |
 
-Corrections vs older notes: the shell subagent type is `bash` (not `shell`); `~/.cursor/permissions.json` holds the MCP auto-run allowlist (the `cli-config.json` path is unconfirmed in current docs).
+The shell subagent type is `bash` (not `shell`). `~/.cursor/permissions.json` is the **IDE** auto-run allowlist; **CLI** permissions live in `~/.cursor/cli-config.json` (global) and `<root>/.cursor/cli.json` (project).
