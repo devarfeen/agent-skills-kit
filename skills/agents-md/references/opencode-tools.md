@@ -15,7 +15,7 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 
 **Key Notes:**
 
-- opencode exposes plain tool names (`read`, `write`, `edit`, `bash`, `grep`, `glob`, `task`, …) verified from source — there is no POSIX (`cat` / `tee` / `sed` / `sh`) aliasing. It reads `AGENTS.md` (lookup order `AGENTS.md` → `CLAUDE.md` → `CONTEXT.md`).
+- opencode exposes plain tool names (`read`, `write`, `edit`, `bash`, `grep`, `glob`, `task`, …) verified from source — there is no POSIX (`cat` / `tee` / `sed` / `sh`) aliasing. It reads local `AGENTS.md`, with `CLAUDE.md` as a Claude Code compatibility fallback when no local `AGENTS.md` exists; additional files such as `CONTEXT.md` must be loaded explicitly through `opencode.json` `instructions` or by a direct instruction in `AGENTS.md`.
 - Multi-repo workspace policy: use workspace-root MCP config.
 - For exact config-file placement by tool, use [`tool-calling.md`](tool-calling.md).
 

@@ -154,4 +154,4 @@ Keep MCP configuration at workspace root for supported coding tools:
 - Antigravity CLI: `<workspace-root>/.agents/mcp_config.json`
 - Cursor CLI: `<workspace-root>/.cursor/mcp.json` (plus optional `~/.cursor/mcp.json` fallback)
 - Opencode CLI: workspace-root `opencode.json` / MCP config where used
-- GitHub Copilot CLI: `<workspace-root>/.mcp.json` (or Copilot MCP config)
+- GitHub Copilot CLI: `<workspace-root>/.mcp.json` or `<workspace-root>/.github/mcp.json` (user fallback: `~/.copilot/mcp-config.json`)

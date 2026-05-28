@@ -11,10 +11,9 @@ Create or update agent instruction files for a codebase:
 - `CLAUDE.md` shim for Claude CLI pointing to `AGENTS.md`
 - `GEMINI.md` shim for Antigravity CLI pointing to `AGENTS.md`
 
-- This kit supports Codex CLI, Claude CLI, Antigravity CLI, Cursor CLI, Opencode CLI, and GitHub Copilot CLI only. `GEMINI.md` is an Antigravity CLI compatibility file, not Gemini CLI support. Gemini CLI is now retired and should not be used for new work.
+- This kit supports Codex CLI, Claude CLI, Antigravity CLI, Cursor CLI, Opencode CLI, and GitHub Copilot CLI only. `GEMINI.md` is an Antigravity CLI compatibility file, not Gemini CLI support. Gemini CLI consumer/free access is scheduled to stop serving requests on June 18, 2026, while enterprise/API-key access may remain; do not use Gemini CLI for new kit work.
 
-- Include the seventeen spartan non-negotiable principles in the `AGENTS.md` template below.
-- Also include retained operational defaults for parallel execution.
+- Include the seventeen non-negotiable rules in the `AGENTS.md` template below.
 - Also include an optional "Suggested next skills" footer convention so agents provide lightweight before/after reminders without enforcing hard gates, including after third-party skills.
 - Make clear that non-negotiables and operational defaults must be followed and fully enforced.
 
@@ -41,7 +40,7 @@ Every generated `AGENTS.md` and shim must prioritize instruction economy:
 
 ## Non-Negotiable Principles
 
-Every generated `AGENTS.md` must include seventeen non-negotiable principles, emitted verbatim from the `## Non-Negotiable Rules` block in the [AGENTS.md Structure](#agentsmd-structure) template below. That template is the single source of truth for their exact wording — do not paraphrase, re-order, or re-state them here or anywhere else in this skill. They are followed by the retained operational defaults for parallel execution (also in the template).
+Every generated `AGENTS.md` must include the seventeen non-negotiable rules emitted verbatim from the `## Non-Negotiable Rules` block in the [AGENTS.md Structure](#agentsmd-structure) template below. That template is the single source of truth for exact wording. Do not paraphrase, re-order, or duplicate the numbered rules elsewhere.
 
 ## Runtime References
 
@@ -81,7 +80,7 @@ When generating or validating `AGENTS.md`, use the matching runtime docs under `
 
    `<artifacts-root>` resolves as: (1) the directory containing the `*.code-workspace` file if a code-workspace manifest is detected — this is the same location as the meta-workspace folder (`path: "."`); (2) else the per-context root for multi-context repos with a root `CONTEXT-MAP.md`; (3) else the repo root for single-repo projects. Workspace mode is preferred: it keeps prompts, ADRs, and release notes centralized instead of scattering them across project repos.
 
-Use structured parsing when available. For `.code-workspace`, prefer JSON parsing that tolerates comments if the local toolchain supports it. If not, read carefully and avoid corrupting paths.
+Use structured parsing when available. For `.code-workspace`, use JSON parsing that tolerates comments if the local toolchain supports it. If not, read carefully and avoid corrupting paths.
 
 ## Project Matrix
 
@@ -112,7 +111,7 @@ Project code rules:
 
 ## GitHub Issue Title Conventions
 
-Generated `AGENTS.md` files must include issue-title rules that make PRD and slice issues easy to locate from GitHub search and from the ADR filename:
+Generated `AGENTS.md` files must include issue-title rules that make PRD and slice issues easy to locate from GitHub search and from the ADR filename. Emit only the concise `## GitHub Issue Titles` block from the template; use this section as source detail, not extra generated prose.
 
 - **PRD issues:** title exactly starts with `PRD: <PROJECT-CODE> ADR-<adr-number> <adr-name>`.
   - Derive `<adr-number>` and `<adr-name>` from the ADR filename under `docs/adr/` (without `.md`), where `0042-stock-transfer-approvals.md` maps to `ADR-0042 stock-transfer-approvals`.
@@ -122,10 +121,9 @@ Generated `AGENTS.md` files must include issue-title rules that make PRD and sli
   - `<prd-issue-number>` is the numeric GitHub issue number of the parent PRD issue.
   - Keep `<Short heading>` concise, action-oriented, and specific enough to scan in an issue list.
   - Example: `Slice 0001 of PAYMENTS ADR-0042 stock-transfer-approvals (#4812): Add approval state model`.
-- **Labels:** Follow Matt Pocock's triage roles. Every triaged issue should have exactly one category label (`bug` or `enhancement`) and exactly one state label (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, or `wontfix`).
+- **Labels:** Follow Matt Pocock's triage roles. Every triaged issue must have exactly one category label (`bug` or `enhancement`) and exactly one state label (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, or `wontfix`).
 - **Routing state:** Do not encode `HITL:` or `AFK:` in GitHub issue titles, commit subjects, PR titles, or branch names. Use state labels instead: `ready-for-human` for human-ready work and `ready-for-agent` for agent-ready work.
-- **Authorship policy:** Do not include co-author or AI/tool attribution in issue titles, commit subjects, PR titles/bodies, comments, release notes, docs, or code comments.
-- **Non-PRD implementation issues:** prefer `<PROJECT-CODE>: <short imperative heading>` when the issue is not tied to a PRD. Keep the full Project Matrix code; never abbreviate it.
+- **Non-PRD implementation issues:** use `<PROJECT-CODE>: <short imperative heading>` when the issue is not tied to a PRD. Keep the full Project Matrix code; never abbreviate it.
 - **Issue-writing hard gate:** Before drafting, renaming, or publishing any issue, verify the naming rule and both required labels from local workspace instructions (`AGENTS.md`; Claude CLI `CLAUDE.md` / Antigravity CLI `GEMINI.md` shims). If the tracker vocabulary is not loaded, run `/setup-matt-pocock-skills` first. If either check is missing, stop and do not publish.
 
 ## AGENTS.md Structure
@@ -137,25 +135,25 @@ Generate `AGENTS.md` with this structure:
 
 ## Non-Negotiable Rules
 
-Follow these 17 rules. They are non-negotiable and must be fully enforced. Bias toward caution over speed on non-trivial work.
+These 17 rules are mandatory. Enforce them before speed, convenience, or local habit.
 
-1. **Plain-Language Default:** Write chat in plain, everyday English, the way you would brief a teammate. Cut filler, hedging, and repetition; keep sentences short and readable. Keep real code, DB, and API names exact, but explain ideas in plain words, not jargon (say "a unique key built from these fields so the same request cannot run twice", not "idempotency key"). This governs chat only, never code, docs, PRDs, release notes, PR bodies, or generated prompts. Optional brevity skills (for example `caveman`) stay ad hoc and user-invoked, never auto-invoked.
-2. **Evidence Before Claim:** No claims (e.g., "tests pass") without raw command output. No evidence = not done. "Seems to work" = failure to verify.
-3. **Task Isolation:** For each independent task, use a fresh subagent, agent, worker, or isolated tool pass when the runtime supports it and the work can be split without shared-file conflicts. Do not carry bloated history into isolated jobs.
-4. **Goal-Driven Execution:** Success = empirical proof. Bug fixes require Red-Green-Refactor: verify the failure (Red) before applying the fix (Green).
-5. **Surgical Minimalism:** Match style. Touch only what you must. No speculative abstractions, "just-in-case" code, or adjacent cleanup.
-6. **Systematic Debugging:** Trace failures to their root cause. Do not patch symptoms with generic hacks, arbitrary timeouts, or unverified assumptions.
-7. **Think & Ask:** Uncertainty = STOP & ask. Surface tradeoffs explicitly; never guess or choose a path silently.
-8. **Read Before Write:** Map callers, exports, and shared utilities before modifying files. Understand why code exists before changing how it works.
-9. **Token Guardrails:** Treat token budgets as hard limits. If approaching a limit, summarize your state, anchor milestones, and start a fresh continuation.
-10. **Surface Conflicts:** If patterns clash, pick one explicitly and justify it. Do not silently fork conventions or "average" conflicting styles.
-11. **Conventions Over Taste:** Match established workspace idioms over personal preference. Do not refactor code that is not broken.
-12. **State Anchoring:** Continuously report what is `[verified]`, `[current]`, and `[todo]`. Re-anchor your plan before every significant step.
-13. **Fail Loud:** Never report completion if any step was skipped or unverified. Explicitly surface constraints, risks, and assumptions.
-14. **No Project Code Abbreviation:** Use the full project code from the Project Matrix in all chat output, documentation, ADRs, prompts, issues, PRs, commit messages, and code comments. Never abbreviate or coin shorthand.
-15. **Parallel-First Execution:** Run independent work in parallel sub-agents by default across all tasks, not only `tdd`. If tasks can be parallelized safely, they must be parallelized. If a task is blocked by a prerequisite or dependency, complete that prerequisite first and then parallelize newly unblocked lanes. Keep integration and conflict-prone edits serialized.
-16. **Local Background Execution:** Run long, independent, or noisy work as LOCAL background/async lanes — background subagents, `run_in_background` / async shells, or worktree-isolated lanes — so the main chat stays responsive and its context stays clean. Spawn local parallel and background agents automatically when work splits cleanly and safely; do not ask first. Never hand work to cloud or remote background-agent products (for example Cursor Cloud Agents, GitHub Copilot cloud coding agent, Codex Cloud, Antigravity managed/remote execution), even when the runtime offers them. Await each lane and integrate its result.
-17. **Orchestrator & Role Lanes:** The main session is the orchestrator and keeps the only merge, conflict-resolution, and final-judgment seat — never delegate final synthesis. Decompose substantial work into role-typed lanes (Explorer, Researcher, Planner, Implementer, Reviewer, Tester, Tool-runner) and dispatch each to a local subagent with a fitting tool profile: read-only for discovery, review, and planning; write for implementation; shell for tests and tool runs. Subagents return summaries, not raw transcripts. Keep conflict-prone edits and final integration serialized in the main session.
+1. **Plain-Language Default:** Chat in plain teammate English. Cut filler, hedging, and repetition. Keep exact code, DB, and API names; explain ideas without jargon. Applies to chat only, not code/docs/PRDs/release notes/PR bodies/prompts. Optional brevity skills, including `caveman`, are user-invoked only.
+2. **Evidence Before Claim:** Claim nothing without raw command output. No output means not verified. "Seems to work" means unverified.
+3. **Task Isolation:** Put each independent lane in a fresh local subagent/agent/worker/isolated pass when supported and conflict-free. Do not drag bloated history into focused work.
+4. **Goal-Driven Execution:** Success requires empirical proof. Bug fixes require Red-Green-Refactor: prove the failure before the fix, then prove the fix.
+5. **Surgical Minimalism:** Match style. Touch only required files. No speculative abstractions, adjacent cleanup, or "while here" edits.
+6. **Systematic Debugging:** Find root cause. Do not patch symptoms with hacks, arbitrary waits, or guesses.
+7. **Think & Ask:** If uncertainty changes the outcome, stop and ask. State tradeoffs. Do not guess silently.
+8. **Read Before Write:** Before edits, map callers, exports, shared utilities, and intent. Understand why the code exists.
+9. **Token Guardrails:** Treat token limits as hard. Near limit, summarize verified state, current state, and next step; then continue fresh.
+10. **Surface Conflicts:** When conventions conflict, choose one, say why, and proceed. Do not blend incompatible patterns.
+11. **Conventions Over Taste:** Follow workspace idioms over preference. Do not refactor working code for taste.
+12. **State Anchoring:** Before significant steps, state `[verified]`, `[current]`, and `[todo]`.
+13. **Fail Loud:** Never report done with skipped or unverified work. Surface constraints, risks, and assumptions.
+14. **No Project Code Abbreviation:** Use the full Project Matrix code in chat, docs, ADRs, prompts, issues, PRs, commits, and comments. Never shorten it.
+15. **Parallel-First Execution:** Parallelize safe independent lanes by default, across all skills. Run prerequisites first; then parallelize newly unblocked lanes. Serialize shared-file edits and integration.
+16. **Local Background Execution:** Run long/noisy independent lanes locally in background/async or worktree-isolated form. Spawn them without asking when safe. Never use cloud/remote agents: Cursor Cloud Agents, Copilot cloud coding agent, Codex Cloud/web, Antigravity managed/remote execution. Await and integrate every lane.
+17. **Orchestrator & Role Lanes:** The main session is sole orchestrator, merger, conflict resolver, and final judge. Use local role lanes: Explorer, Researcher, Planner, Implementer, Reviewer, Tester, Tool-runner. Match tools to role: read-only for discovery/review/planning, write for implementation, shell for tests/tool runs. Subagents return summaries, not transcripts. Final synthesis stays in main.
 
 ## Project Matrix
 
@@ -169,42 +167,26 @@ Follow these 17 rules. They are non-negotiable and must be fully enforced. Bias 
 - PRD slice issues: `Slice NNNN of <PROJECT-CODE> ADR-<adr-number> <adr-name> (#<prd-issue-number>): <Short heading>`. Use four digits, local to the PRD, starting at `0001`.
 - Every triaged issue needs exactly one category label (`bug` or `enhancement`) and exactly one state label (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, or `wontfix`).
 - Do not put `HITL:` or `AFK:` in issue titles, commit subjects, PR titles, or branch names. Use `ready-for-human` or `ready-for-agent` state labels for routing.
-- Non-PRD implementation issues: prefer `<PROJECT-CODE>: <short imperative heading>` and keep the full Project Matrix code.
+- Non-PRD implementation issues: use `<PROJECT-CODE>: <short imperative heading>` and keep the full Project Matrix code.
 - Hard gate: before drafting or publishing any issue, verify title format and both required labels from local workspace instructions; if vocabulary is missing, run `/setup-matt-pocock-skills` first and stop until it is available.
 
 ## Operating Protocol
 
-- **Discovery:** Map project codes to roots via package/config files. Use efficient search tools.
-- **Agent Entry Files:** `AGENTS.md` is the primary workspace instruction file for supported runtimes that read it directly. `CLAUDE.md` is a Claude CLI shim. `GEMINI.md` is an Antigravity CLI shim only, not Gemini CLI support.
-- **No Attribution Policy:** Never add or keep co-author/AI attribution text in authored output. Strip any auto-injected lines such as `Co-authored-by:`, `Made with [Cursor]`, `Made-with:`, `Generated by`, or `AI-assisted` before publishing.
-- **MCP Config:** In multi-repo workspaces, keep MCP config for supported coding tools at workspace root. See the `Supported Coding Tools Matrix` section below for the canonical per-runtime file placement.
-- **Optional Compression Skill:** `caveman` is ad hoc chat-only mode. Use it only when the user asks for brevity or fewer tokens. Never compress code, docs, PRDs, release notes, PR bodies, generated prompts, or persisted artifacts.
-- **Agent Orchestration:** The main session is the orchestrator: decompose substantial work into role-typed lanes (Explorer, Researcher, Planner, Implementer, Reviewer, Tester, Tool-runner) and dispatch each to a local subagent with a fitting read-only / write / shell tool profile. Run independent lanes in parallel and push long or noisy lanes to local background/async (background subagents, `run_in_background` / async shells, worktree isolation) so the main context stays clean. Spawn local parallel/background agents automatically when work splits cleanly and safely; do not ask first. Subagents return summaries; the main session owns the only merge, conflict-resolution, and final-judgment seat and never delegates final synthesis. Keep conflict-prone edits and integration serialized. If the runtime lacks subagents, run separate focused tool passes. See [`references/tool-calling.md`](references/tool-calling.md) and the runtime's `*-tools.md` for the role-to-mechanism map. During `tdd`, treat parallel dispatch as required behavior for all independently executable tasks.
-- **No Cloud Agents:** Use only local subagents and local background/async execution. Never delegate work to cloud or remote background-agent products — Cursor Cloud Agents, GitHub Copilot cloud coding agent, Codex Cloud / Codex web, or Antigravity managed/remote execution — even when the runtime makes them easy to launch. Local worktree-isolated parallel agents are allowed; remote ones are not.
-- **Grilling Posture:** During planning/grilling sessions, the human actively steers scope and decisions. Do not let the agent run an unbounded interview loop.
-- **Scope Discipline:** Prefer thin vertical slices. If scope is broad, split it before deep grilling or PRD expansion.
-- **Question Fidelity Routing:** Grill low-fidelity decisions. Route high-fidelity "needs to feel/see it" decisions to `/handoff` + `/prototype`.
-- **Context Budget Caution:** Treat `~120K` tokens as a caution threshold for planning-heavy sessions. Near this point, prefer scope split, compacting, or handoff.
-- **TDD Anti-Pattern:** Do not run large sequential single-agent TDD flows when independent parallel lanes are available.
-- **Suggested Next Skills Footer:** End non-trivial responses with an optional `Suggested next skills (optional)` block containing 1-3 advisory recommendations. Keep it recommendation-only (no enforced gating). This applies after any substantial step, including local skills and third-party skills. Prefer workflow-adjacent next steps and uncertainty-reducing helpers.
-- **Domain:** Read `CONTEXT.md` and `docs/adr/` before implementation. ADRs are binding.
-- **Manual QA Doc Naming:** Standalone manual QA instruction docs live in `docs/qa/` and must use the ADR filename plus `-qa` suffix: `NNNN-<slug>-qa.md`.
-- **Validation:** Run targeted tests and workspace-standard checks (`tsc`, `lint`, `build`) after every edit.
-- **Completion:** Final report must include explicit validation performed and any remaining risks.
-- **Planned vs Ad Hoc Issues:** Planned work starts from a GitHub issue that has passed Matt Pocock's `/triage`: exactly one category label (`bug` or `enhancement`) and a ready state label (`ready-for-agent` or `ready-for-human`). Small ad hoc work may start from a one-line request without a GitHub issue; in that case, do the work first and let `commit-push-pr` or `commit-push-close` create the issue at ship time from the original request, final diff, decisions, and validation. If ad hoc work becomes large, ambiguous, cross-project, or multi-slice, stop and route it through `/triage`, `/feature-prompt`, or `/to-issues`.
-- **Issue-writing preflight:** For any workflow step that creates or edits issues (`to-prd`, `to-issues`, `triage`, ship-time inline issue creation), run a preflight check first: (1) title pattern is selected from the `GitHub Issue Titles` section, (2) exactly one category label and one state label are selected, (3) routing markers are not in names. If any item fails, stop and fix before publishing.
-- **TDD Skill Defaults:** When the `tdd` skill is invoked, apply these standing defaults unless the user overrides them in the same turn:
-  - Slices already have GitHub issues. PRD slices use titles like `Slice NNNN of <PROJECT-CODE> ADR-<adr-number> <adr-name> (#<prd-issue-number>): <Short heading>`. Work through every slice for the PRD; do not stop after one unless instructed.
-  - Fully complete a slice before moving on. After each slice, produce a hand-off document and a kickoff prompt, then ask the user to start a new session for the next slice.
-  - Parallelism is mandatory where safe: decompose work into independent lanes (tests, implementation slices, review, and validation) and run those lanes in parallel sub-agents whenever there is no shared-file conflict and no unresolved dependency between lanes.
-  - Dependency gate first: when one lane is blocked by another, execute prerequisite lanes first. Do not parallelize blocked work; parallelize only after prerequisites are complete.
-  - Sub-agent-first internal execution: use sub-agents for internal research, implementation, and verification to reduce turnaround time; main agent performs final merge decisions and conflict resolution.
-  - Source-of-truth resolution order for issues or queries: use `docs/adr/` first, then PRD, then GitHub issue/comments, then approved memory/knowledge base. Do not invent policy when sources conflict or are missing.
-  - Clean completion gate: a slice is complete only when all parallel lanes are reconciled, tests/checks pass, and output complies with AGENTS rules (naming, labels, routing, evidence).
-  - **Decision points (HITL vs AFK):** Only ask the user a question or present recommendations when the GitHub issue has the `ready-for-human` label — and even then, present a short menu of recommended options that best fit the concern rather than open-ended questions. For `ready-for-agent` issues, treat the work as fully autonomous: auto-select the recommended option at every decision point and proceed. Surface the choices made in the hand-off document at the end of the slice instead of mid-flight. **Recommended options must be sourced from ADRs (`docs/adr/`), the GitHub issue body/comments, or the slice definition itself — never self-invented.** If no grounded option exists, stop and surface the gap rather than fabricating one.
-  - Keep the corresponding GitHub issue updated with the current status of internal cycles and slices as work progresses.
-  - Follow every relevant `AGENTS.md` in the workspace.
-  - If context approaches 120K tokens, prefer handing off to a new session; otherwise operate as an orchestrator dispatching sub-agents in parallel.
+- **Discovery:** Map project codes to roots from package/config files. Use fast search.
+- **Entry Files:** `AGENTS.md` is primary. `CLAUDE.md` is a Claude CLI shim. `GEMINI.md` is an Antigravity CLI shim only.
+- **No Attribution:** Enforce the mandatory zero-attribution policy before publish.
+- **MCP Config:** Keep supported-tool MCP config at workspace root. Use the matrix below.
+- **Compression:** `caveman` is user-invoked chat-only. Never compress code, docs, PRDs, release notes, PR bodies, prompts, or persisted artifacts.
+- **Orchestration:** Enforce the parallel/background/orchestrator rules.
+- **Planning/Grilling:** Human steers scope. No unbounded interview loops. Use thin vertical slices. Split broad scope before PRD expansion.
+- **Fidelity Routing:** Grill low-fidelity decisions. Route visual/interaction uncertainty to `/handoff` + `/prototype`.
+- **Context Budget:** At ~120K tokens, split scope, compact, or hand off.
+- **Suggested Next Skills:** For non-trivial responses, optionally end with `Suggested next skills (optional)` and 1-3 advisory next steps. No gates. No auto-chaining.
+- **Domain:** Read `CONTEXT.md` and `docs/adr/` before implementation. ADRs bind.
+- **Manual QA Docs:** Store standalone QA docs as `docs/qa/NNNN-<slug>-qa.md`.
+- **Evidence:** Run targeted validation when useful and available. Final report names validation run, skipped checks with reasons, and remaining risk.
+- **Issues:** Planned work starts from a triaged GitHub issue with exactly one category label and one ready state. Small ad hoc work may start from the request; ship skills create the issue later. If ad hoc work grows large, ambiguous, cross-project, or multi-slice, stop and route through `/triage`, `/feature-prompt`, or `/to-issues`. Before creating/editing issues, select the title pattern, labels, state, and remove routing markers. Stop if any item is missing.
+- **TDD Defaults:** Existing GitHub issues are source of work. Finish one slice fully before the next. No large sequential single-agent TDD when independent parallel lanes exist. Produce hand-off and kickoff prompt after each slice. Use ADR -> PRD -> issue/comments -> approved memory as source order. For `ready-for-agent`, decide autonomously from grounded sources; if no grounded option exists, stop. For `ready-for-human`, present a short sourced option menu. Keep the issue updated. Complete only after lanes reconcile, checks pass, and AGENTS rules hold.
 
 ## Supported Coding Tools Matrix
 
@@ -217,7 +199,7 @@ Single source of truth for MCP/config file placement across the six supported CL
 | Antigravity CLI    | `<workspace-root>/.agents/mcp_config.json`           | Remote HTTP MCP entries must use `serverUrl`.                                                     |
 | Cursor CLI         | `<workspace-root>/.cursor/mcp.json`                  | Keep `~/.cursor/mcp.json` only as user-global fallback.                                           |
 | Opencode CLI       | `<workspace-root>/opencode.json`                     | Workspace-root opencode configuration where MCP servers are used.                                 |
-| GitHub Copilot CLI | `<workspace-root>/.mcp.json` (or Copilot MCP config) | Also reads `AGENTS.md` / `CLAUDE.md` / `GEMINI.md`; custom agents in `.github/agents/*.agent.md`. |
+| GitHub Copilot CLI | `<workspace-root>/.mcp.json` or `<workspace-root>/.github/mcp.json` | User fallback: `~/.copilot/mcp-config.json`. Also reads `AGENTS.md` / `CLAUDE.md` / `GEMINI.md`; custom agents in `.github/agents/*.agent.md`. |
 ```
 
 Preserve any useful existing local instructions when updating `AGENTS.md`, but reorganize duplicated content into this structure.
@@ -258,8 +240,8 @@ Do not duplicate the full `AGENTS.md` content into shims.
 
 ## Quality Bar
 
-- **Outcome:** The generated `AGENTS.md` must be under 200 lines and contain the 17 Spartan Rules verbatim.
-- **Signal-to-noise:** Instructions should favor concise, verifiable constraints over narrative guidance.
+- **Outcome:** The generated `AGENTS.md` must be under 200 lines and contain the 17 Non-Negotiable Rules verbatim.
+- **Signal-to-noise:** Use concise, verifiable constraints over narrative guidance.
 - **Process (Verifiable Trajectory):** The agent must demonstrate a "Search -> Verify -> Implement" sequence. No implementation tool calls (e.g., `StrReplace`, `Write`, `replace`, `write_file`) are permitted until the project root and tech stack are verified via read-only tools. Use [`references/tool-calling.md`](references/tool-calling.md) and the matching `*-tools.md` file for the detected runtime.
 - **Specification:** A task is considered "broken" if it lacks an explicit project path or code. If these are missing, the agent **must** stop and ask (Rule #7) instead of guessing a "default" path.
 - **Style:** Instructions must be imperative and authoritative. No "should" or "please".

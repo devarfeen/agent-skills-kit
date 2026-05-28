@@ -21,7 +21,7 @@ Combine skills from this kit and the wider ecosystem to move from idea to shippe
 
 ## Usage Principles
 
-- Keep scope thin. Prefer small vertical slices over big-bang plans.
+- Keep scope thin. Use small vertical slices, not big-bang plans.
 - Stay evidence-first. Use discovery and grilling before broad implementation.
 - Use optional skills ad hoc. Do not auto-invoke compression skills.
 - Keep architecture healthy. Regularly run planning and refactor loops.
@@ -45,10 +45,10 @@ chat stays responsive and uncluttered.
   `run_in_background`, Cursor `is_background` + `Await`, Codex worktrees,
   Copilot `Ctrl+X -> b`, opencode `task(background=true)`) and report back when
   done.
-- **No cloud agents.** Never hand work to remote background-agent products —
+- **No cloud agents.** Never hand work to remote background-agent products:
   Cursor Cloud Agents, GitHub Copilot cloud coding agent, Codex Cloud, or
   Antigravity managed/remote execution. Local worktree-isolated agents are
-  fine; remote ones are not.
+  allowed. Remote agents are not.
 
 Per-runtime mechanics and the role-to-mechanism map live in
 [`skills/agents-md/references/tool-calling.md`](skills/agents-md/references/tool-calling.md)
@@ -58,7 +58,7 @@ and each `*-tools.md`.
 
 - Treat skills as strict process rails, not optional flavor text.
 - Keep the human strategic: agent executes, human steers scope and tradeoffs.
-- Prefer code-as-source-of-truth over broad doc summaries.
+- Use code as source of truth over broad doc summaries.
 - If dependency behavior is unclear, fetch targeted source (for example `opensrc`) before guessing.
 - Ship small, reviewable slices; avoid oversized PRs and oversized planning threads.
 
@@ -76,7 +76,7 @@ and each `*-tools.md`.
 | Antigravity CLI | `<workspace-root>/.agents/mcp_config.json` | Remote HTTP MCP entries must use `serverUrl`. |
 | Cursor CLI | `<workspace-root>/.cursor/mcp.json` | Keep `~/.cursor/mcp.json` only as user-global fallback. |
 | Opencode CLI | `<workspace-root>/opencode.json` | Workspace-root opencode configuration where MCP servers are used. |
-| GitHub Copilot CLI | `<workspace-root>/.mcp.json` (or Copilot MCP config) | Also reads `AGENTS.md` / `CLAUDE.md` / `GEMINI.md`; custom agents in `.github/agents/*.agent.md`. |
+| GitHub Copilot CLI | `<workspace-root>/.mcp.json` or `<workspace-root>/.github/mcp.json` | User fallback: `~/.copilot/mcp-config.json`. Also reads `AGENTS.md` / `CLAUDE.md` / `GEMINI.md`; custom agents in `.github/agents/*.agent.md`. |
 
 Use local-only policy when needed by adding generated files to local git exclude (`.git/info/exclude`) instead of committing them.
 
@@ -84,7 +84,7 @@ Use local-only policy when needed by adding generated files to local git exclude
 
 | Situation | Start With | Why |
 | :--- | :--- | :--- |
-| New Workspace | `/agents-md` | Establish codes, paths, and Spartan Rules. |
+| New Workspace | `/agents-md` | Establish codes, paths, and Non-Negotiable Rules. |
 | Unclear Behavior | `/feature-discovery` | Read-only audit before planning. |
 | Rough Idea | `/feature-prompt` | Section-by-section clarification interview. |
 | Broken Behavior | `/diagnose` | Systematic root cause analysis. |
@@ -125,7 +125,7 @@ Guidelines:
 - Apply this footer after any substantial step, including local and third-party skills.
 - Keep it short: 1-3 suggestions maximum.
 - Use workflow adjacency first (current step -> likely next step).
-- Prefer evidence-raising suggestions before risky edits:
+- Lead with evidence-raising suggestions before risky edits:
   - after discovery of unclear behavior: `/feature-prompt` or `/diagnose`
   - after prompt drafting: `/grill-with-docs`
   - after issue slicing: `/triage`
@@ -145,7 +145,7 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 
 | Gate | Skill | Continue When |
 | :--- | :--- | :--- |
-| Workspace | `/agents-md` | Project codes and Spartan Rules are active. |
+| Workspace | `/agents-md` | Project codes and Non-Negotiable Rules are active. |
 | Issue preflight | `Issue-writing skills` | Title pattern and both required labels are validated from local workspace instructions. |
 | Discovery | `/feature-discovery` | Evidence-backed report explains current behavior. |
 | Prompt | `/feature-prompt` | Implementation-ready prompt is reviewed by user. |
