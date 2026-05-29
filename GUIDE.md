@@ -164,10 +164,10 @@ Skill: [`skills/memory-steward/SKILL.md`](skills/memory-steward/SKILL.md).
 
 | Topology | Code graph | Docs / wiki graph |
 | :--- | :--- | :--- |
-| Single repo | `<repo-root>/.understand-anything/knowledge-graph.json` | Same root if docs live there |
-| Monorepo | Root or package path per matrix | `<artifacts-root>/.understand-anything/…` if centralized |
-| VS Code multi-root | One graph per Project Matrix `Path` | `<artifacts-root>/.understand-anything/…` |
-| Meta-workspace | Per code repo in matrix | `<artifacts-root>/.understand-anything/…` after `/understand-knowledge` |
+| Single repo | `<repo-root>/.understand-anything/knowledge-graph.json` | `<repo-root>/docs/.understand-anything/…` when `docs/wiki/index.md` exists |
+| Monorepo | Root or package path per matrix | `<artifacts-root>/docs/.understand-anything/…` if centralized |
+| VS Code multi-root | One graph per Project Matrix `Path` | `<artifacts-root>/docs/.understand-anything/…` |
+| Meta-workspace | Per code repo in matrix | `<artifacts-root>/docs/.understand-anything/…` after `/understand-knowledge <artifacts-root>/docs` |
 
 Install UA globally:
 
@@ -175,7 +175,7 @@ Install UA globally:
 npx skills add Lum1104/Understand-Anything -g -y
 ```
 
-Per repo root, bootstrap `.understand-anything/config.json` and `.gitignore` (ignore `intermediate/`, `tmp/`, `diff-overlay.json`, `fingerprints.json`; commit `knowledge-graph.json`, `meta.json`, `config.json`). Run `/understand <active-repo-root>` per matrix row; `/understand-knowledge <artifacts-root>` when a docs wiki exists.
+Per repo root, bootstrap `.understand-anything/config.json` and `.gitignore` (ignore `intermediate/`, `tmp/`, `diff-overlay.json`, `fingerprints.json`; commit `knowledge-graph.json`, `meta.json`, `config.json`). Run `/understand <active-repo-root>` per matrix row; `/understand-knowledge <artifacts-root>/docs` when `docs/wiki/index.md` exists.
 
 Refresh is **ad-hoc only** — kit skills suggest `/understand` via `Suggested next skills (optional)` footers; never auto-invoke at session start and never use `--auto-update` by default.
 
@@ -196,11 +196,11 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 | :--- | :--- | :--- |
 | Workspace | `/agents-md` | Project codes and Non-Negotiable Rules are active. |
 | Issue preflight | `Issue-writing skills` | Title pattern and both required labels are validated from local workspace instructions. |
-| Discovery | `/feature-discovery` | Evidence-backed report explains current behavior. |
+| Discovery | `/feature-discovery` | Evidence-backed report is saved; old reports are not read unless requested. |
 | Prompt | `/feature-prompt` | Implementation-ready prompt is reviewed by user. |
-| Grill | `/grill-with-docs` | Ambiguities resolved against ADRs and domain language. |
-| PRD | `/to-prd` | Spec is clear on problem, solution, and success criteria. |
-| Issues | `/to-issues` | Work is split into independently testable vertical slices. |
+| Grill | `/grill-with-docs` | `Recommended answer:` is explicit; ambiguities resolve against ADRs and domain language. |
+| PRD | `/to-prd` | Spec is clear; dependency order is known. |
+| Issues | `/to-issues` | Slices are testable; prerequisites, blockers, and unblocked work are ordered. |
 | Triage | `/triage` | Issue state is clear and Agent Brief is present. |
 | Build | `/tdd` | Failure verified (Red), Fix verified (Green). |
 | Ship | `/commit-push-*` | Branch pushed and issue/PR linked with test proof. |

@@ -12,7 +12,7 @@ Create or update agent instruction files for a codebase:
 
 - This kit supports Codex CLI, Claude CLI, Antigravity CLI, Cursor CLI, Opencode CLI, and GitHub Copilot CLI only. Only `CLAUDE.md` is emitted as a shim; every other supported runtime reads `AGENTS.md` directly.
 
-- Include the seventeen non-negotiable rules in the `AGENTS.md` template below.
+- Include the eighteen non-negotiable rules in the `AGENTS.md` template below.
 - Also include an optional "Suggested next skills" footer convention so agents provide lightweight before/after reminders without enforcing hard gates, including after third-party skills.
 - Make clear that non-negotiables and operational defaults must be followed and fully enforced.
 
@@ -39,7 +39,7 @@ Every generated `AGENTS.md` and shim must prioritize instruction economy:
 
 ## Non-Negotiable Rules
 
-Every generated `AGENTS.md` must include the seventeen non-negotiable rules emitted verbatim from the `## Non-Negotiable Rules` block in the [AGENTS.md Structure](#agentsmd-structure) template below. That template is the single source of truth for exact wording. Do not paraphrase, re-order, or duplicate the numbered rules elsewhere.
+Every generated `AGENTS.md` must include the eighteen non-negotiable rules emitted verbatim from the `## Non-Negotiable Rules` block in the [AGENTS.md Structure](#agentsmd-structure) template below. That template is the single source of truth for exact wording. Do not paraphrase, re-order, or duplicate the numbered rules elsewhere.
 
 ## Runtime References
 
@@ -153,6 +153,7 @@ Generated `AGENTS.md` files must include issue-title rules that make PRD and sli
   - Example: `Slice 0001 of PAYMENTS ADR-0042 stock-transfer-approvals (#4812): Add approval state model`.
 - **Labels:** Every triaged issue must have exactly one category label (`bug` or `enhancement`) and exactly one state label (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, or `wontfix`).
 - **Routing state:** Use state labels: `ready-for-human` for human-ready work and `ready-for-agent` for agent-ready work.
+- **Dependency order:** `/to-prd` and `/to-issues` order blockers before work they unlock, but never before their own prerequisites.
 - **Non-PRD implementation issues:** use `<PROJECT-CODE>: <short imperative heading>` when the issue is not tied to a PRD. Keep the full Project Matrix code; never abbreviate it.
 - **Issue-writing hard gate:** Before drafting, renaming, or publishing any issue, verify the naming rule and both required labels from local workspace instructions (`AGENTS.md`, plus the Claude CLI `CLAUDE.md` shim).
 
@@ -165,7 +166,7 @@ Generate `AGENTS.md` with this structure:
 
 ## Non-Negotiable Rules
 
-These 17 rules are mandatory. Enforce them before speed, convenience, or local habit.
+These 18 rules are mandatory. Enforce them before speed, convenience, or local habit.
 
 1. **Plain-Language Default:** Chat in plain teammate English. Be extremely concise. Sacrifice grammar for the sake of concision. Drop articles, filler, pleasantries, and hedging. Keep every technical detail, code block, error string, symbol, and exact code/DB/API name verbatim; explain ideas without jargon. Auto-clarity exception: drop back to normal prose for security warnings, irreversible-action confirmations, multi-step sequences where fragment ambiguity risks misread, and when the user repeats a question. Applies to chat only, not code/docs/PRDs/release notes/PR bodies/prompts. Optional brevity skills, including `caveman`, are user-invoked only.
 2. **Evidence Before Claim:** Claim nothing without raw command output. No output means not verified. "Seems to work" means unverified.
@@ -184,6 +185,7 @@ These 17 rules are mandatory. Enforce them before speed, convenience, or local h
 15. **Parallel-First Execution:** Parallelize safe independent lanes by default, across all skills. Run prerequisites first; then parallelize newly unblocked lanes. Serialize shared-file edits and integration.
 16. **Local Background Execution:** Run long/noisy independent lanes locally in background/async or worktree-isolated form. Spawn them without asking when safe. Never use cloud/remote agents: Cursor Cloud Agents, Copilot cloud coding agent, Codex Cloud/web, Antigravity managed/remote execution. Await and integrate every lane.
 17. **Orchestrator & Role Lanes:** The main session is sole orchestrator, merger, conflict resolver, and final judge. Use local role lanes: Explorer, Researcher, Planner, Implementer, Reviewer, Tester, Tool-runner. Match tools to role: read-only for discovery/review/planning, write for implementation, shell for tests/tool runs. Subagents return summaries, not transcripts. Final synthesis stays in main.
+18. **Discovery File Guard:** Do not read `docs/discovery/` files automatically. Treat discovery reports as stale unless the user explicitly asks to use one. Prefer current code, ADRs, CONTEXT, issues, tests, and fresh search.
 
 ## Project Matrix
 
@@ -196,30 +198,30 @@ These 17 rules are mandatory. Enforce them before speed, convenience, or local h
 - PRD issues: `PRD: <PROJECT-CODE> ADR-<adr-number> <adr-name>`.
 - PRD slice issues: `Slice NNNN of <PROJECT-CODE> ADR-<adr-number> <adr-name> (#<prd-issue-number>): <Short heading>`. Use four digits, local to the PRD, starting at `0001`.
 - Every triaged issue needs exactly one category label (`bug` or `enhancement`) and exactly one state label (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, or `wontfix`).
-- Do not put `HITL:` or `AFK:` in issue titles, commit subjects, PR titles, or branch names. Use `ready-for-human` or `ready-for-agent` state labels for routing.
+- Do not put `HITL:`, `AFK:`, or `BLOCKER:` in issue titles, commit subjects, PR titles, or branch names. Use issue order, dependency notes, and `ready-for-human` / `ready-for-agent` labels for routing.
 - Non-PRD implementation issues: use `<PROJECT-CODE>: <short imperative heading>` and keep the full Project Matrix code.
 - Hard gate: before drafting or publishing any issue, verify title format and both required labels from local workspace instructions; check `AGENTS.md` and the Claude CLI `CLAUDE.md` shim for issue-writing rules.
 
 ## Operating Protocol
 
-- **Discovery:** Map project codes to roots from package/config files. Use fast search.
+- **Discovery:** Map project codes to roots from package/config files. Use fast search. `/feature-discovery` saves the full report to `<artifacts-root>/docs/discovery/DD-MM-YYYY-<PROJECT-CODE>-<slug>.md`; any other artifact edit needs approval with exact path and proposed change.
 - **Entry Files:** `AGENTS.md` is primary. `CLAUDE.md` is a Claude CLI shim. Codex CLI, Antigravity CLI, Cursor CLI, Opencode CLI, and GitHub Copilot CLI read `AGENTS.md` directly — no shim required.
 - **No Attribution:** Never add or keep co-author / AI / tool attribution in commit messages, PR titles or bodies, issue comments, release notes, generated docs, or code comments. Forbidden patterns include `Co-authored-by:`, `Co-Authored-By:`, `Made with [Cursor]`, `Made-with:`, `Generated by`, `AI-assisted`, and any agent / tool signature footer. If a tool injects attribution automatically, strip it before commit, push, PR create / edit, and issue close / comment.
 - **MCP Config:** Keep supported-tool MCP config at workspace root. Use the matrix below.
 - **Compression:** `caveman` is user-invoked chat-only. Never compress code, docs, PRDs, release notes, PR bodies, prompts, or persisted artifacts.
 - **Orchestration:** Enforce the parallel/background/orchestrator rules.
-- **Planning/Grilling:** Human steers scope. No unbounded interview loops. Use thin vertical slices. Split broad scope before PRD expansion.
+- **Planning/Grilling:** Human steers scope. `/grill-with-docs` starts with `Recommended answer:` plus reason. No unbounded interview loops. Use thin vertical slices. Split broad scope before PRD expansion.
 - **Fidelity Routing:** Grill low-fidelity decisions. Route visual/interaction uncertainty to `/handoff` + `/prototype`.
 - **Context Budget:** At ~120K tokens, split scope, compact, or hand off.
-- **Suggested Next Skills:** For non-trivial responses, optionally end with `Suggested next skills (optional)` and 1-3 advisory next steps. No gates. No auto-chaining. When [Understand-Anything](https://github.com/Lum1104/Understand-Anything) is installed (optional companion), you may suggest `/understand`, `/understand-chat`, `/understand-knowledge`, or `/understand-diff` ad-hoc — never auto-chain UA skills and never use `/understand --auto-update` by default. UA adjacency (advisory): after substantial code exploration → `/understand` on `<active-repo-root>` if graph missing or many files touched; after ADR acceptance or cross-repo work → `/understand` on affected matrix `Path` roots and `/understand-knowledge` on `<artifacts-root>` if docs/wiki changed; before broad structural discovery → `/understand-chat` if a graph exists; before architectural ship → `/understand-diff`.
+- **Suggested Next Skills:** For non-trivial responses, optionally end with `Suggested next skills (optional)` and 1-3 advisory next steps. No gates. No auto-chaining. When [Understand-Anything](https://github.com/Lum1104/Understand-Anything) is installed (optional companion), you may suggest `/understand`, `/understand-chat`, `/understand-knowledge`, or `/understand-diff` ad-hoc — never auto-chain UA skills and never use `/understand --auto-update` by default. UA adjacency (advisory): after substantial code exploration → `/understand` on `<active-repo-root>` if graph missing or many files touched; after ADR acceptance or cross-repo work → `/understand` on affected matrix `Path` roots and `/understand-knowledge` on `<artifacts-root>/docs` if docs/wiki changed; before broad structural discovery → `/understand-chat` if a graph exists; before architectural ship → `/understand-diff`.
 - **Domain:** Read `<artifacts-root>/CONTEXT.md` and `<artifacts-root>/docs/adr/` before implementation. ADRs bind. Terminology in `CONTEXT.md` overrides informal usage elsewhere.
 - **Memory file:** Read `<repo-root>/MEMORY.md` for the repo you are editing (Project Matrix + cwd). Not the meta-workspace folder. Keep ≤ ~300 lines; index only; use `ADR-NNNN:` tags for promotion. Never store secrets.
 - **Memory steward:** At session start, after reading repo `MEMORY.md`, run `/memory-steward` light pass (or follow `memory-steward` skill if auto-loaded). On user requests to remember, sync, compact, or promote memory, run `/memory-steward` full pass immediately.
 - **Memory sync:** After material MEMORY edits, update the active repo `MEMORY.md` only. Do not maintain a copy under `<artifacts-root>`. When a PRD linked to ADR-NNNN closes, ensure the ADR is complete, then prune promoted bullets from repo `MEMORY.md`.
 - **Manual QA Docs:** Store standalone QA docs as `docs/qa/NNNN-<slug>-qa.md`.
 - **Evidence:** Run targeted validation when useful and available. Final report names validation run, skipped checks with reasons, and remaining risk.
-- **Issues:** Planned work starts from a triaged GitHub issue with exactly one category label and one ready state. Small ad hoc work may start from the request; ship skills create the issue later. If ad hoc work grows large, ambiguous, cross-project, or multi-slice, stop and route through `/triage`, `/feature-prompt`, or `/to-issues`. Before creating/editing issues, select the title pattern, labels, state, and remove routing markers. Stop if any item is missing.
-- **TDD Defaults:** Existing GitHub issues are source of work. Finish one slice fully before the next. No large sequential single-agent TDD when independent parallel lanes exist. Produce hand-off and kickoff prompt after each slice. Use ADR -> PRD -> issue/comments -> approved memory as source order. For `ready-for-agent`, decide autonomously from grounded sources; if no grounded option exists, stop. For `ready-for-human`, present a short sourced option menu. Keep the issue updated. Complete only after lanes reconcile, checks pass, and AGENTS rules hold.
+- **Issues:** Planned work starts from a triaged GitHub issue with exactly one category label and one ready state. For `/to-prd` and `/to-issues`, build dependency order first: prerequisites, blockers, then unblocked slices. Blockers never move before their own prerequisites; mark what they unblock. Small ad hoc work may start from the request; ship skills create the issue later. If ad hoc work grows large, ambiguous, cross-project, or multi-slice, stop and route through `/triage`, `/feature-prompt`, or `/to-issues`. Before creating/editing issues, select the title pattern, labels, state, and remove routing markers. Stop if any item is missing.
+- **TDD Defaults:** Existing GitHub issues are source of work. Finish one slice fully before the next. No large sequential single-agent TDD when independent parallel lanes exist. AFK PRD = autonomous away-from-keyboard PRD run. In herdr, the main coding pane is orchestrator when `HERDR_ENV=1`: keep it open, spawn/monitor/resume local worker panes at the requested cadence, clear prerequisite/blocker slices first, then fan out unblocked slices. Worker agent choice is user/runtime supplied; do not hardcode fixed agents. If `HERDR_ENV` is not `1`, say herdr is unavailable and use normal local orchestration. Produce hand-off and kickoff prompt after each slice. Use ADR -> PRD -> issue/comments -> approved memory as source order. For `ready-for-agent`, decide autonomously from grounded sources; if no grounded option exists, stop. For `ready-for-human`, present a short sourced option menu. Keep the issue updated. Complete only after lanes reconcile, checks pass, and AGENTS rules hold.
 
 ## Knowledge retrieval order
 
@@ -227,7 +229,7 @@ These 17 rules are mandatory. Enforce them before speed, convenience, or local h
 2. Active `<repo-root>/MEMORY.md` when present (Project Matrix + cwd).
 3. If present, UA graphs (optional Tier 1.5):
    - **Code:** `<active-repo-root>/.understand-anything/knowledge-graph.json`
-   - **Docs/wiki:** `<artifacts-root>/.understand-anything/knowledge-graph.json` (when `/understand-knowledge` was run)
+   - **Docs/wiki:** `<artifacts-root>/docs/.understand-anything/knowledge-graph.json` (when `/understand-knowledge <artifacts-root>/docs` was run)
    Prefer `/understand-chat` for orientation; verify against code and ADRs.
 4. UA never overrides CONTEXT or ADRs. After material code or ADR changes, consider re-running `/understand` on affected repo roots (advisory only).
 
@@ -313,7 +315,7 @@ Do not duplicate the full `AGENTS.md` content into shims.
 
 ## Quality Bar
 
-- **Outcome:** The generated `AGENTS.md` must be under 200 lines and contain the 17 Non-Negotiable Rules verbatim.
+- **Outcome:** The generated `AGENTS.md` must be under 200 lines and contain the 18 Non-Negotiable Rules verbatim.
 - **Signal-to-noise:** Use concise, verifiable constraints over narrative guidance.
 - **Process (Verifiable Trajectory):** The agent must demonstrate a "Search -> Verify -> Implement" sequence. No implementation tool calls (e.g., `StrReplace`, `Write`, `replace`, `write_file`) are permitted until the project root and tech stack are verified via read-only tools. Use [`references/tool-calling.md`](references/tool-calling.md) and the matching `*-tools.md` file for the detected runtime.
 - **Specification:** A task is considered "broken" if it lacks an explicit project path or code. If these are missing, the agent **must** stop and ask (Rule #7) instead of guessing a "default" path.

@@ -104,7 +104,7 @@ skills from the wider agent-skills ecosystem.
   guide.
 - The non-negotiable discipline in `agents-md` was originally seeded by
   Forrest Chang's Karpathy-inspired `CLAUDE.md` guidelines and later expanded
-  in this repo into a 17-rule core plus retained operational defaults:
+  in this repo into an 18-rule core plus retained operational defaults:
   https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md
   The upstream repository is MIT licensed. This repo records credit here rather
   than emitting source notes into generated `AGENTS.md` files.
@@ -157,9 +157,10 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 
 **What it does**
 
-- Includes a 17-rule non-negotiable core in `AGENTS.md` (now covering local background execution and the orchestrator + role-lane model), plus retained operational defaults for full Project Matrix code usage and parallel execution
+- Includes an 18-rule non-negotiable core in `AGENTS.md` (now covering local background execution, the orchestrator + role-lane model, and the discovery file guard), plus retained operational defaults for full Project Matrix code usage and parallel execution
 - Uses `AGENTS.md` as the canonical instruction file for supported runtimes that read it directly; creates `CLAUDE.md` for Claude CLI with `@` imports for `AGENTS.md`, `<artifacts-root>/CONTEXT.md`, and active repo `MEMORY.md` when those files exist
 - Enforces instruction economy: keep `AGENTS.md` concise with stable, non-obvious invariants; keep detailed procedures in skills/references
+- Orders `/to-prd` and `/to-issues` work by dependencies: prerequisites, blockers, then unblocked slices; supports AFK herdr orchestration when available
 - Detects `*.code-workspace` manifests and uses each folder `name` as the project name/code source
 - Treats the workspace folder with `path: "."` as a meta workspace with no code
 - Builds a project matrix: `Project Name (Code) | Path | Tech Stack`
@@ -278,11 +279,13 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
 - Searches code, tests, docs, configs, routes, jobs, and feature flags
 - Traces definitions to callers and user-facing flows
 - Uses code as primary source of truth; highlights reuse seams and duplication risks
+- Saves the full discovery report to `<artifacts-root>/docs/discovery/DD-MM-YYYY-<PROJECT-CODE>-<slug>.md`
+- Does not auto-read existing `docs/discovery/` reports; treats them as stale unless the user asks for them
 - Optionally uses targeted `opensrc` dependency source pulls when external internals are required and local evidence is insufficient
 - Flags code-discovered domain terms that may be missing from or stale in
   `CONTEXT.md`, with short descriptions and evidence for user approval
-- Updates `CONTEXT.md` only as an explicit follow-up after the user approves
-  specific terms or accepts the full candidate list
+- Updates `CONTEXT.md` or other artifacts only as an explicit follow-up after
+  showing exact target files and proposed changes for user approval
 - Uses recent git history only when code scanning is not enough
 - Produces a structured report covering summary, behavior, implementation,
   usage sites, rationale, candidate context terms, risks, gaps, and next checks
