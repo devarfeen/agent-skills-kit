@@ -71,6 +71,8 @@ and each `*-tools.md`.
 
 Enable built-in CLI memory globally when desired: [`skills/agents-md/references/memory-global-defaults.md`](skills/agents-md/references/memory-global-defaults.md).
 
+Generated `AGENTS.md` also documents local zsh high-permission aliases for coding CLIs (`ccd`, `cxd`, `cop`, `ocd`, `agd`, `crd`) and avoids tmux-mode aliases.
+
 ### Supported Coding Tools Matrix (single source of truth)
 
 | Tool Runtime | Workspace MCP file(s) | Notes |

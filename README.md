@@ -159,6 +159,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 
 - Includes an 18-rule non-negotiable core in `AGENTS.md` (now covering local background execution, the orchestrator + role-lane model, and the discovery file guard), plus retained operational defaults for full Project Matrix code usage and parallel execution
 - Uses `AGENTS.md` as the canonical instruction file for supported runtimes that read it directly; creates `CLAUDE.md` for Claude CLI with `@` imports for `AGENTS.md`, `<artifacts-root>/CONTEXT.md`, and active repo `MEMORY.md` when those files exist
+- Documents local zsh high-permission aliases for coding CLIs (`ccd`, `cxd`, `cop`, `ocd`, `agd`, `crd`) and avoids tmux-mode aliases
 - Enforces instruction economy: keep `AGENTS.md` concise with stable, non-obvious invariants; keep detailed procedures in skills/references
 - Orders `/to-prd` and `/to-issues` work by dependencies: prerequisites, blockers, then unblocked slices; supports AFK herdr orchestration when available
 - Detects `*.code-workspace` manifests and uses each folder `name` as the project name/code source
