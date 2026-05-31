@@ -127,7 +127,7 @@ The `Closes #N` line is mandatory and must be on its own line near the top of th
     ```
     - If a PR already exists for this branch (`gh pr list --head <branch> --json number`), do not create a duplicate. Update the existing PR's title/body with `gh pr edit <num>` instead, and report that path back.
 
-12. **Report** — one line: `<SHA> pushed to <branch>; PR #<pr-num> opened (Closes #<issue-num>)`. Then append the **Response footer** from `references/ship-policy.md` (1-3 advisory suggestions).
+12. **Report** — one line: `<SHA> pushed to <branch>; PR #<pr-num> opened (Closes #<issue-num>)`. Then append the **Response footer** from `references/ship-policy.md` (1-6 advisory suggestions).
 
 ## Examples
 
@@ -220,4 +220,4 @@ Before reporting done, verify:
 - [ ] PR body has **Summary** + **How to test**
 - [ ] No duplicate PR created (existing PR was edited instead)
 - [ ] Final report line printed
-- [ ] Optional `Suggested next skills` footer included (1-3 advisory suggestions, no gating)
+- [ ] Optional `Suggested next skills` footer included (1-6 advisory suggestions, no gating)

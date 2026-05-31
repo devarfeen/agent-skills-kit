@@ -17,7 +17,7 @@ Keeps **`<repo-root>/MEMORY.md`** healthy. Workspace **`CONTEXT.md`** and **`doc
 1. **Active repo root** — git root for cwd, or Project Matrix `Path` for the project being edited. Never use the meta-workspace folder (`path: "."`) for `MEMORY.md`.
 2. **`<artifacts-root>`** — directory with `*.code-workspace`, else `CONTEXT-MAP` context root, else single repo root. ADRs: `<artifacts-root>/docs/adr/`.
 
-If `MEMORY.md` is missing at active repo root and recall would help, scaffold using [agents-md MEMORY scaffold](../agents-md/SKILL.md#memorymd-scaffold).
+If `MEMORY.md` is missing at active repo root and recall would help, scaffold a minimal index-only `MEMORY.md` there (≤~300 lines, one bullet per durable fact, no secrets).
 
 ## Session start (light pass)
 
@@ -73,7 +73,7 @@ Memory steward (full):
 - Skipped: <reason>
 ```
 
-End with `Suggested next skills (optional)` when non-trivial (e.g. `/grill-with-docs` if terminology drifted, `/release-notes` after shipped PRD). After ADR promotion, suggest `/understand` on matrix `Path` roots touched by that ADR when UA is installed (advisory only). After ADR promotion, suggest `/understand` on matrix `Path` roots touched by that ADR when UA is installed (advisory only).
+End with `Suggested next skills (optional)` when non-trivial (e.g. `/grill-with-docs` if terminology drifted, `/release-notes` after shipped PRD). After ADR promotion, suggest `/understand` on matrix `Path` roots touched by that ADR when UA is installed (advisory only).
 
 ## Do not
 

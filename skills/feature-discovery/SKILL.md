@@ -53,7 +53,7 @@ What:
 - Treat `~120K` tokens as a context-budget caution point for planning-heavy sessions. If unresolved core unknowns remain near this point, stop and recommend scope split or handoff.
 - Do not give the final discovery report until findings have passed two validation scans.
 - Save the full final report before responding. Use `<artifacts-root>/docs/discovery/DD-MM-YYYY-<PROJECT-CODE>-<slug>.md`. Use the local current date. Use the full Project Matrix code. For multi-project discovery, join project codes with `--` in request order. Slug the topic in lowercase kebab case.
-- End the saved report with `Suggested next skills (optional)` containing 1-3 recommendations. Keep them advisory only (no gating) and base them on findings plus the workspace workflow. Suggest `/memory-steward` when repo `MEMORY.md` has a non-empty promotion queue, exceeds ~300 lines, or discovery surfaced durable prefs worth persisting. When discovery narrows to one module or file, suggest `/understand-explain <file>` if UA is installed and a graph exists.
+- End the saved report with `Suggested next skills (optional)` containing 1-6 recommendations. Keep them advisory only (no gating) and base them on findings plus the workspace workflow. Suggest `/memory-steward` when repo `MEMORY.md` has a non-empty promotion queue, exceeds ~300 lines, or discovery surfaced durable prefs worth persisting. When discovery narrows to one module or file, suggest `/understand-explain <file>` if UA is installed and a graph exists.
 
 ## Workflow
 
@@ -198,7 +198,7 @@ Use this structure exactly for the saved report. The chat response may be shorte
 ## 9. Suggested Next Skills (Optional)
 
 - [/skill-name: reason tied to this report.]
-- [Prefer adjacent workflow steps; include only 1-3.]
+- [Prefer adjacent workflow steps; include only 1-6.]
 - [Examples: `/feature-prompt` to frame a change request, `/diagnose` when a reproducible bug is identified.]
 ```
 

@@ -2,12 +2,12 @@
 
 Date: <DD Month YYYY>
 
-<FULL-PROJECT-CODE-1>
+<PROJECT-CODE-1>
 
 - <What changed + why it matters — combines Summary and Change into one sentence>
 - <What changed + why it matters — combines Summary and Change into one sentence>
 
-<FULL-PROJECT-CODE-2>
+<PROJECT-CODE-2>
 
 - <What changed + why it matters — combines Summary and Change into one sentence>
 
@@ -15,7 +15,7 @@ Date: <DD Month YYYY>
 
 # Detailed Release Notes
 
-## <FULL-PROJECT-CODE>
+## <PROJECT-CODE>
 
 ### <Plain-language name for the change — what the user sees, not how it was built>
 

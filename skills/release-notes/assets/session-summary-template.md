@@ -1,6 +1,6 @@
 # Stakeholder Summary
 
-<FULL-PROJECT-CODE>
+<PROJECT-CODE>
 
 - <What changed + why it matters — combines Summary and Change into one sentence>
 
@@ -8,7 +8,7 @@
 
 # Detailed Release Notes
 
-## <FULL-PROJECT-CODE>
+## <PROJECT-CODE>
 
 ### <Improvement Name>
 

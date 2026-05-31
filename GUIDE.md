@@ -65,14 +65,11 @@ and each `*-tools.md`.
 
 ## First-Time Setup
 
-1. **`/agents-md`**: Creates `AGENTS.md`, shims, project matrix, and repo-level `MEMORY.md` scaffolds.
+1. **`/agents-md`**: Creates the workspace-root `AGENTS.md` (source of truth) and the `CLAUDE.md` redirect shim, including the Project Matrix and Non-Negotiable Rules. Generates no per-repo files.
 2. **`/memory-steward`**: Syncs/scaffolds repo `MEMORY.md` per matrix row; run once after setup and at every session start (light pass).
 3. **`/setup-matt-pocock-skills`**: Configures tracker, labels, and `## Agent skills` block.
 
 Enable built-in CLI memory globally when desired: [`skills/agents-md/references/memory-global-defaults.md`](skills/agents-md/references/memory-global-defaults.md).
-
-Generated `AGENTS.md` also documents local zsh high-permission aliases for coding CLIs (`ccd`, `cxd`, `cop`, `ocd`, `agd`, `crd`) and avoids tmux-mode aliases.
-
 ### Supported Coding Tools Matrix (single source of truth)
 
 | Tool Runtime | Workspace MCP file(s) | Notes |
@@ -90,7 +87,7 @@ Use local-only policy when needed by adding generated files to local git exclude
 
 | Situation | Start With | Why |
 | :--- | :--- | :--- |
-| New Workspace | `/agents-md` | Establish codes, paths, and Non-Negotiable Rules. |
+| New Workspace | `/agents-md` | Establish the Project Matrix, paths, and Non-Negotiable Rules. |
 | Session start / memory hygiene | `/memory-steward` | Light pass after reading repo `MEMORY.md`; full pass on request. |
 | Unclear Behavior | `/feature-discovery` | Read-only audit before planning. |
 | Rough Idea | `/feature-prompt` | Section-by-section clarification interview. |
@@ -132,7 +129,7 @@ Guidelines:
 
 - Keep it recommendation-only. Do not enforce a gate or auto-chain.
 - Apply this footer after any substantial step, including local and third-party skills.
-- Keep it short: 1-3 suggestions maximum.
+- Keep it short: 1-6 suggestions maximum.
 - Use workflow adjacency first (current step -> likely next step).
 - Lead with evidence-raising suggestions before risky edits:
   - after discovery of unclear behavior: `/feature-prompt` or `/diagnose`
@@ -187,7 +184,7 @@ Full integration reference: [`docs/UNDERSTAND-ANYTHING-INTEGRATION.md`](docs/UND
 
 Use two valid issue paths:
 
-- **Planned work:** `/feature-discovery` -> `/to-issues` -> `/triage` -> `/tdd` -> `/commit-push-*`. The GitHub issue exists before coding. Matt Pocock's `/triage` owns readiness, labels, and agent brief quality. Implementation starts only when the issue has exactly one category label (`bug` or `enhancement`) and a ready state label (`ready-for-agent` or `ready-for-human`).
+- **Planned work:** `/feature-discovery` -> `/to-issues` -> `/triage` -> `/tdd` -> `/commit-push-*`. The GitHub issue exists before coding. `/triage` owns readiness, labels, and agent brief quality. Implementation starts only when the issue has exactly one category label (`bug` or `enhancement`) and a ready state label (`ready-for-agent` or `ready-for-human`).
 - **Ad hoc work:** one-line request -> `/diagnose` or direct fix -> `/tdd` when useful -> `/commit-push-*`. Do not fabricate a detailed GitHub issue before coding. The ship skill creates the issue at the end from the original request, final diff, decisions, and validation.
 
 If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, stop and route it through `/triage`, `/feature-prompt`, or `/to-issues` before continuing.

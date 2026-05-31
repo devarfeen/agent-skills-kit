@@ -104,7 +104,7 @@ skills from the wider agent-skills ecosystem.
   guide.
 - The non-negotiable discipline in `agents-md` was originally seeded by
   Forrest Chang's Karpathy-inspired `CLAUDE.md` guidelines and later expanded
-  in this repo into an 18-rule core plus retained operational defaults:
+  in this repo into a 9-rule core:
   https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md
   The upstream repository is MIT licensed. This repo records credit here rather
   than emitting source notes into generated `AGENTS.md` files.
@@ -149,7 +149,7 @@ skills from the wider agent-skills ecosystem.
 ### `agents-md`
 
 Generates `AGENTS.md` as the canonical agent instruction file and creates a
-`CLAUDE.md` shim that imports it (`CONTEXT.md` at artifacts-root; repo `MEMORY.md` when present).
+`CLAUDE.md` redirect shim that imports only `AGENTS.md`.
 
 ```bash
 npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-md
@@ -157,17 +157,15 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 
 **What it does**
 
-- Includes an 18-rule non-negotiable core in `AGENTS.md` (now covering local background execution, the orchestrator + role-lane model, and the discovery file guard), plus retained operational defaults for full Project Matrix code usage and parallel execution
-- Uses `AGENTS.md` as the canonical instruction file for supported runtimes that read it directly; creates `CLAUDE.md` for Claude CLI with `@` imports for `AGENTS.md`, `<artifacts-root>/CONTEXT.md`, and active repo `MEMORY.md` when those files exist
-- Documents local zsh high-permission aliases for coding CLIs (`ccd`, `cxd`, `cop`, `ocd`, `agd`, `crd`) and avoids tmux-mode aliases
-- Enforces instruction economy: keep `AGENTS.md` concise with stable, non-obvious invariants; keep detailed procedures in skills/references
-- Orders `/to-prd` and `/to-issues` work by dependencies: prerequisites, blockers, then unblocked slices; supports AFK herdr orchestration when available
-- Detects `*.code-workspace` manifests and uses each folder `name` as the project name/code source
-- Treats the workspace folder with `path: "."` as a meta workspace with no code
-- Builds a project matrix: `Project Name (Code) | Path | Tech Stack`
-- Establishes stable project codes for use across prompt, PRD, issue, discovery, release-note, PR, commit, and code-comment contexts
-- References `CONTEXT.md` at `<artifacts-root>`; **`MEMORY.md` at each repo root** (Project Matrix row); `docs/adr/` at `<artifacts-root>` when available
-- Wires `/memory-steward` at session start (light pass) in generated `AGENTS.md`
+- Generates one workspace-root `AGENTS.md` (single source of truth for all six supported CLIs) and one `CLAUDE.md` redirect shim — no per-project or per-repo files
+- Restricts inputs to the `.code-workspace` file and a small scan of its folders; never reads or copies the agent's own global/user instruction files into the output
+- Builds a Project Matrix — `Project | Path | Stack`, one row per workspace folder; the `Project` value is a normalized PROJECT-CODE (uppercase, hyphenated, no spaces, emojis stripped — e.g. `Partners API` → `PARTNERS-API`), used as the single cross-context identifier across prompts, PRDs, issues, discovery, release notes, PRs, commits, comments, and filenames
+- Emits a 9-rule Non-Negotiable core, including Local Orchestration (local-only parallel/background; no cloud agents) and Honest State & Reporting
+- Emits a Working With Skills section: a named-skill gradient (discover → sharpen → plan → slice → implement → verify → ship → recall) with "suggest the next skill, never auto-chain", plus a Runtime Tool-Calling subsection derived from the kit's tool-calling references
+- Emits a Memory & Retrieval section: retrieval order (`CONTEXT.md` + `docs/adr/` binding → repo-root `MEMORY.md` working recall → knowledge graphs advisory), a "do not bulk-read `docs/`" guard, and an archived-context rule for `/grill-with-docs`; the skill does not itself create those files
+- Emits GitHub Issue Titles (title/label convention only) and an Output Style section
+- `CLAUDE.md` imports only `@AGENTS.md` — no `CONTEXT.md` or `MEMORY.md` imports
+- Keeps `AGENTS.md` concise — stable, non-obvious invariants only; detailed procedures stay in the skills and their references
 
 **Example prompts**
 

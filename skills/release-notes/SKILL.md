@@ -227,12 +227,12 @@ This section is the quick-read version for PMs and stakeholders. It combines the
 
 Date: DD Month YYYY
 
-FULL-PROJECT-CODE-1
+PROJECT-CODE-1
 
 - What changed + why it matters in one sentence
 - What changed + why it matters in one sentence
 
-FULL-PROJECT-CODE-2
+PROJECT-CODE-2
 
 - What changed + why it matters in one sentence
 ```
@@ -303,7 +303,7 @@ Output must follow the exact structure below. Do not reorder sections.
 
 Date: <DD Month YYYY>
 
-<FULL-PROJECT-CODE>
+<PROJECT-CODE>
 
 - <one sentence summary>
 
@@ -311,7 +311,7 @@ Date: <DD Month YYYY>
 
 # Detailed Release Notes
 
-## <FULL-PROJECT-CODE>
+## <PROJECT-CODE>
 
 ### <Feature or Improvement Name>
 

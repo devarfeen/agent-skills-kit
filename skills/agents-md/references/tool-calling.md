@@ -8,7 +8,7 @@ those tools do not imply support for any other runtime.
 
 ## Agent Orchestration Model
 
-The main session is the **orchestrator**. It decomposes work into role-typed lanes, dispatches each lane to a local subagent (or a focused in-process tool pass when the runtime has no subagents), runs independent lanes in parallel, pushes long or noisy lanes to local background/async, and keeps the only seat for merge, conflict resolution, and final judgment. Subagents return summaries, not raw transcripts. This model is enforced by `AGENTS.md` Rules 3, 15, 16, and 17.
+The main session is the **orchestrator**. It decomposes work into role-typed lanes, dispatches each lane to a local subagent (or a focused in-process tool pass when the runtime has no subagents), runs independent lanes in parallel, pushes long or noisy lanes to local background/async, and keeps the only seat for merge, conflict resolution, and final judgment. Subagents return summaries, not raw transcripts. This model is enforced by the `AGENTS.md` Non-Negotiable Rule **Local Orchestration**.
 
 ### Local-only policy (no cloud agents)
 

@@ -105,7 +105,7 @@ Rules for **How to test**:
     ```
     Use an unquoted heredoc (`<<EOF`, not `<<'EOF'`) so `${SHA}` interpolates. Escape any literal backticks/`$` inside the body.
 
-11. **Report** — one line: `<SHA> pushed to <branch>; issue #<num> closed`. Then append the **Response footer** from `references/ship-policy.md` (1-3 advisory suggestions).
+11. **Report** — one line: `<SHA> pushed to <branch>; issue #<num> closed`. Then append the **Response footer** from `references/ship-policy.md` (1-6 advisory suggestions).
 
 ## Examples
 
@@ -186,4 +186,4 @@ Before marking the iteration done, verify:
 - [ ] Push succeeded (or, on `main`/`master`, was confirmed separately)
 - [ ] Issue closed with comment containing **Summary** + **How to test**
 - [ ] Final report line printed
-- [ ] Optional `Suggested next skills` footer included (1-3 advisory suggestions, no gating)
+- [ ] Optional `Suggested next skills` footer included (1-6 advisory suggestions, no gating)
