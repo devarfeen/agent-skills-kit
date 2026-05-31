@@ -44,6 +44,9 @@ This file redirects Claude CLI to AGENTS.md. AGENTS.md is the source of truth.
 
 ## Workspace Scan
 
+- Use only two input sources: the `.code-workspace` file and the small-scan of its workspace folders.
+- Do not read or copy from the agent's own global or user instruction files. This includes global `AGENTS.md`, user or global `CLAUDE.md`, `~/.claude/CLAUDE.md`, `~/.codex/`, and any personal memory or rules file.
+- Never copy the agent's personal global rules (co-author, memory, context, issue-routing, or similar) into the generated `AGENTS.md` or `CLAUDE.md`.
 - Parse the `.code-workspace` `folders` list.
 - Build the Project Matrix only from that `folders` list.
 - Use each folder's `name` as the project display name and project-code source. Use path/package metadata only when `name` is missing.
@@ -59,3 +62,29 @@ This file redirects Claude CLI to AGENTS.md. AGENTS.md is the source of truth.
 
 - Generate the multi-technology warning from scan results.
 - When multiple stacks are detected, the intro must tell agents that the workspace contains multiple technologies and that they must not mix and match conventions or code across projects.
+
+## Project Matrix Format
+
+The Project Matrix is a table in the generated `AGENTS.md`. One row per `.code-workspace` folder, in `folders` order. No extra rows. Never invent projects.
+
+Generate it with these exact columns:
+
+```markdown
+| Project | Path | Stack |
+|---------|------|-------|
+```
+
+- `Project`: the folder `name` with emojis removed. Preserve case, spacing, and punctuation exactly — no case change, no slugifying, no separator changes. Trim surrounding whitespace only. This is both the display name and the token agents use to refer to the project. When `name` is missing, use the folder path basename.
+- `Path`: the folder `path` from the `.code-workspace`, relative to the workspace root. Use `.` when a single-folder workspace points at the root.
+- `Stack`: concise stack summary inferred from the folder small-scan — language, framework, package manager. One line. No version padding unless a manifest pins it.
+
+Keep cells terse. No prose in cells.
+
+Example:
+
+```markdown
+| Project | Path | Stack |
+|---------|------|-------|
+| Partners API | ./partners-api | PHP 8.3 / Laravel / Composer |
+| Web | ./apps/web | TypeScript / Next.js / pnpm |
+```
