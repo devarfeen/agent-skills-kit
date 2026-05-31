@@ -173,7 +173,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 | --- | --- |
 | New instructions | `Generate AGENTS.md for this workspace` |
 | Workspace manifest | `Create AGENTS.md and shims from my code-workspace manifest` |
-| Refresh project matrix | `Update AGENTS.md project codes and tech stacks` |
+| Refresh project matrix | `Update AGENTS.md PROJECT-CODEs and stacks` |
 
 ### `memory-steward`
 
@@ -274,7 +274,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
 
 **What it does**
 
-- Maps project codes to likely repo, app, or package roots
+- Maps PROJECT-CODEs to likely repo, app, or package roots
 - Searches code, tests, docs, configs, routes, jobs, and feature flags
 - Traces definitions to callers and user-facing flows
 - Uses code as primary source of truth; highlights reuse seams and duplication risks

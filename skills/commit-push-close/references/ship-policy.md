@@ -38,7 +38,7 @@ When env keys are touched in any way (add/remove/rename/value-contract change), 
 
 ## Inline issue creation
 
-Inline issue creation is only for small ad hoc work that started from a short request with no linked GitHub issue. Planned work should already have gone through `/triage`; if a planned issue is missing, not ready, ambiguous, cross-project, or multi-slice, stop and route back to `/triage`, `/feature-prompt`, or `/to-issues` instead of fabricating a ship-time issue.
+Inline issue creation is only for small ad hoc work that started from a short request with no linked GitHub issue. Planned work should already have gone through Matt Pocock's `/triage`; if a planned issue is missing, not ready, ambiguous, cross-project, or multi-slice, stop and route back to `/triage`, `/feature-prompt`, or `/to-issues` instead of fabricating a ship-time issue.
 
 Do not use the ship flow to resolve planning ambiguity. If scope is still broad or unclear, route to `/feature-prompt` first. If blockers are high-fidelity ("needs to feel/see it"), route to `/handoff` + `/prototype` before returning to ship.
 

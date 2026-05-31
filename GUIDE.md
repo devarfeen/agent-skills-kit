@@ -55,7 +55,7 @@ Per-runtime mechanics and the role-to-mechanism map live in
 [`skills/agents-md/references/tool-calling.md`](skills/agents-md/references/tool-calling.md)
 and each `*-tools.md`.
 
-## Matt + Mickey Pattern
+## Matt + Arfeen Pattern
 
 - Treat skills as strict process rails, not optional flavor text.
 - Keep the human strategic: agent executes, human steers scope and tradeoffs.
@@ -65,11 +65,13 @@ and each `*-tools.md`.
 
 ## First-Time Setup
 
-1. **`/agents-md`**: Creates the workspace-root `AGENTS.md` (source of truth) and the `CLAUDE.md` redirect shim, including the Project Matrix and Non-Negotiable Rules. Generates no per-repo files.
-2. **`/memory-steward`**: Syncs/scaffolds repo `MEMORY.md` per matrix row; run once after setup and at every session start (light pass).
-3. **`/setup-matt-pocock-skills`**: Configures tracker, labels, and `## Agent skills` block.
+1. **`/agents-md`**: Creates the workspace-root `AGENTS.md` (source of truth) and the `CLAUDE.md` redirect shim — the Project Matrix (each project keyed by its **PROJECT-CODE**: uppercase, hyphenated, emoji-stripped, e.g. `Partners API` → `PARTNERS-API`), the Non-Negotiable Rules, Working With Skills, and a Memory & Retrieval section with fill-after-setup placeholders. Generates no per-repo files.
+2. **`/setup-matt-pocock-skills`**: Configures the issue tracker, labels, and where `CONTEXT.md` / `docs/` live.
+3. **Fill the placeholders**: replace the `AGENTS.md` Memory & Retrieval placeholders with the real `CONTEXT.md` and `docs/adr/` paths from setup. Mechanical fill, not a rewrite.
+4. **`/memory-steward`**: scaffolds/syncs each repo-root `MEMORY.md`; runs a light pass at every session start.
 
 Enable built-in CLI memory globally when desired: [`skills/agents-md/references/memory-global-defaults.md`](skills/agents-md/references/memory-global-defaults.md).
+
 ### Supported Coding Tools Matrix (single source of truth)
 
 | Tool Runtime | Workspace MCP file(s) | Notes |
@@ -140,6 +142,16 @@ Guidelines:
   - after PRD close or ADR acceptance: `/memory-steward` (promote queue → `docs/adr/`)
 - If confidence is low, suggest one conservative next step instead of a long list.
 
+## Memory & Retrieval Model
+
+Generated `AGENTS.md` encodes how agents recall context:
+
+- **Retrieval order:** `CONTEXT.md` + `docs/adr/` are **binding** (read before implementing) → repo-root `MEMORY.md` is **working recall** (a session-scoped index, not authority) → knowledge graphs are **advisory** (orientation only; never override binding).
+- **Never bulk-read `docs/`.** Treat it as an on-demand archive — retrieve only what the task names, via search, a knowledge-graph query, or a discovery skill. Loading the whole tree rots context and wastes tokens.
+- **Archived context on grill.** When you trigger `/grill-with-docs`, the agent asks up front whether you have archived context (prior discussions, original intent) for the feature. Paste it — captured verbatim into the ADR with provenance — or continue without. Old/current names it reveals are offered as `CONTEXT.md` aliases.
+
+Skills are ad-hoc, not a pipeline. Work follows a gradient — discover → sharpen → plan → slice → implement → verify → ship → recall — and after each step the agent **suggests** a next skill but never auto-chains.
+
 ## Memory steward (`/memory-steward`)
 
 Maintains **repo-root `MEMORY.md`** (≤ ~300 lines). Workspace **`CONTEXT.md`** and **`docs/adr/`** stay at `<artifacts-root>`.
@@ -184,7 +196,7 @@ Full integration reference: [`docs/UNDERSTAND-ANYTHING-INTEGRATION.md`](docs/UND
 
 Use two valid issue paths:
 
-- **Planned work:** `/feature-discovery` -> `/to-issues` -> `/triage` -> `/tdd` -> `/commit-push-*`. The GitHub issue exists before coding. `/triage` owns readiness, labels, and agent brief quality. Implementation starts only when the issue has exactly one category label (`bug` or `enhancement`) and a ready state label (`ready-for-agent` or `ready-for-human`).
+- **Planned work:** `/feature-discovery` -> `/to-issues` -> `/triage` -> `/tdd` -> `/commit-push-*`. The GitHub issue exists before coding. Matt Pocock's `/triage` owns readiness, labels, and agent brief quality. Implementation starts only when the issue has exactly one category label (`bug` or `enhancement`) and a ready state label (`ready-for-agent` or `ready-for-human`).
 - **Ad hoc work:** one-line request -> `/diagnose` or direct fix -> `/tdd` when useful -> `/commit-push-*`. Do not fabricate a detailed GitHub issue before coding. The ship skill creates the issue at the end from the original request, final diff, decisions, and validation.
 
 If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, stop and route it through `/triage`, `/feature-prompt`, or `/to-issues` before continuing.
@@ -193,7 +205,7 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 
 | Gate | Skill | Continue When |
 | :--- | :--- | :--- |
-| Workspace | `/agents-md` | Project codes and Non-Negotiable Rules are active. |
+| Workspace | `/agents-md` | The PROJECT-CODE matrix and Non-Negotiable Rules are active. |
 | Issue preflight | `Issue-writing skills` | Title pattern and both required labels are validated from local workspace instructions. |
 | Discovery | `/feature-discovery` | Evidence-backed report is saved; old reports are not read unless requested. |
 | Prompt | `/feature-prompt` | Implementation-ready prompt is reviewed by user. |
