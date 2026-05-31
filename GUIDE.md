@@ -55,6 +55,27 @@ Per-runtime mechanics and the role-to-mechanism map live in
 [`skills/agents-md/references/tool-calling.md`](skills/agents-md/references/tool-calling.md)
 and each `*-tools.md`.
 
+**Inside herdr:** when you are running in [herdr](https://herdr.dev) (`HERDR_ENV=1`),
+`/orchestrate-herdr` is the native expression of this local-only policy. It keeps the
+current tab as a pure orchestrator and fans a PRD out to one local coding-CLI worker
+tab per open sub-issue — re-runnable by swapping just the **PRD URL** and the **coding
+CLI**. No panes, no nested sub-agents, no cloud agents. See
+[`skills/orchestrate-herdr/SKILL.md`](skills/orchestrate-herdr/SKILL.md).
+
+Highest elevated permission presets live in the same tool-calling reference.
+Use them only when the user explicitly asks for highest/elevated/full/YOLO
+permission, preferably inside an isolated container, VM, dev container, or
+disposable worktree.
+
+| Runtime | Highest elevated launch / preset |
+| :--- | :--- |
+| Codex CLI | `codex --dangerously-bypass-approvals-and-sandbox` or `codex --sandbox danger-full-access --ask-for-approval never` |
+| Claude CLI | `claude --dangerously-skip-permissions` / `--permission-mode bypassPermissions` |
+| Antigravity CLI | `agy --dangerously-skip-permissions` without `--sandbox` |
+| Cursor CLI | `agent --yolo --sandbox=disabled --approve-mcps` |
+| Opencode CLI | `opencode run --dangerously-skip-permissions`; persistent agents use `permission` keys set to `allow` |
+| GitHub Copilot CLI | `copilot --allow-all` / `--yolo` |
+
 ## Matt + Arfeen Pattern
 
 - Treat skills as strict process rails, not optional flavor text.

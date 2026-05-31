@@ -63,6 +63,19 @@ This file redirects Claude CLI to AGENTS.md. AGENTS.md is the source of truth.
 - Generate the multi-technology warning from scan results.
 - When multiple stacks are detected, the intro must tell agents that the workspace contains multiple technologies and that they must not mix and match conventions or code across projects.
 
+### Stack Detection
+
+The `Stack` cell is fact read from manifests, not a guess from a folder's name or the mere presence of a file.
+
+- **Find the real app root.** Code often lives in a nested dir (`application/`, `app/`, `src/`), not the folder top. Read the manifest there and note the dir, e.g. `(application/)`.
+- **Read manifest contents; never infer from a file's existence.** A `phpunit.xml` is not proof of PHPUnit; an `application/` dir is not proof of Vite.
+- **PHP** — `composer.json`: `require.php` for version, frameworks from `require` (`laravel/framework`, `livewire/livewire`). CodeIgniter version from `system/core/CodeIgniter.php` `CI_VERSION`. List every primary framework — a Livewire app must say Livewire.
+- **Frontend build** — read the app's own `package.json` (usually `application/package.json`, not the repo root). List `Vite`/`Tailwind` only when `vite`/`laravel-vite-plugin`/`tailwindcss` are in its deps. Never assume Laravel implies a frontend build.
+- **JS / TS** — `package.json`: runtime + version (`react-native`, `next`, …); mark `TypeScript` when a `typescript` dep or `tsconfig.json` is present; package manager from the lockfile (`package-lock.json` → npm, `yarn.lock` → yarn, `pnpm-lock.yaml` → pnpm).
+- **Python** — framework from `requirements.txt` / `pyproject.toml` (`fastapi`, `django`, `flask`, …); version from `Dockerfile` `FROM python:X.Y`, `.python-version`, or `requires-python`.
+- **A test runner is not the stack.** Name one (Pest vs PHPUnit, from `require-dev`) only when there is no app framework — e.g. a plain-PHP site.
+- **Distrust the `name` field and root-level manifests.** A root `package.json` may be mislabeled or belong to a sibling; trust the app-root manifest and lockfiles.
+
 ## Project Matrix Format
 
 The Project Matrix is a table in the generated `AGENTS.md`. One row per `.code-workspace` folder, in `folders` order. No extra rows. Never invent projects.
@@ -76,7 +89,7 @@ Generate it with these exact columns:
 
 - `Project`: the PROJECT-CODE derived from the folder `name` — strip emojis, uppercase every letter, replace each run of spaces, separators, or punctuation with a single hyphen, then trim leading/trailing hyphens. Example: `Partners API` → `PARTNERS-API`, `Web` → `WEB`. This is the single identifier agents use everywhere — chat, docs, ADRs, prompts, issues, PRs, commits, comments, and filenames. When `name` is missing, derive it from the folder path basename.
 - `Path`: the folder `path` from the `.code-workspace`, relative to the workspace root. Use `.` when a single-folder workspace points at the root.
-- `Stack`: concise stack summary inferred from the folder small-scan — language, framework, package manager. One line. No version padding unless a manifest pins it.
+- `Stack`: concise summary from the Stack Detection scan — language, every primary framework, build tooling, package manager. One line, terse, but omit nothing defining. No version padding unless a manifest pins it.
 
 Keep cells terse. No prose in cells.
 
@@ -249,7 +262,7 @@ Work follows this gradient. Pick the skill that fits the step in front of you; t
 - Do not assume a skill exists; use what is installed.
 ````
 
-Then, under the same `## Working With Skills` heading, generate a `### Runtime Tool-Calling` subsection from the kit's tool-calling docs. Read `references/tool-calling.md` (the "All runtimes (index)" and "Parallel & background mechanism by runtime" tables) and the per-runtime `*-tools.md` files, and emit two compact tables for the supported runtimes: (1) how each runtime invokes a skill, and (2) its local parallel/background mechanism. Inline the results in `AGENTS.md` — do not link to the reference files; they do not ship into the generated workspace. Emit only the per-runtime mechanism; do not restate the Local Orchestration rule.
+Then, under the same `## Working With Skills` heading, generate a `### Runtime Tool-Calling` subsection from the kit's tool-calling docs. Read `references/tool-calling.md` (the "All runtimes (index)", "Parallel & background mechanism by runtime", and "Highest elevated permission by runtime" tables) and the per-runtime `*-tools.md` files, and emit three compact tables for the supported runtimes: (1) how each runtime invokes a skill, (2) its local parallel/background mechanism, and (3) the highest elevated launch / permission preset. Inline the results in `AGENTS.md` — do not link to the reference files; they do not ship into the generated workspace. Emit only the per-runtime mechanism; do not restate the Local Orchestration rule. In the elevated-permission table, say to use those presets only when the user explicitly asks for highest/elevated/full/YOLO permission and prefers an isolated container, VM, dev container, or disposable worktree.
 
 ## Memory & Retrieval
 

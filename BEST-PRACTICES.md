@@ -45,6 +45,21 @@ Why: auto-chaining removes the human from exactly the moments where judgment mat
 
 Every meaningful decision leaves a durable trace on disk or in the tracker: a refined prompt file → an ADR → a PRD issue → sliced sub-issues → a QA doc. This chain is what lets a teammate (or you, six months later) reconstruct *why*, not just *what*.
 
+### Elevated permission is explicit
+
+Highest/elevated/full/YOLO permission is never the default operating mode. Use
+it only when the user explicitly asks for it, and prefer an isolated container,
+VM, dev container, or disposable worktree.
+
+| Runtime | Highest elevated launch / preset |
+| :--- | :--- |
+| Codex CLI | `codex --dangerously-bypass-approvals-and-sandbox` or `codex --sandbox danger-full-access --ask-for-approval never` |
+| Claude CLI | `claude --dangerously-skip-permissions` / `--permission-mode bypassPermissions` |
+| Antigravity CLI | `agy --dangerously-skip-permissions` without `--sandbox` |
+| Cursor CLI | `agent --yolo --sandbox=disabled --approve-mcps` |
+| Opencode CLI | `opencode run --dangerously-skip-permissions`; persistent agents use `permission` keys set to `allow` |
+| GitHub Copilot CLI | `copilot --allow-all` / `--yolo` |
+
 ---
 
 ## 2. Memory & Retrieval Discipline
@@ -107,6 +122,8 @@ Workspace-root level. Each step produces an artifact the next step consumes.
 8. **Manual QA** — verify against the QA doc tied to that ADR/PRD.
 
 > **The thread to notice:** prompt file → ADR → PRD issue → sliced issues → tested code → QA doc. Each link is grabbable on its own, and the whole chain is auditable.
+
+> **Fanning the slices out (inside herdr):** once `/to-issues` has produced the sub-issues, if you are running in [herdr](https://herdr.dev) you can run `/orchestrate-herdr` against the PRD to spin up one local coding-CLI worker tab per open issue and monitor them for test-backed completion. It is a re-runnable orchestrator — swap only the PRD URL and the coding CLI between runs — and stays local-only: no panes, no nested sub-agents, no cloud agents. The orchestrator tab never implements; it dispatches and watches.
 
 ---
 

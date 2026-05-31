@@ -22,6 +22,7 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 - `websearch` requires the opencode provider or `OPENCODE_ENABLE_EXA`.
 - Skills resolve from `.opencode/skills/`, `~/.config/opencode/skills/`, plus compat dirs `.claude/skills/`, `.agents/skills/`, `~/.claude/skills/`, `~/.agents/skills/`.
 - Multi-repo workspace policy: use workspace-root MCP config.
+- Highest elevated permission launch: `opencode run --dangerously-skip-permissions "prompt"`. For persistent custom agents, set the agent `permission` keys needed for the task to `allow`; wildcard `{"*":"allow"}` is the full tool permission form.
 - For exact config-file placement by tool, use [`tool-calling.md`](tool-calling.md).
 
 ## Agents: parallel, background & roles

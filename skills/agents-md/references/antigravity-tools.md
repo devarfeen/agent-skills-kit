@@ -44,6 +44,7 @@ MCP: project `.agents/mcp_config.json`; remote HTTP entries use `serverUrl`. Ski
 
 - **Permission resources** (config + `/permissions`): `read_file`, `write_file`, plus MCP-tool filtering. Rules use `action(target)` form with Allow / Deny / Ask lists.
 - **Permission modes**: `request-review` (default), `proceed-in-sandbox`, `always-proceed`, `strict`.
+- **Highest elevated permission launch**: `agy --dangerously-skip-permissions`. Do not combine it with `--sandbox` when the goal is full elevation; `--sandbox` enables terminal restrictions.
 - **Hooks**: `PreToolUse` / `PostToolUse` with regex `matcher` on tool name; JSON schema includes `toolCall.name`, `toolCall.args`, `stepIdx`, plus common fields (`conversationId`, `workspacePaths`, `transcriptPath`, `artifactDirectoryPath`). Hook decision values: `allow`, `deny`, `ask`.
 - **Useful slash commands**: `/goal`, `/grill-me`, `/schedule`, `/browser`, `/artifact`, `/permissions`, `/context`, `/btw`, `/model`, `/config`.
 - **Non-interactive**: `agy -p "<prompt>"` for pipelines.

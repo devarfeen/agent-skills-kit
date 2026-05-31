@@ -32,6 +32,7 @@ Mechanics and permissions: [`tool-calling.md`](tool-calling.md).
 - Skills load from `.cursor/skills/`, `.agents/skills/`, `~/.cursor/skills/`, `~/.agents/skills/`, plus compat dirs `.claude/skills/`, `.codex/skills/`, `~/.claude/skills/`, `~/.codex/skills/`.
 - Subagent dirs: `.cursor/agents/`, `.claude/agents/`, `.codex/agents/` (project) and `~/.cursor/agents/`, `~/.claude/agents/`, `~/.codex/agents/` (user).
 - CLI permissions: per-project `<root>/.cursor/cli.json` (layered git-root → cwd), global `~/.cursor/cli-config.json`. IDE-only auto-run allowlist (separate): `~/.cursor/permissions.json`.
+- Highest elevated permission launch: `agent --yolo --sandbox=disabled --approve-mcps` for interactive sessions; `cursor-agent -p --force --sandbox=disabled --trust --approve-mcps "prompt"` for headless. `--yolo` is the `--force` alias.
 - Built-in subagents **Explore**, **Bash**, and **Browser** are delegated automatically when appropriate; see [Subagents](https://cursor.com/docs/subagents).
 
 ## Agents: parallel, background & roles

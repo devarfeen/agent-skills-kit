@@ -24,6 +24,7 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 - The GitHub MCP server ships built in; custom MCP servers add to it.
 - Multi-repo workspace policy: use workspace-root MCP config.
 - **Memory:** Enable in GitHub Copilot settings (account); CLI: `/memory on`, `/memory off`, `/memory show` (persists). `store_memory` tool stores user/repo facts in GitHub — distinct from git `<repo-root>/MEMORY.md`. Team SSOT: repo `MEMORY.md`; personal prefs may use Copilot Memory. `/memory-steward` syncs and promotes. See [`memory-global-defaults.md`](memory-global-defaults.md).
+- Highest elevated permission launch: `copilot --allow-all` (alias `--yolo`). This is equivalent to `--allow-all-tools --allow-all-paths --allow-all-urls`; combine with `--autopilot` only when the user wants autonomous multi-step continuation.
 - For exact config-file placement by tool, use [`tool-calling.md`](tool-calling.md).
 
 ## Agents: parallel, background & roles

@@ -51,6 +51,19 @@ Standard lane roles used across this kit. Each runtime's `*-tools.md` maps these
 
 Per-runtime role-to-mechanism maps and corrections live in each `*-tools.md`.
 
+### Highest elevated permission by runtime
+
+Use these only when the user explicitly asks for highest/elevated/full/YOLO permission, and prefer isolated containers, VMs, dev containers, or disposable worktrees.
+
+| Runtime | Highest elevated launch / preset | Effect |
+| :--- | :--- | :--- |
+| Codex CLI | `codex --dangerously-bypass-approvals-and-sandbox` (or explicit `codex --sandbox danger-full-access --ask-for-approval never`) | No sandbox and no approval prompts. |
+| Claude CLI | `claude --dangerously-skip-permissions` (equivalent to `--permission-mode bypassPermissions`) | Skips the permission layer; protected paths are allowed except hard circuit breakers. |
+| Antigravity CLI | `agy --dangerously-skip-permissions`; do not pair with `--sandbox` for full elevation | Auto-approves tool permission requests without terminal sandbox restrictions. |
+| Cursor CLI | `agent --yolo --sandbox=disabled --approve-mcps` (`--yolo` is `--force`) | Force-allows commands unless explicitly denied, disables sandboxing, and approves MCP servers. |
+| Opencode CLI | `opencode run --dangerously-skip-permissions`; for agent config set needed permission keys to `allow` / wildcard `{"*":"allow"}` | Auto-approves non-denied permissions; per-agent `allow` grants tools without prompts. |
+| GitHub Copilot CLI | `copilot --allow-all` (alias `--yolo`) | Allows all available tools, all paths, and all URLs without approval. |
+
 ## Cursor CLI
 
 Cursor CLI uses the `agent` command and the same tool-calling loop: the model emits a structured tool request, the runtime executes it, and results are appended to context before the next turn. There is no practical limit on tool calls per task.
@@ -118,6 +131,8 @@ Cursor CLI subagent support is documented in [Subagents](https://cursor.com/docs
 | Ask | `--mode=ask`, `/ask` | Read-only Q&A |
 
 Non-interactive CLI: `agent -p "prompt"` (`--print`) runs with full tools unless mode restricts edits. Use `--sandbox=disabled` only when the user wants auto-approved shell.
+
+Highest elevated launch: `agent --yolo --sandbox=disabled --approve-mcps` for interactive sessions; in headless automation use `cursor-agent -p --force --sandbox=disabled --trust --approve-mcps "prompt"`. `--yolo` is an alias for `--force`.
 
 Headless output: `--output-format text|json|stream-json` (with `--stream-partial-output` for incremental deltas). Auth via `CURSOR_API_KEY`. Useful CLI flags: `--worktree`, `--workspace <path>`, `--resume [thread-id]`; sessions managed with `agent ls` / `agent resume`.
 

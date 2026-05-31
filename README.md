@@ -40,6 +40,8 @@ agent-skills-kit/
     │   └── SKILL.md          # Required: metadata + instructions
     ├── commit-push-pr/       # The commit-push-pr skill
     │   └── SKILL.md          # Required: metadata + instructions
+    ├── orchestrate-herdr/    # The orchestrate-herdr skill (herdr per-issue worker fan-out)
+    │   └── SKILL.md          # Required: metadata + instructions
     └── deprecated/           # Retained for reference only — do not install for new workflows
         ├── feature-prompt-full/  # Deprecated; trigger each step manually instead
         │   └── SKILL.md
@@ -430,6 +432,51 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill commit-
 | Ship issue work as a PR | `PR this — closes #418` |
 | Update an existing PR | `commit-push-pr — there's already an open PR for this branch` |
 
+### `orchestrate-herdr`
+
+Re-runnable orchestrator prompt for [herdr](https://herdr.dev), a terminal-native
+agent multiplexer. Reads a PRD/parent-issue URL, finds its open sub-issues, and
+launches one herdr-managed worker tab per issue running a chosen coding CLI, then
+monitors every tab for test-backed completion. Runs only inside herdr
+(`HERDR_ENV=1`).
+
+```bash
+npx skills install https://github.com/devarfeen/agent-skills-kit --skill orchestrate-herdr
+```
+
+**What it does**
+
+- Wraps a tested, working orchestrator prompt that is executed **verbatim** —
+  the only things that change between runs are the **PRD URL** and the
+  **coding CLI** to launch
+- Gathers those two inputs from skill args, otherwise asks the user; never guesses
+- Keeps the main tab as a pure orchestrator: no implementation, no panes, no
+  nested sub-agents or nested coding sessions, and never `cd`s out of the
+  orchestrator folder
+- Creates one Herdr-managed worker tab per open issue inside the saved
+  workspace/session, named `[CODING_CLI] - GH #[ISSUE_NUMBER]`, and tracks each
+  by its saved tab ID (never by active/latest/visual order)
+- Sends each worker only its assigned issue prompt (never the full PRD), waiting
+  for CLI readiness and confirming the first response before counting it launched
+- Monitors all saved tabs on a 1-minute cadence and refuses to accept completion
+  without test evidence
+- Routes via issue order, dependency notes, comments, and `ready-for-agent` /
+  `ready-for-human` labels — never by mutating issue titles
+
+**Local-only fit**
+
+This is herdr's native expression of the kit's local-orchestration policy: many
+local coding-CLI workers in sibling tabs, coordinated from one orchestrator tab,
+with no cloud or remote background agents.
+
+**Example prompts**
+
+| Mode | Example prompt |
+| --- | --- |
+| Fan a PRD out to workers | `orchestrate-herdr for https://github.com/org/repo/issues/102 using codex` |
+| Re-run with a different CLI | `Re-run the herdr orchestrator on that PRD with claude` |
+| Inside herdr, no args | `/orchestrate-herdr` *(prompts for PRD URL and coding CLI)* |
+
 ### `feature-prompt-full` (deprecated)
 
 > **Deprecated.** Source lives at
@@ -517,12 +564,24 @@ worktree-isolated parallel agents are fine; remote ones are not.
 
 | Runtime | Parallel dispatch | Local background |
 | --- | --- | --- |
-| Codex CLI | `[features] multi_agent` + `spawn_agent` (≤6 threads) | local worktrees; Automations |
+| Codex CLI | `spawn_agent` / `spawn_agents_on_csv` (default 6 threads) | local worktrees; Automations are app-side, not CLI |
 | Claude CLI | Multiple `Agent` calls in one turn | `run_in_background` Bash; `background:` subagents; `isolation: worktree` |
-| Antigravity CLI | `/goal` dynamic subagents (Agent Manager, ~5) | `/schedule` local background |
+| Antigravity CLI | `start_subagent` dynamic subagents (Agent Manager) | `/schedule` local background |
 | Cursor CLI | Multiple `Task` calls (cap ~4); local worktree agents | `is_background` subagent + `Await` |
 | Opencode CLI | multiple `task` calls (`subagent_type`) | `task(background=true)` + `task_status` |
 | GitHub Copilot CLI | `/fleet` (parallel subagents) | `Ctrl+X → b` background shell |
+
+Highest elevated permission presets are documented in the same runtime
+references and should be used only when explicitly requested:
+
+| Runtime | Highest elevated launch / preset |
+| --- | --- |
+| Codex CLI | `codex --dangerously-bypass-approvals-and-sandbox` or `codex --sandbox danger-full-access --ask-for-approval never` |
+| Claude CLI | `claude --dangerously-skip-permissions` / `--permission-mode bypassPermissions` |
+| Antigravity CLI | `agy --dangerously-skip-permissions` without `--sandbox` |
+| Cursor CLI | `agent --yolo --sandbox=disabled --approve-mcps` |
+| Opencode CLI | `opencode run --dangerously-skip-permissions`; persistent agents use `permission` keys set to `allow` |
+| GitHub Copilot CLI | `copilot --allow-all` / `--yolo` |
 
 The main agent still owns final judgment and output quality. Subagents collect
 facts and run lanes; they do not replace the final synthesis.
