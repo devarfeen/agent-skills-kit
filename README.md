@@ -280,8 +280,8 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
 - Searches code, tests, docs, configs, routes, jobs, and feature flags
 - Traces definitions to callers and user-facing flows
 - Uses code as primary source of truth; highlights reuse seams and duplication risks
-- Saves the full discovery report to `<artifacts-root>/docs/discovery/DD-MM-YYYY-<PROJECT-CODE>-<slug>.md`
-- Does not auto-read existing `docs/discovery/` reports; treats them as stale unless the user asks for them
+- Returns the discovery report in chat only; never writes `docs/discovery/` files
+- Does not auto-read existing discovery files; treats them as stale unless the user asks for them
 - Optionally uses targeted `opensrc` dependency source pulls when external internals are required and local evidence is insufficient
 - Flags code-discovered domain terms that may be missing from or stale in
   `CONTEXT.md`, with short descriptions and evidence for user approval

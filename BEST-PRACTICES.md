@@ -131,11 +131,11 @@ Workspace-root level. Each step produces an artifact the next step consumes.
 
 Workspace-root level.
 
-1. **`/feature-discovery`** — point it at the module, sub-module, UI, or behavior the bug lives in. It traces the real code + logic journey and saves the report to disk. This is your evidence base.
+1. **`/feature-discovery`** — point it at the module, sub-module, UI, or behavior the bug lives in. It traces the real code + logic journey and returns the report in chat. This is your evidence base.
 2. **`/diagnose`** — run it on that area. It finds the root cause and fixes it. If it can only *confirm the bug exists* without fully resolving it, escalate to **`/tdd`**: write a failing test that reproduces the bug, then make it pass to close it for good.
 3. **Ship** — `/commit-push-close` or `/commit-push-pr`.
 
-> **Why discovery first:** diagnosing without a traced journey is guess-and-check. The discovery report gives `/diagnose` (and `/tdd`) the context to target the root cause instead of patching a symptom.
+> **Why discovery first:** diagnosing without a traced journey is guess-and-check. The discovery output gives `/diagnose` (and `/tdd`) the context to target the root cause instead of patching a symptom.
 
 ---
 

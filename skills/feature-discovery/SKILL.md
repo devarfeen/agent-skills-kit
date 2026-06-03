@@ -1,13 +1,13 @@
 ---
 name: feature-discovery
-description: Use when the user asks to investigate, audit, trace, or explain how a feature, issue, module, workflow, API, config, or behavior works across one or more codebase projects. Saves the full discovery report under docs/discovery and surfaces code-discovered domain terms that may be missing from or stale in CONTEXT.md so the user can approve follow-up context updates.
+description: Use when the user asks to investigate, audit, trace, or explain how a feature, issue, module, workflow, API, config, or behavior works across one or more codebase projects. Stays read-only and surfaces code-discovered domain terms that may be missing from or stale in CONTEXT.md so the user can approve follow-up context updates.
 ---
 
 # Feature Discovery
 
 ## Purpose
 
-Perform a read-only discovery pass over one or more projects. Explain what the requested topic does, how it works, where it is used, and why it may have been needed. Save the full discovery report as a markdown file under `<artifacts-root>/docs/discovery/`.
+Perform a read-only discovery pass over one or more projects. Explain what the requested topic does, how it works, where it is used, and why it may have been needed. Return the discovery report in chat only.
 
 Use this skill for prompts shaped like:
 
@@ -20,8 +20,9 @@ What:
 
 ## Rules
 
-- Stay read-only during discovery. Do not edit code, config, docs, memory, ADRs, prompts, issues, or generated artifacts while discovering. The only allowed filesystem write without separate approval is the final discovery report under `<artifacts-root>/docs/discovery/`.
-- `CONTEXT.md` edits and any artifact edits beyond the saved discovery report are separate follow-up actions. Before editing, show the exact file(s), proposed text or section changes, and reason. Only edit after explicit approval.
+- Stay read-only during discovery. Do not edit code, config, docs, memory, ADRs, prompts, issues, generated artifacts, or discovery files while discovering.
+- Never create or update `docs/discovery/` files. Discovery output is chat-only.
+- `CONTEXT.md` edits and any artifact edits are separate follow-up actions. Before editing, show the exact file(s), proposed text or section changes, and reason. Only edit after explicit approval.
 - Prefer CLI tools over MCP for codebase evidence.
 - Use `rg` first for text search.
 - Use `git`, `git grep`, `find`, `gh`, package metadata, local docs, issues, and tests as needed.
@@ -33,7 +34,7 @@ What:
 - Keep the main session responsible for synthesis, evidence quality, uncertainty calls, conflict resolution, and final reporting. Subagents return summaries, not raw transcripts.
 - Do not run `git fetch`, `git pull`, installs, migrations, or destructive commands.
 - Scan the codebase before using git history.
-- Do not read `docs/discovery/` files unless the user explicitly asks you to use a specific discovery report or discovery history. Discovery files can be stale; prefer current code, ADRs, CONTEXT, issues, tests, and fresh search.
+- Do not write `docs/discovery/` files. Do not read existing discovery files unless the user explicitly asks you to use a specific discovery report or discovery history. Discovery files can be stale; prefer current code, ADRs, CONTEXT, issues, tests, and fresh search.
 - Check available internal memory before doing broad GitHub issue discovery. Internal memory can include conversation memory, AGENTS.md, `<artifacts-root>/CONTEXT.md`, **`<repo-root>/MEMORY.md`** (active repo from Project Matrix + cwd), ADRs under `<artifacts-root>/docs/adr/`, local docs, local issue caches, prior issue references, or project-specific memory files. When present (optional [Understand-Anything](https://github.com/Lum1104/Understand-Anything) companion), also check `<active-repo-root>/.understand-anything/knowledge-graph.json` and `<artifacts-root>/docs/.understand-anything/knowledge-graph.json` (docs / cross-repo). If a graph exists, prefer `/understand-chat` or reading the graph before broad `rg` sweeps.
 - If external dependency internals are critical and local evidence is insufficient, optionally fetch targeted dependency source with `opensrc` and cite concrete files/functions. Keep fetch scope minimal.
 - If internal memory identifies relevant GitHub issue numbers, URLs, titles, labels, milestones, or search terms, read all GitHub issues in that bounded set.
@@ -52,8 +53,7 @@ What:
 - Flag duplication risks explicitly: when similar behavior exists in multiple paths, call out likely seam reuse opportunities for the next planning step.
 - Treat `~120K` tokens as a context-budget caution point for planning-heavy sessions. If unresolved core unknowns remain near this point, stop and recommend scope split or handoff.
 - Do not give the final discovery report until findings have passed two validation scans.
-- Save the full final report before responding. Use `<artifacts-root>/docs/discovery/DD-MM-YYYY-<PROJECT-CODE>-<slug>.md`. Use the local current date. Use the full Project Matrix code. For multi-project discovery, join project codes with `--` in request order. Slug the topic in lowercase kebab case.
-- End the saved report with `Suggested next skills (optional)` containing 1-6 recommendations. Keep them advisory only (no gating) and base them on findings plus the workspace workflow. Suggest `/memory-steward` when repo `MEMORY.md` has a non-empty promotion queue, exceeds ~300 lines, or discovery surfaced durable prefs worth persisting. When discovery narrows to one module or file, suggest `/understand-explain <file>` if UA is installed and a graph exists.
+- End the chat report with `Suggested next skills (optional)` containing 1-6 recommendations. Keep them advisory only (no gating) and base them on findings plus the workspace workflow. Suggest `/memory-steward` when repo `MEMORY.md` has a non-empty promotion queue, exceeds ~300 lines, or discovery surfaced durable prefs worth persisting. When discovery narrows to one module or file, suggest `/understand-explain <file>` if UA is installed and a graph exists.
 
 ## Workflow
 
@@ -107,19 +107,15 @@ What:
    - Avoid broad claims when evidence is partial.
    - Keep a short validation note for the final report that states what was checked in each pass.
 
-8. Save the discovery report:
-   - Resolve `<artifacts-root>` from `AGENTS.md` / Project Matrix rules: code-workspace directory first, then context root, then repo root.
-   - Ensure `<artifacts-root>/docs/discovery/` exists.
-   - Write the full report markdown using this filename shape: `DD-MM-YYYY-<PROJECT-CODE>-<slug>.md`.
-   - Use `date +%d-%m-%Y` for `DD-MM-YYYY` when available.
-   - Use the full Project Matrix code. For multi-project discovery, join codes with `--` in request order.
-   - Slug the topic from `What`: lowercase, ASCII, hyphen-separated, no filler words when obvious.
-   - If a file with the same name already exists, append `-2`, `-3`, etc. Do not overwrite.
-   - The saved file must contain the complete report, including validation and suggested next skills.
-   - In chat, include `Saved: <path>` and a concise summary. Do not claim completion if the file write failed.
+8. Present the discovery report:
+   - Return the full report in chat.
+   - Do not save it to disk.
+   - Do not create `docs/discovery/`.
+   - Include validation and suggested next skills.
+   - State whether broad GitHub issue scanning was approved, bounded by memory, skipped, or unavailable.
 
 9. Update `CONTEXT.md` or other artifacts only after approval:
-   - After the report, if terms or artifacts need updates, show the exact target path(s), proposed text/section changes, and reason for each change.
+   - After the chat report, if terms or artifacts need updates, show the exact target path(s), proposed text/section changes, and reason for each change.
    - Wait for explicit approval before editing.
    - If the user approves terms, inspect the target `CONTEXT.md` structure and preserve its style.
    - Apply only the approved additions, clarifications, renames, deprecations, or artifact edits.
@@ -142,7 +138,7 @@ git log --since="2 months ago" --oneline --all -- <relevant-path>
 
 ## Output Format
 
-Use this structure exactly for the saved report. The chat response may be shorter, but it must include `Saved: <path>` and state if any validation or issue scan was skipped.
+Use this structure exactly for the chat report. Do not save the report to disk. State if any validation or issue scan was skipped.
 
 ```markdown
 # Feature Discovery: [Topic]

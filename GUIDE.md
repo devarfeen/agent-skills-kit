@@ -228,7 +228,7 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 | :--- | :--- | :--- |
 | Workspace | `/agents-md` | The PROJECT-CODE matrix and Non-Negotiable Rules are active. |
 | Issue preflight | `Issue-writing skills` | Title pattern and both required labels are validated from local workspace instructions. |
-| Discovery | `/feature-discovery` | Evidence-backed report is saved; old reports are not read unless requested. |
+| Discovery | `/feature-discovery` | Evidence-backed report is returned in chat; discovery files are never written. |
 | Prompt | `/feature-prompt` | Implementation-ready prompt is reviewed by user. |
 | Grill | `/grill-with-docs` | `Recommended answer:` is explicit; ambiguities resolve against ADRs and domain language. |
 | PRD | `/to-prd` | Spec is clear; dependency order is known. |
