@@ -40,13 +40,8 @@ agent-skills-kit/
     │   └── SKILL.md          # Required: metadata + instructions
     ├── commit-push-pr/       # The commit-push-pr skill
     │   └── SKILL.md          # Required: metadata + instructions
-    ├── orchestrate-herdr/    # The orchestrate-herdr skill (herdr per-issue worker fan-out)
-    │   └── SKILL.md          # Required: metadata + instructions
-    └── deprecated/           # Retained for reference only — do not install for new workflows
-        ├── feature-prompt-full/  # Deprecated; trigger each step manually instead
-        │   └── SKILL.md
-        └── ubiquitous-language/  # Deprecated; use Matt Pocock's /grill-with-docs instead
-            └── SKILL.md
+    └── orchestrate-herdr/    # The orchestrate-herdr skill (herdr per-issue worker fan-out)
+        └── SKILL.md          # Required: metadata + instructions
 ```
 
 Each subfolder under `skills/` is a standalone skill that follows the
@@ -101,8 +96,7 @@ skills from the wider agent-skills ecosystem.
 
 - Local skills and docs in this repository are authored and maintained by
   Arfeen Arif. Local git history shows the release-notes skill was added first,
-  followed by feature-discovery, feature-prompt, feature-prompt-full
-  (deprecated), agents-md, ubiquitous-language (deprecated), and the workflow
+  followed by feature-discovery, feature-prompt, agents-md, and the workflow
   guide.
 - The non-negotiable discipline in `agents-md` was originally seeded by
   Forrest Chang's Karpathy-inspired `CLAUDE.md` guidelines and later expanded
@@ -110,12 +104,6 @@ skills from the wider agent-skills ecosystem.
   https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md
   The upstream repository is MIT licensed. This repo records credit here rather
   than emitting source notes into generated `AGENTS.md` files.
-- `ubiquitous-language` (deprecated, kept in `skills/` for reference only) is
-  based on Matt Pocock's deprecated `ubiquitous-language` skill, MIT License,
-  Copyright 2026 Matt Pocock:
-  https://github.com/mattpocock/skills/blob/main/ubiquitous-language/SKILL.md
-  Domain-language sharpening is now covered by Matt's `/grill-with-docs`,
-  which updates `CONTEXT.md` and ADRs inline.
 - The workflow guide references companion skills from Matt Pocock's skills repo,
   including `setup-matt-pocock-skills`, `grill-with-docs`,
   `to-prd`, `to-issues`, `tdd`, `diagnose`, `triage`,
@@ -476,63 +464,6 @@ with no cloud or remote background agents.
 | Fan a PRD out to workers | `orchestrate-herdr for https://github.com/org/repo/issues/102 using codex` |
 | Re-run with a different CLI | `Re-run the herdr orchestrator on that PRD with claude` |
 | Inside herdr, no args | `/orchestrate-herdr` *(prompts for PRD URL and coding CLI)* |
-
-### `feature-prompt-full` (deprecated)
-
-> **Deprecated.** Source lives at
-> [`skills/deprecated/feature-prompt-full/`](skills/deprecated/feature-prompt-full/SKILL.md)
-> for reference only. The kit now prefers manual, user-triggered invocation of
-> each downstream step over a state-machine-style auto-chain. Use
-> `/feature-prompt` to draft the prompt, then trigger `/grill-with-docs`,
-> `/to-prd`, `/to-issues`, `/triage`, and `/tdd` yourself as the work
-> progresses. Do not install for new workflows.
-
-Turns a rough feature idea into a prompt and prepares the full downstream
-delivery chain: `/grill-with-docs`, `/to-prd`, `/to-issues`, and `/tdd`.
-
-**What it does**
-
-- Shows the proposed command chain first and waits for approval
-- Interviews the user one section at a time with numbered options
-- Uses explorer sub-agents where codebase context can sharpen the prompt
-- Sends the draft prompt to the user for review before finalizing it
-- Ends with the exact next chain: `/grill-with-docs` -> `/to-prd` -> `/to-issues` -> `/tdd`
-
-**Example prompts**
-
-| Mode | Example prompt |
-| --- | --- |
-| Full delivery chain (legacy) | `Create a full feature prompt for stock transfer approvals` |
-| PRD-ready feature (legacy) | `Use feature-prompt-full for ADMIN-WEB and API-SERVICE invite changes` |
-| TDD-ready handoff (legacy) | `Prepare a full feature chain for scanner reliability work` |
-
-### `ubiquitous-language` (deprecated)
-
-> **Deprecated.** Source lives at
-> [`skills/deprecated/ubiquitous-language/`](skills/deprecated/ubiquitous-language/SKILL.md)
-> for reference only. Domain-language sharpening is now covered by Matt
-> Pocock's `/grill-with-docs`, which updates `CONTEXT.md` and ADRs inline as
-> decisions crystallise. Do not install for new workflows.
-
-Creates or updates a DDD-style `UBIQUITOUS_LANGUAGE.md` glossary from the
-current conversation and local domain context. Based on Matt Pocock's
-deprecated `ubiquitous-language` skill.
-
-**What it does**
-
-- Extracts domain terms, roles, workflows, states, and business concepts
-- Chooses canonical names and lists aliases to avoid
-- Flags ambiguous, overloaded, or conflicting terminology
-- Adds relationships, an example dialogue, and open questions
-- Updates an existing `UBIQUITOUS_LANGUAGE.md` instead of replacing it blindly
-
-**Example prompts**
-
-| Mode | Example prompt |
-| --- | --- |
-| New glossary | `Create a ubiquitous language glossary from this conversation` |
-| Terminology cleanup | `Harden our domain language for stock transfers` |
-| Existing glossary update | `Update UBIQUITOUS_LANGUAGE.md with what we just discussed` |
 
 ## Using a Skill (Quick Walkthrough)
 
