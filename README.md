@@ -151,7 +151,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 - Builds a Project Matrix — `Project | Path | Stack`, one row per workspace folder; the `Project` value is a normalized PROJECT-CODE (uppercase, hyphenated, no spaces, emojis stripped — e.g. `Partners API` → `PARTNERS-API`), used as the single cross-context identifier across prompts, PRDs, issues, discovery, release notes, PRs, commits, comments, and filenames
 - Emits a 9-rule Non-Negotiable core, including Local Orchestration (local-only parallel/background; no cloud agents) and Honest State & Reporting
 - Emits a Working With Skills section: a named-skill gradient (discover → sharpen → plan → slice → implement → verify → ship) with "suggest the next skill, never auto-chain", plus a Runtime Tool-Calling subsection derived from the kit's tool-calling references
-- Emits a Context & Native Memory section: retrieval order (`CONTEXT.md` + `docs/adr/` binding → current task context → native CLI memory), a "do not bulk-read `docs/`" guard, and an archived-context rule for `/grill-with-docs`; the skill does not itself create those files
+- Emits a Context & Native Memory section: retrieval order (`CONTEXT.md` + `docs/adr/` binding → current task context → native CLI memory), an artifact policy forbidding repo `MEMORY.md`, wiki, discovery, and knowledge-graph files, a "do not bulk-read `docs/`" guard, and an archived-context rule for `/grill-with-docs`; the skill does not itself create context files
 - Emits GitHub Issue Titles (title/label convention only) and an Output Style section
 - `CLAUDE.md` contains only the `@AGENTS.md` forward and short redirect note — no `CONTEXT.md`, memory, wiki, or graph imports
 - Keeps `AGENTS.md` concise — stable, non-obvious invariants only; detailed procedures stay in the skills and their references
@@ -244,9 +244,10 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
 - Maps PROJECT-CODEs to likely repo, app, or package roots
 - Searches code, tests, docs, configs, routes, jobs, and feature flags
 - Traces definitions to callers and user-facing flows
-- Uses code as primary source of truth; highlights reuse seams and duplication risks
+- Uses code as primary source of truth; highlights duplication risks and likely shared implementation opportunities
+- Frames findings through behavior, boundary, evidence, risk, uncertainty, and next action
 - Returns the discovery report in chat only; never writes `docs/discovery/` files
-- Does not auto-read existing discovery files; treats them as stale unless the user asks for them
+- Does not auto-read legacy discovery files; treats them as stale unless the user asks for a specific file
 - Optionally uses targeted `opensrc` dependency source pulls when external internals are required and local evidence is insufficient
 - Flags code-discovered domain terms that may be missing from or stale in
   `CONTEXT.md`, with short descriptions and evidence for user approval
@@ -254,7 +255,8 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
   showing exact target files and proposed changes for user approval
 - Uses recent git history only when code scanning is not enough
 - Produces a structured report covering summary, behavior, implementation,
-  usage sites, rationale, candidate context terms, risks, gaps, and next checks
+  usage sites, rationale, candidate context terms, risks, gaps, a handoff-ready
+  discovery packet, and next checks
 
 **Example prompts**
 

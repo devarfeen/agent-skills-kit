@@ -276,6 +276,13 @@ Generate this section verbatim in `AGENTS.md`, after the Working With Skills sec
 2. **Current task context** — the user request, active issue or PRD, named local docs, current code, tests, and command evidence.
 3. **Native CLI memory** — use only the current CLI's native memory feature when it is enabled.
 
+### Artifact policy
+
+- Do not create or read repo `MEMORY.md` files, workspace wiki files, discovery files, or knowledge-graph files.
+- Do not add memory MCP servers or third-party graph/index systems for this kit.
+- Keep shared project context in `AGENTS.md`, `CONTEXT.md`, and ADRs.
+- Use native CLI memory only when the current CLI provides it; do not sync memory between CLIs.
+
 ### Do not bulk-read
 
 - `docs/` is an on-demand archive, not reading material. Never load it wholesale.

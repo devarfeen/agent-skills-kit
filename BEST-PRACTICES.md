@@ -154,6 +154,7 @@ What separates intentional use from vibe coding:
 - **Mixing conventions across projects.** In a multi-tech workspace, never carry one project's patterns into another. Always name the full Project from the matrix.
 - **Big-bang slices.** If a slice can't be tested on its own, it's too big — back to `/to-issues`.
 - **Treating native memory as authority.** Native memory is user-local recall. `CONTEXT.md` and ADRs bind.
+- **Recreating secondary recall systems.** Do not create repo `MEMORY.md`, wiki, discovery, or knowledge-graph files. Use native CLI memory only.
 
 ---
 

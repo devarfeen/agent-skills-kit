@@ -1,6 +1,6 @@
 ---
 name: feature-discovery
-description: Use when the user asks to investigate, audit, trace, or explain how a feature, issue, module, workflow, API, config, or behavior works across one or more codebase projects. Stays read-only and surfaces code-discovered domain terms that may be missing from or stale in CONTEXT.md so the user can approve follow-up context updates.
+description: Use when the user asks to investigate, audit, trace, or explain how an existing feature, issue, module, workflow, API, config, or behavior works across one or more codebase projects, especially before planning, debugging, migration, refactor, or implementation. Stays read-only and surfaces code-discovered domain terms that may be missing from or stale in CONTEXT.md so the user can approve follow-up context updates.
 ---
 
 # Feature Discovery
@@ -34,7 +34,7 @@ What:
 - Keep the main session responsible for synthesis, evidence quality, uncertainty calls, conflict resolution, and final reporting. Subagents return summaries, not raw transcripts.
 - Do not run `git fetch`, `git pull`, installs, migrations, or destructive commands.
 - Scan the codebase before using git history.
-- Do not write `docs/discovery/` files. Do not read existing discovery files unless the user explicitly asks you to use a specific discovery report or discovery history. Discovery files can be stale; prefer current code, ADRs, CONTEXT, issues, tests, and fresh search.
+- Do not write `docs/discovery/` files. Do not read legacy discovery files unless the user explicitly asks you to use a specific file. Discovery files can be stale; prefer current code, ADRs, CONTEXT, issues, tests, and fresh search.
 - Check available context before doing broad GitHub issue discovery. Context can include the current conversation, AGENTS.md, `<artifacts-root>/CONTEXT.md`, ADRs under `<artifacts-root>/docs/adr/`, local docs, local issue caches, prior issue references, and prompt context.
 - If external dependency internals are critical and local evidence is insufficient, optionally fetch targeted dependency source with `opensrc` and cite concrete files/functions. Keep fetch scope minimal.
 - If available context identifies relevant GitHub issue numbers, URLs, titles, labels, milestones, or search terms, read all GitHub issues in that bounded set.
@@ -55,6 +55,29 @@ What:
 - Do not give the final discovery report until findings have passed two validation scans.
 - End the chat report with `Suggested next skills (optional)` containing 1-6 recommendations. Keep them advisory only (no gating) and base them on findings plus the workspace workflow.
 
+## Discovery Lens
+
+Use this lens to keep discovery grounded in existing system behavior, not product coaching:
+
+- **Behavior:** what currently exists and what users, systems, jobs, APIs, or operators experience.
+- **Boundary:** owning project, module, data path, entry points, exits, and explicit non-goals.
+- **Evidence:** strongest files, tests, configs, docs, issues, commands, and runtime paths.
+- **Risk:** codebase impact labels only: value risk, usability risk, feasibility risk, viability risk, data risk, security risk, or operational risk.
+- **Uncertainty:** confirmed facts, inference, open unknowns, stale context, and contradictions.
+- **Next action:** the smallest useful next skill, human decision, test, issue read, or implementation slice.
+
+## Common Discovery Mistakes
+
+Avoid these failure modes:
+
+- Reading stale discovery files before current code and tests.
+- Treating docs, issues, comments, or native memory as stronger evidence than code.
+- Explaining implementation symbols without tracing user-facing behavior and usage sites.
+- Running broad GitHub issue scans when local context does not bound the search.
+- Dumping symbols instead of describing the behavior, boundary, evidence, risks, and unknowns.
+- Skipping alias searches, reverse lookups, contradiction checks, or dead-code checks.
+- Turning codebase discovery into product discovery, interview planning, opportunity solution trees, or experiment design unless the user explicitly pivots to another skill.
+
 ## Workflow
 
 1. Parse the request:
@@ -73,6 +96,7 @@ What:
    - Trace definitions to callers.
    - Trace user-facing flows from entry points to lower-level services.
    - Include tests, docs, configs, migrations, routes, background jobs, and feature flags when relevant.
+   - Keep notes under the Discovery Lens: behavior, boundary, evidence, risk, uncertainty, and next action.
    - If using Explorer/Researcher lanes, split work by project, module, or evidence type and require each lane to return file paths, symbols, commands, and uncertainty (summaries, not raw transcripts).
 
 4. Discover related context and GitHub issues:
@@ -103,6 +127,7 @@ What:
    - First pass: cross-check the main explanation against code, tests, docs, configs, usage sites, available context, related GitHub issues, and git history where used.
    - Second pass: repeat the scan with aliases and reverse lookups, re-open the strongest evidence, look for contradictory code paths, issue comments, docs, commits, and stale assumptions, then tighten or downgrade claims.
    - Validate candidate context terms against `CONTEXT.md` and the strongest code evidence before presenting them.
+   - Check for the common discovery mistakes and correct the report before presenting it.
    - Mark dead code, unclear ownership, missing tests, contradictory evidence, skipped issue scans, stale context terms, and unverified assumptions.
    - Avoid broad claims when evidence is partial.
    - Keep a short validation note for the final report that states what was checked in each pass.
@@ -189,9 +214,19 @@ Use this structure exactly for the chat report. Do not save the report to disk. 
 
 - [Pass 1: code/tests/docs/configs/context/issues/history checked.]
 - [Pass 2: aliases/reverse lookups/contradictions/stale assumptions checked.]
+- [Common mistake check: stale discovery files, docs-over-code, unbounded issue scans, symbol dumps, product-discovery drift.]
 - [State whether broad GitHub issue scanning was approved, bounded by context, skipped, or unavailable.]
 
-## 9. Suggested Next Skills (Optional)
+## 9. Discovery Packet
+
+- **Intent:** [One sentence describing what was discovered and why.]
+- **Boundary:** [Owning project/module, entry points, and explicit exclusions.]
+- **Evidence:** [3-7 strongest file, test, config, issue, or command references.]
+- **Risks:** [Confirmed risks and risk labels; avoid speculative product advice.]
+- **Unknowns:** [Open facts, stale context, contradictions, skipped scans, or missing tests.]
+- **Next action:** [Smallest useful next skill, human decision, check, or implementation slice.]
+
+## 10. Suggested next skills (optional)
 
 - [/skill-name: reason tied to this report.]
 - [Prefer adjacent workflow steps; include only 1-6.]
@@ -220,3 +255,4 @@ The final answer should let another engineer understand:
 - where it is used
 - what evidence supports the explanation
 - what remains uncertain
+- what the smallest useful next action is

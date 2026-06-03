@@ -2,7 +2,7 @@
 
 Copy-paste snippets for **user-level** config. Merge into existing files; do not overwrite unrelated keys.
 
-This kit no longer creates repo `MEMORY.md`, wiki, or knowledge-graph files. Use each supported CLI's native memory only when that runtime provides it. Keep generated `AGENTS.md` as the shared workspace instruction file, and keep `CONTEXT.md` / `docs/adr/` as binding project context when those files exist.
+This kit no longer creates repo `MEMORY.md`, wiki, discovery, or knowledge-graph files. Use each supported CLI's native memory only when that runtime provides it. Keep generated `AGENTS.md` as the shared workspace instruction file, and keep `CONTEXT.md` / `docs/adr/` as binding project context when those files exist.
 
 ---
 
