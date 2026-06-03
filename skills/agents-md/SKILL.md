@@ -339,12 +339,16 @@ Generate this section verbatim in `AGENTS.md`, after the GitHub Issue Titles sec
 
 Chat only. Does not apply to code, docs, PRDs, release notes, PR bodies, or prompts.
 
-### 1. Plain-Language Default
+### 1. Plain-Language Chat
 
-Chat in plain teammate English. Be extremely concise — sacrifice grammar for concision. Drop articles, filler, pleasantries, and hedging.
+Use short, complete sentences. Clarity beats compression.
 
-- Keep every technical detail, code block, error string, symbol, and exact code/DB/API name verbatim
-- Explain ideas without jargon
-- **Auto-clarity exception:** revert to normal prose for security warnings, irreversible-action confirmations, multi-step sequences where fragment ambiguity risks a misread, and when the user repeats a question
-- Optional brevity skills (e.g. `caveman`) are user-invoked only — the agent may suggest activating `caveman` for more brevity
+- Lead with the conclusion.
+- Keep exact code, DB, API, route, screen, and file names verbatim.
+- Explain what those names do when they matter to the answer.
+- Split dense technical chains into `Correction`, `Why`, `Scope`, `Change`.
+- Avoid arrow-only flows unless followed by plain words.
+- If one sentence has more than three identifiers, split it.
+- Do not use unexplained shorthand like "keys off", "guarded", "live path", "canonical flow", or "shared screen".
+- Optional brevity skills like `caveman` are user-invoked only.
 ````
