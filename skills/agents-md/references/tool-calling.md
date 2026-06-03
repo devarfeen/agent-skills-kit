@@ -165,15 +165,14 @@ See [`cursor-tools.md`](cursor-tools.md) for the full skill-kit → Cursor equiv
 | Opencode CLI | [`opencode-tools.md`](opencode-tools.md) | runtime skill activation command |
 | GitHub Copilot CLI | [`copilot-tools.md`](copilot-tools.md) | runtime skill activation command |
 
-### Memory files (multi-repo workspaces)
+### Context files (multi-repo workspaces)
 
-| Artifact | Location | Cap | Steward |
-| :--- | :--- | :--- | :--- |
-| `CONTEXT.md` | `<artifacts-root>` | glossary; not a line cap in kit | `grill-with-docs` |
-| `docs/adr/` | `<artifacts-root>/docs/adr/` | binding decisions | `grill-with-docs` |
-| `MEMORY.md` | **`<repo-root>/MEMORY.md`** per Project Matrix row | ≤ ~300 lines, index-only | `/memory-steward` (auto light pass at session start) |
+| Artifact | Location | Steward |
+| :--- | :--- | :--- |
+| `CONTEXT.md` | `<artifacts-root>` | `grill-with-docs` |
+| `docs/adr/` | `<artifacts-root>/docs/adr/` | `grill-with-docs` |
 
-Global CLI memory enablement: [`memory-global-defaults.md`](memory-global-defaults.md).
+Native CLI memory defaults: [`memory-global-defaults.md`](memory-global-defaults.md).
 
 ### MCP placement (multi-repo workspaces)
 

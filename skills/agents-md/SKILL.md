@@ -20,10 +20,10 @@ Generate agent instructions for VS Code workspaces only.
 ## Source Of Truth
 
 - `AGENTS.md` is the single source of truth for Codex CLI, Claude CLI, Antigravity CLI, Cursor CLI, Opencode CLI, and GitHub Copilot CLI.
-- `CLAUDE.md` is only a redirect shim to `AGENTS.md`.
-- Do not import `CONTEXT.md`, `MEMORY.md`, or any other file from `CLAUDE.md`.
+- `CLAUDE.md` is only a redirect shim for Claude CLI.
+- `CLAUDE.md` must contain only the `@AGENTS.md` forward plus the short redirect note shown below. Do not add or read any other context from `CLAUDE.md`.
 - Do not duplicate operating rules in `CLAUDE.md`.
-- Put context, memory, issue-routing, skill-use, and operating instructions in `AGENTS.md`.
+- Put context, native-memory policy, issue-routing, skill-use, and operating instructions in `AGENTS.md`.
 
 Use this exact `CLAUDE.md`:
 
@@ -84,7 +84,7 @@ Generate it with these exact columns:
 
 ```markdown
 | Project | Path | Stack |
-|---------|------|-------|
+| ------- | ---- | ----- |
 ```
 
 - `Project`: the PROJECT-CODE derived from the folder `name` — strip emojis, uppercase every letter, replace each run of spaces, separators, or punctuation with a single hyphen, then trim leading/trailing hyphens. Example: `Partners API` → `PARTNERS-API`, `Web` → `WEB`. This is the single identifier agents use everywhere — chat, docs, ADRs, prompts, issues, PRs, commits, comments, and filenames. When `name` is missing, derive it from the folder path basename.
@@ -96,10 +96,10 @@ Keep cells terse. No prose in cells.
 Example:
 
 ```markdown
-| Project | Path | Stack |
-|---------|------|-------|
+| Project      | Path           | Stack                        |
+| ------------ | -------------- | ---------------------------- |
 | PARTNERS-API | ./partners-api | PHP 8.3 / Laravel / Composer |
-| WEB | ./apps/web | TypeScript / Next.js / pnpm |
+| WEB          | ./apps/web     | TypeScript / Next.js / pnpm  |
 ```
 
 ## Non-Negotiable Rules
@@ -162,11 +162,11 @@ The test: Every changed line should trace directly to the user's request.
 
 Transform imperative tasks into verifiable goals:
 
-| Instead of... | Transform to... |
-|--------------|-----------------|
+| Instead of...    | Transform to...                                       |
+| ---------------- | ----------------------------------------------------- |
 | "Add validation" | "Write tests for invalid inputs, then make them pass" |
-| "Fix the bug" | "Write a test that reproduces it, then make it pass" |
-| "Refactor X" | "Ensure tests pass before and after" |
+| "Fix the bug"    | "Write a test that reproduces it, then make it pass"  |
+| "Refactor X"     | "Ensure tests pass before and after"                  |
 
 For multi-step tasks, state a brief plan:
 
@@ -240,47 +240,46 @@ Enforced. No exceptions.
 
 Generate the gradient table and rules verbatim in `AGENTS.md`, after the Non-Negotiable Rules:
 
-````markdown
+```markdown
 ## Working With Skills
 
 Skills are ad-hoc tools, not a pipeline. Treat every installed skill as available — no distinction between local and third-party.
 
 Work follows this gradient. Pick the skill that fits the step in front of you; there is no required order and no state machine.
 
-| Phase | Skills |
-|-------|--------|
-| discover | `/feature-discovery` |
-| sharpen | `/feature-prompt` |
-| plan | `/grill-with-docs` (→ ADR), `/to-prd` (→ PRD) |
-| slice | `/to-issues`, `/triage` |
-| implement | `/tdd` |
-| verify | `/review`, `/diagnose` |
-| ship | `/commit-push-close`, `/commit-push-pr`, `/release-notes` |
-| recall | `/memory-steward`, `/understand*` |
+| Phase     | Skills                                                    |
+| --------- | --------------------------------------------------------- |
+| discover  | `/feature-discovery`                                      |
+| sharpen   | `/feature-prompt`                                         |
+| plan      | `/grill-with-docs` (→ ADR), `/to-prd` (→ PRD)             |
+| slice     | `/to-issues`                                              |
+| implement | `/tdd`                                                    |
+| verify    | `/review`, `/diagnose`                                    |
+| ship      | `/commit-push-close`, `/commit-push-pr`, `/release-notes` |
 
 - After finishing a step, suggest a sensible next skill. Suggest only — never chain or auto-advance.
 - Do not assume a skill exists; use what is installed.
-````
+```
 
 Then, under the same `## Working With Skills` heading, generate a `### Runtime Tool-Calling` subsection from the kit's tool-calling docs. Read `references/tool-calling.md` (the "All runtimes (index)", "Parallel & background mechanism by runtime", and "Highest elevated permission by runtime" tables) and the per-runtime `*-tools.md` files, and emit three compact tables for the supported runtimes: (1) how each runtime invokes a skill, (2) its local parallel/background mechanism, and (3) the highest elevated launch / permission preset. Inline the results in `AGENTS.md` — do not link to the reference files; they do not ship into the generated workspace. Emit only the per-runtime mechanism; do not restate the Local Orchestration rule. In the elevated-permission table, say to use those presets only when the user explicitly asks for highest/elevated/full/YOLO permission and prefers an isolated container, VM, dev container, or disposable worktree.
 
-## Memory & Retrieval
+## Context & Native Memory
 
 Generate this section verbatim in `AGENTS.md`, after the Working With Skills section. Leave the placeholder paths for the user to fill after project setup:
 
-````markdown
-## Memory & Retrieval
+```markdown
+## Context & Native Memory
 
 ### Retrieval order
 
 1. **Binding** — `CONTEXT.md` (<!-- set during setup: path to CONTEXT.md -->) and ADRs (<!-- set during setup: path to docs/adr -->). Read before implementing. These bind.
-2. **Working recall** — `MEMORY.md` at the active project's git root. Session-scoped index, not authority.
-3. **Advisory** — knowledge graphs and generated docs. Orientation only. Never override binding.
+2. **Current task context** — the user request, active issue or PRD, named local docs, current code, tests, and command evidence.
+3. **Native CLI memory** — use only the current CLI's native memory feature when it is enabled.
 
 ### Do not bulk-read
 
 - `docs/` is an on-demand archive, not reading material. Never load it wholesale.
-- Retrieve only what the current task names — by search, knowledge-graph query, or a discovery skill.
+- Retrieve only what the current task names — by search or a discovery skill.
 - Reading the whole archive rots context and wastes tokens. Pull the few relevant passages, nothing more.
 
 ### Archived context
@@ -296,13 +295,13 @@ When the user triggers `/grill-with-docs`, ask up front — before the Q/A start
 
 - If a paste reveals an old or current feature name, offer to add it to `CONTEXT.md` aliases.
 - Pasted history is advisory. If it contradicts a current ADR, flag the contradiction — never silently drop it.
-````
+```
 
 ## GitHub Issue Titles
 
-Generate this section verbatim in `AGENTS.md`, after the Memory & Retrieval section. Emit only this concise block — no extra prose. This is the title/label convention every skill and CLI anchors to; the procedure (routing, dependency order, gates) lives in the issue skills, not here:
+Generate this section verbatim in `AGENTS.md`, after the Context & Native Memory section. Emit only this concise block — no extra prose. This is the title/label convention every skill and CLI anchors to; the procedure (routing, dependency order, gates) lives in the issue skills, not here:
 
-````markdown
+```markdown
 ## GitHub Issue Titles
 
 Issue titles are findable from GitHub search and from the ADR filename. `<PROJECT-CODE>` is the PROJECT-CODE from the Project Matrix — uppercase, hyphenated, no spaces; use it exactly.
@@ -328,22 +327,23 @@ Issue titles are findable from GitHub search and from the ADR filename. `<PROJEC
 `<PROJECT-CODE>: <short imperative heading>`
 
 **Labels:** every triaged issue carries exactly one category (`bug` or `enhancement`) and exactly one state (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`).
-````
+```
 
 ## Output Style
 
 Generate this section verbatim in `AGENTS.md`, after the GitHub Issue Titles section:
 
-````markdown
+```markdown
 ## Output Style
 
 Chat only. Does not apply to code, docs, PRDs, release notes, PR bodies, or prompts.
 
 ### 1. Plain-Language Chat
 
-Use short, complete sentences. Clarity beats compression.
-
+- Be extremely concise. Sacrifice grammar for the sake of concision.
+- Use short, complete sentences when clarity would otherwise suffer. Clarity beats compression.
 - Lead with the conclusion.
+- Use everyday words. Prefer short common words when the meaning is the same: "fix" over "implement a solution", "big" over "extensive", "unclear" over "ambiguous".
 - Keep exact code, DB, API, route, screen, and file names verbatim.
 - Explain what those names do when they matter to the answer.
 - Split dense technical chains into `Correction`, `Why`, `Scope`, `Change`.
@@ -351,4 +351,4 @@ Use short, complete sentences. Clarity beats compression.
 - If one sentence has more than three identifiers, split it.
 - Do not use unexplained shorthand like "keys off", "guarded", "live path", "canonical flow", or "shared screen".
 - Optional brevity skills like `caveman` are user-invoked only.
-````
+```

@@ -27,7 +27,7 @@ Mechanics and permissions: [`tool-calling.md`](tool-calling.md).
 
 - Cursor CLI command is `agent` (interactive: `agent`, non-interactive: `agent -p "..."`).
 - `AGENTS.md` is the canonical workspace instruction file; no extra shim is required for Cursor.
-- **Memory:** No memory flag in `~/.cursor/cli-config.json`. IDE “Generate Memories” (Settings → Rules) is separate from repo `<repo-root>/MEMORY.md`. Read repo `MEMORY.md` at session start per `AGENTS.md`; `/memory-steward` light pass at start, full on user request. Optional MCP memory in `.cursor/mcp.json` is supplementary. See [`memory-global-defaults.md`](memory-global-defaults.md).
+- **Memory:** No documented memory flag in `~/.cursor/cli-config.json`. IDE “Generate Memories” (Settings → Rules) is IDE-local recall. Do not create repo memory files or add memory MCP servers for this kit. See [`memory-global-defaults.md`](memory-global-defaults.md).
 - Cursor MCP config files: `<workspace-root>/.cursor/mcp.json` (recommended for multi-repo workspaces), `~/.cursor/mcp.json` (global fallback).
 - Skills load from `.cursor/skills/`, `.agents/skills/`, `~/.cursor/skills/`, `~/.agents/skills/`, plus compat dirs `.claude/skills/`, `.codex/skills/`, `~/.claude/skills/`, `~/.codex/skills/`.
 - Subagent dirs: `.cursor/agents/`, `.claude/agents/`, `.codex/agents/` (project) and `~/.cursor/agents/`, `~/.claude/agents/`, `~/.codex/agents/` (user).

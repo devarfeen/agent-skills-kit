@@ -494,7 +494,7 @@ Before returning output, verify:
 8. Change section includes user-visible touchpoints when commit history provides them.
 9. Logic changes include one simple sentence understandable by non-technical readers.
 10. Final file includes only projects that have confirmed changes.
-11. End the response with `Suggested next skills (optional)` using 1-6 advisory suggestions only (no gating), based on what the user should likely do next. Suggest `/memory-steward` when shipped work closed a PRD or left durable prefs in repo `MEMORY.md`.
+11. End the response with `Suggested next skills (optional)` using 1-6 advisory suggestions only (no gating), based on what the user should likely do next.
 
 ## Fallback
 

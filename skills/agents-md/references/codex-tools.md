@@ -14,7 +14,7 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 **Key Notes:**
 - Subagent workflows are on by default. Config lives in `~/.codex/config.toml` (global) or `<workspace-root>/.codex/config.toml` (project).
 - Codex CLI reads `AGENTS.md` (and `AGENTS.override.md`, which wins) hierarchically from `~/.codex` and from repo root down to CWD, capped at `project_doc_max_bytes` (32 KiB default). The `child_agents_md` feature flag layers additional per-directory guidance.
-- **Memory:** Off by default. Enable globally: `[features] memories = true` and `[memories] use_memories` / `generate_memories` in `~/.codex/config.toml`. Private store: `~/.codex/memories/`. Team SSOT: `<repo-root>/MEMORY.md` + `AGENTS.md`. `/memory-steward` for repo file hygiene. See [`memory-global-defaults.md`](memory-global-defaults.md).
+- **Memory:** Off by default. Enable globally with `[features] memories = true` and `[memories] use_memories` / `generate_memories` in `~/.codex/config.toml`. Native store: `~/.codex/memories/`. Do not create or sync repo memory files. See [`memory-global-defaults.md`](memory-global-defaults.md).
 - Multi-repo workspace policy: use workspace-root MCP config.
 - Highest elevated permission launch: `codex --dangerously-bypass-approvals-and-sandbox` (or explicit `codex --sandbox danger-full-access --ask-for-approval never`). This removes sandboxing and approval prompts; use only in an external sandbox or disposable worktree.
 - For exact config-file placement by tool, use [`tool-calling.md`](tool-calling.md).

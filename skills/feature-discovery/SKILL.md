@@ -20,7 +20,7 @@ What:
 
 ## Rules
 
-- Stay read-only during discovery. Do not edit code, config, docs, memory, ADRs, prompts, issues, generated artifacts, or discovery files while discovering.
+- Stay read-only during discovery. Do not edit code, config, docs, native memory, ADRs, prompts, issues, generated artifacts, or discovery files while discovering.
 - Never create or update `docs/discovery/` files. Discovery output is chat-only.
 - `CONTEXT.md` edits and any artifact edits are separate follow-up actions. Before editing, show the exact file(s), proposed text or section changes, and reason. Only edit after explicit approval.
 - Prefer CLI tools over MCP for codebase evidence.
@@ -35,16 +35,16 @@ What:
 - Do not run `git fetch`, `git pull`, installs, migrations, or destructive commands.
 - Scan the codebase before using git history.
 - Do not write `docs/discovery/` files. Do not read existing discovery files unless the user explicitly asks you to use a specific discovery report or discovery history. Discovery files can be stale; prefer current code, ADRs, CONTEXT, issues, tests, and fresh search.
-- Check available internal memory before doing broad GitHub issue discovery. Internal memory can include conversation memory, AGENTS.md, `<artifacts-root>/CONTEXT.md`, **`<repo-root>/MEMORY.md`** (active repo from Project Matrix + cwd), ADRs under `<artifacts-root>/docs/adr/`, local docs, local issue caches, prior issue references, or project-specific memory files. When present (optional [Understand-Anything](https://github.com/Lum1104/Understand-Anything) companion), also check `<active-repo-root>/.understand-anything/knowledge-graph.json` and `<artifacts-root>/docs/.understand-anything/knowledge-graph.json` (docs / cross-repo). If a graph exists, prefer `/understand-chat` or reading the graph before broad `rg` sweeps.
+- Check available context before doing broad GitHub issue discovery. Context can include the current conversation, AGENTS.md, `<artifacts-root>/CONTEXT.md`, ADRs under `<artifacts-root>/docs/adr/`, local docs, local issue caches, prior issue references, and prompt context.
 - If external dependency internals are critical and local evidence is insufficient, optionally fetch targeted dependency source with `opensrc` and cite concrete files/functions. Keep fetch scope minimal.
-- If internal memory identifies relevant GitHub issue numbers, URLs, titles, labels, milestones, or search terms, read all GitHub issues in that bounded set.
-- If no reliable internal memory exists for the topic, ask the user for approval before scanning broadly across GitHub issues. Explain that reading all related issues can take a long time.
-- If approval for broad GitHub issue scanning is not granted, continue with code, docs, tests, local memory, and git history, and state that broad GitHub issue scanning was skipped.
+- If available context identifies relevant GitHub issue numbers, URLs, titles, labels, milestones, or search terms, read all GitHub issues in that bounded set.
+- If no reliable context exists for the topic, ask the user for approval before scanning broadly across GitHub issues. Explain that reading all related issues can take a long time.
+- If approval for broad GitHub issue scanning is not granted, continue with code, docs, tests, local context, and git history, and state that broad GitHub issue scanning was skipped.
 - Review git commits only when code scanning does not explain the topic clearly.
 - If git history is needed, review only the last 2 months.
 - Back concrete claims with file paths, symbols, commands, tests, docs, GitHub issues, or commits.
 - Separate confirmed facts from inference.
-- Do not invent memory or rationale.
+- Do not invent context or rationale.
 - When code exploration reveals domain terms, compare them with available `CONTEXT.md` content and flag missing, stale, renamed, overloaded, or ambiguous terms.
 - Candidate context terms must be meaningful to product or domain experts: roles, workflows, states, business rules, events, integrations, user-facing concepts, or project-specific names. Skip generic programming terms, helper names, low-level class names, and package names unless they carry domain meaning.
 - Classify unresolved unknowns by fidelity:
@@ -53,7 +53,7 @@ What:
 - Flag duplication risks explicitly: when similar behavior exists in multiple paths, call out likely seam reuse opportunities for the next planning step.
 - Treat `~120K` tokens as a context-budget caution point for planning-heavy sessions. If unresolved core unknowns remain near this point, stop and recommend scope split or handoff.
 - Do not give the final discovery report until findings have passed two validation scans.
-- End the chat report with `Suggested next skills (optional)` containing 1-6 recommendations. Keep them advisory only (no gating) and base them on findings plus the workspace workflow. Suggest `/memory-steward` when repo `MEMORY.md` has a non-empty promotion queue, exceeds ~300 lines, or discovery surfaced durable prefs worth persisting. When discovery narrows to one module or file, suggest `/understand-explain <file>` if UA is installed and a graph exists.
+- End the chat report with `Suggested next skills (optional)` containing 1-6 recommendations. Keep them advisory only (no gating) and base them on findings plus the workspace workflow.
 
 ## Workflow
 
@@ -75,11 +75,11 @@ What:
    - Include tests, docs, configs, migrations, routes, background jobs, and feature flags when relevant.
    - If using Explorer/Researcher lanes, split work by project, module, or evidence type and require each lane to return file paths, symbols, commands, and uncertainty (summaries, not raw transcripts).
 
-4. Discover related memory and GitHub issues:
-   - First inspect available internal memory for issue references or topic clues. Search AGENTS.md, `<artifacts-root>/CONTEXT.md`, active **`<repo-root>/MEMORY.md`**, ADRs under `<artifacts-root>/docs/adr/`, docs, local issue folders, prior prompt context, and memory files.
-   - If memory gives a bounded GitHub issue set, read every issue in that set with `gh issue view` or equivalent.
-   - If memory gives reliable labels, milestones, titles, or exact search terms, use them to perform a bounded GitHub issue search and read every matching issue that is plausibly related.
-   - If memory does not exist or is too vague to bound the search, pause and ask the user to approve a broad GitHub issue scan before running it.
+4. Discover related context and GitHub issues:
+   - First inspect available context for issue references or topic clues. Search AGENTS.md, `<artifacts-root>/CONTEXT.md`, ADRs under `<artifacts-root>/docs/adr/`, docs, local issue folders, and prior prompt context.
+   - If context gives a bounded GitHub issue set, read every issue in that set with `gh issue view` or equivalent.
+   - If context gives reliable labels, milestones, titles, or exact search terms, use them to perform a bounded GitHub issue search and read every matching issue that is plausibly related.
+   - If context does not exist or is too vague to bound the search, pause and ask the user to approve a broad GitHub issue scan before running it.
    - Summarize which issues were read, which were excluded as unrelated, and whether broad scanning was skipped.
 
 5. Track candidate `CONTEXT.md` terms:
@@ -100,7 +100,7 @@ What:
    - Use commit history to explain why or when behavior changed, not as the primary source of truth.
 
 7. Validate findings twice:
-   - First pass: cross-check the main explanation against code, tests, docs, configs, usage sites, internal memory, related GitHub issues, and git history where used.
+   - First pass: cross-check the main explanation against code, tests, docs, configs, usage sites, available context, related GitHub issues, and git history where used.
    - Second pass: repeat the scan with aliases and reverse lookups, re-open the strongest evidence, look for contradictory code paths, issue comments, docs, commits, and stale assumptions, then tighten or downgrade claims.
    - Validate candidate context terms against `CONTEXT.md` and the strongest code evidence before presenting them.
    - Mark dead code, unclear ownership, missing tests, contradictory evidence, skipped issue scans, stale context terms, and unverified assumptions.
@@ -112,7 +112,7 @@ What:
    - Do not save it to disk.
    - Do not create `docs/discovery/`.
    - Include validation and suggested next skills.
-   - State whether broad GitHub issue scanning was approved, bounded by memory, skipped, or unavailable.
+   - State whether broad GitHub issue scanning was approved, bounded by context, skipped, or unavailable.
 
 9. Update `CONTEXT.md` or other artifacts only after approval:
    - After the chat report, if terms or artifacts need updates, show the exact target path(s), proposed text/section changes, and reason for each change.
@@ -167,10 +167,10 @@ Use this structure exactly for the chat report. Do not save the report to disk. 
 - [Usage site 2 with file reference.]
 - [Tests/docs/configs that confirm usage.]
 
-## 5. Why It Was Needed / Memory
+## 5. Why It Was Needed / Context
 
-- [Use conversation memory, local docs, comments, issues, or recent commits if available.]
-- [If not found: "No reliable rationale found in available memory, docs, comments, or recent git history."]
+- [Use the conversation, local docs, comments, issues, or recent commits if available.]
+- [If not found: "No reliable rationale found in available context, docs, comments, or recent git history."]
 
 ## 6. Candidate CONTEXT.md Terms
 
@@ -187,9 +187,9 @@ Use this structure exactly for the chat report. Do not save the report to disk. 
 
 ## 8. Validation Performed
 
-- [Pass 1: code/tests/docs/configs/memory/issues/history checked.]
+- [Pass 1: code/tests/docs/configs/context/issues/history checked.]
 - [Pass 2: aliases/reverse lookups/contradictions/stale assumptions checked.]
-- [State whether broad GitHub issue scanning was approved, bounded by memory, skipped, or unavailable.]
+- [State whether broad GitHub issue scanning was approved, bounded by context, skipped, or unavailable.]
 
 ## 9. Suggested Next Skills (Optional)
 

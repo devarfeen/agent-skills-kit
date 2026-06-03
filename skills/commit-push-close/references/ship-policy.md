@@ -38,7 +38,7 @@ When env keys are touched in any way (add/remove/rename/value-contract change), 
 
 ## Inline issue creation
 
-Inline issue creation is only for small ad hoc work that started from a short request with no linked GitHub issue. Planned work should already have gone through Matt Pocock's `/triage`; if a planned issue is missing, not ready, ambiguous, cross-project, or multi-slice, stop and route back to `/triage`, `/feature-prompt`, or `/to-issues` instead of fabricating a ship-time issue.
+Inline issue creation is only for small ad hoc work that started from a short request with no linked GitHub issue. Planned work should already have gone through `/to-prd` and `/to-issues`; if a planned issue is missing, not ready, ambiguous, cross-project, or multi-slice, stop and route back to `/feature-prompt` or `/to-issues` instead of fabricating a ship-time issue. Use `/triage` only when an existing issue needs label/state repair, reporter follow-up, `ready-for-human`, `wontfix`, or an agent brief.
 
 Do not use the ship flow to resolve planning ambiguity. If scope is still broad or unclear, route to `/feature-prompt` first. If blockers are high-fidelity ("needs to feel/see it"), route to `/handoff` + `/prototype` before returning to ship.
 
@@ -115,4 +115,4 @@ Rules:
 
 ## Response footer
 
-End the final response with `Suggested next skills (optional)` containing 1-6 advisory recommendations. Keep it recommendation-only (no gating). Choose next steps from workflow context, for example `/release-notes`, `/handoff`, `/triage`, or `/memory-steward` when a PRD closed or repo `MEMORY.md` should be compacted/promoted. After ship with material diffs, suggest `/understand` on affected repo roots when UA is installed; consider `/understand-diff` when the diff crosses layers or modules.
+End the final response with `Suggested next skills (optional)` containing 1-6 advisory recommendations. Keep it recommendation-only (no gating). Choose next steps from workflow context, for example `/release-notes`, `/handoff`, or `/triage`.

@@ -24,7 +24,6 @@ Combine skills from this kit and the wider ecosystem to move from idea to shippe
 - Keep scope thin. Use small vertical slices, not big-bang plans.
 - Stay evidence-first. Use discovery and grilling before broad implementation.
 - Use optional skills ad hoc. Do not auto-invoke compression skills (`caveman` stays user-invoked only).
-- **Exception:** `/memory-steward` auto-invokes a **light pass** at session start (after reading repo `MEMORY.md`). Full pass on user remember/sync/compact requests or explicit `/memory-steward`.
 - Keep architecture healthy. Regularly run planning and refactor loops.
 - Preserve decisions. Move from prompt -> grill -> PRD -> issues -> implementation in traceable steps.
 
@@ -86,12 +85,11 @@ disposable worktree.
 
 ## First-Time Setup
 
-1. **`/agents-md`**: Creates the workspace-root `AGENTS.md` (source of truth) and the `CLAUDE.md` redirect shim — the Project Matrix (each project keyed by its **PROJECT-CODE**: uppercase, hyphenated, emoji-stripped, e.g. `Partners API` → `PARTNERS-API`), the Non-Negotiable Rules, Working With Skills, and a Memory & Retrieval section with fill-after-setup placeholders. Generates no per-repo files.
+1. **`/agents-md`**: Creates the workspace-root `AGENTS.md` (source of truth) and the `CLAUDE.md` redirect shim — the Project Matrix (each project keyed by its **PROJECT-CODE**: uppercase, hyphenated, emoji-stripped, e.g. `Partners API` → `PARTNERS-API`), the Non-Negotiable Rules, Working With Skills, and a Context & Native Memory section with fill-after-setup placeholders. Generates no per-repo files.
 2. **`/setup-matt-pocock-skills`**: Configures the issue tracker, labels, and where `CONTEXT.md` / `docs/` live.
-3. **Fill the placeholders**: replace the `AGENTS.md` Memory & Retrieval placeholders with the real `CONTEXT.md` and `docs/adr/` paths from setup. Mechanical fill, not a rewrite.
-4. **`/memory-steward`**: scaffolds/syncs each repo-root `MEMORY.md`; runs a light pass at every session start.
+3. **Fill the placeholders**: replace the `AGENTS.md` Context & Native Memory placeholders with the real `CONTEXT.md` and `docs/adr/` paths from setup. Mechanical fill, not a rewrite.
 
-Enable built-in CLI memory globally when desired: [`skills/agents-md/references/memory-global-defaults.md`](skills/agents-md/references/memory-global-defaults.md).
+Enable native CLI memory globally when desired: [`skills/agents-md/references/memory-global-defaults.md`](skills/agents-md/references/memory-global-defaults.md).
 
 ### Supported Coding Tools Matrix (single source of truth)
 
@@ -111,7 +109,6 @@ Use local-only policy when needed by adding generated files to local git exclude
 | Situation | Start With | Why |
 | :--- | :--- | :--- |
 | New Workspace | `/agents-md` | Establish the Project Matrix, paths, and Non-Negotiable Rules. |
-| Session start / memory hygiene | `/memory-steward` | Light pass after reading repo `MEMORY.md`; full pass on request. |
 | Unclear Behavior | `/feature-discovery` | Read-only audit before planning. |
 | Rough Idea | `/feature-prompt` | Section-by-section clarification interview. |
 | Broken Behavior | `/diagnose` | Systematic root cause analysis. |
@@ -122,10 +119,8 @@ Use local-only policy when needed by adding generated files to local git exclude
 ## Core Progression
 
 ```text
-/agents-md -> /memory-steward -> /setup-matt-pocock-skills -> /feature-discovery -> /feature-prompt -> /grill-with-docs -> /to-prd -> /to-issues -> /triage -> /tdd -> /commit-push-pr -> /memory-steward -> /release-notes
+/agents-md -> /setup-matt-pocock-skills -> /feature-discovery -> /feature-prompt -> /grill-with-docs -> /to-prd -> /to-issues -> /tdd -> /commit-push-pr -> /release-notes
 ```
-
-(`/memory-steward` after ship when PRD closes or MEMORY grows; not a hard gate.)
 
 ## Issue Naming And Label Preflight (Hard Gate)
 
@@ -157,70 +152,30 @@ Guidelines:
 - Lead with evidence-raising suggestions before risky edits:
   - after discovery of unclear behavior: `/feature-prompt` or `/diagnose`
   - after prompt drafting: `/grill-with-docs`
-  - after issue slicing: `/triage`
+  - after issue slicing: `/tdd` for the first ready slice
   - after implementation completion: `/commit-push-pr` or `/commit-push-close`, then `/release-notes`
-  - after `/agents-md` or memory edits: `/memory-steward`
-  - after PRD close or ADR acceptance: `/memory-steward` (promote queue → `docs/adr/`)
 - If confidence is low, suggest one conservative next step instead of a long list.
 
-## Memory & Retrieval Model
+## Context & Native Memory Model
 
-Generated `AGENTS.md` encodes how agents recall context:
+Generated `AGENTS.md` encodes how agents retrieve context:
 
-- **Retrieval order:** `CONTEXT.md` + `docs/adr/` are **binding** (read before implementing) → repo-root `MEMORY.md` is **working recall** (a session-scoped index, not authority) → knowledge graphs are **advisory** (orientation only; never override binding).
-- **Never bulk-read `docs/`.** Treat it as an on-demand archive — retrieve only what the task names, via search, a knowledge-graph query, or a discovery skill. Loading the whole tree rots context and wastes tokens.
+- **Retrieval order:** `CONTEXT.md` + `docs/adr/` are **binding** (read before implementing) -> current task context -> the current CLI's native memory when enabled.
+- **Never bulk-read `docs/`.** Treat it as an on-demand archive — retrieve only what the task names, via search or a discovery skill. Loading the whole tree rots context and wastes tokens.
+- **Native memory only.** Do not create repo memory files, wiki files, discovery files, or knowledge-graph files. Do not sync memory between CLIs.
 - **Archived context on grill.** When you trigger `/grill-with-docs`, the agent asks up front whether you have archived context (prior discussions, original intent) for the feature. Paste it — captured verbatim into the ADR with provenance — or continue without. Old/current names it reveals are offered as `CONTEXT.md` aliases.
 
-Skills are ad-hoc, not a pipeline. Work follows a gradient — discover → sharpen → plan → slice → implement → verify → ship → recall — and after each step the agent **suggests** a next skill but never auto-chains.
-
-## Memory steward (`/memory-steward`)
-
-Maintains **repo-root `MEMORY.md`** (≤ ~300 lines). Workspace **`CONTEXT.md`** and **`docs/adr/`** stay at `<artifacts-root>`.
-
-| Pass | When | Work |
-| :--- | :--- | :--- |
-| Light | Session start (auto) | Line count, promotion-queue scan; compact only if > ~300 lines or queue non-empty |
-| Full | User asks to remember/sync/compact/promote; PRD closed; explicit `/memory-steward` | Promote `ADR-NNNN:` bullets to ADRs, compact, sync Claude private memory into repo file |
-
-Install:
-
-```bash
-npx skills install https://github.com/devarfeen/agent-skills-kit --skill memory-steward
-```
-
-Skill: [`skills/memory-steward/SKILL.md`](skills/memory-steward/SKILL.md).
-
-## Understand-Anything (companion, optional)
-
-[Understand-Anything](https://github.com/Lum1104/Understand-Anything) (UA) adds **Tier 1.5** structural retrieval via git-committed knowledge graphs. It complements — never replaces — CONTEXT, ADRs, and MEMORY.
-
-| Topology | Code graph | Docs / wiki graph |
-| :--- | :--- | :--- |
-| Single repo | `<repo-root>/.understand-anything/knowledge-graph.json` | `<repo-root>/docs/.understand-anything/…` when `docs/wiki/index.md` exists |
-| Monorepo | Root or package path per matrix | `<artifacts-root>/docs/.understand-anything/…` if centralized |
-| VS Code multi-root | One graph per Project Matrix `Path` | `<artifacts-root>/docs/.understand-anything/…` |
-| Meta-workspace | Per code repo in matrix | `<artifacts-root>/docs/.understand-anything/…` after `/understand-knowledge <artifacts-root>/docs` |
-
-Install UA globally:
-
-```bash
-npx skills add Lum1104/Understand-Anything -g -y
-```
-
-Per repo root, bootstrap `.understand-anything/config.json` and `.gitignore` (ignore `intermediate/`, `tmp/`, `diff-overlay.json`, `fingerprints.json`; commit `knowledge-graph.json`, `meta.json`, `config.json`). Run `/understand <active-repo-root>` per matrix row; `/understand-knowledge <artifacts-root>/docs` when `docs/wiki/index.md` exists.
-
-Refresh is **ad-hoc only** — kit skills suggest `/understand` via `Suggested next skills (optional)` footers; never auto-invoke at session start and never use `--auto-update` by default.
-
-Full integration reference: [`docs/UNDERSTAND-ANYTHING-INTEGRATION.md`](docs/UNDERSTAND-ANYTHING-INTEGRATION.md).
+Skills are ad-hoc, not a pipeline. Work follows a gradient — discover → sharpen → plan → slice → implement → verify → ship — and after each step the agent **suggests** a next skill but never auto-chains.
 
 ## Planned Vs Ad Hoc Issue Flow
 
 Use two valid issue paths:
 
-- **Planned work:** `/feature-discovery` -> `/to-issues` -> `/triage` -> `/tdd` -> `/commit-push-*`. The GitHub issue exists before coding. Matt Pocock's `/triage` owns readiness, labels, and agent brief quality. Implementation starts only when the issue has exactly one category label (`bug` or `enhancement`) and a ready state label (`ready-for-agent` or `ready-for-human`).
+- **Planned work:** `/feature-discovery` -> `/feature-prompt` -> `/grill-with-docs` -> `/to-prd` -> `/to-issues` -> `/tdd` -> `/commit-push-*`. The PRD and slice issues exist before coding. `/to-prd` and `/to-issues` apply ready labels in the normal path, so no separate `/triage` step is required.
+- **Existing or incoming issue work:** use `/triage` when an issue needs state changes, reporter follow-up, `ready-for-human`, `wontfix`, or an agent brief before implementation.
 - **Ad hoc work:** one-line request -> `/diagnose` or direct fix -> `/tdd` when useful -> `/commit-push-*`. Do not fabricate a detailed GitHub issue before coding. The ship skill creates the issue at the end from the original request, final diff, decisions, and validation.
 
-If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, stop and route it through `/triage`, `/feature-prompt`, or `/to-issues` before continuing.
+If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, stop and route it through `/feature-prompt` or `/to-issues` before continuing. Use `/triage` only if there is already an issue whose state or labels need repair.
 
 ## Workflow Gates
 
@@ -233,7 +188,7 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 | Grill | `/grill-with-docs` | `Recommended answer:` is explicit; ambiguities resolve against ADRs and domain language. |
 | PRD | `/to-prd` | Spec is clear; dependency order is known. |
 | Issues | `/to-issues` | Slices are testable; prerequisites, blockers, and unblocked work are ordered. |
-| Triage | `/triage` | Issue state is clear and Agent Brief is present. |
+| Existing issue triage | `/triage` | Existing issue state is clear, or an Agent Brief / needs-info / wontfix outcome is recorded. |
 | Build | `/tdd` | Failure verified (Red), Fix verified (Green). |
 | Ship | `/commit-push-*` | Branch pushed and issue/PR linked with test proof. |
 | Release | `/release-notes` | PM-friendly summary saved to `docs/release-notes/`. |
@@ -248,12 +203,10 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 - **Broken Tests:** Stay in `/tdd` or pivot to `/diagnose`.
 - **Large Issues:** Back to `/to-issues` for smaller slices.
 - **Production Error:** Start with `/sentry` -> `/diagnose`.
-- **MEMORY too large / stale / post-PRD close:** `/memory-steward` (full pass).
-
 ## Practical Default
 
 When unsure, run this sequence manually:
-1. `/feature-discovery` (Understand)
+1. `/feature-discovery`
 2. `/feature-prompt` (Plan)
 3. `/grill-with-docs` (Challenge)
 

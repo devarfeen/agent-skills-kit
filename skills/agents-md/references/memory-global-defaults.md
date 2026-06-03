@@ -1,10 +1,8 @@
-# Memory — global defaults by CLI
+# Native Memory Defaults By CLI
 
 Copy-paste snippets for **user-level** config. Merge into existing files; do not overwrite unrelated keys.
 
-**SSOT:** Team-shared recall lives in **`<repo-root>/MEMORY.md`** (git-committed, per Project Matrix row). Built-in CLI memories are personal/supplementary unless synced into repo `MEMORY.md` via `/memory-steward`.
-
-See [`memory-steward`](../../memory-steward/SKILL.md) for compaction, promotion to workspace ADRs, and sync.
+This kit no longer creates repo `MEMORY.md`, wiki, or knowledge-graph files. Use each supported CLI's native memory only when that runtime provides it. Keep generated `AGENTS.md` as the shared workspace instruction file, and keep `CONTEXT.md` / `docs/adr/` as binding project context when those files exist.
 
 ---
 
@@ -23,9 +21,10 @@ generate_memories = true
 disable_on_external_context = true
 ```
 
-- Private store: `~/.codex/memories/` (generated; do not treat as team SSOT).
-- Team rules: `AGENTS.md` + repo `MEMORY.md`.
-- EEA/UK/CH: native memories may be unavailable; rely on repo `MEMORY.md`.
+- Native store: `~/.codex/memories/`.
+- Treat Codex memories as user-local recall. Do not sync them into repo files.
+- Keep team/project rules in generated `AGENTS.md`, `CONTEXT.md`, and ADRs.
+- EEA/UK/CH: native memories may be unavailable.
 
 ---
 
@@ -40,18 +39,18 @@ disable_on_external_context = true
 }
 ```
 
-Add to `~/.claude/CLAUDE.md` (global):
+Optional global reminder in `~/.claude/CLAUDE.md`:
 
 ```markdown
-## Memory SSOT
+## Native Memory
 
-- Repo-root `MEMORY.md` (git) is the team source of truth for shared recall.
-- Claude auto memory at `~/.claude/projects/<project>/memory/MEMORY.md` is supplementary.
-- At session end, merge durable facts into the active repo `MEMORY.md`; run `/memory-steward` when they diverge.
+- Use Claude's native project memory for user-local recall.
+- Do not create or sync repo MEMORY.md files.
+- Shared project rules come from AGENTS.md, CONTEXT.md, and ADRs.
 ```
 
 - `autoMemoryDirectory` is **user/local settings only** (not project `settings.json`).
-- Optional advanced: symlink `~/.claude/projects/<hash>/memory/MEMORY.md` → repo `MEMORY.md` (one machine; verify writes land in git).
+- Do not symlink Claude memory into a repo file.
 
 ---
 
@@ -65,8 +64,9 @@ Add to `~/.claude/CLAUDE.md` (global):
 ## Memory
 
 - Prefer `/memory on` in CLI sessions (`/memory show` to verify).
-- Distinguish Copilot Memory (`store_memory` tool, GitHub-stored) from repo `MEMORY.md` (git SSOT).
-- Put team-shared repo facts in `<repo-root>/MEMORY.md`; use Copilot Memory for personal prefs only when appropriate.
+- Use Copilot Memory for GitHub-hosted user/repo recall when enabled.
+- Do not create or sync repo MEMORY.md files.
+- Shared project rules come from AGENTS.md, CONTEXT.md, and ADRs.
 ```
 
 - No `memory` key in `~/.copilot/settings.json`; enablement is account + `/memory` slash commands.
@@ -77,9 +77,9 @@ Add to `~/.claude/CLAUDE.md` (global):
 
 **File:** `~/.cursor/cli-config.json` — no built-in memory toggle ([CLI config](https://cursor.com/docs/cli/reference/configuration)).
 
-- **IDE** (optional): Settings → Rules → Generate Memories — separate from repo `MEMORY.md`; do not duplicate team recall there.
-- **SSOT:** Generated `AGENTS.md` + repo `MEMORY.md`; session-start `/memory-steward` light pass.
-- Optional: MCP memory server in `~/.cursor/mcp.json` — not required for this kit.
+- Cursor CLI has no documented native memory toggle in CLI config.
+- Cursor IDE may offer Settings → Rules → Generate Memories. Treat those as IDE-local recall.
+- Do not create repo MEMORY.md files or add MCP memory servers for this kit.
 
 ---
 
@@ -90,12 +90,13 @@ Add to `~/.claude/CLAUDE.md` (global):
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": ["MEMORY.md", "CONTEXT.md"]
+  "instructions": ["AGENTS.md", "CONTEXT.md"]
 }
 ```
 
-- Walk-up `AGENTS.md` / `CLAUDE.md` still apply; `instructions` loads `MEMORY.md` when present in cwd/repo.
-- **Workspace** `opencode.json` at `<workspace-root>`: add explicit paths for multi-repo, e.g. `../api-service/MEMORY.md`, `<artifacts-root>/CONTEXT.md`.
+- Opencode has no native memory store in this kit's supported model.
+- Use `instructions` only to point at generated `AGENTS.md` and binding context files.
+- Do not include repo MEMORY.md paths.
 
 ---
 
@@ -103,18 +104,19 @@ Add to `~/.claude/CLAUDE.md` (global):
 
 **File:** `~/.gemini/antigravity-cli/settings.json` — no native memory file store.
 
-- **SSOT:** `AGENTS.md` + repo `MEMORY.md`.
-- Optional MCP: `~/.gemini/config/mcp_config.json` or `~/.gemini/antigravity-cli/mcp_config.json` (Mem0, AutoMem, etc.) — supplementary only.
+- Antigravity CLI has no native memory file store in this kit's supported model.
+- Use generated `AGENTS.md` plus binding context files.
+- Do not add repo MEMORY.md files or third-party memory MCP servers for this kit.
 
 ---
 
 ## Quick reference
 
-| Runtime | Enable built-in memory | Team SSOT |
+| Runtime | Native memory handling | Shared project context |
 | :--- | :--- | :--- |
-| Codex | `[features] memories = true` | `<repo-root>/MEMORY.md` |
-| Claude | `autoMemoryEnabled: true` (default) | `<repo-root>/MEMORY.md` |
-| Copilot | GitHub settings + `/memory on` | `<repo-root>/MEMORY.md` |
-| Cursor | AGENTS + `/memory-steward` | `<repo-root>/MEMORY.md` |
-| Opencode | `instructions` + AGENTS.md | `<repo-root>/MEMORY.md` |
-| Antigravity | AGENTS + `/memory-steward` | `<repo-root>/MEMORY.md` |
+| Codex CLI | Enable `[features] memories = true`; user-local store | `AGENTS.md`, `CONTEXT.md`, ADRs |
+| Claude CLI | `autoMemoryEnabled: true` when desired; user-local/project-native store | `AGENTS.md`, `CONTEXT.md`, ADRs |
+| GitHub Copilot CLI | GitHub settings + `/memory on` | `AGENTS.md`, `CONTEXT.md`, ADRs |
+| Cursor CLI | No documented native CLI memory toggle; IDE memories are local | `AGENTS.md`, `CONTEXT.md`, ADRs |
+| Opencode CLI | No native memory store; use `instructions` for context files only | `AGENTS.md`, `CONTEXT.md`, ADRs |
+| Antigravity CLI | No native memory file store in supported model | `AGENTS.md`, `CONTEXT.md`, ADRs |

@@ -109,7 +109,6 @@ skills from the wider agent-skills ecosystem.
   `to-prd`, `to-issues`, `tdd`, `diagnose`, `triage`,
   `improve-codebase-architecture`, `zoom-out`, `prototype`, and `handoff`:
   https://github.com/mattpocock/skills
-- Optional structural retrieval companion: [Understand-Anything](https://github.com/Lum1104/Understand-Anything) — git-committed knowledge graphs as Tier 1.5 alongside CONTEXT, ADRs, and MEMORY. See [`docs/UNDERSTAND-ANYTHING-INTEGRATION.md`](docs/UNDERSTAND-ANYTHING-INTEGRATION.md) and [`GUIDE.md`](GUIDE.md#understand-anything-companion-optional).
 - `/caveman` is credited to Matt Pocock's `caveman` skill, MIT License,
   Copyright 2026 Matt Pocock:
   https://github.com/mattpocock/skills/blob/main/skills/productivity/caveman/SKILL.md
@@ -151,10 +150,10 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 - Restricts inputs to the `.code-workspace` file and a small scan of its folders; never reads or copies the agent's own global/user instruction files into the output
 - Builds a Project Matrix — `Project | Path | Stack`, one row per workspace folder; the `Project` value is a normalized PROJECT-CODE (uppercase, hyphenated, no spaces, emojis stripped — e.g. `Partners API` → `PARTNERS-API`), used as the single cross-context identifier across prompts, PRDs, issues, discovery, release notes, PRs, commits, comments, and filenames
 - Emits a 9-rule Non-Negotiable core, including Local Orchestration (local-only parallel/background; no cloud agents) and Honest State & Reporting
-- Emits a Working With Skills section: a named-skill gradient (discover → sharpen → plan → slice → implement → verify → ship → recall) with "suggest the next skill, never auto-chain", plus a Runtime Tool-Calling subsection derived from the kit's tool-calling references
-- Emits a Memory & Retrieval section: retrieval order (`CONTEXT.md` + `docs/adr/` binding → repo-root `MEMORY.md` working recall → knowledge graphs advisory), a "do not bulk-read `docs/`" guard, and an archived-context rule for `/grill-with-docs`; the skill does not itself create those files
+- Emits a Working With Skills section: a named-skill gradient (discover → sharpen → plan → slice → implement → verify → ship) with "suggest the next skill, never auto-chain", plus a Runtime Tool-Calling subsection derived from the kit's tool-calling references
+- Emits a Context & Native Memory section: retrieval order (`CONTEXT.md` + `docs/adr/` binding → current task context → native CLI memory), a "do not bulk-read `docs/`" guard, and an archived-context rule for `/grill-with-docs`; the skill does not itself create those files
 - Emits GitHub Issue Titles (title/label convention only) and an Output Style section
-- `CLAUDE.md` imports only `@AGENTS.md` — no `CONTEXT.md` or `MEMORY.md` imports
+- `CLAUDE.md` contains only the `@AGENTS.md` forward and short redirect note — no `CONTEXT.md`, memory, wiki, or graph imports
 - Keeps `AGENTS.md` concise — stable, non-obvious invariants only; detailed procedures stay in the skills and their references
 
 **Example prompts**
@@ -165,29 +164,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 | Workspace manifest | `Create AGENTS.md and shims from my code-workspace manifest` |
 | Refresh project matrix | `Update AGENTS.md PROJECT-CODEs and stacks` |
 
-### `memory-steward`
-
-Keeps repo-root `MEMORY.md` (≤ ~300 lines) in sync across CLIs, compacts stale bullets, and promotes `ADR-NNNN:` items to workspace `docs/adr/` when PRDs close.
-
-```bash
-npx skills install https://github.com/devarfeen/agent-skills-kit --skill memory-steward
-```
-
-**What it does**
-
-- **Light pass (auto at session start):** line count and promotion-queue scan after reading repo `MEMORY.md`
-- **Full pass (on request):** compact, sync Claude/Codex private memory into repo file, promote closed PRD memory to ADRs
-- Resolves active `<repo-root>` from Project Matrix + cwd; leaves `CONTEXT.md` / ADRs at `<artifacts-root>`
-
-**Example prompts**
-
-| Mode | Example prompt |
-| --- | --- |
-| Session start | *(automatic light pass when `AGENTS.md` is active)* |
-| Remember / sync | `Remember that we use pnpm only in this repo` |
-| Compact / promote | `/memory-steward` or `Compact MEMORY and promote closed PRD items to ADR` |
-
-Global CLI memory defaults: [`skills/agents-md/references/memory-global-defaults.md`](skills/agents-md/references/memory-global-defaults.md).
+Native CLI memory defaults: [`skills/agents-md/references/memory-global-defaults.md`](skills/agents-md/references/memory-global-defaults.md).
 
 ### `release-notes`
 
@@ -347,7 +324,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill commit-
 
 **What it does**
 
-- Resolves the linked GitHub issue from the branch name, recent commits, or conversation context. If none exists, creates one inline only for small ad hoc work; planned work routes back to `/triage`, `/feature-prompt`, or `/to-issues`.
+- Resolves the linked GitHub issue from the branch name, recent commits, or conversation context. If none exists, creates one inline only for small ad hoc work; planned work routes back to `/feature-prompt` or `/to-issues`.
 - Reads issue labels via `gh issue view --json state,labels,title`; routing state stays in labels, not title prefixes:
   - `ready-for-human` → proceed with human-decision context in the body/comment
   - `ready-for-agent` → proceed autonomously
@@ -389,7 +366,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill commit-
 
 **What it does**
 
-- Resolves the linked GitHub issue from the branch name, recent commits, or conversation context. If none exists, creates one inline only for small ad hoc work; planned work routes back to `/triage`, `/feature-prompt`, or `/to-issues`.
+- Resolves the linked GitHub issue from the branch name, recent commits, or conversation context. If none exists, creates one inline only for small ad hoc work; planned work routes back to `/feature-prompt` or `/to-issues`.
 - Reads issue labels via `gh issue view --json state,labels,title,url`; routing state stays in labels, not title prefixes:
   - `ready-for-human` → proceed with human-decision context in the body/comment
   - `ready-for-agent` → proceed autonomously
