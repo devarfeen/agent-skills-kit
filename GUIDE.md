@@ -82,7 +82,7 @@ disposable worktree.
 - Use code as source of truth over broad doc summaries.
 - In chat, use Project Matrix PROJECT-CODEs for projects; mention folder names or domains only when the path itself matters.
 - When you ask an agent to repeat or confirm your understanding, it must ask for approval or correction and wait.
-- At phase changes, expect a checkpoint: current stage, what was learned, next action, and whether user input is needed.
+- At phase changes, expect a visible phase update: `Stage`, `Found`, `Next`, and `Needs user`. The agent continues within the same phase, but must make new phase transitions explicit.
 - If dependency behavior is unclear, fetch targeted source (for example `opensrc`) before guessing.
 - Ship small, reviewable slices; avoid oversized PRs and oversized planning threads.
 

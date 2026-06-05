@@ -231,12 +231,16 @@ The main session is sole orchestrator, merger, conflict resolver, and final judg
 Enforced. No exceptions.
 
 - Before any significant step, anchor state explicitly: `[verified]` (proven true), `[current]` (in progress), `[todo]` (not started)
-- At phase changes, send a checkpoint before continuing: current stage, what was learned, next action, and whether user input is needed
-- After discovery, investigation, or broad file reads, checkpoint before moving into planning, edits, tests, commits, PRs, or issue updates
+- At phase changes, send a short visible phase update: `Stage`, `Found`, `Next`, and `Needs user`
+- Do not bury phase updates inside long narration, raw tool output, or pre-tool chatter
+- Continue within the same phase when the next action follows from the request
+- Before entering a new phase, make the transition explicit
+- Stop only when user input, approval, or a scope decision is needed
+- After discovery, investigation, or broad file reads, give the phase update before planning, edits, tests, commits, PRs, or issue updates
 - Never report work done while any part is skipped, stubbed, or unverified
 - Surface constraints, risks, and assumptions up front — never bury or omit them
 
-**Why:** Silent gaps and premature "done" are how broken work ships. Checkpoints keep the user oriented before the agent changes phase.
+**Why:** Silent gaps and premature "done" are how broken work ships. Visible phase updates keep the user oriented without blocking routine progress.
 ````
 
 ## Working With Skills
