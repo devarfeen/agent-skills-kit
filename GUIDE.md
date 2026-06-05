@@ -80,6 +80,9 @@ disposable worktree.
 - Treat skills as strict process rails, not optional flavor text.
 - Keep the human strategic: agent executes, human steers scope and tradeoffs.
 - Use code as source of truth over broad doc summaries.
+- In chat, use Project Matrix PROJECT-CODEs for projects; mention folder names or domains only when the path itself matters.
+- When you ask an agent to repeat or confirm your understanding, it must ask for approval or correction and wait.
+- At phase changes, expect a checkpoint: current stage, what was learned, next action, and whether user input is needed.
 - If dependency behavior is unclear, fetch targeted source (for example `opensrc`) before guessing.
 - Ship small, reviewable slices; avoid oversized PRs and oversized planning threads.
 

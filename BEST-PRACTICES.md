@@ -102,6 +102,8 @@ Run once per workspace, at the workspace-root level (not inside a single repo).
 2. **`/setup-matt-pocock-skills`** — answers the project-shape questions: which issue tracker (GitHub, Linear, or filesystem), label vocabulary, and **where `CONTEXT.md` / `docs/` live**.
 3. **Fill the placeholders** — ask the agent to update the generated `AGENTS.md` with the real paths your setup session just decided.
 
+Generated chat rules use Project Matrix PROJECT-CODEs instead of folder names, repo names, domains, or hostnames unless the path itself matters. At phase changes, the agent must checkpoint: current stage, what was learned, next action, and whether user input is needed. If you ask the agent to repeat or confirm your understanding, it must ask for approval or correction and wait before continuing.
+
 > **Why placeholders, not guesswork:** `/agents-md` runs *before* you've decided where context lives, so it must not invent a path. Leaving labelled placeholders turns step 4 into a mechanical fill instead of a rewrite. `/agents-md` writes the *rules of engagement*; `/setup-matt-pocock-skills` owns the *locations*.
 
 ---

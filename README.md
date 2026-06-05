@@ -148,11 +148,11 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 
 - Generates one workspace-root `AGENTS.md` (single source of truth for all six supported CLIs) and one `CLAUDE.md` redirect shim — no per-project or per-repo files
 - Restricts inputs to the `.code-workspace` file and a small scan of its folders; never reads or copies the agent's own global/user instruction files into the output
-- Builds a Project Matrix — `Project | Path | Stack`, one row per workspace folder; the `Project` value is a normalized PROJECT-CODE (uppercase, hyphenated, no spaces, emojis stripped — e.g. `Partners API` → `PARTNERS-API`), used as the single cross-context identifier across prompts, PRDs, issues, discovery, release notes, PRs, commits, comments, and filenames
-- Emits a 9-rule Non-Negotiable core, including Local Orchestration (local-only parallel/background; no cloud agents) and Honest State & Reporting
+- Builds a Project Matrix — `Project | Path | Stack`, one row per workspace folder; the `Project` value is a normalized PROJECT-CODE (uppercase, hyphenated, no spaces, emojis stripped — e.g. `Partners API` → `PARTNERS-API`), used as the single cross-context identifier across chat, prompts, PRDs, issues, discovery, release notes, PRs, commits, comments, and filenames
+- Emits a 9-rule Non-Negotiable core, including Local Orchestration (local-only parallel/background; no cloud agents) and Honest State & Reporting with phase checkpoints
 - Emits a Working With Skills section: a named-skill gradient (discover → sharpen → plan → slice → implement → verify → ship) with "suggest the next skill, never auto-chain", plus a Runtime Tool-Calling subsection derived from the kit's tool-calling references
 - Emits a Context & Native Memory section: retrieval order (`CONTEXT.md` + `docs/adr/` binding → current task context → native CLI memory), an artifact policy forbidding repo `MEMORY.md`, wiki, discovery, and knowledge-graph files, a "do not bulk-read `docs/`" guard, and an archived-context rule for `/grill-with-docs`; the skill does not itself create context files
-- Emits GitHub Issue Titles (title/label convention only) and an Output Style section
+- Emits GitHub Issue Titles (title/label convention only) and an Output Style section, including approval-gated understanding checks
 - `CLAUDE.md` contains only the `@AGENTS.md` forward and short redirect note — no `CONTEXT.md`, memory, wiki, or graph imports
 - Keeps `AGENTS.md` concise — stable, non-obvious invariants only; detailed procedures stay in the skills and their references
 

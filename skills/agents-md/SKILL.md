@@ -114,6 +114,7 @@ Generate this section verbatim in `AGENTS.md`, after the Project Matrix:
 - Every task must target a project from the Project Matrix. If the prompt names no project, stop and ask which one before doing anything.
 - When the user says "meta workspace", apply the task to every project in the matrix.
 - Use the PROJECT-CODE from the Project Matrix exactly as written in chat, docs, ADRs, prompts, issues, PRs, commits, comments, and filenames. Never alter, abbreviate, or re-case it.
+- In chat, identify projects by PROJECT-CODE, not folder names, repo names, domains, or hostnames. Mention paths only when the path itself matters.
 
 ### 2. Think Before Coding
 
@@ -230,10 +231,12 @@ The main session is sole orchestrator, merger, conflict resolver, and final judg
 Enforced. No exceptions.
 
 - Before any significant step, anchor state explicitly: `[verified]` (proven true), `[current]` (in progress), `[todo]` (not started)
+- At phase changes, send a checkpoint before continuing: current stage, what was learned, next action, and whether user input is needed
+- After discovery, investigation, or broad file reads, checkpoint before moving into planning, edits, tests, commits, PRs, or issue updates
 - Never report work done while any part is skipped, stubbed, or unverified
 - Surface constraints, risks, and assumptions up front — never bury or omit them
 
-**Why:** Silent gaps and premature "done" are how broken work ships. Stating state forces the agent to prove progress, not claim it.
+**Why:** Silent gaps and premature "done" are how broken work ships. Checkpoints keep the user oriented before the agent changes phase.
 ````
 
 ## Working With Skills
@@ -358,4 +361,12 @@ Chat only. Does not apply to code, docs, PRDs, release notes, PR bodies, or prom
 - If one sentence has more than three identifiers, split it.
 - Do not use unexplained shorthand like "keys off", "guarded", "live path", "canonical flow", or "shared screen".
 - Optional brevity skills like `caveman` are user-invoked only.
+
+### 2. Understanding Checks
+
+When the user asks you to repeat, confirm, or restate their understanding:
+
+- Restate only what you understand.
+- Ask the user to approve or correct it.
+- Stop there. Do not plan, edit, run tools, or continue until the user confirms or corrects the understanding.
 ```
