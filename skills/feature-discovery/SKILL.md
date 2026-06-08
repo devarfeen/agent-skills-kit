@@ -217,16 +217,7 @@ Use this structure exactly for the chat report. Do not save the report to disk. 
 - [Common mistake check: stale discovery files, docs-over-code, unbounded issue scans, symbol dumps, product-discovery drift.]
 - [State whether broad GitHub issue scanning was approved, bounded by context, skipped, or unavailable.]
 
-## 9. Discovery Packet
-
-- **Intent:** [One sentence describing what was discovered and why.]
-- **Boundary:** [Owning project/module, entry points, and explicit exclusions.]
-- **Evidence:** [3-7 strongest file, test, config, issue, or command references.]
-- **Risks:** [Confirmed risks and risk labels; avoid speculative product advice.]
-- **Unknowns:** [Open facts, stale context, contradictions, skipped scans, or missing tests.]
-- **Next action:** [Smallest useful next skill, human decision, check, or implementation slice.]
-
-## 10. Suggested next skills (optional)
+## 9. Suggested Next Skills (Optional)
 
 - [/skill-name: reason tied to this report.]
 - [Prefer adjacent workflow steps; include only 1-6.]
@@ -255,4 +246,3 @@ The final answer should let another engineer understand:
 - where it is used
 - what evidence supports the explanation
 - what remains uncertain
-- what the smallest useful next action is

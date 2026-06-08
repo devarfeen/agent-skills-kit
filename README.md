@@ -255,8 +255,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
   showing exact target files and proposed changes for user approval
 - Uses recent git history only when code scanning is not enough
 - Produces a structured report covering summary, behavior, implementation,
-  usage sites, rationale, candidate context terms, risks, gaps, a handoff-ready
-  discovery packet, and next checks
+  usage sites, rationale, candidate context terms, risks, gaps, and next checks
 
 **Example prompts**
 
