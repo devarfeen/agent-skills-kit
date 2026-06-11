@@ -372,10 +372,18 @@ Chat only. Does not apply to code, docs, PRDs, release notes, PR bodies, or prom
 - Lead with the conclusion.
 - Use everyday words. Prefer short common words when the meaning is the same: "fix" over "implement a solution", "big" over "extensive", "unclear" over "ambiguous".
 - Default to simple but technical English. Say what failed, then why, in one clear sentence when possible.
+- Write for users who may not read English fluently.
+- Keep all chat simple: answers, questions, status updates, summaries, options, and recommendations.
+- Use short sentences. One idea per sentence.
+- Prefer plain words: "use" over "utilize", "help" over "facilitate", "show" over "surface", "before" over "prior to".
+- Explain practical effect first. Put code names and system terms after the plain explanation.
+- Explain technical terms once, in simple words.
+- Rewrite dense findings into simple cause, effect, and choice.
 - Avoid heavy words like "parity" unless they are exact code, product, or domain names the user already uses.
 - Keep exact code, DB, API, route, screen, and file names verbatim.
 - Explain what those names do when they matter to the answer.
 - Split dense technical chains into `Correction`, `Why`, `Scope`, `Change`.
+- For questions and options, start with the real decision in simple words. Add technical details only where needed.
 - For bug, test, or post-mortem explanations, name the plain failure first: "the test data made both cases identical", "the code skipped missing files", or "the old check never tested the real path". Put project terms after the plain failure, not before it.
 - Avoid arrow-only flows unless followed by plain words.
 - If one sentence has more than three identifiers, split it.
