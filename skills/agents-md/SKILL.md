@@ -118,71 +118,41 @@ Generate this section verbatim in `AGENTS.md`, after the Project Matrix:
 
 ### 2. Think Before Coding
 
-Don't assume. Don't hide confusion. Surface tradeoffs.
+- State assumptions.
+- Present real interpretations.
+- Push back on weak plans.
+- Stop and ask when unclear.
 
-**Why:** LLMs often pick an interpretation silently and run with it. This principle forces explicit reasoning.
+### 3. Decision Options
 
-- **State assumptions explicitly** — If uncertainty would change the outcome, stop and ask rather than guess
-- **Present multiple interpretations** — Don't pick silently when ambiguity exists
+Do not make the user infer your recommendation.
+
 - **Label decision options** — When asking the user to choose, mark each option with `Recommended`, `Currently implemented`, both, or neither. Put the label in the option title, not buried in the explanation.
 - **Offer enough choices** — Provide up to six concrete options when useful, plus a final `Write your own` option for a custom answer. Do not force three options when the analysis found more real paths.
 - **Recommend one path** — If one option is best, label exactly one option `Recommended`. If no option is safe to recommend, say why before the list.
-- **Push back when warranted** — If a simpler approach exists, say so
-- **Stop when confused** — Name what's unclear and ask for clarification
 
-### 3. Simplicity First
+### 4. Simplicity First
 
-Minimum code that solves the problem. Nothing speculative.
+- Solve only the asked problem.
+- Add no speculative features.
+- Add no one-use abstractions.
+- Remove complexity when a smaller fix works.
 
-Combat the tendency toward over engineering:
+### 5. Surgical Changes
 
-- No features beyond what was asked
-- No abstractions for single-use code
-- No "flexibility" or "configurability" that wasn't requested
-- No error handling for impossible scenarios
-- If 200 lines could be 50, rewrite it
+- Touch only required lines.
+- Match local style.
+- Do not refactor unrelated code.
+- Clean only dead code your change creates.
 
-### 4. Surgical Changes
+### 6. Goal-Driven Execution
 
-Touch only what you must. Clean up only your own mess.
+- Define success before edits.
+- Turn bugs into reproductions.
+- Turn changes into checks.
+- Verify before reporting done.
 
-When editing existing code:
-
-- Don't "improve" adjacent code, comments, or formatting
-- Don't refactor things that aren't broken
-- Match existing style, even if you'd do it differently
-- If you notice unrelated dead code, mention it — don't delete it
-
-When your changes create orphans:
-
-- Remove imports/variables/functions that YOUR changes made unused
-- Don't remove pre-existing dead code unless asked
-
-The test: Every changed line should trace directly to the user's request.
-
-### 5. Goal-Driven Execution
-
-**Define success criteria. Loop until verified.**
-
-Transform imperative tasks into verifiable goals:
-
-| Instead of...    | Transform to...                                       |
-| ---------------- | ----------------------------------------------------- |
-| "Add validation" | "Write tests for invalid inputs, then make them pass" |
-| "Fix the bug"    | "Write a test that reproduces it, then make it pass"  |
-| "Refactor X"     | "Ensure tests pass before and after"                  |
-
-For multi-step tasks, state a brief plan:
-
-```
-1. [Step] → verify: [check]
-2. [Step] → verify: [check]
-3. [Step] → verify: [check]
-```
-
-**Why:** Strong success criteria let the LLM loop independently. Weak criteria ("make it work") require constant clarification.
-
-### 6. Systematic Debugging
+### 7. Systematic Debugging
 
 Find the root cause. Don't patch symptoms.
 
@@ -195,7 +165,7 @@ When something breaks:
 
 **Why:** Symptom patches hide the real fault and resurface later as flakier, harder bugs.
 
-### 7. Read Before Write
+### 8. Read Before Write
 
 Before editing, understand why the code exists.
 
@@ -205,7 +175,7 @@ Map the surrounding context first:
 - Shared utilities it relies on
 - The original intent behind the code
 
-### 8. Local Orchestration
+### 9. Local Orchestration
 
 The main session is sole orchestrator, merger, conflict resolver, and final judge.
 
@@ -229,7 +199,7 @@ The main session is sole orchestrator, merger, conflict resolver, and final judg
 - Subagents return summaries, not transcripts
 - Final synthesis stays in main
 
-### 9. Honest State & Reporting
+### 10. Honest State & Reporting
 
 Enforced. No exceptions.
 
@@ -249,7 +219,7 @@ Enforced. No exceptions.
 
 **Why:** Silent gaps and premature "done" are how broken work ships. Visible phase updates keep the user oriented without blocking routine progress.
 
-### 10. Zero Attribution
+### 11. Zero Attribution
 
 No co-author, AI, tool, or generator attribution.
 
