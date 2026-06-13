@@ -17,6 +17,7 @@ Combine skills from this kit and the wider ecosystem to move from idea to shippe
 - **Forrest Chang:** Seeding logic for `/agents-md` non-negotiable principles.
 - **Anthropic:** Source for `/skill-creator`.
 - **Vercel Labs:** Source for `/agent-browser`, `skills` CLI, and React/React Native best practices.
+- **Optional companions:** Graphify, Codex plugin for Claude Code, Impeccable, notebooklm-py, herdr, docker-expert, Laravel Boost, Figma MCP, and MySQL/Postgres MCP are separate installs used only when installed and task-fit.
 - **Cursor:** Cursor CLI (`agent` command, `/skill-name`, `AGENTS.md` as canonical context, `Task` for subagents). Tool names and permissions: [`skills/agents-md/references/tool-calling.md`](skills/agents-md/references/tool-calling.md). https://cursor.com/docs/cli/overview
 
 ## Usage Principles
@@ -24,6 +25,7 @@ Combine skills from this kit and the wider ecosystem to move from idea to shippe
 - Keep scope thin. Use small vertical slices, not big-bang plans.
 - Stay evidence-first. Use discovery and grilling before broad implementation.
 - Use optional skills ad hoc. Do not auto-invoke compression skills (`caveman` stays user-invoked only).
+- Use companion skills and MCPs as helpers. Repo code, tests, ADRs, `CONTEXT.md`, and user instructions still win.
 - Keep architecture healthy. Regularly run planning and refactor loops.
 - Preserve decisions. Move from prompt -> grill -> PRD -> issues -> implementation in traceable steps.
 
@@ -107,6 +109,27 @@ Enable native CLI memory globally when desired: [`skills/agents-md/references/me
 
 Use local-only policy when needed by adding generated files to local git exclude (`.git/info/exclude`) instead of committing them.
 
+## Companion Skills And MCPs
+
+These are optional separate installs. Use them beside this kit when installed and task-fit. Do not vendor them into this repo.
+
+| Companion | Use when |
+| :--- | :--- |
+| Graphify | Querying a generated code/docs/media graph would save broad file reads. |
+| Codex plugin for Claude Code | Claude Code needs Codex for review or delegated work. |
+| Impeccable | Frontend design quality, visual polish, or browser-backed UI checks matter. |
+| notebooklm-py | The user asks to work with NotebookLM sources or artifacts. |
+| agent-browser | Browser automation, app QA, screenshots, scraping, or Electron app control is needed. |
+| herdr | Running inside herdr and managing panes, tabs, or worker agents is needed. |
+| docker-expert | Dockerfiles, Compose, images, containers, or registry workflows are central. |
+| Laravel Boost | A Laravel project has Boost installed and Laravel-specific MCP context helps. |
+| Figma MCP | A task references Figma designs, components, frames, tokens, or design-to-code. |
+| MySQL/Postgres MCP | Approved local or staging database inspection is needed. Default read-only. |
+
+- Do not assume a companion is installed. If missing, use the best local fallback.
+- Use MCPs only for the current task. Do not browse unrelated external data.
+- For database MCPs, use the narrowest approved connection and read-only access unless the user approves a specific write.
+
 ## Choosing A Starting Point
 
 | Situation | Start With | Why |
@@ -150,6 +173,7 @@ Guidelines:
 
 - Keep it recommendation-only. Do not enforce a gate or auto-chain.
 - Apply this footer after any substantial step, including local and third-party skills.
+- Include companion skills or MCPs when they are the best next helper for the current step.
 - Keep it short: 1-6 suggestions maximum.
 - Use workflow adjacency first (current step -> likely next step).
 - Lead with evidence-raising suggestions before risky edits:
@@ -165,7 +189,7 @@ Generated `AGENTS.md` encodes how agents retrieve context:
 
 - **Retrieval order:** `CONTEXT.md` + `docs/adr/` are **binding** (read before implementing) -> current task context -> the current CLI's native memory when enabled.
 - **Never bulk-read `docs/`.** Treat it as an on-demand archive — retrieve only what the task names, via search or a discovery skill. Loading the whole tree rots context and wastes tokens.
-- **Native memory only.** Do not create repo memory files, wiki files, discovery files, or knowledge-graph files. Do not sync memory between CLIs.
+- **Native memory only.** Do not create repo memory files, wiki files, discovery files, or default knowledge-graph memory. Optional graph/index companions may be used when installed and task-fit, but their artifacts are not binding memory. Do not sync memory between CLIs.
 - **Archived context on grill.** When you trigger `/grill-with-docs`, the agent asks up front whether you have archived context (prior discussions, original intent) for the feature. Paste it — captured verbatim into the ADR with provenance — or continue without. Old/current names it reveals are offered as `CONTEXT.md` aliases.
 
 Skills are ad-hoc, not a pipeline. Work follows a gradient — discover → sharpen → plan → slice → implement → verify → ship — and after each step the agent **suggests** a next skill but never auto-chains.

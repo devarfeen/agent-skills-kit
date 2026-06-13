@@ -2,7 +2,7 @@
 
 Copy-paste snippets for **user-level** config. Merge into existing files; do not overwrite unrelated keys.
 
-This kit no longer creates repo `MEMORY.md`, wiki, discovery, or knowledge-graph files. Use each supported CLI's native memory only when that runtime provides it. Keep generated `AGENTS.md` as the shared workspace instruction file, and keep `CONTEXT.md` / `docs/adr/` as binding project context when those files exist.
+This kit no longer creates repo `MEMORY.md`, wiki, discovery, or default knowledge-graph memory. Use each supported CLI's native memory only when that runtime provides it. Optional graph/index companions may be used when installed and task-fit, but their artifacts are not binding memory. Keep generated `AGENTS.md` as the shared workspace instruction file, and keep `CONTEXT.md` / `docs/adr/` as binding project context when those files exist.
 
 ---
 
@@ -79,7 +79,7 @@ Optional global reminder in `~/.claude/CLAUDE.md`:
 
 - Cursor CLI has no documented native memory toggle in CLI config.
 - Cursor IDE may offer Settings → Rules → Generate Memories. Treat those as IDE-local recall.
-- Do not create repo MEMORY.md files or add MCP memory servers for this kit.
+- Do not create repo MEMORY.md files or add MCP memory servers as default memory for this kit.
 
 ---
 
@@ -106,7 +106,7 @@ Optional global reminder in `~/.claude/CLAUDE.md`:
 
 - Antigravity CLI has no native memory file store in this kit's supported model.
 - Use generated `AGENTS.md` plus binding context files.
-- Do not add repo MEMORY.md files or third-party memory MCP servers for this kit.
+- Do not add repo MEMORY.md files or third-party memory MCP servers as default memory for this kit.
 
 ---
 

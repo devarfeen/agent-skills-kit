@@ -40,6 +40,31 @@ This is the single most important habit. After a step finishes, the agent should
 
 Why: auto-chaining removes the human from exactly the moments where judgment matters most — scope, tradeoffs, "is this even the right direction." Suggestions keep momentum; auto-chains manufacture confident wrong turns. You decide each transition.
 
+### Companion skills and MCPs are part of ad-hoc workflow
+
+Companion skills and MCPs sit beside the core gradient. They are not a second pipeline. Use them when they make the current step sharper, faster, or more verifiable.
+
+| Companion | Use when |
+| :--- | :--- |
+| Graphify | Querying a generated code/docs/media graph would save broad file reads. |
+| Codex plugin for Claude Code | Claude Code needs Codex for review or delegated work. |
+| Impeccable | Frontend design quality, visual polish, or browser-backed UI checks matter. |
+| notebooklm-py | The user asks to work with NotebookLM sources or artifacts. |
+| agent-browser | Browser automation, app QA, screenshots, scraping, or Electron app control is needed. |
+| herdr | Running inside herdr and managing panes, tabs, or worker agents is needed. |
+| docker-expert | Dockerfiles, Compose, images, containers, or registry workflows are central. |
+| Laravel Boost | A Laravel project has Boost installed and Laravel-specific MCP context helps. |
+| Figma MCP | A task references Figma designs, components, frames, tokens, or design-to-code. |
+| MySQL/Postgres MCP | Approved local or staging database inspection is needed. Default read-only. |
+
+Rules:
+
+- Do not assume a companion is installed. If missing, use the best local fallback.
+- Do not vendor companion skills or MCPs into this kit.
+- Treat companion output as evidence, not authority. Repo code, tests, ADRs, `CONTEXT.md`, and user instructions still win.
+- Use MCPs only for the current task. Do not browse unrelated external data.
+- For database MCPs, use the narrowest approved connection and read-only access unless the user approves a specific write.
+
 ### Decisions are artifacts
 
 Every meaningful decision leaves a durable trace on disk or in the tracker: a refined prompt file → an ADR → a PRD issue → sliced sub-issues → a QA doc. This chain is what lets a teammate (or you, six months later) reconstruct *why*, not just *what*.
@@ -151,12 +176,13 @@ What separates intentional use from vibe coding:
 
 - **Auto-chaining skills.** Letting the agent run `discover → … → ship` unattended. Suggest and stop; the human steers every transition.
 - **Bulk-reading `docs/`.** Loading the whole archive "for context." Retrieve narrowly instead.
+- **Treating companion tools as default memory.** Graph or index tools can help a task, but their artifacts are not binding context.
 - **Fabricating an issue before coding** for genuinely ad-hoc work. Let the ship skill create the issue at the end from the real diff and decisions.
 - **Skipping discovery on a bug.** Jumping straight to a fix without tracing the journey.
 - **Mixing conventions across projects.** In a multi-tech workspace, never carry one project's patterns into another. Always name the full Project from the matrix.
 - **Big-bang slices.** If a slice can't be tested on its own, it's too big — back to `/to-issues`.
 - **Treating native memory as authority.** Native memory is user-local recall. `CONTEXT.md` and ADRs bind.
-- **Recreating secondary recall systems.** Do not create repo `MEMORY.md`, wiki, discovery, or knowledge-graph files. Use native CLI memory only.
+- **Recreating secondary recall systems.** Do not create repo `MEMORY.md`, wiki, discovery, or default knowledge-graph memory. Use native CLI memory only. Use optional graph/index companions only when task-fit.
 
 ---
 

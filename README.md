@@ -83,6 +83,12 @@ footer pattern (recommendations only) so agents can append lightweight
 before/after reminders at the end of non-trivial responses, including after
 third-party skills.
 
+Companion skills and MCPs are separate installs. They can be used beside this
+kit when installed and task-fit. Current companions called out by `agents-md`:
+Graphify, Codex plugin for Claude Code, Impeccable, notebooklm-py,
+agent-browser, herdr, docker-expert, Laravel Boost, Figma MCP, and
+MySQL/Postgres MCP. They are helpers, not default memory or a required pipeline.
+
 Issue-writing hard gate (required): before drafting, renaming, or publishing
 any GitHub issue, verify both the title format and labels from local workspace
 instructions (`AGENTS.md` and its shims). If issue-tracker vocabulary is not
@@ -100,7 +106,7 @@ skills from the wider agent-skills ecosystem.
   guide.
 - The non-negotiable discipline in `agents-md` was originally seeded by
   Forrest Chang's Karpathy-inspired `CLAUDE.md` guidelines and later expanded
-  in this repo into a 9-rule core:
+  in this repo into an 11-rule core:
   https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md
   The upstream repository is MIT licensed. This repo records credit here rather
   than emitting source notes into generated `AGENTS.md` files.
@@ -121,6 +127,15 @@ skills from the wider agent-skills ecosystem.
   https://github.com/vercel-labs/agent-browser
   https://github.com/vercel-labs/skills
   https://github.com/vercel-labs/agent-skills
+- Other optional companions referenced by `agents-md`: Graphify
+  (https://github.com/safishamsi/graphify), Codex plugin for Claude Code
+  (https://github.com/openai/codex-plugin-cc), Impeccable
+  (https://github.com/pbakaus/impeccable), notebooklm-py
+  (https://github.com/teng-lin/notebooklm-py), herdr
+  (https://github.com/ogulcancelik/herdr), docker-expert from
+  antigravity-awesome-skills (https://github.com/sickn33/antigravity-awesome-skills),
+  Laravel Boost (https://github.com/laravel/boost), and Figma MCP
+  (https://developers.figma.com/docs/figma-mcp-server/).
 - `/sentry` refers to Sentry's CLI for developers and agents:
   https://cli.sentry.dev/
 - **Cursor CLI:** `AGENTS.md` is the canonical workspace context file;
@@ -149,9 +164,9 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 - Generates one workspace-root `AGENTS.md` (single source of truth for all six supported CLIs) and one `CLAUDE.md` redirect shim — no per-project or per-repo files
 - Restricts inputs to the `.code-workspace` file and a small scan of its folders; never reads or copies the agent's own global/user instruction files into the output
 - Builds a Project Matrix — `Project | Path | Stack`, one row per workspace folder; the `Project` value is a normalized PROJECT-CODE (uppercase, hyphenated, no spaces, emojis stripped — e.g. `Partners API` → `PARTNERS-API`), used as the single cross-context identifier across chat, prompts, PRDs, issues, discovery, release notes, PRs, commits, comments, and filenames
-- Emits a 9-rule Non-Negotiable core, including Local Orchestration (local-only parallel/background; no cloud agents) and Honest State & Reporting with visible phase updates
-- Emits a Working With Skills section: a named-skill gradient (discover → sharpen → plan → slice → implement → verify → ship) with "suggest the next skill, never auto-chain", plus a Runtime Tool-Calling subsection derived from the kit's tool-calling references
-- Emits a Context & Native Memory section: retrieval order (`CONTEXT.md` + `docs/adr/` binding → current task context → native CLI memory), an artifact policy forbidding repo `MEMORY.md`, wiki, discovery, and knowledge-graph files, a "do not bulk-read `docs/`" guard, and an archived-context rule for `/grill-with-docs`; the skill does not itself create context files
+- Emits an 11-rule Non-Negotiable core, including Decision Options, Local Orchestration (local-only parallel/background; no cloud agents), Honest State & Reporting with visible phase updates, and Zero Attribution
+- Emits a Working With Skills section: a named-skill gradient (discover → sharpen → plan → slice → implement → verify → ship), optional companion skills and MCPs, "suggest the next skill, never auto-chain", plus a Runtime Tool-Calling subsection derived from the kit's tool-calling references
+- Emits a Context & Native Memory section: retrieval order (`CONTEXT.md` + `docs/adr/` binding → current task context → native CLI memory), an artifact policy forbidding repo `MEMORY.md`, wiki, discovery, and default knowledge-graph memory, a "do not bulk-read `docs/`" guard, and an archived-context rule for `/grill-with-docs`; the skill does not itself create context files
 - Emits GitHub Issue Titles (title/label convention only) and an Output Style section, including approval-gated understanding checks
 - `CLAUDE.md` contains only the `@AGENTS.md` forward and short redirect note — no `CONTEXT.md`, memory, wiki, or graph imports
 - Keeps `AGENTS.md` concise — stable, non-obvious invariants only; detailed procedures stay in the skills and their references

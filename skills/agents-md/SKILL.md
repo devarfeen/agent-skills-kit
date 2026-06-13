@@ -250,6 +250,28 @@ Work follows this gradient. Pick the skill that fits the step in front of you; t
 
 - After finishing a step, suggest a sensible next skill when one fits. Suggest only — never chain or auto-advance.
 - Do not assume a skill exists; use what is installed.
+
+### Companion Skills And MCPs
+
+These are optional separate installs. Use them beside this kit when installed and task-fit. Do not vendor them into this kit.
+
+| Companion | Use when |
+| --------- | -------- |
+| Graphify | Querying a generated code/docs/media graph would save broad file reads. |
+| Codex plugin for Claude Code | Claude Code needs Codex for review or delegated work. |
+| Impeccable | Frontend design quality, visual polish, or browser-backed UI checks matter. |
+| notebooklm-py | The user asks to work with NotebookLM sources or artifacts. |
+| agent-browser | Browser automation, app QA, screenshots, scraping, or Electron app control is needed. |
+| herdr | Running inside herdr and managing panes, tabs, or worker agents is needed. |
+| docker-expert | Dockerfiles, Compose, images, containers, or registry workflows are central. |
+| Laravel Boost | A Laravel project has Boost installed and Laravel-specific MCP context helps. |
+| Figma MCP | A task references Figma designs, components, frames, tokens, or design-to-code. |
+| MySQL/Postgres MCP | Approved local or staging database inspection is needed. Default read-only. |
+
+- Treat companion tools as helpers, not authority. Repo code, tests, ADRs, `CONTEXT.md`, and user instructions still win.
+- Never assume a companion is installed. If missing, say so and continue with the best local fallback.
+- Use MCPs only for the current task. Do not browse unrelated external data.
+- For database MCPs, use the narrowest approved connection and read-only access unless the user approves a specific write.
 ```
 
 Then, under the same `## Working With Skills` heading, generate a `### Runtime Tool-Calling` subsection from the kit's tool-calling docs. Read `references/tool-calling.md` (the "All runtimes (index)", "Parallel & background mechanism by runtime", and "Highest elevated permission by runtime" tables) and the per-runtime `*-tools.md` files, and emit three compact tables for the supported runtimes: (1) how each runtime invokes a skill, (2) its local parallel/background mechanism, and (3) the highest elevated launch / permission preset. Inline the results in `AGENTS.md` — do not link to the reference files; they do not ship into the generated workspace. Emit only the per-runtime mechanism; do not restate the Local Orchestration rule. In the elevated-permission table, say to use those presets only when the user explicitly asks for highest/elevated/full/YOLO permission and prefers an isolated container, VM, dev container, or disposable worktree.
@@ -269,8 +291,9 @@ Generate this section verbatim in `AGENTS.md`, after the Working With Skills sec
 
 ### Artifact policy
 
-- Do not create or read repo `MEMORY.md` files, workspace wiki files, discovery files, or knowledge-graph files.
-- Do not add memory MCP servers or third-party graph/index systems for this kit.
+- Do not create repo `MEMORY.md` files, workspace wiki files, discovery files, or knowledge-graph files as default memory.
+- Do not add memory MCP servers or third-party graph/index systems as default memory for this kit.
+- Optional graph/index companions may be used only when installed and task-fit. Do not treat their artifacts as binding memory.
 - Keep shared project context in `AGENTS.md`, `CONTEXT.md`, and ADRs.
 - Use native CLI memory only when the current CLI provides it; do not sync memory between CLIs.
 
