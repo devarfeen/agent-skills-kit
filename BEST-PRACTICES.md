@@ -31,7 +31,7 @@ discover → sharpen → plan → slice → implement → verify → ship
 | **plan** | Challenge the plan, capture the decision | `/grill-with-docs` (→ ADR), `/to-prd` (→ PRD) |
 | **slice** | Break the plan into thin, grabbable units | `/to-issues` |
 | **implement** | Build it test-first | `/tdd` |
-| **verify** | Prove it works | `/review`, manual QA, `/diagnose` |
+| **verify** | Prove it works | `/review`, manual QA, `/diagnosing-bugs` |
 | **ship** | Land it with proof | `/commit-push-close`, `/commit-push-pr` |
 
 ### Suggest, never auto-chain
@@ -47,6 +47,9 @@ Companion skills and MCPs sit beside the core gradient. They are not a second pi
 | Companion | Use when |
 | :--- | :--- |
 | Graphify | Querying a generated code/docs/media graph would save broad file reads. |
+| ask-matt | You want Matt's upstream router for choosing a user-invoked skill flow. |
+| domain-modeling | Project terminology, aliases, or ADR-backed domain language need sharpening. |
+| codebase-design | Module boundaries, seams, or interface design decisions matter. |
 | Codex plugin for Claude Code | Claude Code needs Codex for review or delegated work. |
 | Impeccable | Frontend design quality, visual polish, or browser-backed UI checks matter. |
 | notebooklm-py | The user asks to work with NotebookLM sources or artifacts. |
@@ -157,10 +160,10 @@ Workspace-root level. Each step produces an artifact the next step consumes.
 Workspace-root level.
 
 1. **`/feature-discovery`** — point it at the module, sub-module, UI, or behavior the bug lives in. It traces the real code + logic journey and returns the report in chat. This is your evidence base.
-2. **`/diagnose`** — run it on that area. It finds the root cause and fixes it. If it can only *confirm the bug exists* without fully resolving it, escalate to **`/tdd`**: write a failing test that reproduces the bug, then make it pass to close it for good.
+2. **`/diagnosing-bugs`** — run it on that area. It finds the root cause and fixes it. If it can only *confirm the bug exists* without fully resolving it, escalate to **`/tdd`**: write a failing test that reproduces the bug, then make it pass to close it for good.
 3. **Ship** — `/commit-push-close` or `/commit-push-pr`.
 
-> **Why discovery first:** diagnosing without a traced journey is guess-and-check. The discovery output gives `/diagnose` (and `/tdd`) the context to target the root cause instead of patching a symptom.
+> **Why discovery first:** diagnosing without a traced journey is guess-and-check. The discovery output gives `/diagnosing-bugs` (and `/tdd`) the context to target the root cause instead of patching a symptom.
 
 ---
 
@@ -192,7 +195,7 @@ What separates intentional use from vibe coding:
 | :--- | :--- |
 | **Project start** | `/agents-md` → `/setup-matt-pocock-skills` → fill `AGENTS.md` placeholders |
 | **New feature** | `/feature-prompt` → `/grill-with-docs` → `/to-prd` → `/to-issues` → `/tdd` → `/review` → `/commit-push-*` → manual QA |
-| **Debug** | `/feature-discovery` → `/diagnose` → (`/tdd` if needed) → `/commit-push-*` |
+| **Debug** | `/feature-discovery` → `/diagnosing-bugs` → (`/tdd` if needed) → `/commit-push-*` |
 | **Weekly** | `/release-notes` |
 
 Remember: these are the paths you *usually* take, not rails the agent rides on its own. Pick the skill that fits the step, ship thin slices, keep every decision traceable, and let the agent suggest — never auto-advance — the next move.

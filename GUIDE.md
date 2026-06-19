@@ -13,7 +13,7 @@ Combine skills from this kit and the wider ecosystem to move from idea to shippe
 ## Credits And Provenance
 
 - **Local Skills:** Authored by Arfeen Arif. Combines original logic with ecosystem companion skills.
-- **Matt Pocock:** Source for `/caveman`, `/grill-with-docs`, `/to-prd`, `/to-issues`, `/tdd`, `/diagnose`, `/triage`, `/improve-codebase-architecture`, `/zoom-out`, `/prototype`, and `/handoff`.
+- **Matt Pocock:** Source for `/ask-matt`, `/grill-with-docs`, `/to-prd`, `/to-issues`, `/tdd`, `/diagnosing-bugs`, `/triage`, `/domain-modeling`, `/codebase-design`, `/improve-codebase-architecture`, `/prototype`, and `/handoff`.
 - **Forrest Chang:** Seeding logic for `/agents-md` non-negotiable principles.
 - **Anthropic:** Source for `/skill-creator`.
 - **Vercel Labs:** Source for `/agent-browser`, `skills` CLI, and React/React Native best practices.
@@ -24,7 +24,7 @@ Combine skills from this kit and the wider ecosystem to move from idea to shippe
 
 - Keep scope thin. Use small vertical slices, not big-bang plans.
 - Stay evidence-first. Use discovery and grilling before broad implementation.
-- Use optional skills ad hoc. Do not auto-invoke compression skills (`caveman` stays user-invoked only).
+- Use optional skills ad hoc. Do not auto-chain from one skill into the next.
 - Use companion skills and MCPs as helpers. Repo code, tests, ADRs, `CONTEXT.md`, and user instructions still win.
 - Keep architecture healthy. Regularly run planning and refactor loops.
 - Preserve decisions. Move from prompt -> grill -> PRD -> issues -> implementation in traceable steps.
@@ -116,6 +116,9 @@ These are optional separate installs. Use them beside this kit when installed an
 | Companion | Use when |
 | :--- | :--- |
 | Graphify | Querying a generated code/docs/media graph would save broad file reads. |
+| ask-matt | You want Matt's upstream router for choosing a user-invoked skill flow. |
+| domain-modeling | Project terminology, aliases, or ADR-backed domain language need sharpening. |
+| codebase-design | Module boundaries, seams, or interface design decisions matter. |
 | Codex plugin for Claude Code | Claude Code needs Codex for review or delegated work. |
 | Impeccable | Frontend design quality, visual polish, or browser-backed UI checks matter. |
 | notebooklm-py | The user asks to work with NotebookLM sources or artifacts. |
@@ -135,9 +138,10 @@ These are optional separate installs. Use them beside this kit when installed an
 | Situation | Start With | Why |
 | :--- | :--- | :--- |
 | New Workspace | `/agents-md` | Establish the Project Matrix, paths, and Non-Negotiable Rules. |
+| Unsure Which Matt Skill Fits | `/ask-matt` | Route to a user-invoked upstream skill flow without auto-chaining. |
 | Unclear Behavior | `/feature-discovery` | Read-only audit before planning. |
 | Rough Idea | `/feature-prompt` | Section-by-section clarification interview. |
-| Broken Behavior | `/diagnose` | Systematic root cause analysis. |
+| Broken Behavior | `/diagnosing-bugs` | Systematic root cause analysis. |
 | Design Spike | `/prototype` | Validate UI/state before PRD/Issues. |
 | Issue Work | `/tdd` | Red-Green-Refactor implementation loop. |
 | Session Pause | `/handoff` | Continuation doc for the next agent. |
@@ -177,7 +181,7 @@ Guidelines:
 - Keep it short: 1-6 suggestions maximum.
 - Use workflow adjacency first (current step -> likely next step).
 - Lead with evidence-raising suggestions before risky edits:
-  - after discovery of unclear behavior: `/feature-prompt` or `/diagnose`
+  - after discovery of unclear behavior: `/feature-prompt` or `/diagnosing-bugs`
   - after prompt drafting: `/grill-with-docs`
   - after issue slicing: `/tdd` for the first ready slice
   - after implementation completion: `/commit-push-pr` or `/commit-push-close`, then `/release-notes`
@@ -200,7 +204,7 @@ Use two valid issue paths:
 
 - **Planned work:** `/feature-discovery` -> `/feature-prompt` -> `/grill-with-docs` -> `/to-prd` -> `/to-issues` -> `/tdd` -> `/commit-push-*`. The PRD and slice issues exist before coding. `/to-prd` and `/to-issues` apply ready labels in the normal path, so no separate `/triage` step is required.
 - **Existing or incoming issue work:** use `/triage` when an issue needs state changes, reporter follow-up, `ready-for-human`, `wontfix`, or an agent brief before implementation.
-- **Ad hoc work:** one-line request -> `/diagnose` or direct fix -> `/tdd` when useful -> `/commit-push-*`. Do not fabricate a detailed GitHub issue before coding. The ship skill creates the issue at the end from the original request, final diff, decisions, and validation.
+- **Ad hoc work:** one-line request -> `/diagnosing-bugs` or direct fix -> `/tdd` when useful -> `/commit-push-*`. Do not fabricate a detailed GitHub issue before coding. The ship skill creates the issue at the end from the original request, final diff, decisions, and validation.
 
 If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, stop and route it through `/feature-prompt` or `/to-issues` before continuing. Use `/triage` only if there is already an issue whose state or labels need repair.
 
@@ -227,9 +231,9 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 - **Too Many Questions / Drift:** Narrow to one thin slice with `/feature-prompt`, then resume `/grill-with-docs`.
 - **High-Fidelity Uncertainty (feel/UI/interaction):** `/handoff` -> `/prototype` -> back to `/grill-with-docs`.
 - **Context Budget Pressure:** Treat `~120K` as a caution threshold during planning-heavy sessions; split scope or handoff before quality drops.
-- **Broken Tests:** Stay in `/tdd` or pivot to `/diagnose`.
+- **Broken Tests:** Stay in `/tdd` or pivot to `/diagnosing-bugs`.
 - **Large Issues:** Back to `/to-issues` for smaller slices.
-- **Production Error:** Start with `/sentry` -> `/diagnose`.
+- **Production Error:** Start with `/sentry` -> `/diagnosing-bugs`.
 ## Practical Default
 
 When unsure, run this sequence manually:

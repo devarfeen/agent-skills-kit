@@ -77,17 +77,20 @@ See [GUIDE.md](GUIDE.md) for the recommended workflow from
 workspace setup and spec creation through issues, TDD implementation, PR
 shipping, and release notes. If you use Matt's engineering skills, run
 `/setup-matt-pocock-skills` once per repo before `/to-prd`, `/to-issues`,
-`/triage`, `/diagnose`, `/tdd`, `/improve-codebase-architecture`, or
-`/zoom-out`. The workflow also defines an optional `Suggested next skills`
+`/triage`, `/diagnosing-bugs`, `/tdd`, `/domain-modeling`,
+`/codebase-design`, or `/improve-codebase-architecture`. The workflow also
+defines an optional `Suggested next skills`
 footer pattern (recommendations only) so agents can append lightweight
 before/after reminders at the end of non-trivial responses, including after
 third-party skills.
 
 Companion skills and MCPs are separate installs. They can be used beside this
 kit when installed and task-fit. Current companions called out by `agents-md`:
-Graphify, Codex plugin for Claude Code, Impeccable, notebooklm-py,
-agent-browser, herdr, docker-expert, Laravel Boost, Figma MCP, and
-MySQL/Postgres MCP. They are helpers, not default memory or a required pipeline.
+Matt Pocock's `ask-matt` router, `domain-modeling`, and `codebase-design`;
+Graphify; Codex plugin for Claude Code; Impeccable; notebooklm-py;
+agent-browser; herdr; docker-expert; Laravel Boost; Figma MCP; and
+MySQL/Postgres MCP. They are helpers, not default memory or a required
+pipeline.
 
 Issue-writing hard gate (required): before drafting, renaming, or publishing
 any GitHub issue, verify both the title format and labels from local workspace
@@ -111,15 +114,11 @@ skills from the wider agent-skills ecosystem.
   The upstream repository is MIT licensed. This repo records credit here rather
   than emitting source notes into generated `AGENTS.md` files.
 - The workflow guide references companion skills from Matt Pocock's skills repo,
-  including `setup-matt-pocock-skills`, `grill-with-docs`,
-  `to-prd`, `to-issues`, `tdd`, `diagnose`, `triage`,
-  `improve-codebase-architecture`, `zoom-out`, `prototype`, and `handoff`:
+  including `ask-matt`, `setup-matt-pocock-skills`, `grill-with-docs`,
+  `to-prd`, `to-issues`, `tdd`, `diagnosing-bugs`, `triage`,
+  `domain-modeling`, `codebase-design`, `improve-codebase-architecture`,
+  `prototype`, and `handoff`:
   https://github.com/mattpocock/skills
-- `/caveman` is credited to Matt Pocock's `caveman` skill, MIT License,
-  Copyright 2026 Matt Pocock:
-  https://github.com/mattpocock/skills/blob/main/skills/productivity/caveman/SKILL.md
-  `caveman` is available as an optional ad-hoc skill for chat brevity and is
-  never applied to code, docs, PRDs, release notes, PR bodies, or persisted artifacts.
 - `/skill-creator` is credited to Anthropic's public skills repository:
   https://github.com/anthropics/skills/tree/main/skills/skill-creator
 - `/agent-browser`, the `skills` CLI, `find-skills`, and Vercel React/React
@@ -127,7 +126,8 @@ skills from the wider agent-skills ecosystem.
   https://github.com/vercel-labs/agent-browser
   https://github.com/vercel-labs/skills
   https://github.com/vercel-labs/agent-skills
-- Other optional companions referenced by `agents-md`: Graphify
+- Other optional companions referenced by `agents-md`: Matt Pocock's
+  `ask-matt` router (https://github.com/mattpocock/skills), Graphify
   (https://github.com/safishamsi/graphify), Codex plugin for Claude Code
   (https://github.com/openai/codex-plugin-cc), Impeccable
   (https://github.com/pbakaus/impeccable), notebooklm-py

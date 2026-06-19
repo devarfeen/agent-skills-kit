@@ -221,7 +221,7 @@ Use this structure exactly for the chat report. Do not save the report to disk. 
 
 - [/skill-name: reason tied to this report.]
 - [Prefer adjacent workflow steps; include only 1-6.]
-- [Examples: `/feature-prompt` to frame a change request, `/diagnose` when a reproducible bug is identified.]
+- [Examples: `/feature-prompt` to frame a change request, `/diagnosing-bugs` when a reproducible bug is identified.]
 ```
 
 ## Evidence Style

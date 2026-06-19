@@ -82,7 +82,7 @@ Work only on this GitHub issue.
 
 Infer project/repo context from the assigned issue.
 
-Use `/tdd` / `$tdd` and `/caveman` / `$caveman`.
+Use `/tdd` / `$tdd`.
 
 Do not work on the full PRD. Do not redo PRD orchestration. Do only issue-level discovery required for this issue.
 

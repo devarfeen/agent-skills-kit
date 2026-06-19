@@ -245,7 +245,7 @@ Work follows this gradient. Pick the skill that fits the step in front of you; t
 | plan      | `/grill-with-docs` (→ ADR), `/to-prd` (→ PRD)             |
 | slice     | `/to-issues`                                              |
 | implement | `/tdd`                                                    |
-| verify    | `/review`, `/diagnose`                                    |
+| verify    | `/review`, `/diagnosing-bugs`                             |
 | ship      | `/commit-push-close`, `/commit-push-pr`, `/release-notes` |
 
 - After finishing a step, suggest a sensible next skill when one fits. Suggest only — never chain or auto-advance.
@@ -257,6 +257,9 @@ These are optional separate installs. Use them beside this kit when installed an
 
 | Companion | Use when |
 | --------- | -------- |
+| ask-matt | You want Matt's upstream router for choosing a user-invoked skill flow. |
+| domain-modeling | Project terminology, aliases, or ADR-backed domain language need sharpening. |
+| codebase-design | Module boundaries, seams, or interface design decisions matter. |
 | Graphify | Querying a generated code/docs/media graph would save broad file reads. |
 | Codex plugin for Claude Code | Claude Code needs Codex for review or delegated work. |
 | Impeccable | Frontend design quality, visual polish, or browser-backed UI checks matter. |
@@ -272,6 +275,16 @@ These are optional separate installs. Use them beside this kit when installed an
 - Never assume a companion is installed. If missing, say so and continue with the best local fallback.
 - Use MCPs only for the current task. Do not browse unrelated external data.
 - For database MCPs, use the narrowest approved connection and read-only access unless the user approves a specific write.
+
+### Matt Skill Routing
+
+Use `/ask-matt` when the user asks which Matt skill or flow fits. It is a router over user-invoked Matt skills, not an executor. Do not auto-run the flow it suggests.
+
+- Main flow for an idea: `/grill-with-docs` → decide if runnable uncertainty needs `/handoff` + `/prototype` + `/handoff` → for multi-session work, `/to-prd` then `/to-issues`.
+- For each sliced issue, start a fresh session. Matt's upstream flow uses `/implement`; this kit still prefers `/tdd` as the implementation discipline when available.
+- Use `/triage` only for raw incoming issues. Do not triage issues already created by `/to-issues`.
+- Use `/improve-codebase-architecture` for codebase health. A chosen improvement becomes an idea to take into `/grill-with-docs`.
+- `/handoff` forks context into a new session. `/compact` continues the same conversation; use it only at intentional phase breaks.
 ```
 
 Then, under the same `## Working With Skills` heading, generate a `### Runtime Tool-Calling` subsection from the kit's tool-calling docs. Read `references/tool-calling.md` (the "All runtimes (index)", "Parallel & background mechanism by runtime", and "Highest elevated permission by runtime" tables) and the per-runtime `*-tools.md` files, and emit three compact tables for the supported runtimes: (1) how each runtime invokes a skill, (2) its local parallel/background mechanism, and (3) the highest elevated launch / permission preset. Inline the results in `AGENTS.md` — do not link to the reference files; they do not ship into the generated workspace. Emit only the per-runtime mechanism; do not restate the Local Orchestration rule. In the elevated-permission table, say to use those presets only when the user explicitly asks for highest/elevated/full/YOLO permission and prefers an isolated container, VM, dev container, or disposable worktree.
@@ -382,7 +395,7 @@ Chat only. Does not apply to code, docs, PRDs, release notes, PR bodies, or prom
 - Avoid arrow-only flows unless followed by plain words.
 - If one sentence has more than three identifiers, split it.
 - Do not use unexplained shorthand like "keys off", "guarded", "live path", "canonical flow", or "shared screen".
-- Optional brevity skills like `caveman` are user-invoked only.
+- Optional brevity skills are user-invoked only.
 
 ### 2. Understanding Checks
 
