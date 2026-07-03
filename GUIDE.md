@@ -90,9 +90,10 @@ disposable worktree.
 
 ## First-Time Setup
 
-1. **`/agents-md`**: Creates the workspace-root `AGENTS.md` (source of truth) and the `CLAUDE.md` redirect shim — the Project Matrix (each project keyed by its **PROJECT-CODE**: uppercase, hyphenated, emoji-stripped, e.g. `Partners API` → `PARTNERS-API`), the Non-Negotiable Rules, Working With Skills, and a Context & Native Memory section with fill-after-setup placeholders. Generates no per-repo files.
+1. **`/agents-md`**: Creates the workspace-root `AGENTS.md` (source of truth) and the `CLAUDE.md` redirect shim — the Project Matrix (each project keyed by its **PROJECT-CODE**: uppercase, hyphenated, emoji-stripped, e.g. `Payments API` → `PAYMENTS-API`), the Non-Negotiable Rules, Working With Skills, and a Context & Native Memory section with fill-after-setup placeholders. Generates no per-repo files.
 2. **`/setup-matt-pocock-skills`**: Configures the issue tracker, labels, and where `CONTEXT.md` / `docs/` live.
 3. **Fill the placeholders**: replace the `AGENTS.md` Context & Native Memory placeholders with the real `CONTEXT.md` and `docs/adr/` paths from setup. Mechanical fill, not a rewrite.
+4. **`/design-system`** *(per project that has UI)*: turn that project's design system (a Figma file, a written spec, reference screens, or a guided-definition session) into named tokens + a UI library + a preview you eyeball to verify. It documents the system under `docs/design-system/`, adds a short binding reference to `AGENTS.md`, and seeds a project-local `<project>-ui-coding` skill so every later UI change consumes the library instead of inlining markup. Re-run `extend` as the design grows or to fold a shipped page's UI back in. Stack-adaptive; never auto-chains. Steps 1–3 are once per workspace; this is once per UI project.
 
 Enable native CLI memory globally when desired: [`skills/agents-md/references/memory-global-defaults.md`](skills/agents-md/references/memory-global-defaults.md).
 
@@ -144,13 +145,23 @@ These are optional separate installs. Use them beside this kit when installed an
 | Broken Behavior | `/diagnosing-bugs` | Systematic root cause analysis. |
 | Design Spike | `/prototype` | Validate UI/state before PRD/Issues. |
 | Issue Work | `/tdd` | Red-Green-Refactor implementation loop. |
+| Porting A Feature | `/port-feature` | Trace a reference feature into a target stack as a gap map. |
+| Project Needs A UI Library | `/design-system` | Turn a design system into tokens + components + a verifiable preview. |
+| Page Must Match Design | `/pixel-audit` | Strict per-page visual conformance with an element-level gate. |
+| Cosmetic QA Tail | `/polish-batch` | Batch small copy/spacing/alignment nits, then fix in one pass. |
+| Multi-Project PRD | `/integration-contract` | Map the cross-repo seam and smoke-test it before shipping. |
 | Session Pause | `/handoff` | Continuation doc for the next agent. |
 
 ## Core Progression
 
 ```text
-/agents-md -> /setup-matt-pocock-skills -> /feature-discovery -> /feature-prompt -> /grill-with-docs -> /to-prd -> /to-issues -> /tdd -> /commit-push-pr -> /release-notes
+/agents-md -> /setup-matt-pocock-skills -> /design-system -> /feature-discovery -> /feature-prompt -> /grill-with-docs -> /to-prd -> /to-issues -> /tdd -> /pixel-audit -> /commit-push-pr -> /release-notes
 ```
+
+Two variations branch off this line:
+
+- **Porting** a feature from a reference implementation starts with `/port-feature` (in place of `/feature-discovery` → `/feature-prompt`), which writes a gap map and hands to `/grill-with-docs`.
+- **Verify** is a cluster, not one skill: `/pixel-audit` for per-page conformance, manual QA + `/polish-batch` for the cosmetic tail, and `/integration-contract` when the PRD spans more than one PROJECT-CODE. After a UI slice ships, `/design-system` (extend) folds any new reusable UI back into the library.
 
 ## Issue Naming And Label Preflight (Hard Gate)
 
@@ -213,14 +224,19 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 | Gate | Skill | Continue When |
 | :--- | :--- | :--- |
 | Workspace | `/agents-md` | The PROJECT-CODE matrix and Non-Negotiable Rules are active. |
+| Design system | `/design-system` | Tokens + library built; preview renders and the user has eyeballed it; `AGENTS.md` reference + `<project>-ui-coding` seeded. |
 | Issue preflight | `Issue-writing skills` | Title pattern and both required labels are validated from local workspace instructions. |
 | Discovery | `/feature-discovery` | Evidence-backed report is returned in chat; discovery files are never written. |
+| Port | `/port-feature` | Gap map written to `docs/port/`; reference behaviour vs target state mapped; a thin first slice named. |
 | Prompt | `/feature-prompt` | Implementation-ready prompt is reviewed by user. |
 | Grill | `/grill-with-docs` | `Recommended answer:` is explicit; ambiguities resolve against ADRs and domain language. |
 | PRD | `/to-prd` | Spec is clear; dependency order is known. |
 | Issues | `/to-issues` | Slices are testable; prerequisites, blockers, and unblocked work are ordered. |
 | Existing issue triage | `/triage` | Existing issue state is clear, or an Agent Brief / needs-info / wontfix outcome is recorded. |
 | Build | `/tdd` | Failure verified (Red), Fix verified (Green). |
+| Pixel conformance | `/pixel-audit` | Defect list cleared; every fix passes the element-level gate on served assets. |
+| QA polish | `/polish-batch` | Cosmetic nits captured, dispatched per PROJECT-CODE, and verified. |
+| Cross-repo seam | `/integration-contract` | Multi-project PRD's producer/consumer contract built and smoke gate green (single-project auto-skips). |
 | Ship | `/commit-push-*` | Branch pushed and issue/PR linked with test proof. |
 | Release | `/release-notes` | PM-friendly summary saved to `docs/release-notes/`. |
 
@@ -233,6 +249,10 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 - **Context Budget Pressure:** Treat `~120K` as a caution threshold during planning-heavy sessions; split scope or handoff before quality drops.
 - **Broken Tests:** Stay in `/tdd` or pivot to `/diagnosing-bugs`.
 - **Large Issues:** Back to `/to-issues` for smaller slices.
+- **UI Drifts From Design:** `/pixel-audit` the page against its source of truth; clear the element-level gate before shipping.
+- **Cosmetic Nits Pile Up:** `/polish-batch` — capture them, then dispatch in one pass per PROJECT-CODE.
+- **Cross-Repo Seam Risk:** `/integration-contract` before shipping a multi-project PRD.
+- **Inlined UI Instead Of The Library:** back to `/design-system` (extend) to promote it into the library, then consume it from the page.
 - **Production Error:** Start with `/sentry` -> `/diagnosing-bugs`.
 ## Practical Default
 

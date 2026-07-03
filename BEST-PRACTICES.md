@@ -26,13 +26,22 @@ discover → sharpen → plan → slice → implement → verify → ship
 
 | Phase | What you're doing | Skills that fit |
 | :--- | :--- | :--- |
-| **discover** | Understand existing behavior before touching it | `/feature-discovery` |
+| **discover** | Understand existing behavior before touching it | `/feature-discovery`, `/port-feature` (when porting from a reference) |
 | **sharpen** | Turn a rough idea into a precise prompt | `/feature-prompt` |
 | **plan** | Challenge the plan, capture the decision | `/grill-with-docs` (→ ADR), `/to-prd` (→ PRD) |
 | **slice** | Break the plan into thin, grabbable units | `/to-issues` |
 | **implement** | Build it test-first | `/tdd` |
-| **verify** | Prove it works | `/review`, manual QA, `/polish-batch` (batch the cosmetic tail), `/diagnosing-bugs` |
+| **verify** | Prove it works | `/review`, `/pixel-audit` (per-page pixel conformance), manual QA, `/polish-batch` (cosmetic tail), `/integration-contract` (cross-repo seam), `/diagnosing-bugs` |
 | **ship** | Land it with proof | `/commit-push-close`, `/commit-push-pr` |
+
+### Two rails run alongside the gradient
+
+Not every skill lives on the discover→ship line:
+
+- **Project start-off:** `/design-system` runs once per project (see Workflow A) to turn a design system into a real UI library + a preview you verify + a binding `AGENTS.md` rule, and seeds a project-local `<project>-ui-coding` skill. Re-run it to extend the library or, after a page ships, to fold its emergent UI back in.
+- **Porting:** `/port-feature` is a discover→plan variant for bringing a feature that already exists in a reference implementation into a target stack (see Workflow D). It writes a gap map and hands off to `/grill-with-docs`.
+
+**UI work has its own discipline.** Once a project has a design system, every UI change consumes its library — never inline markup the library covers. A missing component gets added via `/design-system` (extend) from the reference, or you ask for one. Per-page pixel conformance during feature work is `/pixel-audit`; the cosmetic tail during QA is `/polish-batch`.
 
 ### Suggest, never auto-chain
 
@@ -129,6 +138,7 @@ Run once per workspace, at the workspace-root level (not inside a single repo).
 1. **`/agents-md`** — generates the workspace-root `AGENTS.md` (the source of truth for every CLI) plus the `CLAUDE.md` shim, the Project Matrix, the Non-Negotiable Rules, and the Working-With-Skills / Context-&-Native-Memory sections. The context section ships with **placeholder paths** for `CONTEXT.md` and `docs/adr/`, deliberately left blank.
 2. **`/setup-matt-pocock-skills`** — answers the project-shape questions: which issue tracker (GitHub, Linear, or filesystem), label vocabulary, and **where `CONTEXT.md` / `docs/` live**.
 3. **Fill the placeholders** — ask the agent to update the generated `AGENTS.md` with the real paths your setup session just decided.
+4. **`/design-system`** *(per project that has UI)* — turn that project's design system (a Figma file, a written spec, reference screens, or a guided-definition session) into named tokens + a real UI library + a preview page you eyeball to verify, document it under `docs/design-system/`, add a short binding reference to `AGENTS.md`, and seed a project-local `<project>-ui-coding` skill. Re-run it (`extend`) as the design grows or to fold a shipped page's emergent UI back into the library. It reads the target's stack from the Project Matrix, works for any stack, and never auto-chains. Steps 1–3 are once per workspace; this step is once per UI project.
 
 Generated chat rules use Project Matrix PROJECT-CODEs instead of folder names, repo names, domains, or hostnames unless the path itself matters. At phase changes, the agent must send a visible phase update: `Stage`, `Found`, `Next`, and `Needs user`. It can continue within the same phase, but must make new phase transitions explicit. It stops only when user input, approval, or a scope decision is needed. If you ask the agent to repeat or confirm your understanding, it must ask for approval or correction and wait before continuing.
 
@@ -146,8 +156,12 @@ Workspace-root level. Each step produces an artifact the next step consumes.
 4. **`/to-issues`** — run it on the PRD issue number. It creates **sub-issues / vertical slices** and auto-applies ready labels to the slices and the parent PRD. No separate `/triage` step is needed in this path.
 5. **`/tdd`** — ask the agent to work the PRD's sub-issues test-first (Red → Green → Refactor).
 6. **After each slice, the agent suggests a next step** — usually `/review`, then `/commit-push-close` or `/commit-push-pr`, sometimes `/release-notes`. You choose. (`/review` after each slice is a strong default.)
-7. **Manual QA** — verify against the QA doc tied to that ADR/PRD. Batch the cosmetic tail with `/polish-batch`: capture copy/spacing/alignment/wrong-string nits without fixing them, then dispatch per PROJECT-CODE in one pass and verify before shipping. Anything touching behaviour, data, or an interface is not a nit — route it back to `/to-issues`.
+7. **Verify** — prove the slice does what the ADR/PRD asked, using what applies:
+   - **`/pixel-audit`** — for a page that must match a design, audit it against its source of truth (Figma or reference screens) and clear the element-level gate before calling it done.
+   - **Manual QA + `/polish-batch`** — verify against the QA doc; capture the cosmetic tail (copy/spacing/alignment/wrong-string nits) without fixing them, then dispatch per PROJECT-CODE in one pass. Anything touching behaviour, data, or an interface is not a nit — route it back to `/to-issues`.
+   - **`/integration-contract`** — when the PRD touches more than one PROJECT-CODE, build the cross-repo seam contract and run its smoke gate before shipping. Single-project PRDs skip it automatically.
 8. **Ship** — at the end of a slice, a single issue, or the whole PRD, run `/commit-push-close` or `/commit-push-pr`.
+9. **Feed UI back** *(if the slice grew the design system)* — run `/design-system` (extend) to promote new reusable UI into the library, preview, `docs/design-system/`, the `AGENTS.md` reference, and the `<project>-ui-coding` skill, so the next feature inherits it. This updates the design system only; it does not commit or write ADRs.
 
 > **The thread to notice:** prompt file → ADR → PRD issue → sliced issues → tested code → QA doc. Each link is grabbable on its own, and the whole chain is auditable.
 
@@ -167,13 +181,26 @@ Workspace-root level.
 
 ---
 
-## 6. Weekly Cadence
+## 6. Workflow D — Port a Feature
+
+Bringing a feature that already works in a **reference** implementation (often a legacy repo) into a **target** stack.
+
+1. **`/port-feature`** — give it the feature, the REFERENCE PROJECT-CODE (behaviour truth), and the TARGET PROJECT-CODE (where it lands). It reads the target's binding context, traces the reference with `/feature-discovery`, surveys what the target already has, and writes **one gap map** to `docs/port/`. The reference is truth for behaviour, workflow, navigation, permissions, and states; the target's design system is truth for UI. It suggests `/grill-with-docs` and stops.
+2. **`/grill-with-docs`** — challenge the gap map; it produces the ADR using the next number in your `docs/adr/`.
+3. **`/to-prd` → `/to-issues` → `/tdd`** — from here it rejoins Workflow B: PRD, thin slices, test-first build. Each UI slice consumes the target's UI library; a missing component goes through `/design-system` (extend), never a page-local one-off.
+4. **Verify & ship** — `/pixel-audit` the ported screens against the reference, manual QA + `/polish-batch`, then `/commit-push-close` / `/commit-push-pr`.
+
+> **Why a gap map first:** porting blind drags the reference's accidents across with its behaviour. The gap map separates what to preserve (behaviour, workflow, permissions) from what to re-express (UI, in the target's idiom), and names the risks before any code moves.
+
+---
+
+## 7. Weekly Cadence
 
 - **`/release-notes`** — at the end of the week, generate a PM-friendly summary of what shipped, from the week's commits and closed work. Saved for handoff to your project manager.
 
 ---
 
-## 7. Anti-Patterns
+## 8. Anti-Patterns
 
 What separates intentional use from vibe coding:
 
@@ -186,15 +213,22 @@ What separates intentional use from vibe coding:
 - **Big-bang slices.** If a slice can't be tested on its own, it's too big — back to `/to-issues`.
 - **Treating native memory as authority.** Native memory is user-local recall. `CONTEXT.md` and ADRs bind.
 - **Recreating secondary recall systems.** Do not create repo `MEMORY.md`, wiki, discovery, or default knowledge-graph memory. Use native CLI memory only. Use optional graph/index companions only when task-fit.
+- **Inlining UI the library already covers.** Once a project has a design system, hand-rolling markup in a page instead of consuming its `<project>-ui-coding` library. A missing component goes through `/design-system` (extend), not a one-off.
+- **Claiming a UI fix "verified" by eye.** Per-page conformance needs `/pixel-audit`'s element-level gate — served assets, `getBoundingClientRect()`, computed styles — not a glance at a full-page screenshot.
+- **Fixing nits live during QA.** Steering the agent nit-by-nit fractures the QA pass. Capture with `/polish-batch`, then dispatch in one bounded pass per PROJECT-CODE.
+- **Shipping a multi-project PRD on faith.** A producer surface change with no traced consumer is a risk — `/integration-contract` finds it before it breaks in another repo.
+- **Porting by copy-paste.** Moving a reference feature without a `/port-feature` gap map drags its old stack conventions into the target. Preserve behaviour; re-express UI in the target's idiom.
 
 ---
 
-## 8. Quick Reference
+## 9. Quick Reference
 
 | Workflow | Order |
 | :--- | :--- |
-| **Project start** | `/agents-md` → `/setup-matt-pocock-skills` → fill `AGENTS.md` placeholders |
-| **New feature** | `/feature-prompt` → `/grill-with-docs` → `/to-prd` → `/to-issues` → `/tdd` → `/review` → manual QA → `/polish-batch` → `/commit-push-*` |
+| **Project start** | `/agents-md` → `/setup-matt-pocock-skills` → fill `AGENTS.md` placeholders → `/design-system` (per UI project) |
+| **New feature** | `/feature-prompt` → `/grill-with-docs` → `/to-prd` → `/to-issues` → `/tdd` → `/review` → `/pixel-audit` → manual QA → `/polish-batch` → `/integration-contract` (multi-project) → `/commit-push-*` |
+| **Port a feature** | `/port-feature` → `/grill-with-docs` → `/to-prd` → `/to-issues` → `/tdd` → `/pixel-audit` → `/commit-push-*` |
+| **UI / design system** | `/design-system` bootstrap, then `extend` as it grows or after a page ships |
 | **Debug** | `/feature-discovery` → `/diagnosing-bugs` → (`/tdd` if needed) → `/commit-push-*` |
 | **Weekly** | `/release-notes` |
 

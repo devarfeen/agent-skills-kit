@@ -97,7 +97,7 @@ Example prompts:
 
 - Generate release notes for 11 March 2026
 - Generate release notes for 11 March for all projects
-- Generate release notes for PARTNERS-APP on 11 March
+- Generate release notes for WAREHOUSE-APP on 11 March
 
 Behavior:
 
@@ -240,7 +240,7 @@ PROJECT-CODE-2
 ### Rules
 
 - Start with `Date: DD Month YYYY` (omit for session summaries that have no date).
-- Use full project codes from the Project Matrix (e.g., `PARTNERS-APP`, `PORTFOLIO-WEB`, `SERVER-REVERSE-PROXY`). Never abbreviate or invent shorthand. No markdown heading syntax — plain text on its own line.
+- Use full project codes from the Project Matrix (e.g., `WAREHOUSE-APP`, `PORTAL-WEB`, `SERVER-REVERSE-PROXY`). Never abbreviate or invent shorthand. No markdown heading syntax — plain text on its own line.
 - Each change is a **markdown bullet** (`- `). One bullet per feature.
 - Each bullet combines Summary + Change into one sentence that answers: "What changed and what does that mean for the user?"
 - Write bullets so a PM can scan the entire list in under 30 seconds.

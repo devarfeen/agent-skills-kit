@@ -25,7 +25,7 @@ npx skills update https://github.com/devarfeen/agent-skills-kit --skill release-
 
 ## Example Requests
 - Generate release notes for 11 March 2026
-- Generate release notes for PARTNERS-APP on 11 March
+- Generate release notes for WAREHOUSE-APP on 11 March
 - Generate release notes for all projects on 15 April
 - Summarize today's development session
 - Write release notes for the RFID scanning improvements

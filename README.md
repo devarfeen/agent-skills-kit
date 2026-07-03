@@ -23,6 +23,8 @@ agent-skills-kit/
     │       ├── tool-calling.md       # Orchestration model, role lanes, local-only policy, CLI mappings
     │       ├── cursor-tools.md       # Skill-kit → Cursor mapping
     │       └── *-tools.md            # claude, codex, copilot, antigravity, opencode
+    ├── design-system/        # The design-system skill (tokens + UI library + preview + AGENTS.md reference)
+    │   └── SKILL.md          # Required: metadata + instructions
     ├── release-notes/        # The release-notes skill
     │   ├── SKILL.md          # Required: metadata + instructions
     │   ├── README.md         # Human-readable docs for this skill
@@ -36,6 +38,8 @@ agent-skills-kit/
     │   └── SKILL.md          # Required: metadata + instructions
     ├── feature-prompt/       # The feature-prompt skill
     │   └── SKILL.md          # Required: metadata + instructions
+    ├── port-feature/         # The port-feature skill (reference → target gap map)
+    │   └── SKILL.md          # Required: metadata + instructions
     ├── commit-push-close/    # The commit-push-close skill
     │   └── SKILL.md          # Required: metadata + instructions
     ├── commit-push-pr/       # The commit-push-pr skill
@@ -43,6 +47,8 @@ agent-skills-kit/
     ├── polish-batch/         # The polish-batch skill (capture → dispatch → verify UI nits)
     │   └── SKILL.md          # Required: metadata + instructions
     ├── integration-contract/ # The integration-contract skill (cross-repo seam contract + smoke gate)
+    │   └── SKILL.md          # Required: metadata + instructions
+    ├── pixel-audit/          # The pixel-audit skill (per-page visual-conformance audit + gate)
     │   └── SKILL.md          # Required: metadata + instructions
     └── orchestrate-herdr/    # The orchestrate-herdr skill (herdr per-issue worker fan-out)
         └── SKILL.md          # Required: metadata + instructions
@@ -87,6 +93,16 @@ defines an optional `Suggested next skills`
 footer pattern (recommendations only) so agents can append lightweight
 before/after reminders at the end of non-trivial responses, including after
 third-party skills.
+
+The kit also covers UI and design work end to end: `/design-system` turns a
+project's design system into a UI library + a verifiable preview + a binding
+`AGENTS.md` rule at project start-off (re-runnable to extend as the design
+grows or to fold a shipped page's UI back in); `/port-feature` maps a feature
+from a reference implementation into a target stack as a gap map; and the
+verify phase adds `/pixel-audit` (strict per-page visual conformance),
+`/polish-batch` (the cosmetic QA tail), and `/integration-contract` (cross-repo
+seam contract + smoke gate). See [GUIDE.md](GUIDE.md) and
+[BEST-PRACTICES.md](BEST-PRACTICES.md) for how they fit the gradient.
 
 Companion skills and MCPs are separate installs. They can be used beside this
 kit when installed and task-fit. Current companions called out by `agents-md`:
@@ -167,7 +183,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 
 - Generates one workspace-root `AGENTS.md` (single source of truth for all six supported CLIs) and one `CLAUDE.md` redirect shim — no per-project or per-repo files
 - Restricts inputs to the `.code-workspace` file and a small scan of its folders; never reads or copies the agent's own global/user instruction files into the output
-- Builds a Project Matrix — `Project | Path | Stack`, one row per workspace folder; the `Project` value is a normalized PROJECT-CODE (uppercase, hyphenated, no spaces, emojis stripped — e.g. `Partners API` → `PARTNERS-API`), used as the single cross-context identifier across chat, prompts, PRDs, issues, discovery, release notes, PRs, commits, comments, and filenames
+- Builds a Project Matrix — `Project | Path | Stack`, one row per workspace folder; the `Project` value is a normalized PROJECT-CODE (uppercase, hyphenated, no spaces, emojis stripped — e.g. `Payments API` → `PAYMENTS-API`), used as the single cross-context identifier across chat, prompts, PRDs, issues, discovery, release notes, PRs, commits, comments, and filenames
 - Emits an 11-rule Non-Negotiable core, including Decision Options, Local Orchestration (local-only parallel/background; no cloud agents), Honest State & Reporting with visible phase updates, and Zero Attribution
 - Emits a Working With Skills section: a named-skill gradient (discover → sharpen → plan → slice → implement → verify → ship), optional companion skills and MCPs, "suggest the next skill, never auto-chain", plus a Runtime Tool-Calling subsection derived from the kit's tool-calling references
 - Emits a Context & Native Memory section: retrieval order (`CONTEXT.md` + `docs/adr/` binding → current task context → native CLI memory), an artifact policy forbidding repo `MEMORY.md`, wiki, discovery, and default knowledge-graph memory, a "do not bulk-read `docs/`" guard, and an archived-context rule for `/grill-with-docs`; the skill does not itself create context files
@@ -184,6 +200,40 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 | Refresh project matrix | `Update AGENTS.md PROJECT-CODEs and stacks` |
 
 Native CLI memory defaults: [`skills/agents-md/references/memory-global-defaults.md`](skills/agents-md/references/memory-global-defaults.md).
+
+### `design-system`
+
+A Workflow-A (project start-off) skill, run per project after `/agents-md` →
+`/setup-matt-pocock-skills` → placeholder fill, and re-runnable to extend. It
+turns a provided design system into a real UI library plus a verifiable preview,
+documents it under `docs/design-system/`, and adds a short binding reference in
+`AGENTS.md` so that on **any** UI change every future agent consumes the library
+instead of inlining one-off UI.
+
+```bash
+npx skills install https://github.com/devarfeen/agent-skills-kit --skill design-system
+```
+
+**What it does**
+
+- Interviews (like `/feature-prompt`) for the **TARGET PROJECT-CODE** and a **required design-system source** — a Figma file (via Figma MCP), a written spec/brand guide, reference screens/app, or a guided-definition session that ends in explicit user approval; never fabricates a design system silently
+- Reads the target's stack from the Project Matrix / `AGENTS.md` and adapts output — never hardcodes Laravel: framework web → components + a server-rendered preview route (e.g. `/ui/preview/all`); React Native → a component library + a preview screen; plain/static → HTML/CSS components + a static preview file
+- Writes **theme/tokens** as named values in the stack's native mechanism (CSS variables, Tailwind config, an RN theme object) — colours, typography, spacing, radii, shadows
+- Builds the **UI library** (buttons, inputs, selects, toggles, cards, alerts, badges, form sections, headings, …) from those tokens, faithful to the source
+- Renders **one preview page** showing every component in its states (default/hover/focus/disabled/active; empty/loading/error; responsive) — the human verification gate; the library isn't "done" until the user has eyeballed it
+- Puts the durable documentation under `<docs-root>/design-system/<PROJECT-CODE>-design-system.md` and adds only a short, PROJECT-CODE-keyed **reference** in `AGENTS.md` — not the whole design system
+- Binding rule: on any UI change, check the library first — reuse an existing component; if it's missing, build it via `extend` from the design-system source, or ask the user for a reference when none exists; never inline a one-off. Per-page pixel conformance stays with `/pixel-audit`
+- Seeds a project-local `<project>-ui-coding` skill (and **updates** rather than overwrites an existing one) so implementers inherit the reuse-vs-new discipline and paths
+- Two modes: **bootstrap** (full first run) and **extend** (the design-system feedback loop — add/modify a component as the design evolves, *or* after a page ships review its diff and promote emergent reusable UI back into the library, leaving one-offs only when documented). `extend` keeps library + preview + doc + `AGENTS.md` reference + project skill in sync and updates the design system **only** — no commits, pushes, ADRs, or handovers (those stay `/grill-with-docs` and `/commit-push-*`). Suggests verifying the preview then starting Workflow B, and stops — never auto-chains
+
+**Modes**
+
+| Mode | Example prompt |
+| --- | --- |
+| Bootstrap from a source | `Set up the design system for ADMIN-WEB from this Figma file` |
+| Guided definition (no source) | `Build a design system for MOBILE-APP — we have no Figma, help me define it` |
+| Extend later | `Add the new date-picker component to the ADMIN-WEB design system` |
+| Post-ship feedback loop | `That page just shipped — fold its new UI back into the ADMIN-WEB library` |
 
 ### `release-notes`
 
@@ -212,7 +262,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill release
 | Mode | Example prompt |
 | --- | --- |
 | Date-based (single date or range) | `Generate release notes for 11 March 2026` |
-| Single project on a date | `Generate release notes for PARTNERS-APP on 11 March` |
+| Single project on a date | `Generate release notes for WAREHOUSE-APP on 11 March` |
 | All projects on a date | `Generate release notes for all projects on 15 April` |
 | Current dev session | `Summarize today's development session` |
 | Specific feature | `Write release notes for the QR scanning improvements` |
@@ -281,7 +331,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
 | Mode | Example prompt |
 | --- | --- |
 | Feature lookup | `Explain how asset lookup works in MOBILE-APP` |
-| Issue trace | `Investigate why RFID scans fail in PARTNERS-APP` |
+| Issue trace | `Investigate why RFID scans fail in WAREHOUSE-APP` |
 | Workflow audit | `Trace the invite-user workflow across ADMIN-WEB and API-SERVICE` |
 
 ### `feature-prompt`
@@ -331,6 +381,37 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill feature
 | New feature | `Help me create a feature prompt for stock transfer approvals` |
 | Change request | `Turn this rough request into a dev prompt for MOBILE-APP and API-SERVICE` |
 | Multi-project work | `Create a feature prompt for ADMIN-WEB, MOBILE-APP, and API-SERVICE` |
+
+### `port-feature`
+
+Ports a feature that already exists in a **REFERENCE** implementation into a
+**TARGET** stack (e.g. bringing a legacy screen into the new app). It sits at
+the **discover → plan** entry: it reads the target's binding context, traces the
+reference's real behaviour/workflow/navigation/permissions/states via `/feature-discovery`,
+surveys what the target already has, and writes **one** gap map artifact — then
+suggests `/grill-with-docs` and stops. It never implements and never auto-chains.
+
+```bash
+npx skills install https://github.com/devarfeen/agent-skills-kit --skill port-feature
+```
+
+**What it does**
+
+- Interviews (like `/feature-prompt`) for anything missing: the **feature to port**, the **REFERENCE PROJECT-CODE** (behaviour truth), and the **TARGET PROJECT-CODE** (where it lands)
+- Carries a fixed source-of-truth framing: the reference is truth for behaviour, workflow, navigation, permissions, data effects, and states; the target's design system is truth for UI — reference-vs-DS conflicts pick the DS and record the deviation
+- Never hardcodes stack rules — reads the target's conventions from its `CONTEXT.md`, `docs/adr/`, `AGENTS.md`, and UI-coding skill, so it works for any repo in the matrix (a React Native target differs from a Livewire one); a port-critical rule missing from that context is surfaced as an open question, not guessed
+- Reads the target's binding context first, discovers the reference with `/feature-discovery` (narrow, evidence-backed — no bulk repo/`docs/` reads), then surveys the target's current state and reusable DS components (opening the target's `/ui/preview/all` when UI is involved)
+- Allows read-only sub-agents only for non-overlapping discovery; the main agent owns synthesis with no duplicate discovery
+- Writes one gap map to the configured docs location at `<artifacts-root>/docs/port/<feature-slug>-gapmap.md` — reference behaviour/workflow, target current state, missing/wrong, reusable target code & DS components, tests needed, UI/design gaps & forced deviations, risks, a thin first slice, and evidence-derived open questions
+- Suggests `/grill-with-docs` on the gap map (which produces the ADR using the next number in the configured `docs/adr/`) and stops — full PROJECT-CODEs named throughout, conventions never mixed across projects, nothing implemented, no issue fabricated
+
+**Example prompts**
+
+| Mode | Example prompt |
+| --- | --- |
+| Port with all inputs | `Port stock-transfer approvals from LEGACY-PORTAL to ADMIN-WEB` |
+| Port, let it interview | `Help me port the invoice screen into MOBILE-APP` |
+| Reference → target framing | `Bring the RFID scan flow from LEGACY-PORTAL over to MOBILE-APP` |
 
 ### `commit-push-close`
 
@@ -481,6 +562,38 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill integra
 | Build the contract (default) | `Build the integration contract for PRD-142` |
 | Single-project check | `integration-contract for PRD-207` *(one project → "no contract needed", stops)* |
 | Gate before shipping | `Run the integration-contract smoke gate for PRD-142` |
+
+### `pixel-audit`
+
+A standalone **verify**-phase companion: a strict per-page visual-conformance
+audit of **one** page/route against a source of truth. It captures a full-size
+pixel inventory, writes a defect list (MISSING vs EXTRA), fixes node-by-node
+reusing the project's UI library, and refuses to claim "verified" until a hard
+element-level gate is crossed. It stays strictly inside scope and never
+auto-chains.
+
+```bash
+npx skills install https://github.com/devarfeen/agent-skills-kit --skill pixel-audit
+```
+
+**What it does**
+
+- Interviews for the **TARGET PROJECT-CODE**, the **SCOPE** (one page/route + the states to audit — list/detail, modals, forms, empty/error/loading, responsive), and a **pluggable source of truth**: Figma MCP node(s), or reference screens / a reference implementation when no Figma exists — and names which is in use
+- Loads the project's binding context (`CONTEXT.md`, `docs/adr/`) and its `*-ui-coding` skill first — reusing that skill's catalog, tokens, and components; never inlining. Falls back to `/design-system` discovery if no such skill exists
+- Captures a written **pixel inventory** before editing — per node/region and every empty/error/loading/responsive variant, full-size including below-fold (never whole-frame screenshots only): exact x/y, size, spacing, padding, gap, font, colour, border, radius, fill, icon size, alignment, opacity, shadow, variant
+- Audits expected (source) vs actual (browser), classifying each mismatch **MISSING** (source item absent/wrong in app) or **EXTRA** (app item not in source); extra UI is a defect, surfaced for a decision, never silently kept/removed/restyled
+- Writes the defect list to `<artifacts-root>/docs/pixel-audit/<page-slug>-defects.md`, one row per defect (node, URL/state, file/component, mismatch, expected, actual, MISSING/EXTRA, element evidence)
+- Fixes one node/state at a time, reusing the UI library; a shared-component change goes through the library + preview + `*-ui-coding` skill (via `/design-system` extend), never page-local; touches nothing unrelated
+- Enforces a hard **verification gate**: state the env; rebuild/refresh and confirm the change is in the **served** assets; prove each fix with `getBoundingClientRect()`, computed styles, DOM, and clipped element screenshots; hidden/zero-size/collapsed/clipped/misaligned/ignored-class elements are failures; falsify before declaring verified — never say "verified" without env stated, pipeline crossed, served assets confirmed, element proof, source captured full-size, expected-vs-actual compared, and every in-scope state checked
+- Per-page feature-time conformance — distinct from `/design-system`'s one-time startup preview verification (referenced, not duplicated). Suggests `/review` → `/commit-push-*` and stops
+
+**Modes**
+
+| Mode | Example prompt |
+| --- | --- |
+| Audit against Figma | `Pixel-audit the assets list page in ADMIN-WEB against this Figma node` |
+| Audit against a reference | `Pixel-audit MOBILE-APP order detail against the legacy screens — no Figma` |
+| Scoped states | `Pixel-audit the ADMIN-WEB user form: default, validation error, and empty states only` |
 
 ### `orchestrate-herdr`
 

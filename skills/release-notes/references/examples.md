@@ -22,7 +22,7 @@ Generate release notes for 11 March 2026
 
 Date: 11 March 2026
 
-PARTNERS-APP
+WAREHOUSE-APP
 
 - App now checks the scanner is ready before starting a scan, so first-try scans no longer fail
 - New Activity Log in Field Support screen lets support see what a partner did on their device
@@ -34,7 +34,7 @@ PARTNERS-APP
 
 # Detailed Release Notes
 
-## PARTNERS-APP
+## WAREHOUSE-APP
 
 ### Scanner Now Checks Readiness Before Scanning
 
@@ -52,7 +52,7 @@ PARTNERS-APP
 - Fewer failed scans and retries during busy shifts.
 
 **Scope**
-- Stock Lookup screen in PARTNERS-APP.
+- Stock Lookup screen in WAREHOUSE-APP.
 
 **Manual QA Steps**
 1. Open Stock Lookup and start a scan → "Ready" status should appear before the scan begins.
@@ -77,7 +77,7 @@ PARTNERS-APP
 - Support can troubleshoot without calling the partner.
 
 **Scope**
-- Field Support screen in PARTNERS-APP.
+- Field Support screen in WAREHOUSE-APP.
 
 **Manual QA Steps**
 1. Log in as field support and open a partner's Activity Log → Recent actions should appear with timestamps.
@@ -90,7 +90,7 @@ PARTNERS-APP
 ## Example 2: Single Project on a Date
 
 ### User Request
-Generate release notes for PARTNERS-APP on 11 March
+Generate release notes for WAREHOUSE-APP on 11 March
 
 ### Example Output
 
@@ -98,7 +98,7 @@ Generate release notes for PARTNERS-APP on 11 March
 
 Date: 11 March 2026
 
-PARTNERS-APP
+WAREHOUSE-APP
 
 - App now checks the scanner is ready before starting a scan, so first-try scans no longer fail
 
@@ -106,7 +106,7 @@ PARTNERS-APP
 
 # Detailed Release Notes
 
-## PARTNERS-APP
+## WAREHOUSE-APP
 
 ### Scanner Now Checks Readiness Before Scanning
 
@@ -124,7 +124,7 @@ PARTNERS-APP
 - Fewer failed scans during stock checks.
 
 **Scope**
-- Stock Lookup screen in PARTNERS-APP.
+- Stock Lookup screen in WAREHOUSE-APP.
 
 **Manual QA Steps**
 1. Open Stock Lookup and start a scan → "Ready" indicator should appear first.
@@ -143,7 +143,7 @@ Summarize today's development session
 
 # Stakeholder Summary
 
-PARTNERS-APP
+WAREHOUSE-APP
 
 - All scanner screens now use the same setup process, so scanning works reliably everywhere
 
@@ -151,7 +151,7 @@ PARTNERS-APP
 
 # Detailed Release Notes
 
-## PARTNERS-APP
+## WAREHOUSE-APP
 
 ### Consistent Scanner Setup Across All Screens
 
@@ -168,7 +168,7 @@ PARTNERS-APP
 - Scanning works the same way no matter which screen you're on.
 
 **Scope**
-- All scanner-enabled screens in PARTNERS-APP.
+- All scanner-enabled screens in WAREHOUSE-APP.
 
 **Manual QA Steps**
 1. Open any scanner screen and start a scan → Scanner should finish setup before scan begins.
@@ -185,7 +185,7 @@ This example shows the same work described in bad (verbose/corporate) style vs g
 ### Auth Hardening Workstreams Prepared
 
 **Summary**
-- The next round of login and password-handling improvements for the Partners and Portfolio platforms was formally prepared so implementation can move with a clear scope and QA target.
+- The next round of login and password-handling improvements for the Admin and Portal platforms was formally prepared so implementation can move with a clear scope and QA target.
 
 **Problem**
 - Follow-up work was still needed around username casing, password visibility, and stronger password rules across multiple auth flows.
@@ -193,8 +193,8 @@ This example shows the same work described in bad (verbose/corporate) style vs g
 
 **Change**
 - Two implementation workstreams were documented and broken down for execution:
-- Partners portal follow-up work covering username lowercasing and consistent password show/hide behavior across login, signup, reset, invite, and user-management screens.
-- Portfolio auth hardening covering username lowercasing, stronger password requirements when setting a password, and password show/hide coverage in staff and gallery user-management flows.
+- Admin portal follow-up work covering username lowercasing and consistent password show/hide behavior across login, signup, reset, invite, and user-management screens.
+- Portal auth hardening covering username lowercasing, stronger password requirements when setting a password, and password show/hide coverage in staff and gallery user-management flows.
 - Concrete touchpoints called out in the workstream docs include the signin page, signup flow, reset and force-change password pages, invite flow, staff password screens, and gallery user forms.
 
 **Impact**
@@ -208,7 +208,7 @@ This example shows the same work described in bad (verbose/corporate) style vs g
 ### Login and Password Improvements Planned
 
 **Summary**
-- Planned fixes for how usernames and passwords work across Partners and Portfolio apps.
+- Planned fixes for how usernames and passwords work across Admin and Portal apps.
 
 **Problem**
 - "John" and "john" were treated as different accounts. Some password fields had a show/hide toggle, others didn't.
@@ -232,7 +232,7 @@ This example shows the same work described in bad (verbose/corporate) style vs g
 Write release notes for the RFID scanning improvements
 
 ### Example Output
-## PARTNERS-APP
+## WAREHOUSE-APP
 
 ### RFID Scanning Improvements
 
@@ -262,12 +262,12 @@ Write release notes for the RFID scanning improvements
 Generate release notes for 12 March 2026 across all projects
 
 ### Example Input
-- PARTNERS-APP commits found for 12 March 2026
+- WAREHOUSE-APP commits found for 12 March 2026
 - WAREHOUSE-ADMIN commits found for 12 March 2026
 - No commits found for CUSTOMER-PORTAL on 12 March 2026
 
 ### Example Output Rule
-- Include PARTNERS-APP and WAREHOUSE-ADMIN sections.
+- Include WAREHOUSE-APP and WAREHOUSE-ADMIN sections.
 - Do not include CUSTOMER-PORTAL because it has no confirmed changes.
 
 ### Example Output
@@ -275,7 +275,7 @@ Generate release notes for 12 March 2026 across all projects
 
 Date: 12 March 2026
 
-PARTNERS-APP
+WAREHOUSE-APP
 
 - Scanner startup is more consistent, so teams see fewer failed first scans
 
@@ -287,7 +287,7 @@ WAREHOUSE-ADMIN
 
 # Detailed Release Notes
 
-## PARTNERS-APP
+## WAREHOUSE-APP
 
 ### RFID Scanner Reliability
 
@@ -305,7 +305,7 @@ WAREHOUSE-ADMIN
 - Fewer failed first-scan attempts.
 
 **Scope**
-- RFID-enabled operational flows in PARTNERS-APP.
+- RFID-enabled operational flows in WAREHOUSE-APP.
 
 **Manual QA Steps**
 1. Open an RFID scan screen -> Scan status should be visible before scanning.
