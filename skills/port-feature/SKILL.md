@@ -1,6 +1,6 @@
 ---
 name: port-feature
-description: Use when the user wants to port a feature that already exists in a REFERENCE implementation into a TARGET stack (e.g. bring a legacy screen into the new app). Sits at the discover → plan entry of the gradient: it reads the target's binding context, traces the reference's real behaviour/workflow/navigation/permissions/states/data-effects the way /feature-discovery does, surveys what the target already has, and writes ONE gap map artifact — then suggests /grill-with-docs and stops. Never implements, never auto-chains. The reference is truth for behaviour; the target's design system is truth for UI. Interviews for the feature, the REFERENCE PROJECT-CODE, and the TARGET PROJECT-CODE when any is missing.
+description: Use when the user wants to port a feature that already exists in a REFERENCE implementation into a TARGET stack (e.g. bring a legacy screen into the new app). Sits at the discover → plan entry of the gradient — it reads the target's binding context, traces the reference's real behaviour/workflow/navigation/permissions/states/data-effects the way /feature-discovery does, surveys what the target already has, and writes ONE gap map artifact — then suggests /grill-with-docs and stops. Never implements, never auto-chains. The reference is truth for behaviour; the target's design system is truth for UI. Interviews for the feature, the REFERENCE PROJECT-CODE, and the TARGET PROJECT-CODE when any is missing.
 ---
 
 # Port Feature
