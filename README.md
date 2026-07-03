@@ -40,6 +40,10 @@ agent-skills-kit/
     │   └── SKILL.md          # Required: metadata + instructions
     ├── commit-push-pr/       # The commit-push-pr skill
     │   └── SKILL.md          # Required: metadata + instructions
+    ├── polish-batch/         # The polish-batch skill (capture → dispatch → verify UI nits)
+    │   └── SKILL.md          # Required: metadata + instructions
+    ├── integration-contract/ # The integration-contract skill (cross-repo seam contract + smoke gate)
+    │   └── SKILL.md          # Required: metadata + instructions
     └── orchestrate-herdr/    # The orchestrate-herdr skill (herdr per-issue worker fan-out)
         └── SKILL.md          # Required: metadata + instructions
 ```
@@ -412,6 +416,71 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill commit-
 | Open a PR for the current issue | `Commit, push, and open a PR for this issue` |
 | Ship issue work as a PR | `PR this — closes #418` |
 | Update an existing PR | `commit-push-pr — there's already an open PR for this branch` |
+
+### `polish-batch`
+
+Batches the UI-polish tail at the **verify** phase, between manual QA and ship.
+During QA you log many tiny cosmetic fixes (copy, spacing, alignment, wrong
+string) **without** fixing any of them, then dispatch them per PROJECT-CODE in
+one bounded pass, then verify — replacing live per-nit steering with
+capture → dispatch → verify.
+
+```bash
+npx skills install https://github.com/devarfeen/agent-skills-kit --skill polish-batch
+```
+
+**What it does**
+
+- Runs three explicit modes — **capture** (default), **dispatch**, and **verify** — and never auto-advances between them
+- Capture logs each nit to a punch-list artifact and changes nothing; the only write is a new row (capture ≠ fix)
+- Enforces cosmetic scope only: anything touching behaviour, data, or an interface is refused as a nit and routed back to `/to-issues` as a slice, including attempts to reframe a behavioural change as "just a small fix"
+- Keeps one punch-list per PRD at `<artifacts-root>/docs/qa/<PRD-ID>-punchlist.md` — a table of `#`, `PROJECT-CODE`, `Where`, `Wrong → Right`, `Shot`, `Status` (`open` → `dispatched` → `verified`/`reopened`)
+- Uses agent-browser to screenshot state into `docs/qa/shots/` when available, and falls back to the `Where` text when it is not
+- Dispatch runs only on explicit user say-so (never automatically from capture): groups open rows by PROJECT-CODE, orders them trivial → structural, and hands the coding CLI one bounded task per group — fix exactly these items, no refactors or adjacent changes, each fix independent and obviously correct
+- Always names the full PROJECT-CODE from the Project Matrix and never mixes one project's conventions into another
+- Cross-repo: a feature spanning web + API + mobile keeps all its nits in one punch-list file, but dispatch stays per PROJECT-CODE so no batch mixes conventions
+- Verify re-checks affected screens against `Wrong → Right`, marks each row `verified`/`reopened` (reopened rows stay for the next round), then suggests `/review` and `/commit-push-*` and stops
+
+**Modes**
+
+| Mode | Example prompt |
+| --- | --- |
+| Capture a nit (default) | `Punch-list this for PRD-142: Billing header says "Recieve invoices"` |
+| Dispatch the batch | `Dispatch the open polish-batch nits per project` |
+| Verify the fixes | `Verify the polish-batch punch list for PRD-142` |
+
+### `integration-contract`
+
+Pulls cross-repo confidence out of your head into a durable **contract** plus a
+**smoke gate** — but only when a PRD touches more than one PROJECT-CODE. It runs
+after `/to-issues`, alongside the **verify** phase: it maps the producer surface
+that changed (usually the API PROJECT-CODE), traces each consumer's call-sites
+narrowly (the way `/feature-discovery` does), and writes an agent-browser smoke
+checklist that proves the seam holds before you ship or hand to the PM.
+
+```bash
+npx skills install https://github.com/devarfeen/agent-skills-kit --skill integration-contract
+```
+
+**What it does**
+
+- Acts only on multi-project PRDs: if the PRD touches exactly one PROJECT-CODE it reports `single project — no contract needed` and stops — no overhead where it isn't needed
+- Writes one contract per PRD at `<artifacts-root>/docs/integration/<PRD-ID>-contract.md` with three sections: **Producer surface changed**, **Consumers**, and a **Smoke checklist**
+- Section 1 lists each endpoint/route/response-shape/interface the producer slice added or changed, one row each (`PROJECT-CODE`, surface, change)
+- Section 2 traces each dependent PROJECT-CODE's call-sites narrowly and cites them as `file:symbol`; any changed surface with no located consumer becomes an explicit `RISK` row, never a silent pass
+- Section 3 writes 3–6 end-to-end flows phrased for agent-browser (navigate → act → assert a visible outcome), each tagged with the PROJECT-CODEs it crosses, `Status: pending → pass/fail`
+- Retrieval stays narrow and evidence-backed (no bulk-reading a consumer repo or `docs/`); binding order is `CONTEXT.md` + `docs/adr/` > current PRD/issues/code > native memory
+- Always names full PROJECT-CODEs from the Project Matrix and never mixes one project's conventions into another (API vs Livewire web vs CodeIgniter legacy vs React Native)
+- **gate** mode runs the smoke checklist via agent-browser at two points — before `/commit-push-*` and before PM handoff — marking each flow `pass`/`fail`; any `fail` reopens the contract and blocks the step, surfaced rather than shipped
+- Companion, not a pipeline: suggests `/review` → `/commit-push-*` (all pass) or `/to-issues` / `/diagnosing-bugs` (on a fail), and never auto-chains
+
+**Modes**
+
+| Mode | Example prompt |
+| --- | --- |
+| Build the contract (default) | `Build the integration contract for PRD-142` |
+| Single-project check | `integration-contract for PRD-207` *(one project → "no contract needed", stops)* |
+| Gate before shipping | `Run the integration-contract smoke gate for PRD-142` |
 
 ### `orchestrate-herdr`
 

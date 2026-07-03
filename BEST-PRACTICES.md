@@ -31,7 +31,7 @@ discover → sharpen → plan → slice → implement → verify → ship
 | **plan** | Challenge the plan, capture the decision | `/grill-with-docs` (→ ADR), `/to-prd` (→ PRD) |
 | **slice** | Break the plan into thin, grabbable units | `/to-issues` |
 | **implement** | Build it test-first | `/tdd` |
-| **verify** | Prove it works | `/review`, manual QA, `/diagnosing-bugs` |
+| **verify** | Prove it works | `/review`, manual QA, `/polish-batch` (batch the cosmetic tail), `/diagnosing-bugs` |
 | **ship** | Land it with proof | `/commit-push-close`, `/commit-push-pr` |
 
 ### Suggest, never auto-chain
@@ -146,8 +146,8 @@ Workspace-root level. Each step produces an artifact the next step consumes.
 4. **`/to-issues`** — run it on the PRD issue number. It creates **sub-issues / vertical slices** and auto-applies ready labels to the slices and the parent PRD. No separate `/triage` step is needed in this path.
 5. **`/tdd`** — ask the agent to work the PRD's sub-issues test-first (Red → Green → Refactor).
 6. **After each slice, the agent suggests a next step** — usually `/review`, then `/commit-push-close` or `/commit-push-pr`, sometimes `/release-notes`. You choose. (`/review` after each slice is a strong default.)
-7. **Ship** — at the end of a slice, a single issue, or the whole PRD, run `/commit-push-close` or `/commit-push-pr`.
-8. **Manual QA** — verify against the QA doc tied to that ADR/PRD.
+7. **Manual QA** — verify against the QA doc tied to that ADR/PRD. Batch the cosmetic tail with `/polish-batch`: capture copy/spacing/alignment/wrong-string nits without fixing them, then dispatch per PROJECT-CODE in one pass and verify before shipping. Anything touching behaviour, data, or an interface is not a nit — route it back to `/to-issues`.
+8. **Ship** — at the end of a slice, a single issue, or the whole PRD, run `/commit-push-close` or `/commit-push-pr`.
 
 > **The thread to notice:** prompt file → ADR → PRD issue → sliced issues → tested code → QA doc. Each link is grabbable on its own, and the whole chain is auditable.
 
@@ -194,7 +194,7 @@ What separates intentional use from vibe coding:
 | Workflow | Order |
 | :--- | :--- |
 | **Project start** | `/agents-md` → `/setup-matt-pocock-skills` → fill `AGENTS.md` placeholders |
-| **New feature** | `/feature-prompt` → `/grill-with-docs` → `/to-prd` → `/to-issues` → `/tdd` → `/review` → `/commit-push-*` → manual QA |
+| **New feature** | `/feature-prompt` → `/grill-with-docs` → `/to-prd` → `/to-issues` → `/tdd` → `/review` → manual QA → `/polish-batch` → `/commit-push-*` |
 | **Debug** | `/feature-discovery` → `/diagnosing-bugs` → (`/tdd` if needed) → `/commit-push-*` |
 | **Weekly** | `/release-notes` |
 
