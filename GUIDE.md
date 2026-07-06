@@ -148,7 +148,7 @@ These are optional separate installs. Use them beside this kit when installed an
 | New Workspace | `/agents-md` | Establish the Project Matrix, paths, and Non-Negotiable Rules. |
 | Unsure Which Matt Skill Fits | `/ask-matt` | Route to a user-invoked upstream skill flow without auto-chaining. |
 | Unclear Behavior | `/feature-discovery` | Read-only audit before planning. |
-| Rough Idea | `/feature-prompt` | Section-by-section clarification interview. |
+| Rough Idea | `/feature-prompt` | Infer-first prompt drafting; asks only what it can't infer. |
 | Broken Behavior | `/diagnosing-bugs` | Systematic root cause analysis. |
 | Design Spike | `/prototype` | Validate UI/state before PRD/Issues. |
 | Issue Work | `/tdd` + `/tdd-loop` | Test-first implementation. `/tdd-loop` is the kit's procedure (gates, completion evidence, exception protocol) and stands alone; Matt's `/tdd` adds test quality and seam choice when installed. |

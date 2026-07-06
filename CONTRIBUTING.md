@@ -160,10 +160,12 @@ completion.
 
 Skills install standalone via `npx skills install … --skill <name>`, so a skill
 may not reference another skill's files. Shared text is therefore *duplicated by
-design* — e.g. `references/ship-policy.md` exists in both `commit-push-close/`
-and `commit-push-pr/` and must stay **byte-identical**. Edit both together;
-`tools/validate.sh` fails when they differ. If you introduce another shared
-reference, add an equivalent check to the validator in the same PR.
+design* and must stay **byte-identical** across its copies — currently
+`references/ship-policy.md` (both ship skills) and `references/context-terms.md`
+(`feature-discovery` + `feature-prompt`). Edit all copies together;
+`tools/validate.sh` check 2 fails when a pair differs. If you introduce another
+shared reference, add its pair to the validator's `DUP_PAIRS` list in the same
+PR.
 
 ## Review rubric — what "good" looks like
 

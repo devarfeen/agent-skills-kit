@@ -125,7 +125,7 @@ understanding checks) are bound by the generated `AGENTS.md` rules themselves.
 
 Workspace-root level. Each step produces an artifact the next step consumes.
 
-1. **`/feature-prompt`** — describe what you want for a given project. It interviews you section by section and saves a **refined prompt file** to disk.
+1. **`/feature-prompt`** — describe what you want for a given project. It infers what it can from cheap repo evidence, asks only for what's missing, and saves a **refined prompt file** to disk.
 2. **`/grill-with-docs`** — pass it the prompt file. It runs a full Q/A session against your domain model and writes an **ADR** to disk.
 3. **`/to-prd`** — run it on the ADR. It publishes a **PRD** to your configured tracker (GitHub issue is convenient — the CLI can fetch it back cheaply).
 4. **`/to-issues`** — run it on the PRD issue number. It creates **sub-issues / vertical slices** and auto-applies ready labels to the slices and the parent PRD. No separate `/triage` step is needed in this path.

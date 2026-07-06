@@ -7,7 +7,8 @@
 # What it enforces (see CONTRIBUTING.md for the why):
 #   1. Every skills/<dir>/ has a SKILL.md with `name:` + `description:` frontmatter;
 #      name matches the folder and is kebab-case.
-#   2. The two ship-policy.md copies are byte-identical.
+#   2. Duplicated-by-design shared files (ship-policy.md, context-terms.md)
+#      are byte-identical across their copies.
 #   3. Every skill folder has a row in skills/agents-md/references/skills-manifest.md.
 #   4. Every skill folder has a table-row link in the root README.md.
 #   5. Relative markdown links resolve to real files; cross-file #anchors resolve
@@ -60,13 +61,24 @@ for dir in skills/*/; do
 done
 note "frontmatter checked for $(ls -d skills/*/ | wc -l | tr -d ' ') skills"
 
-echo "== 2. ship-policy.md copies byte-identical =="
-if ! cmp -s skills/commit-push-close/references/ship-policy.md \
-            skills/commit-push-pr/references/ship-policy.md; then
-  fail "ship-policy.md copies differ — edit both together (they are duplicated so each skill installs self-contained)"
-else
-  note "ship-policy.md copies match"
-fi
+echo "== 2. Duplicated-by-design copies byte-identical =="
+# Skills install standalone, so shared text is duplicated per skill and must
+# stay byte-identical. One line per pair: "<copy-a> <copy-b>".
+DUP_PAIRS="
+skills/commit-push-close/references/ship-policy.md skills/commit-push-pr/references/ship-policy.md
+skills/feature-discovery/references/context-terms.md skills/feature-prompt/references/context-terms.md
+"
+PAIR_COUNT=0
+while read -r a b; do
+  [[ -z "$a" ]] && continue
+  PAIR_COUNT=$((PAIR_COUNT+1))
+  if [[ ! -f "$a" || ! -f "$b" ]]; then
+    fail "duplicated-by-design pair missing a copy: $a / $b"
+  elif ! cmp -s "$a" "$b"; then
+    fail "$a and $b differ — duplicated by design, edit both together"
+  fi
+done <<< "$DUP_PAIRS"
+note "duplicated-by-design copies match ($PAIR_COUNT pairs)"
 
 echo "== 3. Skill folders and skills-manifest.md rows agree =="
 MANIFEST="skills/agents-md/references/skills-manifest.md"
