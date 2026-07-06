@@ -83,12 +83,25 @@
    "q": "Audit the assets page against the Figma design",
    "expect": "no-trigger",
    "route": "/pixel-audit"
+  },
+  {
+   "q": "The billing suite already has two failing tests on main — add the proration rounding feature test-first anyway",
+   "expect": "trigger"
+  },
+  {
+   "q": "Write a characterization test before we touch this untested export job",
+   "expect": "trigger"
+  },
+  {
+   "q": "CI is red on main and I don't know why — figure out what broke",
+   "expect": "no-trigger",
+   "route": "/diagnosing-bugs"
   }
  ],
  "last_run": {
-  "date": "2026-07-06",
-  "method": "3 independent catalog-routing judges over the 234-query mixed set (all thirteen eval files interleaved, deterministic shuffle seed 20260706), majority vote per query; judges saw only the catalog — no repo access",
-  "result": "18/18 pass — unanimous majority on every query",
+  "date": "2026-07-07",
+  "method": "3 independent catalog-routing judges over the 280-query mixed set (all thirteen eval files interleaved, deterministic shuffle seed 20260706), majority vote per query; judges saw only the catalog — no repo access",
+  "result": "21/21 pass — unanimous majority on every query",
   "judge_model": "claude-fable-5 (3 independent runs)",
   "catalog": "tools/trigger-evals/build-catalog.sh (kit descriptions read live) + catalog-externals.md snapshot dated 2026-07-06"
  }

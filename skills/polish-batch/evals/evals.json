@@ -83,12 +83,25 @@
    "q": "Ship the polish fixes as a PR",
    "expect": "no-trigger",
    "route": "/commit-push-pr"
+  },
+  {
+   "q": "Verify the dispatched punch-list rows against the running app",
+   "expect": "trigger"
+  },
+  {
+   "q": "No ticket for this — start a punch list for today's QA findings",
+   "expect": "trigger"
+  },
+  {
+   "q": "Fix this typo on the login page right now, don't batch it",
+   "expect": "no-trigger",
+   "route": "none"
   }
  ],
  "last_run": {
-  "date": "2026-07-06",
-  "method": "3 independent catalog-routing judges over the 234-query mixed set (all thirteen eval files interleaved, deterministic shuffle seed 20260706), majority vote per query; judges saw only the catalog — no repo access",
-  "result": "18/18 pass — unanimous majority on every query",
+  "date": "2026-07-07",
+  "method": "3 independent catalog-routing judges over the 280-query mixed set (all thirteen eval files interleaved, deterministic shuffle seed 20260706), majority vote per query; judges saw only the catalog — no repo access",
+  "result": "21/21 pass — unanimous majority on every query",
   "judge_model": "claude-fable-5 (3 independent runs)",
   "catalog": "tools/trigger-evals/build-catalog.sh (kit descriptions read live) + catalog-externals.md snapshot dated 2026-07-06"
  }

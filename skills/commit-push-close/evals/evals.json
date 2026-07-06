@@ -83,12 +83,25 @@
    "q": "Create GitHub issues from this PRD",
    "expect": "no-trigger",
    "route": "/to-issues"
+  },
+  {
+   "q": "Ship this small fix — there's no issue for it yet",
+   "expect": "trigger"
+  },
+  {
+   "q": "Run the tests, then close out the issue with proof they pass",
+   "expect": "trigger"
+  },
+  {
+   "q": "Close this stale issue as wontfix",
+   "expect": "no-trigger",
+   "route": "/triage"
   }
  ],
  "last_run": {
-  "date": "2026-07-06",
-  "method": "3 independent catalog-routing judges over the 234-query mixed set (all thirteen eval files interleaved, deterministic shuffle seed 20260706), majority vote per query; judges saw only the catalog — no repo access",
-  "result": "18/18 pass — unanimous majority on every query",
+  "date": "2026-07-07",
+  "method": "3 independent catalog-routing judges over the 280-query mixed set (all thirteen eval files interleaved, deterministic shuffle seed 20260706), majority vote per query; judges saw only the catalog — no repo access",
+  "result": "21/21 pass — unanimous majority on every query",
   "judge_model": "claude-fable-5 (3 independent runs)",
   "catalog": "tools/trigger-evals/build-catalog.sh (kit descriptions read live) + catalog-externals.md snapshot dated 2026-07-06"
  }

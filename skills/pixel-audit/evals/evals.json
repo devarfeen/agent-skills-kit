@@ -83,12 +83,35 @@
    "q": "Review this PR's CSS changes",
    "expect": "no-trigger",
    "route": "/review"
+  },
+  {
+   "q": "Before we ship, walk the invoice page against Figma node 12:340 and fix anything that's off",
+   "expect": "trigger"
+  },
+  {
+   "q": "Our rebuilt reports screen should be indistinguishable from the old app's — check it element by element and fix the gaps",
+   "expect": "trigger"
+  },
+  {
+   "q": "Make the landing page feel more polished and modern",
+   "expect": "no-trigger",
+   "route": "impeccable"
+  },
+  {
+   "q": "The save button on settings is misaligned — fix that one nit",
+   "expect": "no-trigger",
+   "route": "/polish-batch"
+  },
+  {
+   "q": "Audit the design consistency of every page in the app",
+   "expect": "no-trigger",
+   "route": "impeccable"
   }
  ],
  "last_run": {
-  "date": "2026-07-06",
-  "method": "3 independent catalog-routing judges over the 234-query mixed set (all thirteen eval files interleaved, deterministic shuffle seed 20260706), majority vote per query; judges saw only the catalog — no repo access",
-  "result": "18/18 pass — unanimous majority on every query",
+  "date": "2026-07-07",
+  "method": "3 independent catalog-routing judges over the 280-query mixed set (all thirteen eval files interleaved, deterministic shuffle seed 20260706), majority vote per query; judges saw only the catalog — no repo access",
+  "result": "23/23 pass — unanimous majority on every query",
   "judge_model": "claude-fable-5 (3 independent runs)",
   "catalog": "tools/trigger-evals/build-catalog.sh (kit descriptions read live) + catalog-externals.md snapshot dated 2026-07-06"
  }

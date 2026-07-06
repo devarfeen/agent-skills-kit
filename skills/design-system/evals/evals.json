@@ -83,12 +83,30 @@
    "q": "Audit our color contrast for accessibility",
    "expect": "no-trigger",
    "route": "none"
+  },
+  {
+   "q": "Extract design tokens from our Figma and wire up a component library for PORTAL-WEB",
+   "expect": "trigger"
+  },
+  {
+   "q": "We're starting UI on the new app with no designs — walk me through picking colors, type, and spacing, then build the base components",
+   "expect": "trigger"
+  },
+  {
+   "q": "Which components does the ADMIN-WEB UI library have today?",
+   "expect": "no-trigger",
+   "route": "/feature-discovery"
+  },
+  {
+   "q": "Restyle the settings page to use our existing Button component instead of inline markup",
+   "expect": "no-trigger",
+   "route": "none"
   }
  ],
  "last_run": {
-  "date": "2026-07-06",
-  "method": "3 independent catalog-routing judges over the 234-query mixed set (all thirteen eval files interleaved, deterministic shuffle seed 20260706), majority vote per query; judges saw only the catalog — no repo access",
-  "result": "18/18 pass — unanimous majority on every query",
+  "date": "2026-07-07",
+  "method": "3 independent catalog-routing judges over the 280-query mixed set (all thirteen eval files interleaved, deterministic shuffle seed 20260706), majority vote per query; judges saw only the catalog — no repo access",
+  "result": "22/22 pass — unanimous on 21 of 22, majority (2/3) on 1",
   "judge_model": "claude-fable-5 (3 independent runs)",
   "catalog": "tools/trigger-evals/build-catalog.sh (kit descriptions read live) + catalog-externals.md snapshot dated 2026-07-06"
  }

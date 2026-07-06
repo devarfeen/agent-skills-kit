@@ -83,12 +83,30 @@
    "q": "Migrate the database from MySQL 5.7 to MySQL 8",
    "expect": "no-trigger",
    "route": "none"
+  },
+  {
+   "q": "Map what it takes to move the legacy audit-log viewer into MOBILE-APP",
+   "expect": "trigger"
+  },
+  {
+   "q": "Rebuild the legacy exports feature over here — start with the gap map",
+   "expect": "trigger"
+  },
+  {
+   "q": "Upgrade this app from Laravel 9 to Laravel 11",
+   "expect": "no-trigger",
+   "route": "none"
+  },
+  {
+   "q": "How is the transfers feature different between LEGACY-PORTAL and ADMIN-WEB?",
+   "expect": "no-trigger",
+   "route": "/feature-discovery"
   }
  ],
  "last_run": {
-  "date": "2026-07-06",
-  "method": "3 independent catalog-routing judges over the 234-query mixed set (all thirteen eval files interleaved, deterministic shuffle seed 20260706), majority vote per query; judges saw only the catalog — no repo access",
-  "result": "18/18 pass — unanimous majority on every query",
+  "date": "2026-07-07",
+  "method": "3 independent catalog-routing judges over the 280-query mixed set (all thirteen eval files interleaved, deterministic shuffle seed 20260706), majority vote per query; judges saw only the catalog — no repo access",
+  "result": "22/22 pass — unanimous majority on every query",
   "judge_model": "claude-fable-5 (3 independent runs)",
   "catalog": "tools/trigger-evals/build-catalog.sh (kit descriptions read live) + catalog-externals.md snapshot dated 2026-07-06"
  }

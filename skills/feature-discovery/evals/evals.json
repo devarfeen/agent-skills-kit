@@ -83,12 +83,30 @@
    "q": "Which issues are ready for an agent to pick up?",
    "expect": "no-trigger",
    "route": "/triage"
+  },
+  {
+   "q": "Which services read the FEATURE_FLAGS env var and what happens when it's off?",
+   "expect": "trigger"
+  },
+  {
+   "q": "Before implementing the new pricing rules, explain how discounts are applied today",
+   "expect": "trigger"
+  },
+  {
+   "q": "The PRD is sliced across API-SERVICE and ADMIN-WEB — map the producer surface and each consumer's call-sites into a contract with a smoke checklist",
+   "expect": "no-trigger",
+   "route": "/integration-contract"
+  },
+  {
+   "q": "Summarize this repo's overall architecture and how the main folders relate",
+   "expect": "no-trigger",
+   "route": "graphify"
   }
  ],
  "last_run": {
-  "date": "2026-07-06",
-  "method": "3 independent catalog-routing judges over the 234-query mixed set (all thirteen eval files interleaved, deterministic shuffle seed 20260706), majority vote per query; judges saw only the catalog — no repo access",
-  "result": "18/18 pass — unanimous. Second run: the initial run scored 17/18 with 'What uses OrdersService, and why does it exist?' captured 3-0 by graphify's any-codebase-question description; fixed by adding the what-uses-a-module clause to this skill's description and re-running the full set.",
+  "date": "2026-07-07",
+  "method": "3 independent catalog-routing judges over the 280-query mixed set (all thirteen eval files interleaved, deterministic shuffle seed 20260706), majority vote per query; judges saw only the catalog — no repo access",
+  "result": "22/22 pass — unanimous majority on every query",
   "judge_model": "claude-fable-5 (3 independent runs)",
   "catalog": "tools/trigger-evals/build-catalog.sh (kit descriptions read live) + catalog-externals.md snapshot dated 2026-07-06"
  }
