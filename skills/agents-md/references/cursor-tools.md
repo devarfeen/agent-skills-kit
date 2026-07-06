@@ -53,3 +53,46 @@ Parallel: issue multiple `Task` calls in one turn (practical cap ~4). Local back
 | Tool-runner | `Task` → `bash` subagent; `Shell` + `Await` for background output |
 
 The shell subagent type is `bash` (not `shell`). `~/.cursor/permissions.json` is the **IDE** auto-run allowlist; **CLI** permissions live in `~/.cursor/cli-config.json` (global) and `<root>/.cursor/cli.json` (project).
+
+## Hook / trace tool names
+
+Identifiers used in hook matchers (`preToolUse`, `postToolUse`) and agent traces:
+
+| Tool | Purpose |
+| :--- | :--- |
+| `Read` / `Write` / `StrReplace` / `Delete` | File read, create/overwrite, exact-string edit, remove |
+| `Shell` | Run terminal commands; poll background shells with `Await` |
+| `Grep` / `Glob` / `SemanticSearch` | Content search, path patterns, indexed meaning search |
+| `Task` | Spawn a subagent (`subagent_type` or custom `.cursor/agents/` name) |
+| `TodoWrite` | Session task list updates |
+| `WebSearch` / `WebFetch` | Web queries; fetch URL content as markdown |
+| `GenerateImage` | Image generation from description |
+| `SwitchMode` | Switch to `plan` or `agent` interaction mode |
+| `ListMcpResources` / `FetchMcpResource` | MCP resource read |
+| MCP tools | Hook matcher `MCP:<tool>`; CLI permission pattern `Mcp(server:tool)` |
+| `EditNotebook` | Edit Jupyter notebook cells |
+| `Await` | Poll a background `Shell` session |
+| `TabRead` / `TabWrite` | Editor tab read/write (hook matchers only) |
+
+## Modes and headless use
+
+| Mode | CLI flag / command | Tool writes |
+| :--- | :--- | :--- |
+| Agent | default | Full tools |
+| Plan | `--mode=plan`, `/plan` | Read-only / planning |
+| Ask | `--mode=ask`, `/ask` | Read-only Q&A |
+
+Non-interactive: `agent -p "prompt"` (`--print`) runs with full tools unless
+the mode restricts edits. Headless output: `--output-format text|json|stream-json`
+(add `--stream-partial-output` for incremental deltas). Auth via
+`CURSOR_API_KEY`. Useful flags: `--worktree`, `--workspace <path>`,
+`--resume [thread-id]`; manage sessions with `agent ls` / `agent resume`.
+
+## Permission patterns
+
+- `Shell(git)` — prefix match: any `git` subcommand. `Shell(**)` — all shell commands.
+- `Mcp(server:tool)` — colon-separated (e.g. `Mcp(datadog:*)`, `Mcp(*:read_*)`).
+- `Read(src/**/*.ts)`, `Write(<glob>)`, `WebFetch(*.example.com)` — file / web allowlists.
+- Deny rules take precedence over allow rules.
+
+Docs: [Tool calling](https://cursor.com/learn/tool-calling) · [Agent tools](https://cursor.com/docs/agent/overview) · [CLI usage](https://cursor.com/docs/cli/using) · [Subagents](https://cursor.com/docs/subagents).

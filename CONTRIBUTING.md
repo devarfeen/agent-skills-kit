@@ -229,7 +229,7 @@ eval pass.
 | `agents-md` templates or generation rules (anything that changes what it emits — routine manifest row additions don't count) | Bump the version marker in `skills/agents-md/SKILL.md` (all three occurrences: the rule text and both file templates) |
 | Companion list | `skills-manifest.md` companions table (GUIDE/BEST-PRACTICES link to it) |
 | Elevated-permission presets | `skills/agents-md/references/tool-calling.md` (model-facing source) and `GUIDE.md` (human-facing copy) |
-| Any runtime fact in `tool-calling.md`, a `*-tools.md`, or `skills/tdd-loop/references/test-commands.md` | Re-verify the claim against that tool's current official docs in the same PR — CLI flags, tool names, and test-runner syntax age fast; don't propagate a stale fact into more files |
+| Any runtime fact in `tool-calling.md`, a `*-tools.md`, `memory-global-defaults.md`, or `skills/tdd-loop/references/test-commands.md` | Re-verify the claim against that tool's current official docs in the same PR — CLI flags, tool names, and test-runner syntax age fast; don't propagate a stale fact into more files |
 
 ### Versioning and provenance
 
