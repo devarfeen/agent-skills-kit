@@ -123,7 +123,7 @@ owns judgment and final wording. No worker agents, no code edits.
    user is away, save it as drafted and note at the top of the response that
    it is unconfirmed.
 3. If candidate context terms were found, run the shared approval flow.
-4. Save the final prompt to disk (below), then verify the pre-save checklist.
+4. Verify the pre-save checklist, then save the final prompt to disk (below).
 5. Add only:
 
 ```markdown
@@ -156,9 +156,7 @@ file at or above cwd; (2) the per-context root in a multi-context repo
   may carry a different number — the prompt path recorded in the ADR is the
   link, not the number.
 - **`<feature-slug>`** — kebab-case from `What is needed`, max 4 words, ASCII.
-- **`-prompt`** — fixed suffix marking the artifact type. Prompts live in
-  `docs/prompts/`, a sibling of `docs/adr/`; release notes live under
-  `docs/release-notes/` and use no `NNNN`.
+- **`-prompt`** — fixed suffix marking the artifact type.
 
 ### Conflict handling
 

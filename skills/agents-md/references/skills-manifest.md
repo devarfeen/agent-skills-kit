@@ -25,7 +25,7 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | `/design-system` | kit | startup | once per UI project; re-run `extend` as the design grows | |
 | `/feature-discovery` | kit | discover | | |
 | `/port-feature` | kit | discover | reference → target gap map | |
-| `/feature-prompt` | kit | sharpen | | |
+| `/feature-prompt` | kit | sharpen | → prompt file | |
 | `/grill-with-docs` | external | plan | → ADR | |
 | `/to-prd` | external | plan | → PRD | |
 | `/prototype` | external | plan | spike ungrillable "needs to feel/see it" questions, then back to /grill-with-docs | |
