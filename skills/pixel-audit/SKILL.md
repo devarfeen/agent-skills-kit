@@ -1,6 +1,6 @@
 ---
 name: pixel-audit
-description: Standalone verify-phase companion — a strict per-page visual-conformance audit of ONE page/route against a source of truth (Figma MCP nodes, or reference screens / a reference implementation when no Figma exists). It captures a full-size pixel inventory, writes a defect list (MISSING vs EXTRA), fixes node-by-node reusing the project's UI library (never inlining), and refuses to say "verified" until a hard element-level gate is crossed — env stated, build pipeline crossed, served assets contain the change, browser proof via getBoundingClientRect/computed styles, source captured full-size, and every in-scope state checked. Use when a page must match its design pixel-for-pixel during feature work. Stays strictly inside the given SCOPE; never auto-chains. Distinct from /design-system's one-time startup preview verification.
+description: Strict per-page visual-conformance audit at the verify phase — ONE page/route against a source of truth (Figma MCP nodes, or reference screens when no Figma exists). Captures a full-size pixel inventory, writes a MISSING-vs-EXTRA defect list, fixes node-by-node reusing the project's UI library (never inlining), and refuses to say "verified" until a hard element-level gate passes — served assets confirmed, getBoundingClientRect/computed-style proof, every in-scope state checked. Use when a page must match its design pixel-for-pixel during feature work. Stays inside the given SCOPE; never auto-chains; distinct from /design-system's startup preview check.
 ---
 
 # Pixel Audit
@@ -11,7 +11,7 @@ Audit **one page** for pixel-level conformance against a source of truth, fix th
 
 It is **not** `/design-system`'s job. `/design-system` verifies the whole component library once, at project start, via its preview page. `pixel-audit` verifies a **single product page** against its design during feature work. Reference `/design-system` and the project's `*-ui-coding` skill for the components; do not rebuild them here.
 
-It **never auto-chains**: it audits, fixes in scope, proves it, then suggests the next step and stops.
+It audits, fixes in scope, proves it, then suggests the next step and stops.
 
 ## Inputs
 

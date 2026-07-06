@@ -1,6 +1,6 @@
 ---
 name: design-system
-description: Workflow-A project start-off skill (run per project after /agents-md → /setup-matt-pocock-skills → placeholder fill; re-runnable to extend). Turn a provided design system — a Figma file, a written spec/brand guide, reference screens/app, or a guided-definition session — into a real UI library plus a verifiable preview page, document it under docs/design-system/, and add a short binding reference in AGENTS.md so that on ANY UI change every future agent checks the library first — reuse the component if it exists, else build it from the design-system reference (or ask for one when none exists) instead of inlining one-off UI. Re-run its extend mode to evolve the library or, after a page/feature ships, fold its emergent UI back into the library (the design-system feedback loop). Stack-adaptive — read the target's stack from the Project Matrix (Laravel/Livewire, React Native, plain HTML, …) — never hardcoded. A design-system source is required; never fabricate one silently. Never auto-chains.
+description: Project start-off skill, run once per UI project after /agents-md and setup; re-run `extend` as the design grows or to fold a shipped page's UI back into the library. Turns a provided design system — a Figma file, written spec/brand guide, reference screens, or a guided-definition session — into named tokens, a real UI library, a verifiable preview page, docs under docs/design-system/, and a short binding AGENTS.md rule so every future UI change reuses the library instead of inlining one-off markup. Stack-adaptive via the Project Matrix. A design-system source is required — never fabricated. Never auto-chains.
 ---
 
 # Design System
@@ -14,7 +14,7 @@ A Workflow-A (project start-off) skill. It turns a project's design system into 
 3. **documentation under `docs/design-system/`** (the durable record — source, tokens, component inventory, rules), and
 4. a short **binding reference in AGENTS.md** so that on **any UI change**, every future agent checks the library first — reusing what exists, building what's missing from the reference, or asking for a reference — instead of inlining one-off markup.
 
-Run it once per project, after `/agents-md` → `/setup-matt-pocock-skills` → placeholder fill. Re-run it (`extend` mode) whenever the design system grows, a UI change needs a component the library lacks, or a page/feature ships and its emergent UI should flow back into the library. It works for **any** project type in the Project Matrix and **never auto-chains**.
+Run it once per project, after `/agents-md` → `/setup-matt-pocock-skills` → placeholder fill. Re-run it (`extend` mode) whenever the design system grows, a UI change needs a component the library lacks, or a page/feature ships and its emergent UI should flow back into the library.
 
 ## Prerequisites
 

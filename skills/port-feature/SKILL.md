@@ -1,6 +1,6 @@
 ---
 name: port-feature
-description: Use when the user wants to port a feature that already exists in a REFERENCE implementation into a TARGET stack (e.g. bring a legacy screen into the new app). Sits at the discover → plan entry of the gradient — it reads the target's binding context, traces the reference's real behaviour/workflow/navigation/permissions/states/data-effects the way /feature-discovery does, surveys what the target already has, and writes ONE gap map artifact — then suggests /grill-with-docs and stops. Never implements, never auto-chains. The reference is truth for behaviour; the target's design system is truth for UI. Interviews for the feature, the REFERENCE PROJECT-CODE, and the TARGET PROJECT-CODE when any is missing.
+description: Use when the user wants to port, migrate, rebuild, or recreate a feature that already exists in a REFERENCE implementation into a TARGET stack (e.g. bring a legacy screen into the new app). Sits at the discover → plan entry — reads the target's binding context, traces the reference's real behaviour/workflow/permissions/states the way /feature-discovery does, surveys what the target already has, and writes ONE gap map artifact, then suggests /grill-with-docs and stops. The reference is truth for behaviour; the target's design system is truth for UI. Never implements, never auto-chains; interviews for any missing input.
 ---
 
 # Port Feature
@@ -9,7 +9,7 @@ description: Use when the user wants to port a feature that already exists in a 
 
 Port a feature that already works in a **REFERENCE** implementation into a **TARGET** stack. The reference (often a legacy repo) is where the real behaviour lives; the target is where it needs to land, in the target's own idiom. The confidence to do this safely — what the feature actually does, what the target already has, what's missing, what to reuse — usually lives only in someone's head. This skill pulls it onto disk as **one gap map**, then hands off to planning.
 
-It sits at the **discover → plan** entry of the gradient. It is a single pass, not a loop and not a pipeline: read context → discover the reference → survey the target → write the gap map → suggest `/grill-with-docs` → **stop**. It never implements and never auto-chains.
+It sits at the **discover → plan** entry of the gradient. It is a single pass, not a loop and not a pipeline: read context → discover the reference → survey the target → write the gap map → suggest `/grill-with-docs` → **stop**.
 
 ## Inputs
 
