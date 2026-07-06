@@ -14,7 +14,7 @@ Four-step ship for one GitHub-issue iteration (with an inline create-if-missing 
 
 ## Shared ship policy
 
-Read [`references/ship-policy.md`](references/ship-policy.md) first. It holds the rules both ship skills share and that this workflow depends on: **Label validation**, **Authorship policy**, **Env parity policy**, **Inline issue creation**, **Naming anchor**, **Commit message format**, **Pre-commit safety**, and the **Response footer**. This `SKILL.md` only covers what is specific to closing the issue directly.
+Read [`references/ship-policy.md`](references/ship-policy.md) first. It holds the rules both ship skills share and that this workflow depends on: **Read state**, **Label validation**, **Authorship policy**, **Env parity policy**, **Inline issue creation**, **Naming anchor**, **How-to-test rules**, **Commit message format** (with the HEREDOC form and commit examples), **Pre-commit safety**, and the **Response footer**. This `SKILL.md` only covers what is specific to closing the issue directly.
 
 ## Issue-close comment format
 
@@ -34,25 +34,15 @@ Closed by <SHA> on `<branch>`.
 Notes: <follow-ups or known gaps; omit line if none>
 ```
 
-Rules for **How to test**:
-- Concrete, runnable steps a reviewer can copy. Name the screen, command, endpoint, or button.
-- If the change is UI: where to click, what to enter, what to see.
-- If the change is API/server: the exact `curl` or request, expected status/payload.
-- If the change is internal/refactor with no user-facing surface: how to verify via tests (`pnpm test path/to/file`, etc.) plus what should still work end-to-end.
-- 3–6 steps. If you can't write a real test plan from the diff, ask the user before posting — do not invent one.
+Rules for **How to test** live in **How-to-test rules** (`references/ship-policy.md`).
 
 ## Workflow
 
-1. **Read state** — run in parallel:
-   - `git status` (no `-uall`)
-   - `git diff` (staged + unstaged)
-   - `git log -5 --oneline`
-   - `git branch --show-current`
-   - `git remote get-url origin` (sanity-check the repo)
+1. **Read state** — run the **Read state** commands in `references/ship-policy.md` (parallel git reads, default-branch detection, `gh` availability check). If the current branch is not the detected default branch, the code this close refers to may sit unmerged — say so and confirm the direct close vs routing to `/commit-push-pr`; confirm likewise when the repo requires PRs.
 
 2. **Resolve or create the issue** — check, in order: branch name (e.g. `feat/123-...`, `agent/PROJ-456-...`), recent commits on this branch, conversation context. If no issue can be located, switch to **Inline issue creation** (`references/ship-policy.md`) for valid small ad hoc work, then use the returned number for the rest of the workflow.
 
-3. **Read issue labels** — for issues that already existed, run `gh issue view <num> --json state,labels,title,url` and validate against the **Label validation** table in `references/ship-policy.md`. If labels are missing/conflicting or the state is `needs-triage`, `needs-info`, or `wontfix`, stop and route back to `/triage`. For issues just created inline, skip this step — labels were set at creation.
+3. **Read issue labels** — for issues that already existed, run `gh issue view <num> --json state,labels,title,url` and validate against the **Label validation** table in `references/ship-policy.md`. If labels are missing/conflicting or the state is `needs-triage`, `needs-info`, or `wontfix`, stop and route back to `/triage`. If the issue is already `CLOSED`, stop and ask — reopen it for this iteration, comment without closing, or target a different issue. For issues just created inline, skip this step — labels were set at creation.
 
 4. **Draft the commit message** from the issue title and diff, per **Commit message format** in `references/ship-policy.md`. For ad hoc inline issues, the new issue title and commit subject must match (see **Naming anchor**).
 
@@ -64,28 +54,16 @@ Rules for **How to test**:
    - Existing issue: commit message + close comment.
    - Inline-created issue: new-issue title + new-issue body + chosen category/state labels + commit message + close comment. After approval, create the issue first, then commit/push/close in order.
 
+   If the user is away, present the drafts and stop — never commit, push, or close unapproved.
+
 7. **Pre-commit safety** — apply every check in **Pre-commit safety** (`references/ship-policy.md`) before staging.
 
-8. **Commit** with HEREDOC:
-   ```bash
-   git commit -m "$(cat <<'EOF'
-   <subject>
-
-   Issue: #123
-
-   Decisions:
-   - ...
-
-   Files:
-   - ...
-   EOF
-   )"
-   ```
+8. **Commit** using the quoted-HEREDOC form in **Commit message format** (`references/ship-policy.md`).
 
 9. **Push** the current branch:
    - Tracks a remote → `git push`.
    - No upstream → `git push -u origin <branch>`.
-   - **If the current branch is `main` or `master`**: stop and confirm separately before pushing.
+   - **If the current branch is the detected default branch**: stop and confirm separately before pushing.
 
 10. **Close the issue** — fill the drafted comment with the real values (short
     SHA from `git rev-parse --short HEAD`, current branch), write it to a temp
@@ -104,18 +82,9 @@ Rules for **How to test**:
 
 ## Examples
 
+The matching commit messages live in **Commit examples** (`references/ship-policy.md`, issues #204 and #418).
+
 ### Minimal
-
-Commit:
-```
-wire signup form to /api/users
-
-Issue: #204
-
-Files:
-- app/signup/page.tsx — submit handler + error state
-- lib/api/users.ts — POST /users client
-```
 
 Close comment:
 ```
@@ -131,25 +100,6 @@ Signup form now POSTs to /api/users and surfaces server errors inline.
 ```
 
 ### Full
-
-Commit:
-```
-add idempotency keys to checkout flow
-
-Issue: #418
-
-Decisions:
-- Stored keys in Redis (24h TTL) over Postgres — read path is hot
-- Reused existing `x-request-id` header instead of a new one
-
-Files:
-- server/checkout/handler.ts — key check before charge
-- server/checkout/handler.test.ts — replay + race tests
-- infra/redis.ts — TTL helper
-
-Notes:
-- Stripe webhook path still unguarded — next iteration
-```
 
 Close comment:
 ```
@@ -173,12 +123,10 @@ Before marking the iteration done, verify:
 - [ ] Commit subject mirrors the GitHub issue title as closely as practical and has no routing marker
 - [ ] `Issue:` line present in commit body
 - [ ] No co-author or AI/tool attribution text in commit message, issue content, comments, release notes, or docs
-- [ ] If env keys changed: `.env`, `.env.staging`, `.env.production` were synchronized for add/remove/change operations
-- [ ] If env keys changed: `.sample.env` or `.example.env` updated with latest keys + safe placeholders
-- [ ] If env keys changed: README/docs references updated; any gitignored env files were still updated locally and reported
+- [ ] If env keys changed: existing env-family key sets synchronized, sample/example updated, docs updated, gitignored copies updated locally and reported (**Env parity policy**)
 - [ ] No secret files staged
 - [ ] Hooks ran (no `--no-verify`)
-- [ ] Push succeeded (or, on `main`/`master`, was confirmed separately)
+- [ ] Push succeeded (or, on the default branch, was confirmed separately)
 - [ ] Issue closed with comment containing **Summary** + **How to test**, and `gh issue view --json state` returned `CLOSED`
 - [ ] Final report line printed
 - [ ] Optional `Suggested next skills` footer included (1-6 advisory suggestions, no gating)

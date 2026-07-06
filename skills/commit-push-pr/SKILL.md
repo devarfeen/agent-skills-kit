@@ -9,12 +9,12 @@ Ship one GitHub-issue iteration as a reviewable PR (with an inline create-if-mis
 
 1. **Resolve or create** the GitHub issue.
 2. **Commit** the diff with a structured message.
-3. **Push** the current branch (auto-create one off `main`/`master` first).
+3. **Push** the current branch (when starting from the default branch, a confirmed feature branch is created first — step 4 of the workflow).
 4. **Open a PR** with `Closes #N`, a summary, and a how-to-test plan.
 
 ## Shared ship policy
 
-Read [`references/ship-policy.md`](references/ship-policy.md) first. It holds the rules both ship skills share and that this workflow depends on: **Label validation**, **Authorship policy**, **Env parity policy**, **Inline issue creation**, **Naming anchor**, **Commit message format**, **Pre-commit safety**, and the **Response footer**. This `SKILL.md` only covers what is specific to opening a PR.
+Read [`references/ship-policy.md`](references/ship-policy.md) first. It holds the rules both ship skills share and that this workflow depends on: **Read state**, **Label validation**, **Authorship policy**, **Env parity policy**, **Inline issue creation**, **Naming anchor**, **How-to-test rules**, **Commit message format** (with the HEREDOC form and commit examples), **Pre-commit safety**, and the **Response footer**. This `SKILL.md` only covers what is specific to opening a PR.
 
 ## PR title and body
 
@@ -44,33 +44,22 @@ Closes #<num>
 - <follow-ups or known gaps; omit section if none>
 ```
 
-Rules for **How to test**:
-- Concrete, runnable steps a reviewer can copy. Name the screen, command, endpoint, or button.
-- UI: where to click, what to enter, what to see.
-- API/server: exact `curl` or request, expected status/payload.
-- Internal/refactor with no user-facing surface: `pnpm test path/to/file` (or equivalent) plus what should still work end-to-end.
-- 3–6 steps. If you can't write a real test plan from the diff, ask the user before opening the PR — do not invent one.
+Rules for **How to test** live in **How-to-test rules** (`references/ship-policy.md`).
 
 The `Closes #N` line is mandatory and must be on its own line near the top of the body so GitHub auto-links and auto-closes the issue on merge. If linking multiple issues, list them as `Closes #1, closes #2` (each needs its own `closes` keyword).
 
 ## Workflow
 
-1. **Read state** — run in parallel:
-   - `git status` (no `-uall`)
-   - `git diff` (staged + unstaged)
-   - `git log -5 --oneline`
-   - `git branch --show-current`
-   - `git remote get-url origin`
-   - Detect default branch: `gh repo view --json defaultBranchRef -q .defaultBranchRef.name` (fallback: `main`).
+1. **Read state** — run the **Read state** commands in `references/ship-policy.md` (parallel git reads, default-branch detection, `gh` availability check).
 
-2. **Resolve or create the issue** — branch name → recent commits → conversation context. If none, switch to **Inline issue creation** (`references/ship-policy.md`) for valid small ad hoc work, then use the returned number for the rest of the workflow (commit `Issue:` line, PR `Closes #<num>`).
+2. **Resolve or create the issue** — branch name → recent commits → conversation context. If none, switch to **Inline issue creation** (`references/ship-policy.md`) for valid small ad hoc work — the issue is drafted now but created only after the combined approval in step 7; once created, fill its number into the commit `Issue:` line and the PR `Closes #<num>`.
 
 3. **Read issue labels** — for issues that already existed, run `gh issue view <num> --json state,labels,title,url` and validate against the **Label validation** table in `references/ship-policy.md`. If labels are missing/conflicting or the state is `needs-triage`, `needs-info`, or `wontfix`, stop and route back to `/triage`. For issues just created inline, skip this step — labels were set at creation.
 
 4. **Branch handling** — if the current branch is `main` or `master` (or the detected default branch):
    - Stop before staging anything.
    - Propose a feature branch name: `issue/<issue-num>-<slug>` where `<slug>` is a short kebab-case derivation of the issue title (≤ 5 words).
-   - Wait for the user to confirm the name (offer to edit).
+   - Wait for the user to confirm the name (offer to edit). If the user is away, proceed with the proposed name — step 7's combined approval remains the hard gate.
    - `git checkout -b <branch>` — uncommitted changes follow the checkout into the new branch.
    Otherwise, continue on the current branch.
 
@@ -84,23 +73,11 @@ The `Closes #N` line is mandatory and must be on its own line near the top of th
    - Existing issue: commit message + PR title + PR body.
    - Inline-created issue: new-issue title + new-issue body + chosen category/state labels + commit message + PR title + PR body. After approval, create the issue first, then commit/push/PR in order.
 
+   This approval is a deliberate hard gate before any remote write. If the user is away, present the drafts and stop — never stage, push, or open a PR unapproved.
+
 8. **Pre-commit safety** — apply every check in **Pre-commit safety** (`references/ship-policy.md`) before staging.
 
-9. **Commit** with HEREDOC:
-   ```bash
-   git commit -m "$(cat <<'EOF'
-   <subject>
-
-   Issue: #123
-
-   Decisions:
-   - ...
-
-   Files:
-   - ...
-   EOF
-   )"
-   ```
+9. **Commit** using the quoted-HEREDOC form in **Commit message format** (`references/ship-policy.md`).
 
 10. **Push** the current branch:
     - Tracks a remote → `git push`.
@@ -131,18 +108,9 @@ The `Closes #N` line is mandatory and must be on its own line near the top of th
 
 ## Examples
 
+The matching commit messages live in **Commit examples** (`references/ship-policy.md`, issues #204 and #418).
+
 ### Minimal
-
-Commit:
-```
-wire signup form to /api/users
-
-Issue: #204
-
-Files:
-- app/signup/page.tsx — submit handler + error state
-- lib/api/users.ts — POST /users client
-```
 
 PR title: `wire signup form to /api/users`
 
@@ -160,25 +128,6 @@ Signup form now POSTs to /api/users and surfaces server errors inline.
 ```
 
 ### Full
-
-Commit:
-```
-add idempotency keys to checkout flow
-
-Issue: #418
-
-Decisions:
-- Stored keys in Redis (24h TTL) over Postgres — read path is hot
-- Reused existing `x-request-id` header instead of a new one
-
-Files:
-- server/checkout/handler.ts — key check before charge
-- server/checkout/handler.test.ts — replay + race tests
-- infra/redis.ts — TTL helper
-
-Notes:
-- Stripe webhook path still unguarded — next iteration
-```
 
 PR title: `add idempotency keys to checkout flow`
 
@@ -210,9 +159,7 @@ Before reporting done, verify:
 - [ ] Commit subject mirrors the GitHub issue title as closely as practical and has no routing marker
 - [ ] `Issue:` line present in commit body
 - [ ] No co-author or AI/tool attribution text in commit message, PR title/body, issue content, comments, release notes, or docs
-- [ ] If env keys changed: `.env`, `.env.staging`, `.env.production` were synchronized for add/remove/change operations
-- [ ] If env keys changed: `.sample.env` or `.example.env` updated with latest keys + safe placeholders
-- [ ] If env keys changed: README/docs references updated; any gitignored env files were still updated locally and reported
+- [ ] If env keys changed: existing env-family key sets synchronized, sample/example updated, docs updated, gitignored copies updated locally and reported (**Env parity policy**)
 - [ ] No secret files staged
 - [ ] Hooks ran (no `--no-verify`)
 - [ ] Push succeeded with upstream set

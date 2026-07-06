@@ -6,6 +6,19 @@ Where a rule says **ship output**, it means the commit message plus the skill's 
 
 > This file is duplicated in both `commit-push-close/references/` and `commit-push-pr/references/` so each skill installs self-contained. Keep the two copies byte-identical when editing.
 
+## Read state
+
+Workflow step 1 for both ship skills. Run in parallel:
+
+- `git status` (no `-uall`)
+- `git diff HEAD` (staged + unstaged — plain `git diff` misses staged changes)
+- `git log -5 --oneline`
+- `git branch --show-current`
+- `git remote get-url origin` (sanity-check the repo)
+- Detect the default branch: `gh repo view --json defaultBranchRef -q .defaultBranchRef.name` (fallback: `main`). Use the detected name wherever a rule says `main`/`master`.
+
+If `gh` is missing or unauthenticated (`gh auth status`), stop and name the exact failed check — the issue/PR half of shipping cannot run without it.
+
 ## Label validation
 
 Routing state lives in the linked issue's labels. Do not add `HITL:` or `AFK:` to commit subjects, branch names, PR titles, or GitHub issue titles.
@@ -14,10 +27,12 @@ Routing state lives in the linked issue's labels. Do not add `HITL:` or `AFK:` t
 | ------------ | ------ |
 | exactly one category label (`bug` or `enhancement`) and state `ready-for-agent` | proceed |
 | exactly one category label (`bug` or `enhancement`) and state `ready-for-human` | proceed, keeping any human-decision notes in the commit body or ship output |
-| missing/conflicting labels, `needs-triage`, `needs-info`, or `wontfix` | stop and route through `/triage` unless this is valid ad hoc inline issue creation |
+| missing/conflicting labels, `needs-triage`, `needs-info`, or `wontfix` | stop and route through `/triage` (taxonomy or `/triage` unavailable → fallback below) |
 | no linked issue | create one inline only for valid ad hoc work (see **Inline issue creation**) |
 
 Read state with: `gh issue view <num> --json state,labels,title,url`. Match label names exactly.
+
+If the taxonomy itself is missing in this repo (`gh label list` shows no `bug`/`enhancement` or `ready-*`/`needs-*` labels), don't dead-end — `/triage` may not be installed either. Ask the user once: create the category + state labels now (`gh label create` each), or proceed with the closest existing labels — and record the choice in the ship output.
 
 ## Authorship policy (all supported coding agents)
 
@@ -31,7 +46,7 @@ Apply this policy to outputs from every supported coding-agent path: Codex CLI, 
 
 When env keys are touched in any way (add/remove/rename/value-contract change), enforce all of the following in the same iteration:
 
-- Keep key sets synchronized across `.env`, `.env.staging`, and `.env.production` (do not update only one file).
+- Keep key sets synchronized across the env files the repo actually has — `.env`, `.env.staging`, `.env.production` (do not update only one file, and do not create env files the repo doesn't use).
 - Keep `.sample.env` or `.example.env` updated with the latest keys and safe placeholder values.
 - Update README/docs where env keys, setup steps, or env behavior are referenced.
 - If `.env.staging` / `.env.production` are gitignored in that repo, still update local filesystem copies and report them explicitly as local-only updates.
@@ -75,6 +90,16 @@ Use the GitHub issue title as the naming anchor:
 - Ad hoc inline issue: the new issue title, commit subject, and PR title (when shipping as a PR) must be the same text unless a hard tool limit prevents it.
 - Never add `HITL:` or `AFK:` to any of these names.
 
+## How-to-test rules
+
+For the test plan in ship output (issue-close comment or PR body):
+
+- Concrete, runnable steps a reviewer can copy. Name the screen, command, endpoint, or button.
+- If the change is UI: where to click, what to enter, what to see.
+- If the change is API/server: the exact `curl` or request, expected status/payload.
+- If the change is internal/refactor with no user-facing surface: how to verify via tests (`pnpm test path/to/file`, etc.) plus what should still work end-to-end.
+- 3–6 steps. If you can't write a real test plan from the diff, ask the user before shipping — do not invent one.
+
 ## Commit message format
 
 ```
@@ -102,6 +127,57 @@ Rules:
 - `Files:` lists meaningful changes, not every touched file.
 - `Notes:` is for the next iteration. Skip if truly nothing.
 - Body under ~20 lines.
+
+Commit with a quoted HEREDOC so the body survives the shell:
+
+```bash
+git commit -m "$(cat <<'EOF'
+<subject>
+
+Issue: #123
+
+Decisions:
+- ...
+
+Files:
+- ...
+EOF
+)"
+```
+
+### Commit examples
+
+Minimal:
+
+```
+wire signup form to /api/users
+
+Issue: #204
+
+Files:
+- app/signup/page.tsx — submit handler + error state
+- lib/api/users.ts — POST /users client
+```
+
+Full:
+
+```
+add idempotency keys to checkout flow
+
+Issue: #418
+
+Decisions:
+- Stored keys in Redis (24h TTL) over Postgres — read path is hot
+- Reused existing `x-request-id` header instead of a new one
+
+Files:
+- server/checkout/handler.ts — key check before charge
+- server/checkout/handler.test.ts — replay + race tests
+- infra/redis.ts — TTL helper
+
+Notes:
+- Stripe webhook path still unguarded — next iteration
+```
 
 ## Pre-commit safety
 
