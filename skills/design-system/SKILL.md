@@ -11,10 +11,11 @@ A Workflow-A (project start-off) skill. It turns a project's design system into 
 
 1. a real **UI library** (tokens + reusable components) in the target's stack idiom,
 2. a **preview page** the user can eyeball to verify it,
-3. **documentation under `docs/design-system/`** (the durable record — source, tokens, component inventory, rules), and
-4. a short **binding reference in AGENTS.md** so every future UI change routes through the library (the consumption rule under Rules below).
+3. **documentation under `docs/design-system/`** (the durable record — source, tokens, component inventory, rules),
+4. a short **binding reference in AGENTS.md** so every future UI change routes through the library (the consumption rule under Rules below), and
+5. a seeded **`<project-slug>-ui-coding` project skill** so later UI work loads the library-first rules automatically (see Seed the project skill, below).
 
-Run it once per project, after `/agents-md` → `/setup-matt-pocock-skills` → placeholder fill. Re-run it (`extend` mode) whenever the design system grows, a UI change needs a component the library lacks, or a page/feature ships and its emergent UI should flow back into the library.
+Run it once per project, after `/agents-md` → `/setup-matt-pocock-skills` → placeholder fill. Re-run it in `extend` mode when one of its three triggers fires (see the extend mode below).
 
 ## Prerequisites
 
@@ -62,13 +63,13 @@ For anything not listed, map to the closest of these three by how the target ren
 
 ### bootstrap (default)
 
-Full first run. Produce the artifacts in order:
+Full first run. If the target already has a design-system doc or library, this is not a first run — switch to `extend` and update in place instead of rebuilding over it. Produce the artifacts in order:
 
 1. **Extract the design system** from the source (Figma via MCP, spec, reference screens, or the approved guided session). Capture the token set and the base component list with their states.
 2. **Theme / tokens** — write colours, typography, spacing, radii, and shadows as **named tokens** in the stack's native mechanism (CSS variables, Tailwind config `theme`, an RN theme object, etc.). Named, not hardcoded per use.
 3. **UI library** — build the base reusable components (buttons, inputs, selects, checkboxes/toggles, cards, alerts, badges, form sections, headings, …) faithfully to the source, built **from the tokens**, in the target's component idiom.
 4. **Preview page** — one page/route/screen that renders **every** component in its states: default, hover, focus, disabled, active; empty/loading/error where relevant; responsive. This is the verification gate, in two halves:
-   - **Agent half — evidence first.** Build/serve the target, load the preview (agent-browser screenshot, or at minimum an HTTP-status / rendered-file check), and compare what rendered against the extracted component inventory: every component appears, no error output. Quote the evidence (URL or file, status, screenshot path, components counted).
+   - **Agent half — evidence first.** Build/serve the target, load the preview (agent-browser screenshot, or at minimum fetching the served HTML / rendered file — a status code alone can't show components), and compare what rendered against the extracted component inventory: every component appears, no error output. Quote the evidence (URL or file, status, screenshot path, components counted).
    - **Human half — the gate.** Show the user how to open it and ask them to eyeball it. If the user is away, state the preview location and the agent-half evidence, record the eyeball as pending in the phase update, and continue to the suggestions — never claim the design system verified until they have looked.
 5. **Document** the design system under `docs/design-system/` (see template), **add the short reference to AGENTS.md** (see template), and **seed the project skill** (see below).
 
@@ -185,7 +186,7 @@ After `bootstrap` (or `extend`):
 - **Emit the phase update:**
 
 ```markdown
-Stage: design-system (<bootstrap|extend>) — built tokens + library + preview for <TARGET-PROJECT-CODE>; wrote docs/design-system/<TARGET-PROJECT-CODE>-design-system.md; added AGENTS.md reference; seeded/updated <project-slug>-ui-coding.
+Stage: design-system (<bootstrap|extend>) — built tokens + library + preview for <TARGET-PROJECT-CODE>; wrote <docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md; added AGENTS.md reference; seeded/updated <project-slug>-ui-coding.
 Found: <N> tokens, <M> components (<states covered>); source = <Figma|spec|reference|guided(approved)>; stack = <from matrix>.
 Next: open <preview location> and eyeball every component/state; then start Workflow B for the first feature.
 Needs user: verify the preview, and confirm any guided-definition choices or DS/stack deviations.
@@ -205,7 +206,7 @@ Before finishing:
 - [ ] A real design-system source was used (Figma / spec / reference / guided-definition **approved by the user**) — nothing fabricated silently
 - [ ] Tokens written as named values in the stack's native mechanism (not hardcoded per use)
 - [ ] UI library built from the tokens, in the target's idiom, faithful to the source
-- [ ] Preview demonstrably renders — build/serve ran, the preview loaded (status or screenshot quoted), and every extracted component appears in its states (default/hover/focus/disabled/active; empty/loading/error; responsive) — the stack-appropriate kind (route vs screen vs static file)
+- [ ] Preview demonstrably renders — build/serve ran, the preview loaded (served HTML/file or screenshot quoted), and every extracted component appears in its states (default/hover/focus/disabled/active; empty/loading/error; responsive) — the stack-appropriate kind (route vs screen vs static file)
 - [ ] User was shown how to open the preview and asked to eyeball it; if the user was away, the pending eyeball is recorded in the phase update and nothing was claimed verified
 - [ ] Full documentation written to `<docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md`
 - [ ] AGENTS.md holds only a short PROJECT-CODE-keyed **reference** to that doc + the binding "on any UI change, check the library first" rule — not the full design system; updated in place on `extend`
