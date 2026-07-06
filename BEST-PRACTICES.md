@@ -110,15 +110,14 @@ When sources conflict, this is the precedence:
 ## 3. Workflow A — Full Project Start-Off
 
 Run once per workspace, at the workspace-root level (not inside a single repo).
+The step-by-step sequence lives in [GUIDE.md](GUIDE.md#first-time-setup):
+**`/agents-md`** → **`/setup-matt-pocock-skills`** → **fill the `AGENTS.md`
+placeholders** → **`/design-system`** once per project that has UI (re-run
+`extend` as the design grows or to fold a shipped page's UI back in). The
+chat-visible behaviors this establishes (PROJECT-CODEs, phase updates,
+understanding checks) are bound by the generated `AGENTS.md` rules themselves.
 
-1. **`/agents-md`** — generates the workspace-root `AGENTS.md` (the source of truth for every CLI) plus the `CLAUDE.md` shim, the Project Matrix, the Non-Negotiable Rules, and the Working-With-Skills / Context-&-Native-Memory sections. The context section ships with **placeholder paths** for `CONTEXT.md` and `docs/adr/`, deliberately left blank.
-2. **`/setup-matt-pocock-skills`** — answers the project-shape questions: which issue tracker (GitHub, Linear, or filesystem), label vocabulary, and **where `CONTEXT.md` / `docs/` live**.
-3. **Fill the placeholders** — ask the agent to update the generated `AGENTS.md` with the real paths your setup session just decided.
-4. **`/design-system`** *(per project that has UI)* — turn that project's design system (a Figma file, a written spec, reference screens, or a guided-definition session) into named tokens + a real UI library + a preview page you eyeball to verify, document it under `docs/design-system/`, add a short binding reference to `AGENTS.md`, and seed a project-local `<project>-ui-coding` skill. Re-run it (`extend`) as the design grows or to fold a shipped page's emergent UI back into the library. It reads the target's stack from the Project Matrix, works for any stack, and never auto-chains. Steps 1–3 are once per workspace; this step is once per UI project.
-
-Generated chat rules use Project Matrix PROJECT-CODEs instead of folder names, repo names, domains, or hostnames unless the path itself matters. At phase changes, the agent must send a visible phase update: `Stage`, `Found`, `Next`, and `Needs user`. It can continue within the same phase, but must make new phase transitions explicit. It stops only when user input, approval, or a scope decision is needed. If you ask the agent to repeat or confirm your understanding, it must ask for approval or correction and wait before continuing.
-
-> **Why placeholders, not guesswork:** `/agents-md` runs *before* you've decided where context lives, so it must not invent a path. Leaving labelled placeholders turns step 4 into a mechanical fill instead of a rewrite. `/agents-md` writes the *rules of engagement*; `/setup-matt-pocock-skills` owns the *locations*.
+> **Why placeholders, not guesswork:** `/agents-md` runs *before* you've decided where context lives, so it must not invent a path. Leaving labelled placeholders turns the fill step into a mechanical edit instead of a rewrite. `/agents-md` writes the *rules of engagement*; `/setup-matt-pocock-skills` owns the *locations*.
 
 ---
 

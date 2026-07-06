@@ -79,14 +79,20 @@ disposable worktree.
 
 ## Matt + Arfeen Pattern
 
-- Treat skills as strict process rails, not optional flavor text.
-- Keep the human strategic: agent executes, human steers scope and tradeoffs.
-- Use code as source of truth over broad doc summaries.
-- In chat, use Project Matrix PROJECT-CODEs for projects; mention folder names or domains only when the path itself matters.
-- When you ask an agent to repeat or confirm your understanding, it must ask for approval or correction and wait.
-- At phase changes, expect a visible phase update: `Stage`, `Found`, `Next`, and `Needs user`. The agent continues within the same phase, but must make new phase transitions explicit.
-- If dependency behavior is unclear, fetch targeted source (for example `opensrc`) before guessing.
-- Ship small, reviewable slices; avoid oversized PRs and oversized planning threads.
+The operating stance behind this kit: the human stays strategic (scope and
+tradeoffs), the agent executes against evidence, and skills are the rails that
+keep it honest. The full mental model lives in
+[BEST-PRACTICES.md](BEST-PRACTICES.md); the chat-visible behaviors —
+PROJECT-CODEs in chat, `Stage / Found / Next / Needs user` phase updates,
+understanding checks that wait for approval — are bound by the generated
+`AGENTS.md` rules, not restated here.
+
+Two habits worth restating because nothing else enforces them:
+
+- If dependency behavior is unclear, fetch targeted source (for example
+  `opensrc`) before guessing.
+- Keep planning threads as small as PRs — oversized threads degrade quality
+  the same way oversized diffs do.
 
 ## First-Time Setup
 
