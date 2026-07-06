@@ -44,10 +44,10 @@ Per the kit's retrieval order (`CONTEXT.md` + `docs/adr/` are binding), before t
 
 ## The defect list artifact
 
-Write the defect list to the configured docs location — resolve it from setup / `<artifacts-root>`, do **not** hardcode:
+Write the defect list to the configured docs location. Resolve `<artifacts-root>` the same way the other kit skills do: (1) the directory containing a `*.code-workspace` file if one exists, (2) the per-context root in a multi-context repo (`CONTEXT-MAP.md` at root), (3) the single repo root. The filename is keyed by PROJECT-CODE so two projects' same-named pages never collide at a shared workspace root:
 
 ```text
-<artifacts-root>/docs/pixel-audit/<page-slug>-defects.md
+<artifacts-root>/docs/pixel-audit/<TARGET-PROJECT-CODE>-<page-slug>-defects.md
 ```
 
 One row per defect:
@@ -70,9 +70,10 @@ Scope: <route + states audited>
 ## Fixing
 
 - **One node/page/state at a time.** Do not batch unrelated fixes.
+- **A MISSING defect that needs behaviour, data, or interface work is a slice, not a style fix.** A wholly absent error/empty/loading state or a missing action usually needs logic — record the row, route it to `/to-issues`, and do not build it here (the same boundary `/polish-batch` draws).
 - **Reuse the project UI library's components.** No one-off UI unless justified and documented (per the `*-ui-coding` reuse-vs-new rule).
-- **If a shared component must change, change it in the library + its preview + the project `*-ui-coding` skill (via `/design-system` extend) — never patch it page-local — then consume it from the page.**
-- **Touch nothing unrelated.** Stay strictly inside SCOPE.
+- **If a shared component must change, change it in the library + its preview + the project `*-ui-coding` skill (via `/design-system` extend) — never patch it page-local — then consume it from the page.** Because other pages consume that component, confirm with the user before changing it on the evidence of this one page's frame — the frame may be the outlier, not the component.
+- **Touch nothing unrelated.** Stay strictly inside SCOPE. Cosmetic nits spotted on other pages or flows are captured with `/polish-batch`, never fixed here.
 - **Report, don't decide, on EXTRA:** any icon/button/field/action present in the app but absent from the source is surfaced for a user decision, not silently kept, removed, or restyled.
 
 ## Verification gate
@@ -81,7 +82,7 @@ This gate is the point of the skill. Never weaken it. "Verified/done/fixed" is a
 
 - **State the env:** host, URL, container/service, browser/session.
 - **Cross the build pipeline:** rebuild/refresh after every template/CSS/class/component change, and **confirm the changed classes/styles/components actually exist in the SERVED assets** (not just the source files).
-- **Prove each fix with element-level evidence:** selector/ref, `getBoundingClientRect()`, the relevant computed styles, the DOM, and a zoomed/clipped element screenshot when alignment matters. Full-page screenshots are overview only.
+- **Prove each fix with element-level evidence:** selector/ref, `getBoundingClientRect()`, the relevant computed styles, the DOM, and a zoomed/clipped element screenshot when alignment matters. Full-page screenshots are overview only. Capture this with the agent-browser companion (or the runtime's equivalent browser automation); if no browser automation is available, say so, list the pending checks as manual steps for the user, and do not mark any row `verified` on assumption.
 - **These count as failure:** hidden, zero-size, collapsed, clipped, misaligned, wrong-size, or ignored-class elements.
 - **Try to falsify before declaring verified.** Actively look for the ways the fix could be wrong (wrong breakpoint, stale asset, class not applied, element off-screen) and rule them out.
 - **Do not say "verified / done / fixed" unless ALL hold:** env stated · build pipeline crossed · served assets contain the change · browser has element proof · source captured full-size · expected-vs-actual compared · every in-scope state checked.
@@ -104,7 +105,7 @@ A row is `verified` only when its fix clears every clause above; otherwise it st
 After the audit and in-scope fixes:
 
 ```markdown
-Stage: pixel-audit — audited <page-slug> (<TARGET-PROJECT-CODE>) vs <source of truth>; wrote docs/pixel-audit/<page-slug>-defects.md.
+Stage: pixel-audit — audited <page-slug> (<TARGET-PROJECT-CODE>) vs <source of truth>; wrote docs/pixel-audit/<TARGET-PROJECT-CODE>-<page-slug>-defects.md.
 Found: <N> defects (<M> MISSING, <E> EXTRA); <V> verified, <R> reopened; <U> EXTRA items awaiting your decision.
 Next: /review the diff, then /commit-push-*. Reopened rows and EXTRA decisions stay for the next pass.
 Needs user: <EXTRA items to decide (keep/remove/restyle), or blocked states, or "none">.
@@ -125,7 +126,8 @@ Before claiming the page audited:
 - [ ] Asset/build pipeline identified (how a change reaches the served page)
 - [ ] Pixel inventory captured full-size incl. below-fold, per node/region/state — not whole-frame only
 - [ ] Expected-vs-actual audited; each mismatch classified MISSING/EXTRA; EXTRA surfaced for decision, never silently changed
-- [ ] Defect list written to `<artifacts-root>/docs/pixel-audit/<page-slug>-defects.md`, one row per defect with element-level evidence
+- [ ] Defect list written to `<artifacts-root>/docs/pixel-audit/<TARGET-PROJECT-CODE>-<page-slug>-defects.md`, one row per defect with element-level evidence
+- [ ] Behaviour/data/interface-sized MISSING defects were routed to /to-issues, not built here; out-of-scope nits went to /polish-batch
 - [ ] Fixes done one node/state at a time, in scope; shared-component changes went through library + preview + `*-ui-coding`, not page-local
 - [ ] Verification gate cleared per fix: env stated · pipeline crossed · served assets contain change · element proof · source full-size · expected-vs-actual · every in-scope state — falsified first
 - [ ] No "verified" claimed without the full gate; reopened rows kept
