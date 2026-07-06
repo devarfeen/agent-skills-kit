@@ -41,8 +41,10 @@ chat stays responsive and uncluttered.
   Reviewer (read-only critique), Tester (runs tests / build / lint), and
   Tool-runner (isolated shell / MCP batches). The main session is the
   Orchestrator and keeps the only merge and final-judgment seat.
-- **Parallel by default:** independent lanes run together; only conflict-prone
-  edits and final integration stay serialized.
+- **Parallel once approved:** parallel and background work is opt-in — the
+  generated `AGENTS.md` defaults to serial until the user approves a plan;
+  then independent lanes run together and only conflict-prone edits and final
+  integration stay serialized.
 - **Local background:** long lanes run in the background (Claude CLI
   `run_in_background`, Cursor `is_background` + `Await`, Codex worktrees,
   Copilot `Ctrl+X -> b`, opencode `task(background=true)`) and report back when
@@ -242,7 +244,7 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 | PRD | `/to-prd` | Spec is clear; dependency order is known. |
 | Issues | `/to-issues` | Slices are testable; prerequisites, blockers, and unblocked work are ordered. |
 | Existing issue triage | `/triage` | Existing issue state is clear, or an Agent Brief / needs-info / wontfix outcome is recorded. |
-| Build | `/tdd` | Failure verified (Red), Fix verified (Green). |
+| Build | `/tdd` + `/tdd-loop` | Failure verified (Red), Fix verified (Green). |
 | Pixel conformance | `/pixel-audit` | Defect list cleared; every fix passes the element-level gate on served assets. |
 | QA polish | `/polish-batch` | Cosmetic nits captured, dispatched per PROJECT-CODE, and verified. |
 | Cross-repo seam | `/integration-contract` | Multi-project PRD's producer/consumer contract built and smoke gate green (single-project auto-skips). |
