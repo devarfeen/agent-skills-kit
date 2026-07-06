@@ -136,6 +136,26 @@ Write for a frontier agentic model — capable, tool-using, able to plan. That m
 - **Phase updates** — long-running skills emit `Stage / Found / Next / Needs user`
   at phase transitions.
 
+### The verification-gate pattern (for skills that claim "verified")
+
+When a skill's job ends in a claim — "verified", "fixed", "conforms" — make the
+claim earnable, not sayable. The shape, generalized from `pixel-audit`'s gate
+and `tdd-loop`'s completion criterion:
+
+1. **State the environment** the proof runs in — host/URL/service, or the test
+   command and scope.
+2. **Cross the pipeline** — prove the change reached the thing you observe
+   (served assets, built artifact, deployed config), not just the source file.
+3. **Observe at the finest level that can lie** — element geometry and computed
+   styles; a witnessed failing-then-passing test; a validation command's
+   output. Never a whole-screen glance or "it should work".
+4. **Try to falsify** — name the ways the claim could still be wrong (stale
+   cache, wrong breakpoint, test asserting nothing) and rule them out.
+5. **Only then say the word**, quoting the evidence next to it.
+
+A skill that lets the model say "verified" without this invites premature
+completion.
+
 ### Self-contained installs (why ship-policy.md is duplicated)
 
 Skills install standalone via `npx skills install … --skill <name>`, so a skill
