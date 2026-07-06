@@ -1,88 +1,88 @@
 {
- "skill": "design-system",
+ "skill": "polish-batch",
  "kind": "trigger-eval",
  "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
  "queries": [
   {
-   "q": "Set up the design system for ADMIN-WEB from this Figma file",
+   "q": "Punch-list this for PRD-142: the Billing header says \"Recieve invoices\"",
    "expect": "trigger"
   },
   {
-   "q": "We have no Figma for MOBILE-APP — help me define a design system and build the components",
+   "q": "Capture this for later: the save button is misaligned on Settings",
    "expect": "trigger"
   },
   {
-   "q": "Add the new date-picker component to the ADMIN-WEB design system",
+   "q": "Batch these nits",
    "expect": "trigger"
   },
   {
-   "q": "That page just shipped — fold its new UI back into the ADMIN-WEB library",
+   "q": "Polish pass when QA is done — collect the small stuff first",
    "expect": "trigger"
   },
   {
-   "q": "Bootstrap tokens and a UI library for PORTAL-WEB from our brand guide",
+   "q": "I'm doing manual QA — log these small fixes without fixing them yet",
    "expect": "trigger"
   },
   {
-   "q": "Turn these reference screens into a reusable component library for the new app",
+   "q": "Cosmetic cleanup: wrong copy on the login page, extra padding on the cards",
    "expect": "trigger"
   },
   {
-   "q": "Build a preview page showing every component in all its states for ADMIN-WEB",
+   "q": "Add to the punch list: the toast says 'succes'",
    "expect": "trigger"
   },
   {
-   "q": "Our buttons are inlined everywhere — set up a proper component library and make agents use it",
+   "q": "Dispatch the open punch-list items",
    "expect": "trigger"
   },
   {
-   "q": "Project start-off for the new repo: design system from this spec doc",
+   "q": "Collect these copy tweaks and fix them all in one go later",
    "expect": "trigger"
   },
   {
-   "q": "Pixel-audit the assets list page against this Figma node",
+   "q": "Polish the billing page to match the Figma",
    "expect": "no-trigger",
    "route": "/pixel-audit"
   },
   {
-   "q": "The Save button is misaligned — punch-list it for PRD-142",
+   "q": "This page must match the design pixel-for-pixel",
    "expect": "no-trigger",
-   "route": "/polish-batch"
+   "route": "/pixel-audit"
   },
   {
-   "q": "Make this landing page look less generic",
+   "q": "The save button doesn't actually save — log it",
    "expect": "no-trigger",
-   "route": "none"
+   "route": "/to-issues"
   },
   {
-   "q": "Port the invoice screen from LEGACY-PORTAL to ADMIN-WEB",
+   "q": "Do a QA session and file issues as I report bugs",
    "expect": "no-trigger",
-   "route": "/port-feature"
+   "route": "qa"
   },
   {
-   "q": "Generate AGENTS.md for this workspace",
+   "q": "Make this dashboard bolder and more delightful",
    "expect": "no-trigger",
-   "route": "/agents-md"
+   "route": "impeccable"
   },
   {
-   "q": "How is theming implemented in ADMIN-WEB today?",
+   "q": "Set up the design system for ADMIN-WEB",
    "expect": "no-trigger",
-   "route": "/feature-discovery"
+   "route": "/design-system"
   },
   {
-   "q": "Write a feature prompt for the new settings page",
+   "q": "Review the diff before shipping",
    "expect": "no-trigger",
-   "route": "/feature-prompt"
+   "route": "/review"
   },
   {
-   "q": "Fix the button component's disabled state test-first",
+   "q": "The API returns the wrong total on checkout",
    "expect": "no-trigger",
-   "route": "/tdd-loop"
+   "route": "/diagnosing-bugs"
   },
   {
-   "q": "Audit our color contrast for accessibility",
+   "q": "Ship the polish fixes as a PR",
    "expect": "no-trigger",
-   "route": "none"
+   "route": "/commit-push-pr"
   }
  ],
  "last_run": {

@@ -1,88 +1,88 @@
 {
- "skill": "design-system",
+ "skill": "commit-push-pr",
  "kind": "trigger-eval",
  "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
  "queries": [
   {
-   "q": "Set up the design system for ADMIN-WEB from this Figma file",
+   "q": "Commit, push, and open a PR",
    "expect": "trigger"
   },
   {
-   "q": "We have no Figma for MOBILE-APP — help me define a design system and build the components",
+   "q": "Ship this as a PR",
    "expect": "trigger"
   },
   {
-   "q": "Add the new date-picker component to the ADMIN-WEB design system",
+   "q": "PR this issue",
    "expect": "trigger"
   },
   {
-   "q": "That page just shipped — fold its new UI back into the ADMIN-WEB library",
+   "q": "Open a pull request that closes #418",
    "expect": "trigger"
   },
   {
-   "q": "Bootstrap tokens and a UI library for PORTAL-WEB from our brand guide",
+   "q": "I'm done — put this up for review as a pull request",
    "expect": "trigger"
   },
   {
-   "q": "Turn these reference screens into a reusable component library for the new app",
+   "q": "Wrap this up as a reviewable PR",
    "expect": "trigger"
   },
   {
-   "q": "Build a preview page showing every component in all its states for ADMIN-WEB",
+   "q": "Push my branch and create the PR with a test plan",
    "expect": "trigger"
   },
   {
-   "q": "Our buttons are inlined everywhere — set up a proper component library and make agents use it",
+   "q": "Make a PR for the work on issue 204",
    "expect": "trigger"
   },
   {
-   "q": "Project start-off for the new repo: design system from this spec doc",
+   "q": "Land this via pull request",
    "expect": "trigger"
   },
   {
-   "q": "Pixel-audit the assets list page against this Figma node",
+   "q": "I'm done with #418, ship it",
    "expect": "no-trigger",
-   "route": "/pixel-audit"
+   "route": "/commit-push-close"
   },
   {
-   "q": "The Save button is misaligned — punch-list it for PRD-142",
+   "q": "Commit, push, and close the issue",
    "expect": "no-trigger",
-   "route": "/polish-batch"
+   "route": "/commit-push-close"
   },
   {
-   "q": "Make this landing page look less generic",
+   "q": "Close the ticket with how-to-test steps",
    "expect": "no-trigger",
-   "route": "none"
+   "route": "/commit-push-close"
   },
   {
-   "q": "Port the invoice screen from LEGACY-PORTAL to ADMIN-WEB",
+   "q": "Review this PR",
    "expect": "no-trigger",
-   "route": "/port-feature"
+   "route": "/review"
   },
   {
-   "q": "Generate AGENTS.md for this workspace",
+   "q": "Summarize this PR for the changelog",
    "expect": "no-trigger",
-   "route": "/agents-md"
+   "route": "/release-notes"
   },
   {
-   "q": "How is theming implemented in ADMIN-WEB today?",
+   "q": "Generate release notes for this feature",
    "expect": "no-trigger",
-   "route": "/feature-discovery"
+   "route": "/release-notes"
   },
   {
-   "q": "Write a feature prompt for the new settings page",
+   "q": "Split this PRD into issues",
    "expect": "no-trigger",
-   "route": "/feature-prompt"
+   "route": "/to-issues"
   },
   {
-   "q": "Fix the button component's disabled state test-first",
+   "q": "Grill me about this plan before I build it",
    "expect": "no-trigger",
-   "route": "/tdd-loop"
+   "route": "/grill-with-docs"
   },
   {
-   "q": "Audit our color contrast for accessibility",
+   "q": "Diagnose why the build broke after my last commit",
    "expect": "no-trigger",
-   "route": "none"
+   "route": "/diagnosing-bugs"
   }
  ],
  "last_run": {

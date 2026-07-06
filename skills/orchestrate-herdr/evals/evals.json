@@ -1,88 +1,88 @@
 {
- "skill": "design-system",
+ "skill": "orchestrate-herdr",
  "kind": "trigger-eval",
  "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
  "queries": [
   {
-   "q": "Set up the design system for ADMIN-WEB from this Figma file",
+   "q": "orchestrate-herdr for https://github.com/org/repo/issues/42 using codex",
    "expect": "trigger"
   },
   {
-   "q": "We have no Figma for MOBILE-APP — help me define a design system and build the components",
+   "q": "Fan this PRD out to per-issue workers",
    "expect": "trigger"
   },
   {
-   "q": "Add the new date-picker component to the ADMIN-WEB design system",
+   "q": "Spin up one worker tab per open sub-issue of PRD-142 using claude",
    "expect": "trigger"
   },
   {
-   "q": "That page just shipped — fold its new UI back into the ADMIN-WEB library",
+   "q": "Orchestrate the PRD's sub-issues in herdr with codex workers",
    "expect": "trigger"
   },
   {
-   "q": "Bootstrap tokens and a UI library for PORTAL-WEB from our brand guide",
+   "q": "Launch herdr workers for every open issue under this parent issue",
    "expect": "trigger"
   },
   {
-   "q": "Turn these reference screens into a reusable component library for the new app",
+   "q": "Run the PRD fan-out — one coding CLI tab per issue",
    "expect": "trigger"
   },
   {
-   "q": "Build a preview page showing every component in all its states for ADMIN-WEB",
+   "q": "Dispatch these sub-issues to worker tabs and monitor for test-backed completion",
    "expect": "trigger"
   },
   {
-   "q": "Our buttons are inlined everywhere — set up a proper component library and make agents use it",
+   "q": "Use herdr to work all open slices of this PRD in parallel",
    "expect": "trigger"
   },
   {
-   "q": "Project start-off for the new repo: design system from this spec doc",
+   "q": "Kick off the orchestrator for PRD 89 with opencode",
    "expect": "trigger"
   },
   {
-   "q": "Pixel-audit the assets list page against this Figma node",
+   "q": "Split this pane in herdr",
    "expect": "no-trigger",
-   "route": "/pixel-audit"
+   "route": "herdr"
   },
   {
-   "q": "The Save button is misaligned — punch-list it for PRD-142",
+   "q": "Read the output of that herdr tab",
    "expect": "no-trigger",
-   "route": "/polish-batch"
+   "route": "herdr"
   },
   {
-   "q": "Make this landing page look less generic",
+   "q": "Create a new tab and run npm test in it",
    "expect": "no-trigger",
-   "route": "none"
+   "route": "herdr"
   },
   {
-   "q": "Port the invoice screen from LEGACY-PORTAL to ADMIN-WEB",
+   "q": "What's the status of the worker tabs?",
    "expect": "no-trigger",
-   "route": "/port-feature"
+   "route": "herdr"
   },
   {
-   "q": "Generate AGENTS.md for this workspace",
+   "q": "Slice the PRD into sub-issues first",
    "expect": "no-trigger",
-   "route": "/agents-md"
+   "route": "/to-issues"
   },
   {
-   "q": "How is theming implemented in ADMIN-WEB today?",
-   "expect": "no-trigger",
-   "route": "/feature-discovery"
-  },
-  {
-   "q": "Write a feature prompt for the new settings page",
-   "expect": "no-trigger",
-   "route": "/feature-prompt"
-  },
-  {
-   "q": "Fix the button component's disabled state test-first",
+   "q": "Work this single issue test-first",
    "expect": "no-trigger",
    "route": "/tdd-loop"
   },
   {
-   "q": "Audit our color contrast for accessibility",
+   "q": "Review the worker's diff",
    "expect": "no-trigger",
-   "route": "none"
+   "route": "/review"
+  },
+  {
+   "q": "Generate release notes for what the workers shipped",
+   "expect": "no-trigger",
+   "route": "/release-notes"
+  },
+  {
+   "q": "Debug why one worker's tests keep failing",
+   "expect": "no-trigger",
+   "route": "/diagnosing-bugs"
   }
  ],
  "last_run": {

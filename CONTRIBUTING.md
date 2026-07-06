@@ -26,6 +26,8 @@ for agents working *in* this repo live in [AGENTS.md](AGENTS.md).
 | `skills/*/SKILL.md` | model | The skill itself. Loaded into context when triggered. |
 | `skills/*/references/*` | model (on demand) | Detail the skill pulls in only when needed. |
 | `skills/*/assets/*` | model (on demand) | Output templates the skill fills in. |
+| `skills/*/evals/evals.json` | maintainer | Trigger-eval set. Ships with installs but is never loaded into model context. |
+| `tools/trigger-evals/` | maintainer | The eval harness (catalog builder, judge prompt, scorer). |
 | `AGENTS.md` (this repo's) | model + human | Conventions for working in this repo. |
 | `README.md` | human | Front door: what the kit is, install, skill index. |
 | `GUIDE.md` | human | Day-to-day workflow: gates, recovery loops, setup, operational tables. |
@@ -196,20 +198,22 @@ Score a new or changed skill against these before approving. A "no" on any of
 
 ## Trigger evals
 
-A skill's description is its router, so test it like one. Skills with
-non-obvious trigger boundaries carry an eval set at
-`skills/<name>/evals/evals.json`: ~9 should-trigger queries (varied phrasings,
-several that never name the skill) and ~9 near-miss negatives (requests that
-should route to a named sibling — obviously-irrelevant negatives prove
-nothing).
+A skill's description is its router, so test it like one. **Every kit skill**
+carries an eval set at `skills/<name>/evals/evals.json`: ~9 should-trigger
+queries (varied phrasings, several that never name the skill) and ~9 near-miss
+negatives (requests that should route to a named sibling —
+obviously-irrelevant negatives prove nothing). A new skill ships with its eval
+set in the same PR.
 
-To run: build a catalog of all skill names + descriptions (kit + the external
-skills a workspace normally has), mix every eval set's queries into one
-numbered list, and have 3 independent agent runs route each query using ONLY
-the catalog — no repo exploration. Majority vote per query. Pass = trigger
+The harness is checked in at [`tools/trigger-evals/`](tools/trigger-evals/):
+`build-catalog.sh` (kit descriptions read live + the pinned external snapshot
+in `catalog-externals.md`), `build-queryset.py` (deterministic mixed query
+list), `judge-prompt.md`, and `score.py`. Procedure: build the catalog and
+queryset, run 3 independent judge agents that route each query using ONLY the
+catalog — no repo exploration — then score by majority vote. Pass = trigger
 queries route to the skill; no-trigger queries route anywhere else (the
-`route` field is diagnostic, not pass/fail). Record the date and score in the
-file's `last_run`.
+`route` field is diagnostic, not pass/fail). Record date, method, result,
+judge model, and catalog provenance in the file's `last_run`.
 
 Act on failures, not scores: a missed should-trigger means the description
 lacks that phrasing; a captured near-miss means the boundary sentence is
