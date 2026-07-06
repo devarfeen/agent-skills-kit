@@ -16,7 +16,7 @@ build  →  (implement the slices)  →  gate
 ```
 
 - **build** (default): detect the touched PROJECT-CODEs and the changed surfaces; when the seam crosses projects, produce the contract artifact.
-- **gate**: prove the running services contain the change, then run the smoke checklist; any fail reopens the contract. The full gate binds the PRD-level ship and the PM handoff.
+- **gate**: prove the running services contain the change, then run the smoke checklist; any fail reopens the contract.
 
 ## Trigger discipline
 
@@ -60,6 +60,7 @@ Touched PROJECT-CODEs: API-SVC (producer), ADMIN-WEB, LEGACY-PORTAL, MOBILE-APP
 | ------------ | ------- | --------------------- | ------------------ |
 | API-SVC | http://localhost:8080 (compose service `api`) | `docker compose up --build api` | an order in `partially_shipped` state exists (flows 3–4) |
 | ADMIN-WEB | http://localhost:5173 | `pnpm dev` serves source live | a user with checkout permission |
+| LEGACY-PORTAL | http://localhost:8081 (compose service `legacy`) | `docker compose up --build legacy` | same `partially_shipped` order (flow 3) |
 | MOBILE-APP | Metro dev build on simulator | `pnpm start` + app rebuild | same `partially_shipped` order |
 
 ## 2. Producer surface changed
@@ -104,7 +105,7 @@ Section rules:
 
 ### build (default)
 
-1. Resolve `<PRD-ID>` (from context or ask once). Read the PRD and its sub-issues; consult binding `CONTEXT.md` / `docs/adr/` first.
+1. Resolve `<PRD-ID>` (from context or ask once; if the user is away and no PRD can be inferred, stop with a Needs-user note — never guess which PRD). Read the PRD and its sub-issues; consult binding `CONTEXT.md` / `docs/adr/` first.
 2. **Detect touched PROJECT-CODEs** and apply **Trigger discipline** — including the single-project sweep. Stop there when no contract is needed.
 3. Identify the **producer** slice (the one changing a shared surface — usually the API PROJECT-CODE) and the dependent **consumers**.
 4. **Section 1:** record each involved PROJECT-CODE's environment per the Section 1 rules — where it runs, how a change reaches it, what data the flows need.
