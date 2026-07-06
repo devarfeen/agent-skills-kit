@@ -38,7 +38,7 @@ Carry this framing through every section of the gap map:
 - **Retrieval order.** `CONTEXT.md` + `docs/adr/` are binding (read before deciding) > the current request, reference/target code, and tests > native CLI memory.
 - **Decisions are artifacts.** The output is the durable gap map file, not a chat summary. Chat only reports what was written and the phase update.
 - **Don't fabricate an issue before coding.** This skill produces a discovery/plan artifact, not a tracker issue. Issues come later, from `/to-issues` after `/grill-with-docs`.
-- **Local-only.** Read-only Explorer sub-agents are allowed only for non-overlapping discovery tasks; the main agent owns synthesis. No duplicate discovery, no cloud agents.
+- **Local-only.** Read-only Explorer sub-agents are allowed only when the user has allowed them and only for non-overlapping discovery tasks; the main agent owns synthesis. No duplicate discovery, no cloud agents.
 
 ## Process
 

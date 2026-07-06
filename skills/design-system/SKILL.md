@@ -56,7 +56,7 @@ For anything not listed, map to the closest of these three by how the target ren
 - **Verification is the preview page, eyeballed by the user.** Building the library is not "done" until the preview renders and the user has looked at it. Per-page pixel conformance *during feature work* is `/pixel-audit`'s job — reference it, do not duplicate it here.
 - **Never hardcode locations.** Resolve artifact and docs paths from the target's stack conventions and the setup decisions; record the real paths in the doc, the AGENTS.md reference, and the project skill.
 - **Emit `Stage / Found / Next / Needs user`** at each phase transition.
-- **Local-only.** Read-only sub-agents for extraction/survey are fine; the main agent owns synthesis. No cloud agents.
+- **Local-only.** Read-only sub-agents for extraction/survey are fine when the user has allowed them; the main agent owns synthesis. No cloud agents.
 
 ## Modes
 

@@ -28,7 +28,7 @@ It sits at the **verify** phase, between manual QA and ship. It replaces live pe
 - **Suggest, never auto-chain.** After verify, suggest `/review` then `/commit-push-close` or `/commit-push-pr`, and stop. Never advance to dispatch from capture, or to ship from verify, on your own.
 - **Dispatch is never automatic from capture.** It runs only when the user explicitly says to dispatch. Capturing a nit — even the last open one — never triggers a fix.
 - **Reopened rows stay.** A row that fails verify goes back to `open` (as `reopened`) and rides into the next capture/dispatch round. Nothing is dropped silently.
-- **Local-only.** Use local subagents and local background where the runtime supports it; never hand work to cloud agents. Evidence (screenshots, the Where text, the diff) wins over memory.
+- **Local-only.** Use local subagents and local background where the runtime supports it and the user has allowed them; never hand work to cloud agents. Evidence (screenshots, the Where text, the diff) wins over memory.
 
 ## The punch-list artifact
 
