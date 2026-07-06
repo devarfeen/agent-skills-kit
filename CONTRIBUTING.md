@@ -172,6 +172,29 @@ Score a new or changed skill against these before approving. A "no" on any of
    sibling skill instead (e.g. cosmetic nit → `/polish-batch`, pixel mismatch →
    `/pixel-audit`). If the boundary can't be stated, the description isn't done.
 
+## Trigger evals
+
+A skill's description is its router, so test it like one. Skills with
+non-obvious trigger boundaries carry an eval set at
+`skills/<name>/evals/evals.json`: ~9 should-trigger queries (varied phrasings,
+several that never name the skill) and ~9 near-miss negatives (requests that
+should route to a named sibling — obviously-irrelevant negatives prove
+nothing).
+
+To run: build a catalog of all skill names + descriptions (kit + the external
+skills a workspace normally has), mix every eval set's queries into one
+numbered list, and have 3 independent agent runs route each query using ONLY
+the catalog — no repo exploration. Majority vote per query. Pass = trigger
+queries route to the skill; no-trigger queries route anywhere else (the
+`route` field is diagnostic, not pass/fail). Record the date and score in the
+file's `last_run`.
+
+Act on failures, not scores: a missed should-trigger means the description
+lacks that phrasing; a captured near-miss means the boundary sentence is
+missing or the sibling's description is weaker than yours. Fix the
+description, re-run, and keep the query — never delete a query to make the
+eval pass.
+
 ## Maintenance
 
 ### Sync map — if you edit X, also update Y

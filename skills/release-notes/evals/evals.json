@@ -1,0 +1,25 @@
+{
+  "skill": "release-notes",
+  "kind": "trigger-eval",
+  "how_to_run": "See CONTRIBUTING.md 'Trigger evals'. Route each query against the full skill catalog (names + descriptions only); pass = trigger queries route here, no-trigger queries route anywhere else. 'route' on negatives is the expected sibling, diagnostic only.",
+  "queries": [
+    { "q": "Generate release notes for 3 July 2026", "expect": "trigger" },
+    { "q": "What did we ship this week? PM-friendly please", "expect": "trigger" },
+    { "q": "Create a changelog for yesterday", "expect": "trigger" },
+    { "q": "Summarize today's session for the PM", "expect": "trigger" },
+    { "q": "Write up the QR scanning improvements for stakeholders", "expect": "trigger" },
+    { "q": "Release notes for WAREHOUSE-APP, 1 to 4 July", "expect": "trigger" },
+    { "q": "Make a non-technical summary of what changed in the billing work", "expect": "trigger" },
+    { "q": "PM update for this sprint's commits", "expect": "trigger" },
+    { "q": "Turn these commits into something the operations team can read", "expect": "trigger" },
+    { "q": "Summarize this PR so I can review it faster", "expect": "no-trigger", "route": "/review" },
+    { "q": "Write the PR body for this change", "expect": "no-trigger", "route": "/commit-push-pr" },
+    { "q": "Close #212 with a how-to-test comment", "expect": "no-trigger", "route": "/commit-push-close" },
+    { "q": "Explain how the invite workflow works", "expect": "no-trigger", "route": "/feature-discovery" },
+    { "q": "Draft an ADR for the queue decision", "expect": "no-trigger", "route": "/grill-with-docs" },
+    { "q": "Show me the raw git log for last week", "expect": "no-trigger", "route": "none" },
+    { "q": "Update the README's feature list", "expect": "no-trigger", "route": "none" },
+    { "q": "File issues for these three bugs I found during QA", "expect": "no-trigger", "route": "none" },
+    { "q": "Summarize this long design doc into bullet points", "expect": "no-trigger", "route": "none" }
+  ]
+}
