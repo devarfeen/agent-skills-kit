@@ -87,25 +87,20 @@ Rules for **How to test**:
    - No upstream → `git push -u origin <branch>`.
    - **If the current branch is `main` or `master`**: stop and confirm separately before pushing.
 
-10. **Close the issue** — capture the new commit SHA, then:
+10. **Close the issue** — fill the drafted comment with the real values (short
+    SHA from `git rev-parse --short HEAD`, current branch), write it to a temp
+    file, then comment, close, and verify:
     ```bash
-    SHA=$(git rev-parse --short HEAD)
-    gh issue close <num> --comment "$(cat <<EOF
-    Closed by ${SHA} on \`<branch>\`.
-
-    **Summary**
-    ...
-
-    **How to test**
-    1. ...
-    2. ...
-    3. ...
-    EOF
-    )"
+    gh issue comment <num> --body-file <temp-file>.md
+    gh issue close <num> --reason completed
+    gh issue view <num> --json state -q .state   # expect CLOSED
     ```
-    Use an unquoted heredoc (`<<EOF`, not `<<'EOF'`) so `${SHA}` interpolates. Escape any literal backticks/`$` inside the body.
+    The body file keeps backticks and `$` literal — nothing to escape and
+    nothing for the shell to interpolate. "Closed" is earned by the state
+    check, not assumed from a zero exit code; quote the returned state in the
+    report.
 
-11. **Report** — one line: `<SHA> pushed to <branch>; issue #<num> closed`. Then append the **Response footer** from `references/ship-policy.md` (1-6 advisory suggestions).
+11. **Report** — one line: `<SHA> pushed to <branch>; issue #<num> closed (state CLOSED verified)`. Then append the **Response footer** from `references/ship-policy.md` (1-6 advisory suggestions).
 
 ## Examples
 
@@ -184,6 +179,6 @@ Before marking the iteration done, verify:
 - [ ] No secret files staged
 - [ ] Hooks ran (no `--no-verify`)
 - [ ] Push succeeded (or, on `main`/`master`, was confirmed separately)
-- [ ] Issue closed with comment containing **Summary** + **How to test**
+- [ ] Issue closed with comment containing **Summary** + **How to test**, and `gh issue view --json state` returned `CLOSED`
 - [ ] Final report line printed
 - [ ] Optional `Suggested next skills` footer included (1-6 advisory suggestions, no gating)
