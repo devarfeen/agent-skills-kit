@@ -42,6 +42,11 @@ for dir in skills/*/; do
   fi
   if ! printf '%s\n' "$fm" | grep -q '^description:[[:space:]]*[^[:space:]]'; then
     fail "$skill_md has no description: in frontmatter"
+  else
+    desc="$(printf '%s\n' "$fm" | sed -n 's/^description:[[:space:]]*//p' | head -1 | sed 's/^"//; s/"$//')"
+    if (( ${#desc} > 1024 )); then
+      fail "$skill_md description is ${#desc} chars (>1024 — hosts with description limits truncate it)"
+    fi
   fi
   if ! [[ "$name" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
     fail "skill folder '$name' is not kebab-case"
@@ -57,7 +62,7 @@ else
   note "ship-policy.md copies match"
 fi
 
-echo "== 3. Every skill has a skills-manifest.md row =="
+echo "== 3. Skill folders and skills-manifest.md rows agree =="
 MANIFEST="skills/agents-md/references/skills-manifest.md"
 for dir in skills/*/; do
   name="$(basename "$dir")"
@@ -65,7 +70,22 @@ for dir in skills/*/; do
     fail "skills/$name has no \`/$name\` row in $MANIFEST"
   fi
 done
-note "manifest coverage checked"
+# Reverse direction: every gradient row's kind must match reality on disk.
+while IFS='|' read -r _ col_skill col_kind _; do
+  skill="$(printf '%s' "$col_skill" | tr -d ' `' )"
+  kind="$(printf '%s' "$col_kind" | tr -d ' ')"
+  name="${skill#/}"
+  [[ -z "$name" || "$name" == "skill" ]] && continue
+  case "$kind" in
+    kit)
+      [[ -d "skills/$name" ]] || fail "manifest lists \`/$name\` as kit but skills/$name does not exist"
+      ;;
+    external)
+      [[ -d "skills/$name" ]] && fail "manifest lists \`/$name\` as external but skills/$name exists — change kind to kit"
+      ;;
+  esac
+done < <(grep -E '^\|[[:space:]]*`/' "$MANIFEST")
+note "manifest coverage checked (both directions)"
 
 echo "== 4. Every skill is mentioned in README.md =="
 for dir in skills/*/; do
