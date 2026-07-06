@@ -1,6 +1,6 @@
 ---
 name: feature-prompt
-description: Use when the user wants to turn a feature idea, change request, or rough requirement into a small prompt for grill-with-docs. When cheap repo exploration reveals domain terms missing from or stale in CONTEXT.md, surface those candidate terms for user approval before any context update.
+description: Use when the user wants to turn a feature idea, change request, or rough requirement into a small prompt for grill-with-docs. When cheap repo exploration reveals domain terms missing from or stale in CONTEXT.md, surface those candidate terms for user approval before any context update. Post-decision artifacts route onward instead: turning an ADR into a PRD is /to-prd, and investigating how existing behaviour works is /feature-discovery.
 ---
 
 # Feature Prompt
