@@ -144,7 +144,7 @@ These are optional separate installs. Use them beside this kit when installed an
 | Rough Idea | `/feature-prompt` | Section-by-section clarification interview. |
 | Broken Behavior | `/diagnosing-bugs` | Systematic root cause analysis. |
 | Design Spike | `/prototype` | Validate UI/state before PRD/Issues. |
-| Issue Work | `/tdd` | Red-Green-Refactor implementation loop. |
+| Issue Work | `/tdd` + `/tdd-loop` | Test-first implementation. `/tdd-loop` is the kit's procedure (gates, completion evidence, exception protocol) and stands alone; Matt's `/tdd` adds test quality and seam choice when installed. |
 | Porting A Feature | `/port-feature` | Trace a reference feature into a target stack as a gap map. |
 | Project Needs A UI Library | `/design-system` | Turn a design system into tokens + components + a verifiable preview. |
 | Page Must Match Design | `/pixel-audit` | Strict per-page visual conformance with an element-level gate. |

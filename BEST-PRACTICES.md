@@ -30,7 +30,7 @@ discover → sharpen → plan → slice → implement → verify → ship
 | **sharpen** | Turn a rough idea into a precise prompt | `/feature-prompt` |
 | **plan** | Challenge the plan, capture the decision | `/grill-with-docs` (→ ADR), `/to-prd` (→ PRD) |
 | **slice** | Break the plan into thin, grabbable units | `/to-issues` |
-| **implement** | Build it test-first | `/tdd` |
+| **implement** | Build it test-first | `/tdd`, `/tdd-loop` (kit standalone + exception protocol) |
 | **verify** | Prove it works | `/review`, `/pixel-audit` (per-page pixel conformance), manual QA, `/polish-batch` (cosmetic tail), `/integration-contract` (cross-repo seam), `/diagnosing-bugs` |
 | **ship** | Land it with proof | `/commit-push-close`, `/commit-push-pr` |
 

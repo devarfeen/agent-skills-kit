@@ -74,6 +74,7 @@ workspace/project. Full behavior, modes, and rules live in each skill's
 | [`port-feature`](skills/port-feature/SKILL.md) | discover | Maps a feature from a REFERENCE implementation into a TARGET stack as one gap map, then hands to planning | `Port stock-transfer approvals from LEGACY-PORTAL to ADMIN-WEB` |
 | [`feature-prompt`](skills/feature-prompt/SKILL.md) | sharpen | Turns a rough idea into a small, PR-sized prompt file for `grill-with-docs` | `Help me create a feature prompt for stock transfer approvals` |
 | [`integration-contract`](skills/integration-contract/SKILL.md) | slice | For multi-project PRDs only: writes a producer/consumer contract and an agent-browser smoke gate that must pass before shipping | `Build the integration contract for PRD-142` |
+| [`tdd-loop`](skills/tdd-loop/SKILL.md) | implement | Enforceable test-first loop — one failing test, watch it fail right, smallest change to green, widen, refactor on green — plus an exception protocol for spikes, legacy code, hotfixes, and infra work | `Fix this bug test-first` |
 | [`orchestrate-herdr`](skills/orchestrate-herdr/SKILL.md) | implement | Inside [herdr](https://herdr.dev) only: fans a PRD's open sub-issues out to one local coding-CLI worker tab each and monitors for test-backed completion | `orchestrate-herdr for <PRD URL> using codex` |
 | [`pixel-audit`](skills/pixel-audit/SKILL.md) | verify | Strict per-page visual-conformance audit against Figma or reference screens, with an element-level verification gate on served assets | `Pixel-audit the assets list page in ADMIN-WEB against this Figma node` |
 | [`polish-batch`](skills/polish-batch/SKILL.md) | verify | Captures cosmetic QA nits without fixing them, dispatches them per PROJECT-CODE in one bounded pass, then verifies | `Punch-list this for PRD-142: Billing header says "Recieve invoices"` |
@@ -85,7 +86,10 @@ The gradient's plan/slice/implement/verify core (`/grill-with-docs`, `/to-prd`,
 `/to-issues`, `/tdd`, `/review`, `/diagnosing-bugs`, `/triage`) comes from
 [Matt Pocock's skills](https://github.com/mattpocock/skills) — separate
 installs this kit is designed to interlock with. Run
-`/setup-matt-pocock-skills` once per repo before using them.
+`/setup-matt-pocock-skills` once per repo before using them. The kit's own
+`tdd-loop` is the test-first *procedure* (gates, completion evidence,
+exception protocol) and stands alone; when Matt's `/tdd` is installed it owns
+test *quality* and seam choice, and the two compose.
 
 ## Workflow Guide
 

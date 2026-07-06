@@ -31,6 +31,7 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | `/to-issues` | external | slice | | |
 | `/integration-contract` | kit | slice | multi-project seams | |
 | `/tdd` | external | implement | | |
+| `/tdd-loop` | kit | implement | standalone test-first loop + TDD exception protocol | |
 | `/orchestrate-herdr` | kit | implement | inside herdr only — fan a PRD out to worker tabs | |
 | `/review` | external | verify | | |
 | `/diagnosing-bugs` | external | verify | | |
