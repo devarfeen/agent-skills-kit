@@ -20,10 +20,11 @@ either way.
 2. **Locate the seam.** Find the code that owns the behavior, its existing
    tests, and the project's focused-test command (one file or one test — e.g.
    `pnpm vitest run path/to/file`, `pytest path::test_name`,
-   `php artisan test --filter=Name`). Read the neighboring tests first and
-   match their style, fixtures, and naming. If the seam choice is genuinely
-   contestable, ask the user; if the user is away, state your choice and
-   proceed.
+   `php artisan test --filter=Name`; more ecosystems in
+   [`references/test-commands.md`](references/test-commands.md)). Read the
+   neighboring tests first and match their style, fixtures, and naming. If the
+   seam choice is genuinely contestable, ask the user; if the user is away,
+   state your choice and proceed.
 3. **Declare any exception now** (see Exception protocol) — before writing
    any code.
 
