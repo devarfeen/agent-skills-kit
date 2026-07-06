@@ -254,6 +254,7 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 - **Cross-Repo Seam Risk:** `/integration-contract` before shipping a multi-project PRD.
 - **Inlined UI Instead Of The Library:** back to `/design-system` (extend) to promote it into the library, then consume it from the page.
 - **Production Error:** Start with `/sentry` -> `/diagnosing-bugs`.
+
 ## Practical Default
 
 When unsure, run this sequence manually:

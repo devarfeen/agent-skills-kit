@@ -50,6 +50,10 @@ into your agent's local skills directory. After install, just talk to your
 agent normally — it invokes the skill when your request matches its
 description.
 
+Skills avoid changing your git state unless their own instructions say
+otherwise; skills that inspect history only read commits already available on
+your machine (never `git fetch` / `git pull`).
+
 **Cursor CLI:** Install with `npx skills install` (skills land in
 `~/.cursor/skills/` or `.cursor/skills/`). Invoke a skill with `/skill-name`
 (for example `/release-notes`). Run the CLI with `agent` for interactive
