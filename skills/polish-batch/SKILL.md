@@ -17,7 +17,7 @@ capture  →  dispatch  →  verify
 - **dispatch** (only on explicit user say-so): hand the coding CLI one bounded task per PROJECT-CODE.
 - **verify**: re-check the affected screens against the punch-list and mark each row.
 
-It sits at the **verify** phase, between manual QA and ship. It replaces live per-nit steering with capture → dispatch → verify.
+It sits at the **verify** phase, between manual QA and ship.
 
 ## Rules
 
@@ -28,7 +28,7 @@ It sits at the **verify** phase, between manual QA and ship. It replaces live pe
 - **Always name the full PROJECT-CODE** from the Project Matrix for every row and every dispatch. Never mix one project's conventions (copy tone, spacing scale, component idioms) into another. When in doubt about which project a nit belongs to, ask before capturing; if the user is away, capture it under the likeliest code with a trailing `?` and list it under Needs user — never drop a reported nit. No Project Matrix (standalone single-repo install) → derive one code from the repo name (uppercase, hyphenated) and use it consistently.
 - **Suggest, never auto-chain.** After verify, suggest `/review` then `/commit-push-close` or `/commit-push-pr`, and stop. Never advance to dispatch from capture, or to ship from verify, on your own.
 - **Reopened rows stay.** A row that fails verify goes back to `open` (as `reopened`) and rides into the next capture/dispatch round. Nothing is dropped silently.
-- **Local-only.** Use local subagents and local background where the runtime supports it and the user has allowed them; never hand work to cloud agents. Evidence (screenshots, the Where text, the diff) wins over memory.
+- **Local-only.** Use local subagents and local background where the runtime supports it and the user has allowed them; never hand work to cloud agents.
 
 ## The punch-list artifact
 
@@ -71,7 +71,7 @@ The mode you are in unless the user explicitly says dispatch or verify.
 
 1. Confirm the `<PRD-ID>` for this QA pass (from context or ask once; no PRD → the date-keyed filename). Open — or create — the punch-list file.
 2. For each nit the user reports:
-   - Confirm it is **cosmetic** (copy / spacing / alignment / wrong string / visual state only). If it touches behaviour, data, or an interface, stop, name it, and route it to `/to-issues` — do not add it as a row.
+   - Confirm it is **cosmetic** (copy / spacing / alignment / wrong string / visual state only). If it touches behaviour, data, or an interface, stop, name it, and route it to `/to-issues` — do not add it as a row. Genuinely unsure whether it's cosmetic → no row yet; list it under Needs user **and** under a `## Held — awaiting cosmetic/behavioural call` footer in the punch-list file so it survives the session; on the user's call it becomes a row or routes to `/to-issues`.
    - Confirm the **PROJECT-CODE** from the matrix.
    - Screenshot the state with agent-browser into `docs/qa/shots/` if available; otherwise note `(no shot — text only)`.
    - Append **one row** with status `open`. Change nothing else.
@@ -80,7 +80,7 @@ The mode you are in unless the user explicitly says dispatch or verify.
 
 ### dispatch (explicit only)
 
-Runs **only** when the user explicitly says to dispatch — capturing a nit, even the last open one, never triggers it.
+Runs **only** when the user explicitly says to dispatch, as a fresh instruction — capturing a nit, even the last open one, never triggers it, and neither does an upfront "fix them all later" said while capturing.
 
 1. Read all `open` (including `reopened`) rows.
 2. **Group by PROJECT-CODE.** Within each group, order rows trivial → structural (pure text/string fixes first, then spacing/alignment).
@@ -94,8 +94,8 @@ Use local subagents/background per the runtime when dispatching multiple project
 
 Runs after the dispatched tasks report back.
 
-1. **Scope check first:** map each group's reported files/changes to its row list. Anything touched outside the listed rows is a scope violation — flag it and route it out (revert it or send it to `/to-issues`); never absorb it silently.
-2. **Compare served output, not source:** refresh/rebuild per the project's pipeline so the comparison hits the running surface, then collect row-level evidence against **Wrong → Right**:
+1. **Scope check first:** map each group's changes to its row list from the project's actual diff, not just the task's report-back. Anything touched outside the listed rows is a scope violation — flag it and route it out (revert it or send it to `/to-issues`); never absorb it silently.
+2. **Compare served output, not source:** refresh/rebuild per the project's pipeline so the comparison hits the running surface, record which served environment (URL/host or build) the evidence comes from, then collect row-level evidence against **Wrong → Right**:
    - copy/string rows — quote the rendered string from the served screen or response field;
    - spacing/alignment/visual rows — element evidence via agent-browser (`getBoundingClientRect()`/computed styles, or a clipped element screenshot), not a whole-page glance;
    - no browser surface, or agent-browser unavailable — re-read the served string/field and say which fallback was used. Never mark a row verified on assumption.
@@ -125,6 +125,7 @@ Needs user: <ambiguous PROJECT-CODE or borderline-cosmetic item, or "none">.
 
 ```markdown
 Stage: verify — compared served output for <N> dispatched rows.
+Environment: <PROJECT-CODE → served URL/host or build the evidence came from>
 Found:
 | PROJECT-CODE | Verified | Reopened |
 | ------------ | -------- | -------- |
@@ -143,11 +144,11 @@ Suggested next skills (optional):
 
 Before ending a mode:
 - [ ] `<PRD-ID>` confirmed; punch-list lives at `<artifacts-root>/docs/qa/<PRD-ID>-punchlist.md`
-- [ ] capture: no code/config/copy changed — only rows appended, each with full PROJECT-CODE and status `open`
+- [ ] capture: only rows appended, each with full PROJECT-CODE and status `open` — `git status` in each repo touched this session confirms nothing changed outside `docs/qa/`
 - [ ] Any behaviour/data/interface item was refused as a nit and routed to `/to-issues`
 - [ ] Screenshots in `docs/qa/shots/` when agent-browser available; `(no shot — text only)` fallback otherwise
-- [ ] dispatch: ran only on explicit user say-so; grouped per PROJECT-CODE; ordered trivial → structural; one bounded task per group; rows marked `dispatched`
+- [ ] dispatch: ran only on explicit user say-so (quote it); grouped per PROJECT-CODE; ordered trivial → structural; one bounded task per group; rows marked `dispatched`
 - [ ] No refactors or adjacent changes requested in any dispatch task
 - [ ] Cross-repo: one punch-list file for the PRD, but one dispatch batch per PROJECT-CODE
-- [ ] verify: scope checked against each group's reported changes; each dispatched row marked `verified` with row-level evidence (quoted string or element geometry) or `reopened`; reopened rows kept
+- [ ] verify: scope checked against each group's actual diff; each dispatched row marked `verified` with row-level evidence (quoted string or element geometry) or `reopened`; reopened rows kept
 - [ ] Suggested next skills footer present after verify; never auto-chained to dispatch or ship
