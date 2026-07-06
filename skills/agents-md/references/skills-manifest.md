@@ -28,8 +28,10 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | `/feature-prompt` | kit | sharpen | | |
 | `/grill-with-docs` | external | plan | → ADR | |
 | `/to-prd` | external | plan | → PRD | |
+| `/prototype` | external | plan | spike ungrillable "needs to feel/see it" questions, then back to /grill-with-docs | |
+| `/handoff` | external | plan | fork context to a new session (pairs with /prototype) | |
 | `/to-issues` | external | slice | | |
-| `/integration-contract` | kit | slice | multi-project seams | |
+| `/triage` | external | slice | existing/raw issues only — state repair, needs-info, wontfix, agent briefs | |
 | `/tdd` | external | implement | | |
 | `/tdd-loop` | kit | implement | standalone test-first loop + TDD exception protocol | |
 | `/orchestrate-herdr` | kit | implement | inside herdr only — fan a PRD out to worker tabs | |
@@ -37,6 +39,7 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | `/diagnosing-bugs` | external | verify | | |
 | `/polish-batch` | kit | verify | cosmetic punch-list | |
 | `/pixel-audit` | kit | verify | per-page visual conformance | |
+| `/integration-contract` | kit | verify | multi-project seams — build after /to-issues, gate before the PRD ships | |
 | `/commit-push-close` | kit | ship | | |
 | `/commit-push-pr` | kit | ship | | |
 | `/release-notes` | kit | ship | | |
@@ -58,3 +61,4 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | Laravel Boost | companion | | | A Laravel project has Boost installed and Laravel-specific MCP context helps. |
 | Figma MCP | companion | | | A task references Figma designs, components, frames, tokens, or design-to-code. |
 | MySQL/Postgres MCP | companion | | | Approved local or staging database inspection is needed. Default read-only. |
+| Sentry CLI | companion | | | A production error report needs `/sentry` investigation before `/diagnosing-bugs`. |

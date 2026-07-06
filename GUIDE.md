@@ -135,6 +135,7 @@ These are optional separate installs. Use them beside this kit when installed an
 | Laravel Boost | A Laravel project has Boost installed and Laravel-specific MCP context helps. |
 | Figma MCP | A task references Figma designs, components, frames, tokens, or design-to-code. |
 | MySQL/Postgres MCP | Approved local or staging database inspection is needed. Default read-only. |
+| Sentry CLI | A production error report needs `/sentry` investigation before `/diagnosing-bugs`. |
 
 - Do not assume a companion is installed. If missing, use the best local fallback.
 - Use MCPs only for the current task. Do not browse unrelated external data.
@@ -173,7 +174,7 @@ Two variations branch off this line:
 
 Before creating, editing, or renaming any GitHub issue:
 
-1. Read local workspace instructions (`AGENTS.md`; Claude CLI `CLAUDE.md` / Antigravity CLI `GEMINI.md` shims).
+1. Read local workspace instructions (`AGENTS.md`; Claude CLI reads the `CLAUDE.md` shim).
 2. Select the exact issue title pattern (`PRD`, `Slice`, or non-PRD implementation form).
 3. Select exactly one category label (`bug` or `enhancement`) and one state label.
 4. Confirm no routing marker (`HITL:` / `AFK:`) is present in issue titles.

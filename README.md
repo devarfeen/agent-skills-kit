@@ -73,11 +73,11 @@ workspace/project. Full behavior, modes, and rules live in each skill's
 | [`feature-discovery`](skills/feature-discovery/SKILL.md) | discover | Read-only, evidence-backed trace of how a feature, module, or behavior works; report returned in chat | `Trace the invite-user workflow across ADMIN-WEB and API-SERVICE` |
 | [`port-feature`](skills/port-feature/SKILL.md) | discover | Maps a feature from a REFERENCE implementation into a TARGET stack as one gap map, then hands to planning | `Port stock-transfer approvals from LEGACY-PORTAL to ADMIN-WEB` |
 | [`feature-prompt`](skills/feature-prompt/SKILL.md) | sharpen | Turns a rough idea into a small, PR-sized prompt file for `grill-with-docs` | `Help me create a feature prompt for stock transfer approvals` |
-| [`integration-contract`](skills/integration-contract/SKILL.md) | slice | For multi-project PRDs only: writes a producer/consumer contract and an agent-browser smoke gate that must pass before shipping | `Build the integration contract for PRD-142` |
 | [`tdd-loop`](skills/tdd-loop/SKILL.md) | implement | Enforceable test-first loop — one failing test, watch it fail right, smallest change to green, widen, refactor on green — plus an exception protocol for spikes, legacy code, hotfixes, and infra work | `Fix this bug test-first` |
 | [`orchestrate-herdr`](skills/orchestrate-herdr/SKILL.md) | implement | Inside [herdr](https://herdr.dev) only: fans a PRD's open sub-issues out to one local coding-CLI worker tab each and monitors for test-backed completion | `orchestrate-herdr for <PRD URL> using codex` |
 | [`pixel-audit`](skills/pixel-audit/SKILL.md) | verify | Strict per-page visual-conformance audit against Figma or reference screens, with an element-level verification gate on served assets | `Pixel-audit the assets list page in ADMIN-WEB against this Figma node` |
 | [`polish-batch`](skills/polish-batch/SKILL.md) | verify | Captures cosmetic QA nits without fixing them, dispatches them per PROJECT-CODE in one bounded pass, then verifies | `Punch-list this for PRD-142: Billing header says "Recieve invoices"` |
+| [`integration-contract`](skills/integration-contract/SKILL.md) | verify | For multi-project PRDs only: writes a producer/consumer contract plus a smoke gate (agent-browser / curl / manual) that must pass before the PRD ships | `Build the integration contract for PRD-142` |
 | [`commit-push-close`](skills/commit-push-close/SKILL.md) | ship | Commits with a structured message, pushes, and closes the linked GitHub issue with a how-to-test comment | `I'm done with #418, ship it` |
 | [`commit-push-pr`](skills/commit-push-pr/SKILL.md) | ship | Commits, pushes (branching off `main` first), and opens a PR with `Closes #N`, summary, and test plan | `Commit, push, and open a PR for this issue` |
 | [`release-notes`](skills/release-notes/SKILL.md) | ship | Turns git history, the current session, or a feature into PM-friendly release notes with QA steps | `Generate release notes for 11 March 2026` |
@@ -86,7 +86,8 @@ The gradient's plan/slice/implement/verify core (`/grill-with-docs`, `/to-prd`,
 `/to-issues`, `/tdd`, `/review`, `/diagnosing-bugs`, `/triage`) comes from
 [Matt Pocock's skills](https://github.com/mattpocock/skills) — separate
 installs this kit is designed to interlock with. Run
-`/setup-matt-pocock-skills` once per repo before using them. The kit's own
+`/setup-matt-pocock-skills` once per workspace (see the First-Time Setup
+sequence in [GUIDE.md](GUIDE.md)) before using them. The kit's own
 `tdd-loop` is the test-first *procedure* (gates, completion evidence,
 exception protocol) and stands alone; when Matt's `/tdd` is installed it owns
 test *quality* and seam choice, and the two compose.
