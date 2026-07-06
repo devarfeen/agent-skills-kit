@@ -80,7 +80,18 @@ Write for a frontier agentic model — capable, tool-using, able to plan. That m
   when to stop: single-project PRD → "no contract needed", behavioural change →
   "not a nit, route to /to-issues". This is what keeps autonomous runs safe.
 - **End with a checklist** the model verifies before claiming done. Every recent
-  skill has one; it is the cheapest self-review loop we have.
+  skill has one; it is the cheapest self-review loop we have. Phrase completion
+  as observable evidence ("quote the failing run", "name the command you ran"),
+  not self-assessment — vague done-ness lets a run stop early.
+- **Sentence patterns that hold up** (drawn from the strongest skills here and
+  in Matt Pocock's repo): open the body with an identity sentence ("TDD is one
+  failing test turned green at a time"), not an instruction. Write rules as
+  bold-lead bullets — a 2–5-word imperative that stands alone, then one or two
+  plain sentences. State the default flat and give real exceptions their own
+  named subsection, not an "unless" mid-sentence. Every prohibition ships its
+  replacement in the next sentence. Phrase gates as "No X, no Y". Give every
+  human-confirmation gate an away-fallback ("if the user is away, state your
+  choice and proceed") so autonomous runs don't deadlock.
 - **Don't restate the workspace non-negotiables.** Generated `AGENTS.md` already
   binds PROJECT-CODE usage, local-only orchestration, zero-attribution, and
   honest reporting. One reminder line is fine where it prevents real damage;
