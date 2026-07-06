@@ -37,9 +37,10 @@ Date: <DD Month YYYY>
 - <Which screen/app/user group is affected>
 
 **Manual QA Steps**
-1. <Do X → Y should happen>
-2. <Do X → Y should happen>
-3. <Do X → Y should happen>
+1. <Do X -> Y should happen>
+2. <Do X -> Y should happen>
+3. <Do X -> Y should happen>
 
 **Commits Included**
-- <commit-hash-1>, <commit-hash-2>
+- <commit-hash-1>
+- <commit-hash-2>

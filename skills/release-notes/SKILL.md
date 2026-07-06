@@ -38,7 +38,7 @@ pass: "Would a PM or QA person understand this without asking a developer?"
 7. **Translate engineering into operational meaning.** Rewrite code-level
    detail as its user-visible effect; keep code identifiers out of the
    narrative unless the user asks for technical detail.
-   - "refactored useRfidScanner" → "standardized scanner setup to reduce inconsistent scan starts"
+   - "refactored useRfidScanner" → "the app now sets up the scanner the same way before every scan"
    - "added test coverage" → "reduced regression risk by validating scanner setup behavior"
 8. **Banned words/phrases:** workstream, artifact, canonical, process drift,
    touchpoint, formally, standardized, operationally, implementation, ad hoc,
@@ -74,15 +74,21 @@ Missing a repo means silently missing a whole project's notes, so:
 
 1. Find every git root in the workspace:
    ```bash
-   find <workspace-root> -name ".git" -type d -maxdepth 3 | sed 's/\/.git$//'
+   find <workspace-root> -maxdepth 3 -name ".git" | sed 's/\/.git$//'
    ```
+   No `-type d` — in worktrees and submodules `.git` is a file, and filtering
+   to directories silently drops those whole projects from the notes.
 2. Run `git log` in **each** repo — never assume the workspace root is the only
    repo:
    ```bash
    git log --all --after="YYYY-MM-DDT00:00:00" --before="YYYY-MM-DDT23:59:59" --oneline --no-merges
    ```
    `--all` catches work merged into any local branch; `--no-merges` skips merge
-   noise. Use `--format="%H %s"` for richer detail.
+   noise. Use `--format="%H %s"` for richer detail. `--all` also sweeps
+   unmerged and abandoned branches, so before presenting a cluster check it
+   reached the default branch (`git branch --contains <hash>`); work that
+   hasn't gets labeled "in progress on `<branch>`" in its Summary, never mixed
+   silently into shipped notes.
 3. If the user names a project and no commits are found, say so explicitly:
    "No commits found for <Project> on <date>. The local branch may not be up to
    date — try running `git pull` in that repo." Never silently omit a project.
@@ -118,7 +124,13 @@ PM-facing change (Problem → Change → Impact).
 
 One markdown file, exactly this structure — Stakeholder Summary first, then a
 `---` rule, then Detailed Release Notes. Never put feature sections above a
-project heading or child sections outside a feature.
+project heading or child sections outside a feature. This template is the
+single format source; the fill-in skeletons in
+[`assets/release-notes-template.md`](assets/release-notes-template.md) and
+[`assets/session-summary-template.md`](assets/session-summary-template.md)
+follow it, and worked input→output pairs live in
+[`references/examples.md`](references/examples.md) — load them when unsure how
+an entry should read.
 
 ```markdown
 # Stakeholder Summary
@@ -148,6 +160,7 @@ Date: <DD Month YYYY>
 **Change**
 
 - <what changed, in product/workflow language>
+- What changed where: <setting, page/screen, visible element, or route — only when the history names it>
 
 **Impact**
 
@@ -180,9 +193,13 @@ Rules:
 - **Include only projects with at least one confirmed change** in the selected
   scope. No unchanged-project sections.
 - **User-visible detail**: when commits/diffs reveal them, name the setting,
-  page/screen, visible element, or route that changed. If a detail is not in
-  the history, omit it — never write "not explicitly visible in commit history".
-- Commit hashes appear only in the final **Commits Included** line.
+  page/screen, visible element, or route that changed — the optional
+  `What changed where:` line under **Change** is where it goes. If a detail is
+  not in the history, omit it (and omit the line) — never write "not
+  explicitly visible in commit history".
+- Commit hashes appear only under **Commits Included**, one per bullet. For a
+  session summary with no commits yet, write `- (uncommitted session work)`
+  instead of hashes.
 
 ## File Output
 
@@ -224,13 +241,21 @@ never overwrite hand edits unconfirmed. Never delete unrelated files.
 
 ## Quality Check Before Finalizing
 
-1. A PM can understand every entry without code context; a QA person knows what
+Mechanical pass first — scan the draft and fix every hit before judging tone:
+
+1. No rule-8 banned word/phrase appears anywhere; no bullet runs over 15 words;
+   no Problem/Change/Impact section exceeds 2 content bullets.
+2. Structure and hierarchy match the Output Format exactly (one `---`, child
+   sections inside features, hashes only under **Commits Included**); only
+   changed projects are included; the file is saved to `docs/release-notes/`
+   with the `D-Month-YYYY` name.
+
+Then the judgment pass:
+
+3. A PM can understand every entry without code context; a QA person knows what
    to test; each impact bullet is an observable operational outcome.
-2. At least one bullet names affected workflows or teams; technical identifiers
+4. At least one bullet names affected workflows or teams; technical identifiers
    are out of the main narrative; logic changes carry their one simple sentence.
-3. Structure and hierarchy match the Output Format exactly; only changed
-   projects are included; the file is saved to `docs/release-notes/` with the
-   `D-Month-YYYY` name.
-4. Nothing is speculated beyond the workspace, git history, or provided context.
-5. End the chat response with `Suggested next skills (optional)` — 1–6 advisory
+5. Nothing is speculated beyond the workspace, git history, or provided context.
+6. End the chat response with `Suggested next skills (optional)` — 1–6 advisory
    suggestions based on what the user should likely do next (no gating).

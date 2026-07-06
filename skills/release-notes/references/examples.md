@@ -243,15 +243,14 @@ Write release notes for the RFID scanning improvements
 - Scan attempts could fail when startup steps were incomplete in certain flows.
 
 **Change**
-- Standardized scanner setup before scan actions.
+- The app now runs the same setup steps before every scan.
 - Added readiness checks and controlled retry handling.
 - What changed where: RFID scan pages and scan action controls used by front-line teams.
 - Simple logic explanation: The app turns the scanner setup steps into the same repeatable checklist every time.
 
 **Impact**
 - Fewer startup-related scan failures.
-- Reduced operational interruptions in RFID workflows.
-- More reliable scan behavior for front-line users.
+- More reliable scanning for front-line teams during daily work.
 
 **Scope**
 - Applies to RFID scanning flows covered by this feature.
@@ -298,7 +297,7 @@ WAREHOUSE-ADMIN
 - Teams faced failed first scans in some operational flows.
 
 **Change**
-- Standardized scanner startup behavior across updated flows.
+- Scanner startup now follows the same steps across updated flows.
 - What changed where: scan setup setting and scan status indicator.
 
 **Impact**
