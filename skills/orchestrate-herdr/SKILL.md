@@ -52,6 +52,18 @@ Run policy — supplements the frozen prompt without changing it:
 - **Test evidence** (the prompt's completion gate) means the worker's test
   command plus its quoted passing output. An unquoted "tests pass" stays
   incomplete — read the tab and get the output.
+- **Monitoring policy** (how the prompt's monitor loop resolves): emit
+  `Stage / Found / Next / Needs user` at each transition — tabs created,
+  prompts submitted, any worker status change, final report. A worker silent
+  for 3 consecutive checks is stalled: read its tab; resubmit once if the CLI
+  died, otherwise mark the issue blocked and surface it under Needs user. The
+  run ends when every sub-issue is completed-with-evidence, blocked, or
+  errored — then emit the final report.
+- **Labels during monitoring** (what the prompt's label line governs):
+  `ready-for-agent` marks an issue a worker may take; a worker blocked on a
+  human decision gets its issue flipped to `ready-for-human` with a comment
+  naming the decision; issue order and dependency notes only sequence
+  dispatch — never edit issue titles.
 - **After the frozen prompt's final report:** suggest `/review` on the
   workers' diffs or `/release-notes` for what shipped — suggest only, then
   stop.
