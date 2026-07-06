@@ -123,7 +123,7 @@ owns judgment and final wording. No worker agents, no code edits.
    user is away, save it as drafted and note at the top of the response that
    it is unconfirmed.
 3. If candidate context terms were found, run the shared approval flow.
-4. Verify the pre-save checklist, then save the final prompt to disk (below).
+4. Verify the pre-save checklist, then save the final prompt to disk (below), then re-open the saved file — its sections and path must match the approved draft before the reply reports it.
 5. Add only:
 
 ```markdown

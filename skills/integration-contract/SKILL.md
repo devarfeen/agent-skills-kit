@@ -168,7 +168,7 @@ Suggested next skills (optional):
 
 Before ending a mode:
 - [ ] Trigger discipline applied: multi-project → contract; single-project → other matrix repos swept for external call-sites first, and `single project — no contract needed` (no file) only when none were found
-- [ ] Contract lives at `<artifacts-root>/docs/integration/<PRD-ID>-contract.md` with all four sections + gate log
+- [ ] Contract written to `<artifacts-root>/docs/integration/<PRD-ID>-contract.md` and re-opened — all four section headings plus the gate log verified present
 - [ ] Section 1 records, per involved PROJECT-CODE: where it runs, how a change reaches it, and the flows' data preconditions — asked, never guessed
 - [ ] Section 3 cites every located consumer as `file:symbol`, searched across all Project Matrix repos (no bulk repo/`docs/` reads); out-of-PRD consumers and unconsumed surfaces are `RISK` rows
 - [ ] Section 4 flows are navigate→act→assert, each with a Driver (agent-browser / curl / manual) and the PROJECT-CODEs it crosses

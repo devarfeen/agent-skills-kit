@@ -248,7 +248,8 @@ Mechanical pass first — scan the draft and fix every hit before judging tone:
 2. Structure and hierarchy match the Output Format exactly (one `---`, child
    sections inside features, hashes only under **Commits Included**); only
    changed projects are included; the file is saved to `docs/release-notes/`
-   with the `D-Month-YYYY` name, and the reply states each saved file path.
+   with the `D-Month-YYYY` name, re-opened to confirm the saved structure
+   matches, and the reply states each saved file path.
 
 Then the judgment pass:
 

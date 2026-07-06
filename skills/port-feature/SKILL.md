@@ -130,7 +130,7 @@ Before finishing:
 - [ ] Any port-critical rule missing from the target's binding context was surfaced as an open question, not guessed
 - [ ] Target current state surveyed; if UI, the target component preview (`/ui/preview/all`) was opened
 - [ ] Sub-agents, if used, were user-allowed, non-overlapping, and read-only; the main agent synthesised; no duplicate discovery
-- [ ] Gap map written to `<artifacts-root>/docs/port/<feature-slug>-gapmap.md` with all nine sections, reference kept as behaviour-truth and target DS as UI-truth (deviations recorded)
+- [ ] Gap map written to `<artifacts-root>/docs/port/<feature-slug>-gapmap.md` and re-opened — all nine section headings verified present; reference kept as behaviour-truth and target DS as UI-truth (deviations recorded)
 - [ ] First slice is thin and independently testable
 - [ ] Suggested `/grill-with-docs` and stopped — nothing implemented, no issue fabricated, no auto-chain
 - [ ] Final `Stage / Found / Next / Needs user` update emitted
