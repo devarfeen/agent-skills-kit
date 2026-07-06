@@ -52,6 +52,10 @@ Run policy — supplements the frozen prompt without changing it:
 - **Test evidence** (the prompt's completion gate) means the worker's test
   command plus its quoted passing output. An unquoted "tests pass" stays
   incomplete — read the tab and get the output.
+- **TDD skill** (the worker prompt's `Use /tdd` line): it means the installed
+  test-first skill — `/tdd` when Matt's stack is present, otherwise
+  `/tdd-loop`. Workers without either still owe test evidence; say so in the
+  dispatch report.
 - **Monitoring policy** (how the prompt's monitor loop resolves): emit
   `Stage / Found / Next / Needs user` at each transition — tabs created,
   prompts submitted, any worker status change, final report. A worker silent
