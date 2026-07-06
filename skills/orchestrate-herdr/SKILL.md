@@ -9,6 +9,10 @@ This is a tested, working orchestrator prompt. The **only** things that change b
 
 ## Intake
 
+Everything below the `---` divider is the frozen prompt body — per this repo's
+AGENTS.md rule 8, do not edit, summarize, or reword it. This Intake section is
+the only editable part of the skill.
+
 Resolve two values before running the prompt:
 
 - `PRD_URL` — the PRD or parent issue URL whose open sub-issues become workers.
@@ -18,6 +22,21 @@ Source order:
 
 1. Use values passed as skill args (a URL plus a CLI name, or `PRD_URL=... CODING_CLI=...`).
 2. For anything still missing, ask the user. Do not guess. Do not proceed until both are set.
+
+Pre-flight — check before executing, and fail fast naming exactly what is
+missing instead of stalling mid-run:
+
+1. `HERDR_ENV=1` is set — you are inside herdr.
+2. The herdr companion skill is installed — the prompt's "Load required
+   skills" step means it (tab create / submit / read / monitor mechanics).
+3. `CODING_CLI` resolves on PATH, and `gh` is authenticated (`gh auth status`).
+4. No leftover worker tabs: if tabs named `[CODING_CLI] - GH #<n>` from a
+   previous run of this PRD already exist, ask whether to monitor those
+   instead — re-running blindly creates a second tab per issue.
+5. Same-repo collision: workers run simultaneously in one shared working
+   folder and the prompt bans worktrees. If more than one open sub-issue
+   touches the same repo, say so and get explicit confirmation before
+   proceeding — or agree with the user to run those issues serially.
 
 Then set the two header lines below to the resolved values and execute the prompt **verbatim**.
 

@@ -242,6 +242,11 @@ eval pass.
 - Update a vendored idea from its original source repo; do not fork-and-drift
   silently (see BEST-PRACTICES "skills are ad-hoc tools" — the local/third-party
   distinction only matters at maintenance time).
+- `skills/orchestrate-herdr/SKILL.md` wraps a **frozen, tested prompt**
+  (AGENTS.md rule 8): only its Intake section is editable. If an external
+  change (e.g. a herdr CLI update) forces a prompt-body edit, the revised
+  prompt must be re-tested against a real PRD fan-out and the run recorded
+  (herdr version, scenario, date) in the commit before it is re-frozen.
 
 ### Releasing
 
