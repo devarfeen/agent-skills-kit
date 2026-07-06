@@ -87,7 +87,7 @@
   ],
   "last_run": {
     "date": "2026-07-06",
-    "method": "3 independent catalog-routing judges over the 54-query mixed set (all three eval files interleaved), majority vote per query",
-    "result": "18/18 pass — 2 negatives split none-vs-expected-sibling (never captured by this skill)"
+    "method": "3 independent catalog-routing judges over the 108-query mixed set (all six eval files interleaved), majority vote per query",
+    "result": "18/18 pass — one negative split none-vs-/commit-push-pr, never captured by this skill (P2 re-run)"
   }
 }

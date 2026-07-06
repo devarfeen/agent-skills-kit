@@ -87,7 +87,7 @@
   ],
   "last_run": {
     "date": "2026-07-06",
-    "method": "3 independent catalog-routing judges over the 54-query mixed set (all three eval files interleaved), majority vote per query",
-    "result": "18/18 pass — all 3 judges unanimous on every query"
+    "method": "3 independent catalog-routing judges over the 108-query mixed set (all six eval files interleaved), majority vote per query",
+    "result": "18/18 pass — unanimous (P2 re-run)"
   }
 }

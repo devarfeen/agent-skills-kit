@@ -3,23 +3,91 @@
   "kind": "trigger-eval",
   "how_to_run": "See CONTRIBUTING.md 'Trigger evals'. Route each query against the full skill catalog (names + descriptions only); pass = trigger queries route here, no-trigger queries route anywhere else. 'route' on negatives is the expected sibling, diagnostic only.",
   "queries": [
-    { "q": "Set up the design system for ADMIN-WEB from this Figma file", "expect": "trigger" },
-    { "q": "We have no Figma for MOBILE-APP — help me define a design system and build the components", "expect": "trigger" },
-    { "q": "Add the new date-picker component to the ADMIN-WEB design system", "expect": "trigger" },
-    { "q": "That page just shipped — fold its new UI back into the ADMIN-WEB library", "expect": "trigger" },
-    { "q": "Bootstrap tokens and a UI library for PORTAL-WEB from our brand guide", "expect": "trigger" },
-    { "q": "Turn these reference screens into a reusable component library for the new app", "expect": "trigger" },
-    { "q": "Build a preview page showing every component in all its states for ADMIN-WEB", "expect": "trigger" },
-    { "q": "Our buttons are inlined everywhere — set up a proper component library and make agents use it", "expect": "trigger" },
-    { "q": "Project start-off for the new repo: design system from this spec doc", "expect": "trigger" },
-    { "q": "Pixel-audit the assets list page against this Figma node", "expect": "no-trigger", "route": "/pixel-audit" },
-    { "q": "The Save button is misaligned — punch-list it for PRD-142", "expect": "no-trigger", "route": "/polish-batch" },
-    { "q": "Make this landing page look less generic", "expect": "no-trigger", "route": "none" },
-    { "q": "Port the invoice screen from LEGACY-PORTAL to ADMIN-WEB", "expect": "no-trigger", "route": "/port-feature" },
-    { "q": "Generate AGENTS.md for this workspace", "expect": "no-trigger", "route": "/agents-md" },
-    { "q": "How is theming implemented in ADMIN-WEB today?", "expect": "no-trigger", "route": "/feature-discovery" },
-    { "q": "Write a feature prompt for the new settings page", "expect": "no-trigger", "route": "/feature-prompt" },
-    { "q": "Fix the button component's disabled state test-first", "expect": "no-trigger", "route": "/tdd-loop" },
-    { "q": "Audit our color contrast for accessibility", "expect": "no-trigger", "route": "none" }
-  ]
+    {
+      "q": "Set up the design system for ADMIN-WEB from this Figma file",
+      "expect": "trigger"
+    },
+    {
+      "q": "We have no Figma for MOBILE-APP — help me define a design system and build the components",
+      "expect": "trigger"
+    },
+    {
+      "q": "Add the new date-picker component to the ADMIN-WEB design system",
+      "expect": "trigger"
+    },
+    {
+      "q": "That page just shipped — fold its new UI back into the ADMIN-WEB library",
+      "expect": "trigger"
+    },
+    {
+      "q": "Bootstrap tokens and a UI library for PORTAL-WEB from our brand guide",
+      "expect": "trigger"
+    },
+    {
+      "q": "Turn these reference screens into a reusable component library for the new app",
+      "expect": "trigger"
+    },
+    {
+      "q": "Build a preview page showing every component in all its states for ADMIN-WEB",
+      "expect": "trigger"
+    },
+    {
+      "q": "Our buttons are inlined everywhere — set up a proper component library and make agents use it",
+      "expect": "trigger"
+    },
+    {
+      "q": "Project start-off for the new repo: design system from this spec doc",
+      "expect": "trigger"
+    },
+    {
+      "q": "Pixel-audit the assets list page against this Figma node",
+      "expect": "no-trigger",
+      "route": "/pixel-audit"
+    },
+    {
+      "q": "The Save button is misaligned — punch-list it for PRD-142",
+      "expect": "no-trigger",
+      "route": "/polish-batch"
+    },
+    {
+      "q": "Make this landing page look less generic",
+      "expect": "no-trigger",
+      "route": "none"
+    },
+    {
+      "q": "Port the invoice screen from LEGACY-PORTAL to ADMIN-WEB",
+      "expect": "no-trigger",
+      "route": "/port-feature"
+    },
+    {
+      "q": "Generate AGENTS.md for this workspace",
+      "expect": "no-trigger",
+      "route": "/agents-md"
+    },
+    {
+      "q": "How is theming implemented in ADMIN-WEB today?",
+      "expect": "no-trigger",
+      "route": "/feature-discovery"
+    },
+    {
+      "q": "Write a feature prompt for the new settings page",
+      "expect": "no-trigger",
+      "route": "/feature-prompt"
+    },
+    {
+      "q": "Fix the button component's disabled state test-first",
+      "expect": "no-trigger",
+      "route": "/tdd-loop"
+    },
+    {
+      "q": "Audit our color contrast for accessibility",
+      "expect": "no-trigger",
+      "route": "none"
+    }
+  ],
+  "last_run": {
+    "date": "2026-07-06",
+    "method": "3 independent catalog-routing judges over the 108-query mixed set (all six eval files interleaved), majority vote per query",
+    "result": "18/18 pass — unanimous, first run against the shortened 617-char description"
+  }
 }

@@ -3,23 +3,91 @@
   "kind": "trigger-eval",
   "how_to_run": "See CONTRIBUTING.md 'Trigger evals'. Route each query against the full skill catalog (names + descriptions only); pass = trigger queries route here, no-trigger queries route anywhere else. 'route' on negatives is the expected sibling, diagnostic only.",
   "queries": [
-    { "q": "Port stock-transfer approvals from LEGACY-PORTAL to ADMIN-WEB", "expect": "trigger" },
-    { "q": "Help me port the invoice screen into MOBILE-APP", "expect": "trigger" },
-    { "q": "Bring the RFID scan flow from LEGACY-PORTAL over to MOBILE-APP", "expect": "trigger" },
-    { "q": "We're rebuilding the legacy reports module in the new app — map what needs to move", "expect": "trigger" },
-    { "q": "Recreate the old admin's user-management feature in ADMIN-WEB, matching its behaviour", "expect": "trigger" },
-    { "q": "Migrate the quotation workflow from the CodeIgniter app to the Laravel app", "expect": "trigger" },
-    { "q": "The legacy system has bulk import; we need the same in the new stack — plan the port", "expect": "trigger" },
-    { "q": "Write the gap map for porting notifications from LEGACY-PORTAL", "expect": "trigger" },
-    { "q": "What would it take to bring the old barcode screen into MOBILE-APP? Trace it and map the gaps", "expect": "trigger" },
-    { "q": "How does the legacy quotation workflow work?", "expect": "no-trigger", "route": "/feature-discovery" },
-    { "q": "Write a feature prompt for CSV export in ADMIN-WEB", "expect": "no-trigger", "route": "/feature-prompt" },
-    { "q": "Copy this helper function from repo A into repo B", "expect": "no-trigger", "route": "none" },
-    { "q": "Grill me on the porting plan", "expect": "no-trigger", "route": "/grill-with-docs" },
-    { "q": "Implement the ported screen test-first", "expect": "no-trigger", "route": "/tdd-loop" },
-    { "q": "Pixel-audit the ported screen against the legacy screens", "expect": "no-trigger", "route": "/pixel-audit" },
-    { "q": "Set up the design system for the target app first", "expect": "no-trigger", "route": "/design-system" },
-    { "q": "Slice the port PRD into issues", "expect": "no-trigger", "route": "/to-issues" },
-    { "q": "Migrate the database from MySQL 5.7 to MySQL 8", "expect": "no-trigger", "route": "none" }
-  ]
+    {
+      "q": "Port stock-transfer approvals from LEGACY-PORTAL to ADMIN-WEB",
+      "expect": "trigger"
+    },
+    {
+      "q": "Help me port the invoice screen into MOBILE-APP",
+      "expect": "trigger"
+    },
+    {
+      "q": "Bring the RFID scan flow from LEGACY-PORTAL over to MOBILE-APP",
+      "expect": "trigger"
+    },
+    {
+      "q": "We're rebuilding the legacy reports module in the new app — map what needs to move",
+      "expect": "trigger"
+    },
+    {
+      "q": "Recreate the old admin's user-management feature in ADMIN-WEB, matching its behaviour",
+      "expect": "trigger"
+    },
+    {
+      "q": "Migrate the quotation workflow from the CodeIgniter app to the Laravel app",
+      "expect": "trigger"
+    },
+    {
+      "q": "The legacy system has bulk import; we need the same in the new stack — plan the port",
+      "expect": "trigger"
+    },
+    {
+      "q": "Write the gap map for porting notifications from LEGACY-PORTAL",
+      "expect": "trigger"
+    },
+    {
+      "q": "What would it take to bring the old barcode screen into MOBILE-APP? Trace it and map the gaps",
+      "expect": "trigger"
+    },
+    {
+      "q": "How does the legacy quotation workflow work?",
+      "expect": "no-trigger",
+      "route": "/feature-discovery"
+    },
+    {
+      "q": "Write a feature prompt for CSV export in ADMIN-WEB",
+      "expect": "no-trigger",
+      "route": "/feature-prompt"
+    },
+    {
+      "q": "Copy this helper function from repo A into repo B",
+      "expect": "no-trigger",
+      "route": "none"
+    },
+    {
+      "q": "Grill me on the porting plan",
+      "expect": "no-trigger",
+      "route": "/grill-with-docs"
+    },
+    {
+      "q": "Implement the ported screen test-first",
+      "expect": "no-trigger",
+      "route": "/tdd-loop"
+    },
+    {
+      "q": "Pixel-audit the ported screen against the legacy screens",
+      "expect": "no-trigger",
+      "route": "/pixel-audit"
+    },
+    {
+      "q": "Set up the design system for the target app first",
+      "expect": "no-trigger",
+      "route": "/design-system"
+    },
+    {
+      "q": "Slice the port PRD into issues",
+      "expect": "no-trigger",
+      "route": "/to-issues"
+    },
+    {
+      "q": "Migrate the database from MySQL 5.7 to MySQL 8",
+      "expect": "no-trigger",
+      "route": "none"
+    }
+  ],
+  "last_run": {
+    "date": "2026-07-06",
+    "method": "3 independent catalog-routing judges over the 108-query mixed set (all six eval files interleaved), majority vote per query",
+    "result": "18/18 pass — unanimous, first run against the shortened 625-char description"
+  }
 }

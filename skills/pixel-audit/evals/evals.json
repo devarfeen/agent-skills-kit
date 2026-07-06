@@ -3,23 +3,91 @@
   "kind": "trigger-eval",
   "how_to_run": "See CONTRIBUTING.md 'Trigger evals'. Route each query against the full skill catalog (names + descriptions only); pass = trigger queries route here, no-trigger queries route anywhere else. 'route' on negatives is the expected sibling, diagnostic only.",
   "queries": [
-    { "q": "Pixel-audit the assets list page in ADMIN-WEB against this Figma node", "expect": "trigger" },
-    { "q": "This page must match the design pixel-for-pixel before we ship", "expect": "trigger" },
-    { "q": "Audit MOBILE-APP order detail against the legacy screens — no Figma exists", "expect": "trigger" },
-    { "q": "The user form drifted from the mock — do a strict visual conformance pass on it", "expect": "trigger" },
-    { "q": "Compare the rendered billing page to its Figma frame and fix every mismatch", "expect": "trigger" },
-    { "q": "Check the dashboard's empty and error states match the design exactly", "expect": "trigger" },
-    { "q": "Verify the transfers page against the reference implementation, element by element", "expect": "trigger" },
-    { "q": "QA says the layout is off vs design on /assets — run the full audit and prove the fixes", "expect": "trigger" },
-    { "q": "Make sure the new settings screen matches Figma, including below the fold", "expect": "trigger" },
-    { "q": "Billing header says 'Recieve invoices' — punch-list it", "expect": "no-trigger", "route": "/polish-batch" },
-    { "q": "Set up the design system for ADMIN-WEB from Figma", "expect": "no-trigger", "route": "/design-system" },
-    { "q": "Why does the modal flicker when it opens?", "expect": "no-trigger", "route": "/diagnosing-bugs" },
-    { "q": "Fold the shipped page's new UI back into the library", "expect": "no-trigger", "route": "/design-system" },
-    { "q": "Screenshot the login page for the release notes", "expect": "no-trigger", "route": "none" },
-    { "q": "Trace how the preview route renders components", "expect": "no-trigger", "route": "/feature-discovery" },
-    { "q": "Build the integration contract for PRD-142", "expect": "no-trigger", "route": "/integration-contract" },
-    { "q": "Add a failing test for the badge component's disabled state", "expect": "no-trigger", "route": "/tdd-loop" },
-    { "q": "Review this PR's CSS changes", "expect": "no-trigger", "route": "/review" }
-  ]
+    {
+      "q": "Pixel-audit the assets list page in ADMIN-WEB against this Figma node",
+      "expect": "trigger"
+    },
+    {
+      "q": "This page must match the design pixel-for-pixel before we ship",
+      "expect": "trigger"
+    },
+    {
+      "q": "Audit MOBILE-APP order detail against the legacy screens — no Figma exists",
+      "expect": "trigger"
+    },
+    {
+      "q": "The user form drifted from the mock — do a strict visual conformance pass on it",
+      "expect": "trigger"
+    },
+    {
+      "q": "Compare the rendered billing page to its Figma frame and fix every mismatch",
+      "expect": "trigger"
+    },
+    {
+      "q": "Check the dashboard's empty and error states match the design exactly",
+      "expect": "trigger"
+    },
+    {
+      "q": "Verify the transfers page against the reference implementation, element by element",
+      "expect": "trigger"
+    },
+    {
+      "q": "QA says the layout is off vs design on /assets — run the full audit and prove the fixes",
+      "expect": "trigger"
+    },
+    {
+      "q": "Make sure the new settings screen matches Figma, including below the fold",
+      "expect": "trigger"
+    },
+    {
+      "q": "Billing header says 'Recieve invoices' — punch-list it",
+      "expect": "no-trigger",
+      "route": "/polish-batch"
+    },
+    {
+      "q": "Set up the design system for ADMIN-WEB from Figma",
+      "expect": "no-trigger",
+      "route": "/design-system"
+    },
+    {
+      "q": "Why does the modal flicker when it opens?",
+      "expect": "no-trigger",
+      "route": "/diagnosing-bugs"
+    },
+    {
+      "q": "Fold the shipped page's new UI back into the library",
+      "expect": "no-trigger",
+      "route": "/design-system"
+    },
+    {
+      "q": "Screenshot the login page for the release notes",
+      "expect": "no-trigger",
+      "route": "none"
+    },
+    {
+      "q": "Trace how the preview route renders components",
+      "expect": "no-trigger",
+      "route": "/feature-discovery"
+    },
+    {
+      "q": "Build the integration contract for PRD-142",
+      "expect": "no-trigger",
+      "route": "/integration-contract"
+    },
+    {
+      "q": "Add a failing test for the badge component's disabled state",
+      "expect": "no-trigger",
+      "route": "/tdd-loop"
+    },
+    {
+      "q": "Review this PR's CSS changes",
+      "expect": "no-trigger",
+      "route": "/review"
+    }
+  ],
+  "last_run": {
+    "date": "2026-07-06",
+    "method": "3 independent catalog-routing judges over the 108-query mixed set (all six eval files interleaved), majority vote per query",
+    "result": "18/18 pass — unanimous, first run against the shortened 660-char description"
+  }
 }
