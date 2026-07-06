@@ -3,23 +3,91 @@
   "kind": "trigger-eval",
   "how_to_run": "See CONTRIBUTING.md 'Trigger evals'. Route each query against the full skill catalog (names + descriptions only); pass = trigger queries route here, no-trigger queries route anywhere else. 'route' on negatives is the expected sibling, diagnostic only.",
   "queries": [
-    { "q": "Help me create a feature prompt for stock transfer approvals", "expect": "trigger" },
-    { "q": "I have a rough idea: let managers bulk-approve timesheets. Turn it into a dev prompt.", "expect": "trigger" },
-    { "q": "Turn this request into something I can grill: CSV export on the orders page", "expect": "trigger" },
-    { "q": "Prep this for grill-with-docs: offline mode for the scanner app", "expect": "trigger" },
-    { "q": "Write up a small prompt for MOBILE-APP: remember the last-used warehouse", "expect": "trigger" },
-    { "q": "I want to propose read-only auditor accounts — shape the request", "expect": "trigger" },
-    { "q": "Shape this brain dump into a thin slice we can plan against", "expect": "trigger" },
-    { "q": "Draft the feature prompt for adding webhooks to PAYMENTS-API", "expect": "trigger" },
-    { "q": "The client wants dark mode. Make it a proper request for planning.", "expect": "trigger" },
-    { "q": "How does stock transfer approval work today?", "expect": "no-trigger", "route": "/feature-discovery" },
-    { "q": "Write the PRD for ADR-0042", "expect": "no-trigger", "route": "/to-prd" },
-    { "q": "Slice this PRD into issues", "expect": "no-trigger", "route": "/to-issues" },
-    { "q": "Grill me on this plan before we build it", "expect": "no-trigger", "route": "/grill-with-docs" },
-    { "q": "Just add the CSV export button now, it's tiny", "expect": "no-trigger", "route": "/tdd-loop" },
-    { "q": "Write release notes for the transfer feature", "expect": "no-trigger", "route": "/release-notes" },
-    { "q": "Pixel-audit the transfers page against the Figma", "expect": "no-trigger", "route": "/pixel-audit" },
-    { "q": "Port the invoice screen from LEGACY-PORTAL to ADMIN-WEB", "expect": "no-trigger", "route": "/port-feature" },
-    { "q": "File a bug: approvals fail for managers with two roles", "expect": "no-trigger", "route": "none" }
-  ]
+    {
+      "q": "Help me create a feature prompt for stock transfer approvals",
+      "expect": "trigger"
+    },
+    {
+      "q": "I have a rough idea: let managers bulk-approve timesheets. Turn it into a dev prompt.",
+      "expect": "trigger"
+    },
+    {
+      "q": "Turn this request into something I can grill: CSV export on the orders page",
+      "expect": "trigger"
+    },
+    {
+      "q": "Prep this for grill-with-docs: offline mode for the scanner app",
+      "expect": "trigger"
+    },
+    {
+      "q": "Write up a small prompt for MOBILE-APP: remember the last-used warehouse",
+      "expect": "trigger"
+    },
+    {
+      "q": "I want to propose read-only auditor accounts — shape the request",
+      "expect": "trigger"
+    },
+    {
+      "q": "Shape this brain dump into a thin slice we can plan against",
+      "expect": "trigger"
+    },
+    {
+      "q": "Draft the feature prompt for adding webhooks to PAYMENTS-API",
+      "expect": "trigger"
+    },
+    {
+      "q": "The client wants dark mode. Make it a proper request for planning.",
+      "expect": "trigger"
+    },
+    {
+      "q": "How does stock transfer approval work today?",
+      "expect": "no-trigger",
+      "route": "/feature-discovery"
+    },
+    {
+      "q": "Write the PRD for ADR-0042",
+      "expect": "no-trigger",
+      "route": "/to-prd"
+    },
+    {
+      "q": "Slice this PRD into issues",
+      "expect": "no-trigger",
+      "route": "/to-issues"
+    },
+    {
+      "q": "Grill me on this plan before we build it",
+      "expect": "no-trigger",
+      "route": "/grill-with-docs"
+    },
+    {
+      "q": "Just add the CSV export button now, it's tiny",
+      "expect": "no-trigger",
+      "route": "/tdd-loop"
+    },
+    {
+      "q": "Write release notes for the transfer feature",
+      "expect": "no-trigger",
+      "route": "/release-notes"
+    },
+    {
+      "q": "Pixel-audit the transfers page against the Figma",
+      "expect": "no-trigger",
+      "route": "/pixel-audit"
+    },
+    {
+      "q": "Port the invoice screen from LEGACY-PORTAL to ADMIN-WEB",
+      "expect": "no-trigger",
+      "route": "/port-feature"
+    },
+    {
+      "q": "File a bug: approvals fail for managers with two roles",
+      "expect": "no-trigger",
+      "route": "none"
+    }
+  ],
+  "last_run": {
+    "date": "2026-07-06",
+    "method": "3 independent catalog-routing judges over the 54-query mixed set (all three eval files interleaved), majority vote per query",
+    "result": "18/18 pass — all 3 judges unanimous on every query"
+  }
 }
