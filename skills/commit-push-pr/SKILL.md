@@ -169,4 +169,4 @@ Before reporting done, verify:
 - [ ] No duplicate PR created (existing PR was edited instead)
 - [ ] PR read back after create/edit (`gh pr view --json title,body,baseRefName,headRefName`): title, base, head, and the `Closes #<num>` line all verified
 - [ ] Final report line printed
-- [ ] Optional `Suggested next skills` footer included (1-6 advisory suggestions, no gating)
+- [ ] `Suggested next skills (optional)` footer appended — appending is required; its 1-6 suggestions are advisory, no gating

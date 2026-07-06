@@ -135,4 +135,4 @@ Before marking the iteration done, verify:
 - [ ] If the test plan opens with a runnable test command, it ran green and its output tail is quoted in the close comment (a failure stopped the close)
 - [ ] Issue closed with comment containing **Summary** + **How to test**, and `gh issue view --json state` returned `CLOSED`
 - [ ] Final report line printed
-- [ ] Optional `Suggested next skills` footer included (1-6 advisory suggestions, no gating)
+- [ ] `Suggested next skills (optional)` footer appended — appending is required; its 1-6 suggestions are advisory, no gating
