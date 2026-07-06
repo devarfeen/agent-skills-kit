@@ -31,6 +31,9 @@ either way.
 No focused-test command, no loop. Finding how to run one test in this repo is
 step-2 work, not a reason to skip red.
 
+Emit a `Stage / Found / Next / Needs user` update at phase transitions — seam
+located, each slice's red → green, and completion.
+
 ## The loop
 
 Repeat per behavior, smallest slice first:
@@ -68,11 +71,15 @@ Repeat per behavior, smallest slice first:
   ```markdown
   Behavior: <the one-sentence behavior>
   Red → Green: <test name(s)> — seen failing (<how>), now passing
-  Scope run: <focused command> · <widened command>
+  Scope run: <focused command> · <widened command> · <full check | widest feasible — why>
   Edges: <covered: …> · <deferred: … — why>
   Docs: <path updated | nothing documents this behavior>
   Exception: <declared exception + follow-up test plan | none>
   ```
+
+  A filled instance lives in
+  [`references/summary-example.md`](references/summary-example.md) — that is
+  the level of concreteness the summary must have.
 
   Then suggest `/review`, then `/commit-push-close` or `/commit-push-pr` —
   suggest only, never auto-chain. Name the full PROJECT-CODE when a Project
@@ -83,7 +90,12 @@ Repeat per behavior, smallest slice first:
 Done means you can show all of these:
 
 - [ ] Each new test was seen failing — quote the failing run — before it passed.
+      (A characterization test pins current behavior and passes by design —
+      quote the pinned output it captured instead.)
 - [ ] Focused test passes and the widened scope passes; both commands named.
+- [ ] Before suggesting ship: the project's full check (whole suite or the CI
+      command) ran green once for this slice — or the summary states why the
+      widened scope is the widest feasible run.
 - [ ] No assertion weakened, no failing test deleted to reach green (or the
       contract change is flagged with the user's call).
 - [ ] Edges covered or explicitly deferred, each named.
