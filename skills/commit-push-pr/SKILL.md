@@ -83,7 +83,10 @@ The `Closes #N` line is mandatory and must be on its own line near the top of th
     - Tracks a remote → `git push`.
     - No upstream → `git push -u origin <branch>`.
 
-11. **Open the PR** against the detected default branch:
+11. **Open the PR** against the detected default branch. First, when the
+    How-to-test plan opens with a runnable test command, run it once and quote
+    the passing tail in the PR body — a failing run stops the PR (fix or ask);
+    never open a PR whose own test plan fails. Then:
     ```bash
     gh pr create \
       --base "<default-branch>" \
@@ -165,6 +168,7 @@ Before reporting done, verify:
 - [ ] Push succeeded with upstream set
 - [ ] PR body has `Closes #<num>` on its own line near the top
 - [ ] PR body has **Summary** + **How to test**
+- [ ] If the test plan opens with a runnable command, it ran green and its output tail is quoted in the body (a failure stopped the PR)
 - [ ] No duplicate PR created (existing PR was edited instead)
 - [ ] Final report line printed
 - [ ] Optional `Suggested next skills` footer included (1-6 advisory suggestions, no gating)

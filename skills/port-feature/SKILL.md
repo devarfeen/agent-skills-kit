@@ -93,11 +93,11 @@ Sections, in order:
 - <evidence-derived unresolved question for /grill-with-docs>. List them; do not block on them.
 ```
 
-Section rules:
+Section rules (filled example bullets at the expected granularity live in [`references/gapmap-example.md`](references/gapmap-example.md)):
 
 - Every claim in **1–4** carries a concrete evidence ref; unproven claims are marked as inference, not fact.
-- **5 (Tests needed)** must cover success, validation, permission, empty/error/success states, DB/data effects, and regressions — this is the seed for later acceptance criteria.
-- **6** records every forced DS deviation explicitly (reference behaviour is preserved; only the UI bends to the target design system).
+- **5 (Tests needed)** is the seed for later acceptance criteria — cover every category the template lists.
+- **6** records every forced DS deviation explicitly.
 - **8 (First slice)** is one thin vertical slice that cuts through all layers and is testable on its own — not a layer or a big-bang.
 - **9 (Open questions)** comes from the evidence and is a list for `/grill-with-docs` to attack; it does not block writing the gap map.
 
