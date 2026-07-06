@@ -1,5 +1,7 @@
 Tool-calling index: [`tool-calling.md`](tool-calling.md).
 
+> Last verified: 2026-07-06 against installed codex-cli 0.142.5 — flag/command surface via `--help`; internal tool names, config schemas, and chat slash commands are docs-level and re-verified on touch (see CONTRIBUTING sync map).
+
 | Skill Reference | Codex Equivalent |
 | :--- | :--- |
 | `Task` tool (dispatch subagent) | `spawn_agent` |

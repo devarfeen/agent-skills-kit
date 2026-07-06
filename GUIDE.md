@@ -74,7 +74,7 @@ disposable worktree.
 | Claude CLI | `claude --dangerously-skip-permissions` / `--permission-mode bypassPermissions` |
 | Antigravity CLI | `agy --dangerously-skip-permissions` without `--sandbox` |
 | Cursor CLI | `agent --yolo --sandbox=disabled --approve-mcps` |
-| Opencode CLI | `opencode run --dangerously-skip-permissions`; persistent agents use `permission` keys set to `allow` |
+| Opencode CLI | `opencode run --auto` (renamed from `--dangerously-skip-permissions` in v1.17); persistent agents use `permission` keys set to `allow` |
 | GitHub Copilot CLI | `copilot --allow-all` / `--yolo` |
 
 ## Matt + Arfeen Pattern

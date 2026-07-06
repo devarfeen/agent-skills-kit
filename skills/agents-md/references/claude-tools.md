@@ -1,5 +1,7 @@
 Tool-calling index: [`tool-calling.md`](tool-calling.md).
 
+> Last verified: 2026-07-06 against installed claude 2.1.201 — flag/command surface via `--help`; internal tool names, config schemas, and chat slash commands are docs-level and re-verified on touch (see CONTRIBUTING sync map).
+
 Authoritative tool reference: https://code.claude.com/docs/en/tools-reference
 
 | Skill Reference | Claude CLI Equivalent |

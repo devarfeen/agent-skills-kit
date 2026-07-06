@@ -1,5 +1,7 @@
 Tool-calling index: [`tool-calling.md`](tool-calling.md).
 
+> Last verified: 2026-07-06 against installed opencode 1.17.13 — flag/command surface via `--help`; internal tool names, config schemas, and chat slash commands are docs-level and re-verified on touch (see CONTRIBUTING sync map).
+
 | Skill Reference | Opencode Equivalent |
 | :--- | :--- |
 | `Read` (file reading) | `read` |
@@ -22,7 +24,7 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 - `websearch` requires the opencode provider or `OPENCODE_ENABLE_EXA`.
 - Skills resolve from `.opencode/skills/`, `~/.config/opencode/skills/`, plus compat dirs `.claude/skills/`, `.agents/skills/`, `~/.claude/skills/`, `~/.agents/skills/`.
 - Multi-repo workspace policy: use workspace-root MCP config.
-- Highest elevated permission launch: `opencode run --dangerously-skip-permissions "prompt"`. For persistent custom agents, set the agent `permission` keys needed for the task to `allow`; wildcard `{"*":"allow"}` is the full tool permission form.
+- Highest elevated permission launch: `opencode run --auto "prompt"` — help: "auto-approve permissions that are not explicitly denied (dangerous!)". v1.17 renamed the earlier `--dangerously-skip-permissions`; the old flag is gone from `--help`. For persistent custom agents, set the agent `permission` keys needed for the task to `allow`; wildcard `{"*":"allow"}` is the full tool permission form.
 - For exact config-file placement by tool, use [`tool-calling.md`](tool-calling.md).
 
 ## Agents: parallel, background & roles

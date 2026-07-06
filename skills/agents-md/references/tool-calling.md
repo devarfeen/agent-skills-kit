@@ -6,6 +6,8 @@ Supported runtimes are Codex CLI, Claude CLI, Antigravity CLI, Cursor CLI,
 Opencode CLI, and GitHub Copilot CLI only. Compatibility filenames used by
 those tools do not imply support for any other runtime.
 
+> Last verified: 2026-07-06 against all six installed CLIs (codex-cli 0.142.5, claude 2.1.201, agy 1.0.16, cursor-agent 2026.07.01, opencode 1.17.13, copilot 1.0.68) — flag/command surface via `--help`; internals are docs-level and re-verified on touch.
+
 ## Agent Orchestration Model
 
 The main session is the **orchestrator**. It decomposes work into role-typed lanes, dispatches each lane to a local subagent (or a focused in-process tool pass when the runtime has no subagents), runs independent lanes in parallel, pushes long or noisy lanes to local background/async, and keeps the only seat for merge, conflict resolution, and final judgment. Subagents return summaries, not raw transcripts. This model is enforced by the `AGENTS.md` Non-Negotiable Rule **Local Orchestration**.
@@ -61,7 +63,7 @@ Use these only when the user explicitly asks for highest/elevated/full/YOLO perm
 | Claude CLI | `claude --dangerously-skip-permissions` (equivalent to `--permission-mode bypassPermissions`) | Skips the permission layer; protected paths are allowed except hard circuit breakers. |
 | Antigravity CLI | `agy --dangerously-skip-permissions`; do not pair with `--sandbox` for full elevation | Auto-approves tool permission requests without terminal sandbox restrictions. |
 | Cursor CLI | `agent --yolo --sandbox=disabled --approve-mcps` (`--yolo` is `--force`) | Force-allows commands unless explicitly denied, disables sandboxing, and approves MCP servers. |
-| Opencode CLI | `opencode run --dangerously-skip-permissions`; for agent config set needed permission keys to `allow` / wildcard `{"*":"allow"}` | Auto-approves non-denied permissions; per-agent `allow` grants tools without prompts. |
+| Opencode CLI | `opencode run --auto` (v1.17 renamed the old `--dangerously-skip-permissions`); for agent config set needed permission keys to `allow` / wildcard `{"*":"allow"}` | Auto-approves non-denied permissions; per-agent `allow` grants tools without prompts. |
 | GitHub Copilot CLI | `copilot --allow-all` (alias `--yolo`) | Allows all available tools, all paths, and all URLs without approval. |
 
 ## Cursor CLI

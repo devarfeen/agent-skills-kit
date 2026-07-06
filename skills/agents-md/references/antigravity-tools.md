@@ -1,5 +1,7 @@
 Tool-calling index: [`tool-calling.md`](tool-calling.md).
 
+> Last verified: 2026-07-06 against installed agy (Antigravity) 1.0.16 — flag/command surface via `--help`; internal tool names, config schemas, and chat slash commands are docs-level and re-verified on touch (see CONTRIBUTING sync map).
+
 | Skill Reference | Antigravity CLI Equivalent |
 | :--- | :--- |
 | `Read` (file reading) | `read_file` |

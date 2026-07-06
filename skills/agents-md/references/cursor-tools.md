@@ -1,5 +1,7 @@
 # Cursor CLI Tool Mapping
 
+> Last verified: 2026-07-06 against installed cursor-agent 2026.07.01-41b2de7 — flag/command surface via `--help`; internal tool names, config schemas, and chat slash commands are docs-level and re-verified on touch (see CONTRIBUTING sync map).
+
 Mechanics and permissions: [`tool-calling.md`](tool-calling.md).
 
 | Skill Reference | Cursor CLI Equivalent |

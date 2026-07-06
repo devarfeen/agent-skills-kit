@@ -1,24 +1,26 @@
 Tool-calling index: [`tool-calling.md`](tool-calling.md).
 
+> Last verified: 2026-07-06 against installed GitHub Copilot CLI 1.0.68 — flag/command surface via `--help`; internal tool names, config schemas, and chat slash commands are docs-level and re-verified on touch (see CONTRIBUTING sync map).
+
 | Skill Reference | Copilot CLI Equivalent |
 | :--- | :--- |
 | `Read` (file reading) | `view` |
 | `Write` (file creation) | `create` |
 | `Edit` (file editing) | `edit` |
 | `Edit` (apply patch) | `apply_patch` |
-| `Bash` (run commands) | `bash` |
+| `Bash` (run commands) | `shell` (permission form `shell(command)`, e.g. `--allow-tool='shell(git:*)'`; v1.0.68 help names it `shell`, not `bash`) |
 | `Grep` (search content) | `grep` |
 | `Glob` (search by name) | `glob` |
 | `Task` tool (dispatch subagent) | `task` tool + `/fleet` (orchestrated parallel subagents); built-in agents `explore` / `task` / `general-purpose` / `code-review` / `research` / `rubber-duck` |
 | Long-running shell management | `list_bash` / `read_bash` / `stop_bash` / `write_bash` |
 | Ask user / memory | `ask_user`, `memory` (Copilot Memory tool) |
-| `WebFetch` | `web_fetch` |
+| `WebFetch` | `web-fetch` (as named in v1.0.68 permission help) |
 | Skill invocation | `skill` |
 
 **Key Notes:**
 
 - Background: promote a running task or shell with `Ctrl+X → b`; inspect backgrounded shells with `read_bash` / `list_bash` / `stop_bash` / `write_bash`.
-- Modes: `Shift+Tab` cycles **standard → plan → autopilot**. Plan is a *mode*, not a subagent.
+- Modes: `Shift+Tab` cycles **interactive → plan → autopilot** (`--mode` choices: `interactive`, `plan`, `autopilot`). Plan is a *mode*, not a subagent.
 - Skills are invoked explicitly (e.g. `/skill-name`); plugins bundle agents, skills, hooks, and MCP server configs for distribution.
 - Cloud handoff: `/delegate` ships a task to the remote Copilot coding agent (opens PRs). Kit policy: do not use.
 - The GitHub MCP server ships built in; custom MCP servers add to it.
