@@ -115,7 +115,9 @@ Tester, Tool-runner), dispatches each to a **local** subagent, and keeps the
 only merge and final-judgment seat. **Local only — no cloud agents:** these
 skills never delegate to remote background-agent products (Cursor Cloud
 Agents, Copilot cloud coding agent, Codex Cloud, Antigravity managed/remote
-execution).
+execution, Claude Routines, claude.ai background agents). Claude Code agent
+teams are local but sit outside this model too — the main session stays the
+only orchestrator.
 
 The per-runtime mechanics — tool names, parallel/background mechanisms,
 role-to-mechanism maps, and elevated-permission presets — live in

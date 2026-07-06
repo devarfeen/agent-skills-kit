@@ -48,9 +48,11 @@ chat stays responsive and uncluttered.
   Copilot `Ctrl+X -> b`, opencode `task(background=true)`) and report back when
   done.
 - **No cloud agents.** Never hand work to remote background-agent products:
-  Cursor Cloud Agents, GitHub Copilot cloud coding agent, Codex Cloud, or
-  Antigravity managed/remote execution. Local worktree-isolated agents are
-  allowed. Remote agents are not.
+  Cursor Cloud Agents, GitHub Copilot cloud coding agent, Codex Cloud,
+  Antigravity managed/remote execution, or Claude Routines / claude.ai
+  background agents. Claude Code agent teams are local but also off-limits —
+  the main session stays the only orchestrator. Local worktree-isolated
+  agents are allowed. Remote agents are not.
 
 Per-runtime mechanics and the role-to-mechanism map live in
 [`skills/agents-md/references/tool-calling.md`](skills/agents-md/references/tool-calling.md)
