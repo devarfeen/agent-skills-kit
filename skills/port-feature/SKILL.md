@@ -38,14 +38,14 @@ Carry this framing through every section of the gap map:
 - **Retrieval order.** `CONTEXT.md` + `docs/adr/` are binding (read before deciding) > the current request, reference/target code, and tests > native CLI memory.
 - **Decisions are artifacts.** The output is the durable gap map file, not a chat summary. Chat only reports what was written and the phase update.
 - **Don't fabricate an issue before coding.** This skill produces a discovery/plan artifact, not a tracker issue. Issues come later, from `/to-issues` after `/grill-with-docs`.
-- **Local-only.** Read-only Explorer sub-agents are allowed only when the user has allowed them and only for non-overlapping discovery tasks; the main agent owns synthesis. No duplicate discovery, no cloud agents.
+- **Local-only.** Local read-only sub-agents only, within the Bounded sub-agents bounds (Process step 4) — never cloud agents.
 
 ## Process
 
 1. **Read the TARGET's binding context first** — `CONTEXT.md` and `docs/adr/` in the target's `<artifacts-root>`, per the kit's retrieval order, plus the target's `AGENTS.md` and UI-coding skill for stack/DS rules. This sets the idiom every later section must respect.
-2. **Discover the REFERENCE** (not the target) with `/feature-discovery`: trace the real behaviour, workflow, navigation, permissions, states, and data effects, evidence-backed and narrow. Capture concrete refs (`file:symbol`, route, migration, test) for each claim.
+2. **Discover the REFERENCE** (not the target), `/feature-discovery`-style: trace the real behaviour, workflow, navigation, permissions, states, and data effects, evidence-backed and narrow. Capture concrete refs (`file:symbol`, route, migration, test) for each claim.
 3. **Survey the TARGET's current state** for the same feature: what already exists, what's partial or wrong versus the reference, and which design-system components and existing patterns are reusable. If the feature has UI, open the target's component preview (e.g. `/ui/preview/all`) to inventory available DS components before deciding what to build.
-4. **Bounded sub-agents (optional):** dispatch read-only Explorer lanes **only** for non-overlapping discovery (e.g. one on the reference, one on the target survey) where the runtime supports it. The main agent merges and owns synthesis, uncertainty calls, and the final artifact. No two lanes discover the same thing.
+4. **Bounded sub-agents (optional):** only if the user has allowed sub-agents, dispatch read-only Explorer lanes for non-overlapping discovery (e.g. one on the reference, one on the target survey). The main agent merges and owns synthesis, uncertainty calls, and the final artifact. No two lanes discover the same thing.
 
 ## The gap map artifact
 
@@ -105,7 +105,7 @@ Section rules (filled example bullets at the expected granularity live in [`refe
 
 After the gap map is written:
 
-- **Suggest the next step and stop:** recommend running `/grill-with-docs` on the gap map, which will challenge the plan and produce the ADR using the next number in the configured `docs/adr/`.
+- **Suggest the next step and stop:** recommend running `/grill-with-docs` on the gap map.
 - **Emit the final phase update:**
 
 ```markdown
@@ -126,10 +126,10 @@ Do not proceed past the suggestion.
 Before finishing:
 - [ ] Feature, full REFERENCE PROJECT-CODE, and full TARGET PROJECT-CODE all known (interviewed for any missing)
 - [ ] Target binding context (`CONTEXT.md`, `docs/adr/`, `AGENTS.md`, UI-coding skill) read first; no stack rules hardcoded
-- [ ] Reference discovered via `/feature-discovery` (behaviour, workflow, navigation, permissions, states, data effects), evidence-backed and narrow — no bulk reads
+- [ ] Reference discovered `/feature-discovery`-style (behaviour, workflow, navigation, permissions, states, data effects), evidence-backed and narrow — no bulk reads
 - [ ] Any port-critical rule missing from the target's binding context was surfaced as an open question, not guessed
 - [ ] Target current state surveyed; if UI, the target component preview (`/ui/preview/all`) was opened
-- [ ] Sub-agents, if used, were non-overlapping and read-only; the main agent synthesised; no duplicate discovery
+- [ ] Sub-agents, if used, were user-allowed, non-overlapping, and read-only; the main agent synthesised; no duplicate discovery
 - [ ] Gap map written to `<artifacts-root>/docs/port/<feature-slug>-gapmap.md` with all nine sections, reference kept as behaviour-truth and target DS as UI-truth (deviations recorded)
 - [ ] First slice is thin and independently testable
 - [ ] Suggested `/grill-with-docs` and stopped — nothing implemented, no issue fabricated, no auto-chain

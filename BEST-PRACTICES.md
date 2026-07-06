@@ -160,7 +160,7 @@ Workspace-root level.
 
 Bringing a feature that already works in a **reference** implementation (often a legacy repo) into a **target** stack.
 
-1. **`/port-feature`** — give it the feature, the REFERENCE PROJECT-CODE (behaviour truth), and the TARGET PROJECT-CODE (where it lands). It reads the target's binding context, traces the reference with `/feature-discovery`, surveys what the target already has, and writes **one gap map** to `docs/port/`. The reference is truth for behaviour, workflow, navigation, permissions, and states; the target's design system is truth for UI. It suggests `/grill-with-docs` and stops.
+1. **`/port-feature`** — give it the feature, the REFERENCE PROJECT-CODE (behaviour truth), and the TARGET PROJECT-CODE (where it lands). It reads the target's binding context, traces the reference `/feature-discovery`-style, surveys what the target already has, and writes **one gap map** to `docs/port/`. The reference is truth for behaviour, workflow, navigation, permissions, and states; the target's design system is truth for UI. It suggests `/grill-with-docs` and stops.
 2. **`/grill-with-docs`** — challenge the gap map; it produces the ADR using the next number in your `docs/adr/`.
 3. **`/to-prd` → `/to-issues` → `/tdd`** — from here it rejoins Workflow B: PRD, thin slices, test-first build. Each UI slice consumes the target's UI library; a missing component goes through `/design-system` (extend), never a page-local one-off.
 4. **Verify & ship** — `/pixel-audit` the ported screens against the reference, manual QA + `/polish-batch`, then `/commit-push-close` / `/commit-push-pr`.
