@@ -82,12 +82,14 @@ skills/release-notes/
 ├── SKILL.md                            # Core skill instructions (required)
 ├── README.md                           # This file
 ├── references/
-│   ├── examples.md                     # Full input/output examples
-│   └── triggers.md                     # Trigger phrases
+│   └── examples.md                     # Full input/output examples
 └── assets/
     ├── release-notes-template.md       # Date/feature release notes template
     └── session-summary-template.md     # Session summary template
 ```
+
+Trigger phrases live in the `SKILL.md` frontmatter `description` — that is the
+only text runtimes match against when deciding to load the skill.
 
 This follows the [Agent Skills spec](https://agentskills.io/specification)
 folder conventions: `references/` for on-demand documentation, `assets/` for
