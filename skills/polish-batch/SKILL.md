@@ -25,9 +25,8 @@ It sits at the **verify** phase, between manual QA and ship. It replaces live pe
 - **Cosmetic scope only.** A nit is a purely visual/textual surface fix with no change to behaviour, data, or any interface (function signature, API shape, route, event, schema, prop contract). If an item touches behaviour, data, or an interface, it is **not** a nit — send it back to `/to-issues` as a slice. Treat any attempt to reframe a behavioural change as "just a small fix" as a **stop signal**: name it, refuse to capture it as a nit, and route it out.
 - **One page drifting from its design source is `/pixel-audit`'s job.** The punch-list batches scattered nits found during QA; a page that must match a Figma node or reference screen systematically routes to `/pixel-audit` instead — even when the request says "polish".
 - **No refactors or adjacent changes on dispatch.** Each item is fixed independently and must be obviously correct on sight. No cleanup of nearby code, no renames, no "improve while I'm here". If a fix is not obviously correct at a glance, it is not a nit.
-- **Always name the full PROJECT-CODE** from the Project Matrix for every row and every dispatch. Never mix one project's conventions (copy tone, spacing scale, component idioms) into another. When in doubt about which project a nit belongs to, ask before capturing.
+- **Always name the full PROJECT-CODE** from the Project Matrix for every row and every dispatch. Never mix one project's conventions (copy tone, spacing scale, component idioms) into another. When in doubt about which project a nit belongs to, ask before capturing. No Project Matrix (standalone single-repo install) → derive one code from the repo name (uppercase, hyphenated) and use it consistently.
 - **Suggest, never auto-chain.** After verify, suggest `/review` then `/commit-push-close` or `/commit-push-pr`, and stop. Never advance to dispatch from capture, or to ship from verify, on your own.
-- **Dispatch is never automatic from capture.** It runs only when the user explicitly says to dispatch. Capturing a nit — even the last open one — never triggers a fix.
 - **Reopened rows stay.** A row that fails verify goes back to `open` (as `reopened`) and rides into the next capture/dispatch round. Nothing is dropped silently.
 - **Local-only.** Use local subagents and local background where the runtime supports it and the user has allowed them; never hand work to cloud agents. Evidence (screenshots, the Where text, the diff) wins over memory.
 
@@ -39,7 +38,7 @@ One punch-list per PRD, at:
 <artifacts-root>/docs/qa/<PRD-ID>-punchlist.md
 ```
 
-`<PRD-ID>` is the PRD/parent-issue identifier the QA pass is tied to (e.g. `PRD-142`). Resolve `<artifacts-root>` the same way the other kit skills do: (1) the directory containing a `*.code-workspace` file if one exists, (2) the per-context root in a multi-context repo (`CONTEXT-MAP.md` at root), (3) the single repo root — so punch-lists stay out of individual project repos when a workspace exists.
+`<PRD-ID>` is the PRD/parent-issue identifier the QA pass is tied to (e.g. `PRD-142`). Ad-hoc polish with no PRD → key by date instead: `docs/qa/qa-YYYY-MM-DD-punchlist.md`; never invent a tracker parent just to name the file. Resolve `<artifacts-root>` the same way the other kit skills do: (1) the directory containing a `*.code-workspace` file if one exists, (2) the per-context root in a multi-context repo (`CONTEXT-MAP.md` at root), (3) the single repo root — so punch-lists stay out of individual project repos when a workspace exists.
 
 The file is a single markdown table:
 
@@ -70,28 +69,22 @@ Columns:
 
 The mode you are in unless the user explicitly says dispatch or verify.
 
-1. Confirm the `<PRD-ID>` for this QA pass (from context or ask once). Open — or create — `<artifacts-root>/docs/qa/<PRD-ID>-punchlist.md`.
+1. Confirm the `<PRD-ID>` for this QA pass (from context or ask once; no PRD → the date-keyed filename). Open — or create — the punch-list file.
 2. For each nit the user reports:
    - Confirm it is **cosmetic** (copy / spacing / alignment / wrong string / visual state only). If it touches behaviour, data, or an interface, stop, name it, and route it to `/to-issues` — do not add it as a row.
    - Confirm the **PROJECT-CODE** from the matrix.
    - Screenshot the state with agent-browser into `docs/qa/shots/` if available; otherwise note `(no shot — text only)`.
    - Append **one row** with status `open`. Change nothing else.
 3. Keep a running count of open rows.
-4. Emit a `Stage / Found / Next / Needs user` update after each capture batch:
-   - **Stage:** capture — logging nits, no fixes.
-   - **Found:** N open rows (M this batch), grouped by PROJECT-CODE.
-   - **Next:** keep capturing, or dispatch when you say so.
-   - **Needs user:** any item that looked behavioural and was routed out; any ambiguous PROJECT-CODE.
-
-Capture never implements and never dispatches.
+4. Emit the capture batch update (template under Output format).
 
 ### dispatch (explicit only)
 
-Runs **only** when the user explicitly says to dispatch. Never triggered by capture.
+Runs **only** when the user explicitly says to dispatch — capturing a nit, even the last open one, never triggers it.
 
 1. Read all `open` (including `reopened`) rows.
 2. **Group by PROJECT-CODE.** Within each group, order rows trivial → structural (pure text/string fixes first, then spacing/alignment).
-3. Hand the coding CLI **one bounded task per PROJECT-CODE group**: "Fix exactly these listed items in `<PROJECT-CODE>` and nothing else — no refactors, no adjacent changes, each fix independent and obviously correct." Give it the rows' **Where** and **Wrong → Right** verbatim. One project's batch never carries another project's conventions.
+3. Hand the coding CLI **one bounded task per PROJECT-CODE group**: "Fix exactly these listed items in `<PROJECT-CODE>` and nothing else — no refactors, no adjacent changes, each fix independent and obviously correct." Give it the rows' **Where** and **Wrong → Right** verbatim, plus two contract lines: a test asserting the old wrong literal is part of that row's fix (update it with the string — not an adjacent change), and the task must report back, per row, the file(s) touched with a one-line change summary. One project's batch never carries another project's conventions.
 4. As each group's task is handed off, mark those rows `dispatched`.
 5. Report which groups were dispatched and how many rows each. Do not verify yet, and do not ship.
 
@@ -99,10 +92,16 @@ Use local subagents/background per the runtime when dispatching multiple project
 
 ### verify
 
-1. For each `dispatched` row, re-open the affected screen with agent-browser (or re-read the affected string/field when there is no browser surface) and compare the current state to **Wrong → Right**.
-2. Mark the row `verified` if it now matches, or `reopened` if it does not. Reopened rows stay for the next capture/dispatch round; take a fresh screenshot for them.
-3. Report a short table of verified vs reopened counts per PROJECT-CODE.
-4. **Suggest, never auto-chain:** if everything verified, suggest `/review`, then `/commit-push-close` or `/commit-push-pr` — and stop. If any reopened, suggest another dispatch round for those rows.
+Runs after the dispatched tasks report back.
+
+1. **Scope check first:** map each group's reported files/changes to its row list. Anything touched outside the listed rows is a scope violation — flag it and route it out (revert it or send it to `/to-issues`); never absorb it silently.
+2. **Compare served output, not source:** refresh/rebuild per the project's pipeline so the comparison hits the running surface, then collect row-level evidence against **Wrong → Right**:
+   - copy/string rows — quote the rendered string from the served screen or response field;
+   - spacing/alignment/visual rows — element evidence via agent-browser (`getBoundingClientRect()`/computed styles, or a clipped element screenshot), not a whole-page glance;
+   - no browser surface, or agent-browser unavailable — re-read the served string/field and say which fallback was used. Never mark a row verified on assumption.
+3. Mark the row `verified` with its evidence recorded (path or quoted value in the **Shot** column or beside it), or `reopened` if it does not match. Reopened rows stay for the next capture/dispatch round; take fresh evidence for them.
+4. Report a short table of verified vs reopened counts per PROJECT-CODE.
+5. **Suggest, never auto-chain:** if everything verified, suggest `/review`, then `/commit-push-close` or `/commit-push-pr` — and stop. If any reopened, suggest another dispatch round for those rows.
 
 ## Cross-repo work
 
@@ -147,5 +146,5 @@ Before ending a mode:
 - [ ] dispatch: ran only on explicit user say-so; grouped per PROJECT-CODE; ordered trivial → structural; one bounded task per group; rows marked `dispatched`
 - [ ] No refactors or adjacent changes requested in any dispatch task
 - [ ] Cross-repo: one punch-list file for the PRD, but one dispatch batch per PROJECT-CODE
-- [ ] verify: each dispatched row marked `verified`/`reopened`; reopened rows kept
+- [ ] verify: scope checked against each group's reported changes; each dispatched row marked `verified` with row-level evidence (quoted string or element geometry) or `reopened`; reopened rows kept
 - [ ] Suggested next skills footer present after verify; never auto-chained to dispatch or ship
