@@ -67,7 +67,7 @@ Touched PROJECT-CODEs: API-SVC (producer), ADMIN-WEB, LEGACY-PORTAL, MOBILE-APP
 
 | PROJECT-CODE | Surface | Change |
 | ------------ | ------- | ------ |
-| API-SVC | `POST /v2/orders` | added required field `idempotency_key` |
+| API-SVC | `POST /v2/orders` | added required field `idempotency_key`; auth unchanged (customer session required), no new personal data |
 | API-SVC | `GET /v2/orders/{id}` response | `status` enum gains `partially_shipped` |
 
 ## 3. Consumers
@@ -87,6 +87,7 @@ Touched PROJECT-CODEs: API-SVC (producer), ADMIN-WEB, LEGACY-PORTAL, MOBILE-APP
 | 2 | Re-submit the same order (double-click) → only one order created, no duplicate row | ADMIN-WEB, API-SVC | agent-browser | | pending |
 | 3 | LEGACY-PORTAL order view for a partially-shipped order → status reads "Partially shipped", not a blank/raw value | LEGACY-PORTAL, API-SVC | agent-browser | | pending |
 | 4 | `GET /v2/orders/{id}` for that order → `status` is `partially_shipped` | MOBILE-APP seam, API-SVC | curl | | pending |
+| 5 | `POST /v2/orders` with no session token → request denied (401/403), no order row created | API-SVC | curl | | pending |
 
 ## Gate log
 
@@ -96,9 +97,9 @@ Touched PROJECT-CODEs: API-SVC (producer), ADMIN-WEB, LEGACY-PORTAL, MOBILE-APP
 Section rules:
 
 - **1. Environment & preconditions** — captured at **build** time, verified at **gate** time: where each involved PROJECT-CODE's service runs, how a code change actually reaches it (build/serve/deploy step), and the seeded data the flows need. If an environment fact isn't cheaply discoverable (compose file, `package.json` scripts, README), ask — never guess; if the user is away, record `unknown — ask` in that cell, list it under Needs user, and keep building — the gate cannot pass a flow whose environment is unknown.
-- **2. Producer surface changed** — the endpoints/routes/response shapes/interfaces the producer slice (usually the API PROJECT-CODE) added or changed. One row each: `PROJECT-CODE`, `Surface`, `Change`.
+- **2. Producer surface changed** — the endpoints/routes/response shapes/interfaces the producer slice (usually the API PROJECT-CODE) added or changed. One row each: `PROJECT-CODE`, `Surface`, `Change`. The `Change` cell also states the surface's auth/permission impact and whether it adds or exposes personal data — a breaking change to either is a `RISK` row and requires a smoke flow.
 - **3. Consumers** — for each changed surface, the specific call-sites that consume it, searched across **every Project Matrix repo** (not just the PRD's), retrieved narrowly and cited as `file:symbol`. A consumer outside the PRD's slices, or a changed surface with **no located consumer** at all, gets its own `RISK` row.
-- **4. Smoke checklist** — 3–6 end-to-end flows that prove the seam holds, phrased **navigate → act → assert a visible outcome**. **Driver** states how the flow runs: `agent-browser` when the surface is browser-reachable, an exact `curl`/CLI assertion for API-only surfaces, or `manual` (step spelled out) for surfaces neither can drive — e.g. a native mobile screen. **Evidence** is filled at gate time (screenshot path, quoted response, observed text). `Status`: `pending` → `pass`/`fail`.
+- **4. Smoke checklist** — 3–6 end-to-end flows that prove the seam holds, phrased **navigate → act → assert a visible outcome**. **Driver** states how the flow runs: `agent-browser` when the surface is browser-reachable, an exact `curl`/CLI assertion for API-only surfaces, or `manual` (step spelled out) for surfaces neither can drive — e.g. a native mobile screen. **Evidence** is filled at gate time (screenshot path, quoted response, observed text). `Status`: `pending` → `pass`/`fail`. When a changed surface carries auth, include one negative flow — the unauthorized caller or role is denied — not just the happy path.
 - **Gate log** — one appended line per gate run: date · gate point · pass/fail counts · how the environment was verified. `Status` shows the latest run; the log keeps the history.
 
 ## Modes
