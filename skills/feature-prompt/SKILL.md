@@ -119,6 +119,9 @@ Candidate CONTEXT.md terms:
 Reply with the term names to approve, wording changes, `approve all`, or `skip context updates`.
 ```
 
+If the user is away, skip all `CONTEXT.md` updates, keep the candidate list in
+the response for later, and continue to saving the prompt.
+
 If the user approves context updates:
 
 1. Inspect the target `CONTEXT.md` structure and preserve its style.
@@ -137,7 +140,9 @@ When the runtime supports subagents and the user has allowed them, use read-only
 Once the minimal prompt is clear:
 
 1. Draft the final prompt.
-2. For non-trivial or inferred prompts, show it once for correction.
+2. For non-trivial or inferred prompts, show it once for correction. If the
+   user is away, save it as drafted and note at the top of the response that
+   it is unconfirmed.
 3. If candidate context terms were found, show them for approval and apply only approved `CONTEXT.md` updates.
 4. Save the final prompt to disk.
 5. Add only:
@@ -182,7 +187,7 @@ Use the same `<artifacts-root>` for numbering. Scan `<artifacts-root>/docs/adr/`
 - Create `docs/prompts/` lazily.
 - Never overwrite a number already used by another artifact.
 - If an unchanged prior `*-prompt.md` exists for the same slug, overwrite in place.
-- If a same-slug prompt has hand edits, show the diff and ask whether to overwrite, write a new numbered revision, or abort.
+- If a same-slug prompt has hand edits, show the diff and ask whether to overwrite, write a new numbered revision, or abort. If the user is away, write a new numbered revision — never overwrite hand edits unconfirmed.
 - Never delete unrelated files.
 
 ### File Body

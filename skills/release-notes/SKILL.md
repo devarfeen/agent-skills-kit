@@ -210,14 +210,17 @@ Filenames — `D-Month-YYYY` (no leading zero, Title Case English month):
 | Date range | `10-March-2026-to-12-March-2026.md` |
 
 - Feature summaries use the **release date**, not the feature name; if no date
-  is given and the user doesn't clearly mean the current session, ask.
+  is given and the user doesn't clearly mean the current session, ask. If the
+  user is away, use the current local date and note the assumption at the top
+  of the response.
 - "Today" / "current session" → the current local date.
 - Do not add `NNNN`, `-release-notes`, or a feature slug to the filename.
 
 Conflict handling: create `docs/release-notes/` lazily; overwrite a same-date
 file only if it contains purely generated content from this skill; if it has
-hand edits, show the diff and ask (overwrite, append/update, or abort). Never
-delete unrelated files.
+hand edits, show the diff and ask (overwrite, append/update, or abort) — and
+if the user is away, write a ` (2)`-suffixed sibling file instead and say so;
+never overwrite hand edits unconfirmed. Never delete unrelated files.
 
 ## Quality Check Before Finalizing
 
