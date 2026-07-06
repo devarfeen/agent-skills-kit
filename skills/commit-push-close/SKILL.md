@@ -38,9 +38,9 @@ Rules for **How to test** live in **How-to-test rules** (`references/ship-policy
 
 ## Workflow
 
-1. **Read state** — run the **Read state** commands in `references/ship-policy.md` (parallel git reads, default-branch detection, `gh` availability check). If the current branch is not the detected default branch, the code this close refers to may sit unmerged — say so and confirm the direct close vs routing to `/commit-push-pr`; confirm likewise when the repo requires PRs.
+1. **Read state** — run the **Read state** commands in `references/ship-policy.md` (parallel git reads, default-branch detection, `gh` availability check). If the current branch is not the detected default branch, the code this close refers to may sit unmerged — say so and confirm the direct close vs routing to `/commit-push-pr`; confirm likewise when the repo requires PRs. If the user is away, continue drafting and surface this choice with the step-6 drafts — that combined approval remains the hard gate.
 
-2. **Resolve or create the issue** — check, in order: branch name (e.g. `feat/123-...`, `agent/PROJ-456-...`), recent commits on this branch, conversation context. If no issue can be located, switch to **Inline issue creation** (`references/ship-policy.md`) for valid small ad hoc work, then use the returned number for the rest of the workflow.
+2. **Resolve or create the issue** — check, in order: branch name (e.g. `feat/123-...`, `agent/PROJ-456-...`), recent commits on this branch, conversation context. If no issue can be located, switch to **Inline issue creation** (`references/ship-policy.md`) for valid small ad hoc work — the issue is drafted now but created only after the combined approval in step 6; once created, fill its number into the commit `Issue:` line and use it as `<num>` in step 10.
 
 3. **Read issue labels** — for issues that already existed, run `gh issue view <num> --json state,labels,title,url` and validate against the **Label validation** table in `references/ship-policy.md`, following its outcomes (stop states route to `/triage`; the taxonomy-absence fallback applies). If the issue is already `CLOSED`, stop and ask — reopen it for this iteration, comment without closing, or target a different issue. For issues just created inline, skip this step — labels were set at creation.
 
@@ -63,11 +63,16 @@ Rules for **How to test** live in **How-to-test rules** (`references/ship-policy
 9. **Push** the current branch:
    - Tracks a remote → `git push`.
    - No upstream → `git push -u origin <branch>`.
-   - **If the current branch is the detected default branch**: stop and confirm separately before pushing.
+   - **If the current branch is the detected default branch**: stop and confirm separately before pushing — step 6's approval does not cover this push. If the user is away, leave the commit local and unpushed, skip the close (a close comment must reference a pushed commit), and surface both under Needs user in the report.
 
-10. **Close the issue** — fill the drafted comment with the real values (short
-    SHA from `git rev-parse --short HEAD`, current branch), write it to a temp
-    file, then comment, close, and verify:
+10. **Close the issue** — first, when the How-to-test plan opens with a
+    runnable test command, run it once and quote the passing tail in the close
+    comment — a failing run stops the close: leave the issue open, report the
+    failure (the commit is already pushed), and treat any fix as a new
+    iteration through this skill; never close an issue whose own test plan
+    fails. Then fill the drafted comment with the real
+    values (short SHA from `git rev-parse --short HEAD`, current branch),
+    write it to a temp file, then comment, close, and verify:
     ```bash
     gh issue comment <num> --body-file <temp-file>.md
     gh issue close <num> --reason completed
@@ -109,7 +114,7 @@ Closed by 9f0e1a2 on `feat/418-idempotency`.
 Checkout charges are now idempotent on `x-request-id`; replays return the original result instead of double-charging.
 
 **How to test**
-1. `pnpm test server/checkout/handler.test.ts` — all green
+1. `pnpm test server/checkout/handler.test.ts` — ran green: `Tests 14 passed (14), Duration 1.2s`
 2. Hit `POST /checkout` twice with the same `x-request-id` — second call returns the first response, no second Stripe charge
 3. Hit twice with different IDs — two distinct charges as before
 
@@ -126,7 +131,8 @@ Before marking the iteration done, verify:
 - [ ] If env keys changed: existing env-family key sets synchronized, sample/example updated, docs updated, gitignored copies updated locally and reported (**Env parity policy**)
 - [ ] No secret files staged
 - [ ] Hooks ran (no `--no-verify`)
-- [ ] Push succeeded (or, on the default branch, was confirmed separately)
+- [ ] Push succeeded (or, on the default branch, was confirmed separately; if the push was skipped user-away, the close was skipped with it)
+- [ ] If the test plan opens with a runnable test command, it ran green and its output tail is quoted in the close comment (a failure stopped the close)
 - [ ] Issue closed with comment containing **Summary** + **How to test**, and `gh issue view --json state` returned `CLOSED`
 - [ ] Final report line printed
 - [ ] Optional `Suggested next skills` footer included (1-6 advisory suggestions, no gating)
