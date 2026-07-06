@@ -12,7 +12,7 @@ A Workflow-A (project start-off) skill. It turns a project's design system into 
 1. a real **UI library** (tokens + reusable components) in the target's stack idiom,
 2. a **preview page** the user can eyeball to verify it,
 3. **documentation under `docs/design-system/`** (the durable record — source, tokens, component inventory, rules), and
-4. a short **binding reference in AGENTS.md** so that on **any UI change**, every future agent checks the library first — reusing what exists, building what's missing from the reference, or asking for a reference — instead of inlining one-off markup.
+4. a short **binding reference in AGENTS.md** so every future UI change routes through the library (the consumption rule under Rules below).
 
 Run it once per project, after `/agents-md` → `/setup-matt-pocock-skills` → placeholder fill. Re-run it (`extend` mode) whenever the design system grows, a UI change needs a component the library lacks, or a page/feature ships and its emergent UI should flow back into the library.
 
@@ -139,7 +139,7 @@ Add only a terse reference into the binding `AGENTS.md`, integrated the way `/ag
 ```markdown
 ## Design System / UI Library
 
-Per project. When building or changing UI for a listed project, consume its UI library and tokens — never inline markup the library covers. Full docs under `docs/design-system/`.
+Per project. When building or changing UI for a listed project, consume its UI library and tokens — never inline markup the library covers. Full docs under `<docs-root>/design-system/`.
 
 ### <TARGET-PROJECT-CODE>
 
@@ -152,7 +152,7 @@ Design system: `<docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md
 
 This project skill is the **deep, project-specific reference** an implementer opens when doing real UI work. It can grow large and hand-grown over time (component inventory, project rules, high-frequency gotchas, ADR trail). Keep the division of labour clear: the always-on "check the library first" trigger lives in the AGENTS.md reference above; **all project-specific rules — naming, allowed/forbidden patterns, per-project conventions, token names, component lists — live in this skill and the `docs/design-system/` doc, never hardcoded into `/design-system` itself.** `/design-system` is generic machinery; this seeded skill is where a project's own UI law is written.
 
-Create a **project-local** operational skill named `<project-slug>-ui-coding` (kebab-case, matching the target's existing project naming — e.g. `admin-web-ui-coding` for `ADMIN-WEB`) in the project's local skills directory. It captures the operational rules an implementer needs:
+Create a **project-local** operational skill named `<project-slug>-ui-coding` (kebab-case, matching the target's existing project naming — e.g. `admin-web-ui-coding` for `ADMIN-WEB`) at the kit's project-local skills location: `<project>/.agents/skills/<project-slug>-ui-coding/SKILL.md`, which the generated AGENTS.md tells every runtime to read. When the current runtime also discovers project skills natively from its own directory (e.g. `.claude/skills/`, `.cursor/skills/`), add a copy or symlink there by that runtime's mechanism — the `.agents/skills/` copy stays canonical. It captures the operational rules an implementer needs:
 
 - where the tokens, library, preview, and design-system doc live (the real paths);
 - the base component inventory and their states;
@@ -167,7 +167,7 @@ Minimal seed frontmatter + shape (match the kit's skill format):
 ```markdown
 ---
 name: <project-slug>-ui-coding
-description: UI-coding rules for <TARGET-PROJECT-CODE> — on any UI change, consume the design-system library and tokens; reuse existing components, extend from the reference for missing ones, never inline covered markup. Docs: docs/design-system/<TARGET-PROJECT-CODE>-design-system.md.
+description: UI-coding rules for <TARGET-PROJECT-CODE> — on any UI change, consume the design-system library and tokens; reuse existing components, extend from the reference for missing ones, never inline covered markup. Docs: <docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md.
 ---
 
 # <TARGET-PROJECT-CODE> UI Coding
