@@ -28,7 +28,8 @@ Date: <DD Month YYYY>
 
 **Change**
 - <What changed, in words a non-developer understands — name the screen, page, or button>
-- <Max 2 bullets. One idea per bullet. No paragraphs.>
+- <Max 2 content bullets. One idea per bullet. No paragraphs.>
+- What changed where: <setting, page/screen, visible element, or route — only when the history names it>
 
 **Impact**
 - <What is better now — one short sentence>

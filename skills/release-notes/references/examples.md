@@ -1,5 +1,9 @@
 # Examples
 
+Some outputs below are excerpts; a real file always opens with the file-level
+Stakeholder Summary and carries every per-feature block (Summary through
+Commits Included) for each feature.
+
 ## Example 1: Date-Based Release Notes
 
 ### User Request
@@ -60,7 +64,10 @@ WAREHOUSE-APP
 3. Unplug the scanner briefly, then try again → App should retry and recover on its own.
 
 **Commits Included**
-- abc1234, def5678, ghi9012, jkl3456
+- abc1234
+- def5678
+- ghi9012
+- jkl3456
 
 ### Support Teams Can View Partner Activity Logs
 
@@ -132,7 +139,8 @@ WAREHOUSE-APP
 3. Start a scan with a slow connection → App should show "waiting" then proceed.
 
 **Commits Included**
-- abc1234, def5678
+- abc1234
+- def5678
 
 ## Example 3: Session Summary
 
@@ -174,6 +182,9 @@ WAREHOUSE-APP
 1. Open any scanner screen and start a scan → Scanner should finish setup before scan begins.
 2. Try scanning on 3 different screens → All should behave the same way.
 3. Turn Bluetooth off and on, then scan → App should show a retry message and recover.
+
+**Commits Included**
+- (uncommitted session work)
 
 ## Example 4: Bad vs Good (Writing Style Reference)
 
@@ -313,7 +324,8 @@ WAREHOUSE-ADMIN
 3. Leave and return to the scan screen -> Scanner setup should still behave the same way.
 
 **Commits Included**
-- 148cfb8f, f626e8fa
+- 148cfb8f
+- f626e8fa
 
 ## WAREHOUSE-ADMIN
 

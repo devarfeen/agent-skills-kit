@@ -24,8 +24,9 @@ pass: "Would a PM or QA person understand this without asking a developer?"
    - BAD: "Concrete touchpoints called out in the workstream docs include the signin page"
    - GOOD: "Affects the Login page, Sign Up page, and Reset Password page"
 3. **One idea per bullet, one short sentence each.** Never a paragraph. Max 2
-   bullets per Problem/Change/Impact section — needing more means too much
-   detail; combine or simplify.
+   content bullets per Problem/Change/Impact section — the labeled
+   `What changed where:` and `Simple logic explanation:` lines don't count;
+   needing more means too much detail; combine or simplify.
 4. **Feature names describe what changed, not how.**
    - BAD: "Auth Hardening Workstreams Prepared" → GOOD: "Login and Password Improvements Planned"
 5. **Problem = what the user experienced** (the symptom, not what the code
@@ -47,8 +48,7 @@ pass: "Would a PM or QA person understand this without asking a developer?"
    commit history", any bullet phrase over 15 words.
 9. **If logic changed, add one sentence a 5th grader could understand** inside
    the Change section: `Simple logic explanation: <sentence>` (e.g. "Raised
-   scanner power from 20 to 30 and made the app switch it on every time before
-   scanning.").
+   scanner power to 30 and switched it on before every scan.").
 10. **Write like telling a coworker what you did today** — not a formal document.
 
 Avoid vague verbs ("enhanced", "optimized", "improved") without saying what
@@ -248,7 +248,7 @@ Mechanical pass first — scan the draft and fix every hit before judging tone:
 2. Structure and hierarchy match the Output Format exactly (one `---`, child
    sections inside features, hashes only under **Commits Included**); only
    changed projects are included; the file is saved to `docs/release-notes/`
-   with the `D-Month-YYYY` name.
+   with the `D-Month-YYYY` name, and the reply states each saved file path.
 
 Then the judgment pass:
 
