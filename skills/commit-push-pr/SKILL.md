@@ -18,11 +18,7 @@ Read [`references/ship-policy.md`](references/ship-policy.md) first. It holds th
 
 ## PR title and body
 
-**Title** mirrors the commit subject:
-
-```
-<same text as commit subject>
-```
+**Title** mirrors the commit subject.
 
 **Body**:
 
@@ -54,11 +50,11 @@ The `Closes #N` line is mandatory and must be on its own line near the top of th
 
 2. **Resolve or create the issue** — branch name → recent commits → conversation context. If none, switch to **Inline issue creation** (`references/ship-policy.md`) for valid small ad hoc work — the issue is drafted now but created only after the combined approval in step 7; once created, fill its number into the commit `Issue:` line and the PR `Closes #<num>`.
 
-3. **Read issue labels** — for issues that already existed, run `gh issue view <num> --json state,labels,title,url` and validate against the **Label validation** table in `references/ship-policy.md`. If labels are missing/conflicting or the state is `needs-triage`, `needs-info`, or `wontfix`, stop and route back to `/triage`. For issues just created inline, skip this step — labels were set at creation.
+3. **Read issue labels** — for issues that already existed, run `gh issue view <num> --json state,labels,title,url` and validate against the **Label validation** table in `references/ship-policy.md`. If labels are missing/conflicting or the state is `needs-triage`, `needs-info`, or `wontfix`, stop and route back to `/triage`. If the issue is already `CLOSED`, stop and ask — reopen it for this iteration, or target a different issue (for genuinely new work, **Inline issue creation** applies); `Closes #N` stays mandatory, so never open a PR against an issue that will remain closed. For issues just created inline, skip this step — labels were set at creation.
 
 4. **Branch handling** — if the current branch is `main` or `master` (or the detected default branch):
    - Stop before staging anything.
-   - Propose a feature branch name: `issue/<issue-num>-<slug>` where `<slug>` is a short kebab-case derivation of the issue title (≤ 5 words).
+   - Propose a feature branch name: `issue/<issue-num>-<slug>` where `<slug>` is a short kebab-case derivation of the issue title (≤ 5 words). For an inline-drafted issue there is no number yet (creation waits for step 7's approval) — propose `issue/<slug>`; the PR's `Closes #<num>` line does the linking, not the branch name.
    - Wait for the user to confirm the name (offer to edit). If the user is away, proceed with the proposed name — step 7's combined approval remains the hard gate.
    - `git checkout -b <branch>` — uncommitted changes follow the checkout into the new branch.
    Otherwise, continue on the current branch.
