@@ -50,6 +50,11 @@ Write the defect list to the configured docs location. Resolve `<artifacts-root>
 <artifacts-root>/docs/pixel-audit/<TARGET-PROJECT-CODE>-<page-slug>-defects.md
 ```
 
+The pixel inventory and element screenshots sit beside it, keyed the same way:
+`<TARGET-PROJECT-CODE>-<page-slug>-inventory.md` and
+`shots/<TARGET-PROJECT-CODE>-<page-slug>/` (the audit's shots folder that
+Evidence cells record paths into).
+
 One row per defect:
 
 ```markdown
@@ -123,7 +128,7 @@ Before claiming the page audited:
 - [ ] Project binding context + `*-ui-coding` skill loaded (or DS discovery fallback); components reused, never inlined
 - [ ] Page mapped (routes, files, partials, states, data, DS components); component preview opened if present
 - [ ] Asset/build pipeline identified (how a change reaches the served page)
-- [ ] Pixel inventory captured full-size incl. below-fold, per node/region/state — not whole-frame only
+- [ ] Pixel inventory captured full-size incl. below-fold, per node/region/state — not whole-frame only — and written to `<TARGET-PROJECT-CODE>-<page-slug>-inventory.md`
 - [ ] Expected-vs-actual audited; each mismatch classified MISSING/EXTRA; EXTRA surfaced for decision, never silently changed
 - [ ] Defect list written to `<artifacts-root>/docs/pixel-audit/<TARGET-PROJECT-CODE>-<page-slug>-defects.md`, one row per defect with element-level evidence
 - [ ] Behaviour/data/interface-sized MISSING defects were routed to /to-issues, not built here; out-of-scope nits went to /polish-batch
