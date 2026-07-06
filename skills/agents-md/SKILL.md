@@ -222,9 +222,9 @@ Skills are ad-hoc tools, not a pipeline. Treat every installed skill as availabl
 
 Work follows this gradient. Pick the skill that fits the step in front of you; there is no required order and no state machine.
 
-[GRADIENT TABLE — columns `Phase | Skills`. One row per gradient phase in manifest order (discover, sharpen, plan, slice, implement, verify, ship). In each row list every kit skill whose manifest `phase` matches. Omit phases with no skills.]
+[GRADIENT TABLE — columns `Phase | Skills`. One row per gradient phase in manifest order (discover, sharpen, plan, slice, implement, verify, ship). In each row list every `kit` and `external` skill whose manifest `phase` matches. Omit phases with no skills.]
 
-[STARTUP NOTE — one line per kit skill with manifest `phase: startup`, e.g. "Run `/design-system` per project after setup to build the UI library first."]
+[STARTUP NOTE — one line per skill with manifest `phase: startup`, e.g. "Run `/design-system` per project after setup to build the UI library first."]
 
 - Skills live in each repo's `.agents/skills/` and in the kit. Prefer the project-local skill when both exist.
 - When a target project has its own `AGENTS.md`, read it on demand for that project's specifics. This root file still binds.
@@ -257,7 +257,7 @@ Use `/ask-matt` when the user asks which Matt skill or flow fits. It routes over
 
 The gradient and companion tables are generated from `references/skills-manifest.md`, the single source for both. Do not hardcode skill rows in this file. Adding or moving a skill means editing the manifest, not this `SKILL.md`.
 
-Each manifest row has: `skill` (invocation, e.g. `/tdd`), `kind` (`kit` or `companion`), `phase` (for `kit`: a gradient phase — discover, sharpen, plan, slice, implement, verify, ship — or `startup`; blank for companions), `note` (optional short suffix shown after the skill in the gradient cell, e.g. `→ ADR`), and `use-when` (for `companion`: the trigger text; blank for kit skills).
+Each manifest row has: `skill` (invocation, e.g. `/tdd`), `kind` (`kit` = lives in this kit's `skills/`; `external` = on the gradient but a separate install, e.g. Matt Pocock's skills; `companion` = optional separate install off the gradient), `phase` (for `kit`/`external`: a gradient phase — discover, sharpen, plan, slice, implement, verify, ship — or `startup`; blank for companions), `note` (optional short suffix shown after the skill in the gradient cell, e.g. `→ ADR`), and `use-when` (for `companion`: the trigger text; blank for kit/external skills). `kit` and `external` skills render in the gradient table alike — the "Do not assume a skill exists; use what is installed" rule already covers separate installs.
 
 Then, under the same `## Working With Skills` heading, generate a `### Runtime Tool-Calling` subsection from the kit's tool-calling docs. Read `references/tool-calling.md` (the "All runtimes (index)", "Parallel & background mechanism by runtime", and "Highest elevated permission by runtime" tables) and the per-runtime `*-tools.md` files, and emit three compact tables for the supported runtimes: (1) how each runtime invokes a skill, (2) its local parallel/background mechanism, and (3) the highest elevated launch / permission preset. Inline the results in `AGENTS.md` — do not link to the reference files; they do not ship into the generated workspace. Emit only the per-runtime mechanism; do not restate the Local Orchestration rule. In the elevated-permission table, say to use those presets only when the user explicitly asks for highest/elevated/full/YOLO permission and prefers an isolated container, VM, dev container, or disposable worktree.
 

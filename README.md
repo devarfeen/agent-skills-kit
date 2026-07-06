@@ -129,7 +129,7 @@ skills from the wider agent-skills ecosystem.
   guide.
 - The non-negotiable discipline in `agents-md` was originally seeded by
   Forrest Chang's Karpathy-inspired `CLAUDE.md` guidelines and later expanded
-  in this repo into an 11-rule core:
+  in this repo into a 12-rule core:
   https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md
   The upstream repository is MIT licensed. This repo records credit here rather
   than emitting source notes into generated `AGENTS.md` files.
@@ -184,7 +184,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill agents-
 - Generates one workspace-root `AGENTS.md` (single source of truth for all six supported CLIs) and one `CLAUDE.md` redirect shim — no per-project or per-repo files
 - Restricts inputs to the `.code-workspace` file and a small scan of its folders; never reads or copies the agent's own global/user instruction files into the output
 - Builds a Project Matrix — `Project | Path | Stack`, one row per workspace folder; the `Project` value is a normalized PROJECT-CODE (uppercase, hyphenated, no spaces, emojis stripped — e.g. `Payments API` → `PAYMENTS-API`), used as the single cross-context identifier across chat, prompts, PRDs, issues, discovery, release notes, PRs, commits, comments, and filenames
-- Emits an 11-rule Non-Negotiable core, including Decision Options, Local Orchestration (local-only parallel/background; no cloud agents), Honest State & Reporting with visible phase updates, and Zero Attribution
+- Emits a 12-rule Non-Negotiable core, including Decision Options, Local Orchestration (local-only parallel/background; no cloud agents), Honest State & Reporting with visible phase updates, and Zero Attribution
 - Emits a Working With Skills section: a named-skill gradient (discover → sharpen → plan → slice → implement → verify → ship), optional companion skills and MCPs, "suggest the next skill, never auto-chain", plus a Runtime Tool-Calling subsection derived from the kit's tool-calling references
 - Emits a Context & Native Memory section: retrieval order (`CONTEXT.md` + `docs/adr/` binding → current task context → native CLI memory), an artifact policy forbidding repo `MEMORY.md`, wiki, discovery, and default knowledge-graph memory, a "do not bulk-read `docs/`" guard, and an archived-context rule for `/grill-with-docs`; the skill does not itself create context files
 - Emits GitHub Issue Titles (title/label convention only) and an Output Style section, including approval-gated understanding checks

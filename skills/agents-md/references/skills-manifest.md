@@ -6,31 +6,39 @@ Do not hardcode skill rows in `SKILL.md` — edit this file to add or move a ski
 Columns:
 
 - `skill` — invocation (e.g. `/tdd`) or companion name.
-- `kind` — `kit` (part of this kit) or `companion` (optional separate install).
-- `phase` — for `kit`: a gradient phase (`discover`, `sharpen`, `plan`, `slice`, `implement`, `verify`, `ship`) or `startup`. Blank for companions.
+- `kind` — `kit` (lives in this repo's `skills/`), `external` (on the gradient but a
+  separate install — e.g. Matt Pocock's skills), or `companion` (optional separate
+  install, off the gradient).
+- `phase` — for `kit`/`external`: a gradient phase (`discover`, `sharpen`, `plan`,
+  `slice`, `implement`, `verify`, `ship`) or `startup`. Blank for companions.
 - `note` — optional short suffix shown after the skill in the gradient cell (e.g. `→ ADR`).
-- `use-when` — for `companion`: the trigger text. Blank for kit skills.
+- `use-when` — for `companion`: the trigger text. Blank for kit/external skills.
 
-## Kit Skills
+Every folder under this repo's `skills/` must have a `kit` row here
+(`tools/validate.sh` enforces this).
+
+## Gradient Skills (kit + external)
 
 | skill | kind | phase | note | use-when |
 | ----- | ---- | ----- | ---- | -------- |
+| `/agents-md` | kit | startup | once per workspace; re-run to refresh the Project Matrix | |
+| `/design-system` | kit | startup | once per UI project; re-run `extend` as the design grows | |
 | `/feature-discovery` | kit | discover | | |
 | `/port-feature` | kit | discover | reference → target gap map | |
 | `/feature-prompt` | kit | sharpen | | |
-| `/grill-with-docs` | kit | plan | → ADR | |
-| `/to-prd` | kit | plan | → PRD | |
-| `/to-issues` | kit | slice | | |
+| `/grill-with-docs` | external | plan | → ADR | |
+| `/to-prd` | external | plan | → PRD | |
+| `/to-issues` | external | slice | | |
 | `/integration-contract` | kit | slice | multi-project seams | |
-| `/tdd` | kit | implement | | |
-| `/review` | kit | verify | | |
-| `/diagnosing-bugs` | kit | verify | | |
+| `/tdd` | external | implement | | |
+| `/orchestrate-herdr` | kit | implement | inside herdr only — fan a PRD out to worker tabs | |
+| `/review` | external | verify | | |
+| `/diagnosing-bugs` | external | verify | | |
 | `/polish-batch` | kit | verify | cosmetic punch-list | |
 | `/pixel-audit` | kit | verify | per-page visual conformance | |
 | `/commit-push-close` | kit | ship | | |
 | `/commit-push-pr` | kit | ship | | |
 | `/release-notes` | kit | ship | | |
-| `/design-system` | kit | startup | | |
 
 ## Companion Skills And MCPs
 
