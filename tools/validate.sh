@@ -172,8 +172,8 @@ fi
 
 echo "== 7. agents-md version markers in sync =="
 AMD="skills/agents-md/SKILL.md"
-marker_versions="$(grep -oE 'agents-md marker · v[0-9]+' "$AMD" | grep -oE 'v[0-9]+$' | sort -u)"
-marker_count="$(grep -cE 'agents-md marker · v[0-9]+' "$AMD")"
+marker_versions="$(cat "$AMD" skills/agents-md/assets/*.md | grep -oE 'agents-md marker · v[0-9]+' | grep -oE 'v[0-9]+$' | sort -u)"
+marker_count="$(cat "$AMD" skills/agents-md/assets/*.md | grep -cE 'agents-md marker · v[0-9]+')"
 stated="$(sed -n 's/.*The skill version is `\(v[0-9][0-9]*\)`.*/\1/p' "$AMD" | head -1)"
 if [[ "$(printf '%s\n' "$marker_versions" | grep -c .)" -ne 1 ]]; then
   fail "agents-md version markers disagree: $(printf '%s ' $marker_versions)"

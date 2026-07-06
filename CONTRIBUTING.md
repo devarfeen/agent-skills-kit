@@ -230,7 +230,7 @@ eval pass.
 | Added/removed/renamed a skill folder | `skills-manifest.md` row · README skills table · `GUIDE.md` tables if it sits on the gradient |
 | A skill's phase or gradient position | `skills-manifest.md` (single source for generated AGENTS.md tables) |
 | `ship-policy.md` in either ship skill | The other copy, byte-identical |
-| `agents-md` templates or generation rules (anything that changes what it emits — routine manifest row additions don't count) | Bump the version marker in `skills/agents-md/SKILL.md` (all three occurrences: the rule text and both file templates) |
+| `agents-md` templates or generation rules (anything that changes what it emits — routine manifest row additions don't count) | Bump the version marker in `skills/agents-md/` (all three occurrences: the rule text in `SKILL.md` and the first line of each template asset) |
 | Companion list | `skills-manifest.md` companions table (GUIDE/BEST-PRACTICES link to it) |
 | Elevated-permission presets | `skills/agents-md/references/tool-calling.md` (model-facing source) and `GUIDE.md` (human-facing copy) |
 | Any runtime fact in `tool-calling.md`, a `*-tools.md`, `memory-global-defaults.md`, or `skills/tdd-loop/references/test-commands.md` | Re-verify the claim against that tool's current official docs in the same PR — CLI flags, tool names, and test-runner syntax age fast; don't propagate a stale fact into more files |
