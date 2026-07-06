@@ -244,3 +244,14 @@ Prefer concise evidence bullets:
 - GitHub issue `#123`: records the requested behavior and acceptance criteria.
 - Commit `abc1234` from 2026-04-12: introduced the feature flag.
 ```
+
+## Checklist
+
+Before delivering the report:
+
+- [ ] Read-only held — `git status` shows no files created or modified by this discovery
+- [ ] Every factual claim in sections 1–8 carries a citation (file:line/symbol, route, command output, issue, or commit)
+- [ ] All nine sections present in order — or Quick trace declared, with sections 1–3 and 8 emitted and the rest marked N/A
+- [ ] Section 6 ends with the four-option ask verbatim (approve names / wording changes / `approve all` / `skip context updates`) or the no-candidates line
+- [ ] Section 8 lists only checks actually run, with the commands named; anything skipped is stated
+- [ ] Report delivered in chat; no discovery file written
