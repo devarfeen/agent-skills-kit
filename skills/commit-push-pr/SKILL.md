@@ -102,6 +102,7 @@ The `Closes #N` line is mandatory and must be on its own line near the top of th
     )"
     ```
     - If a PR already exists for this branch (`gh pr list --head <branch> --json number`), do not create a duplicate. Update the existing PR's title/body with `gh pr edit <num>` instead, and report that path back.
+    - **Read the PR back** after create or edit: `gh pr view <pr-num> --json title,body,baseRefName,headRefName,url` — the title matches the commit subject, `Closes #<num>` sits on its own line in the body, base is the default branch, head is the current branch. Fix any mismatch with `gh pr edit` and re-read before reporting.
 
 12. **Report** — one line: `<SHA> pushed to <branch>; PR #<pr-num> opened (Closes #<issue-num>)`. Then append the **Response footer** from `references/ship-policy.md` (1-6 advisory suggestions).
 
@@ -166,5 +167,6 @@ Before reporting done, verify:
 - [ ] PR body has **Summary** + **How to test**
 - [ ] If the test plan opens with a runnable command, it ran green and its output tail is quoted in the body (a failure stopped the PR)
 - [ ] No duplicate PR created (existing PR was edited instead)
+- [ ] PR read back after create/edit (`gh pr view --json title,body,baseRefName,headRefName`): title, base, head, and the `Closes #<num>` line all verified
 - [ ] Final report line printed
 - [ ] Optional `Suggested next skills` footer included (1-6 advisory suggestions, no gating)
