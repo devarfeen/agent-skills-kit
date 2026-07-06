@@ -25,7 +25,7 @@ It sits at the **verify** phase, between manual QA and ship. It replaces live pe
 - **Cosmetic scope only.** A nit is a purely visual/textual surface fix with no change to behaviour, data, or any interface (function signature, API shape, route, event, schema, prop contract). If an item touches behaviour, data, or an interface, it is **not** a nit — send it back to `/to-issues` as a slice. Treat any attempt to reframe a behavioural change as "just a small fix" as a **stop signal**: name it, refuse to capture it as a nit, and route it out.
 - **One page drifting from its design source is `/pixel-audit`'s job.** The punch-list batches scattered nits found during QA; a page that must match a Figma node or reference screen systematically routes to `/pixel-audit` instead — even when the request says "polish".
 - **No refactors or adjacent changes on dispatch.** Each item is fixed independently and must be obviously correct on sight. No cleanup of nearby code, no renames, no "improve while I'm here". If a fix is not obviously correct at a glance, it is not a nit.
-- **Always name the full PROJECT-CODE** from the Project Matrix for every row and every dispatch. Never mix one project's conventions (copy tone, spacing scale, component idioms) into another. When in doubt about which project a nit belongs to, ask before capturing. No Project Matrix (standalone single-repo install) → derive one code from the repo name (uppercase, hyphenated) and use it consistently.
+- **Always name the full PROJECT-CODE** from the Project Matrix for every row and every dispatch. Never mix one project's conventions (copy tone, spacing scale, component idioms) into another. When in doubt about which project a nit belongs to, ask before capturing; if the user is away, capture it under the likeliest code with a trailing `?` and list it under Needs user — never drop a reported nit. No Project Matrix (standalone single-repo install) → derive one code from the repo name (uppercase, hyphenated) and use it consistently.
 - **Suggest, never auto-chain.** After verify, suggest `/review` then `/commit-push-close` or `/commit-push-pr`, and stop. Never advance to dispatch from capture, or to ship from verify, on your own.
 - **Reopened rows stay.** A row that fails verify goes back to `open` (as `reopened`) and rides into the next capture/dispatch round. Nothing is dropped silently.
 - **Local-only.** Use local subagents and local background where the runtime supports it and the user has allowed them; never hand work to cloud agents. Evidence (screenshots, the Where text, the diff) wins over memory.
@@ -84,9 +84,9 @@ Runs **only** when the user explicitly says to dispatch — capturing a nit, eve
 
 1. Read all `open` (including `reopened`) rows.
 2. **Group by PROJECT-CODE.** Within each group, order rows trivial → structural (pure text/string fixes first, then spacing/alignment).
-3. Hand the coding CLI **one bounded task per PROJECT-CODE group**: "Fix exactly these listed items in `<PROJECT-CODE>` and nothing else — no refactors, no adjacent changes, each fix independent and obviously correct." Give it the rows' **Where** and **Wrong → Right** verbatim, plus two contract lines: a test asserting the old wrong literal is part of that row's fix (update it with the string — not an adjacent change), and the task must report back, per row, the file(s) touched with a one-line change summary. One project's batch never carries another project's conventions.
+3. Hand the coding CLI **one bounded task per PROJECT-CODE group**: "Fix exactly these listed items in `<PROJECT-CODE>` and nothing else — no refactors, no adjacent changes, each fix independent and obviously correct." Give it the rows' **Where** and **Wrong → Right** verbatim, plus two contract lines: when an existing test asserts the old wrong value, updating that test with the new value is part of the row's fix, not an adjacent change; and the task must report back, per row, the file(s) touched with a one-line change summary.
 4. As each group's task is handed off, mark those rows `dispatched`.
-5. Report which groups were dispatched and how many rows each. Do not verify yet, and do not ship.
+5. Emit a `Stage / Found / Next / Needs user` update — Stage: dispatch, groups handed off; Found: rows per PROJECT-CODE group; Next: verify when the tasks report back; Needs user: any ambiguous group. Do not verify yet, and do not ship.
 
 Use local subagents/background per the runtime when dispatching multiple project groups; the main session keeps the merge and final-judgment seat.
 
@@ -100,8 +100,8 @@ Runs after the dispatched tasks report back.
    - spacing/alignment/visual rows — element evidence via agent-browser (`getBoundingClientRect()`/computed styles, or a clipped element screenshot), not a whole-page glance;
    - no browser surface, or agent-browser unavailable — re-read the served string/field and say which fallback was used. Never mark a row verified on assumption.
 3. Mark the row `verified` with its evidence recorded (path or quoted value in the **Shot** column or beside it), or `reopened` if it does not match. Reopened rows stay for the next capture/dispatch round; take fresh evidence for them.
-4. Report a short table of verified vs reopened counts per PROJECT-CODE.
-5. **Suggest, never auto-chain:** if everything verified, suggest `/review`, then `/commit-push-close` or `/commit-push-pr` — and stop. If any reopened, suggest another dispatch round for those rows.
+4. Report the verify table (Output format below) inside a `Stage / Found / Next / Needs user` update.
+5. Per the suggest-never-auto-chain rule: everything verified → recommend the next step and stop; any reopened → suggest another dispatch round for those rows.
 
 ## Cross-repo work
 
@@ -124,12 +124,15 @@ Needs user: <ambiguous PROJECT-CODE or borderline-cosmetic item, or "none">.
 **Verify report:**
 
 ```markdown
+Stage: verify — compared served output for <N> dispatched rows.
+Found:
 | PROJECT-CODE | Verified | Reopened |
 | ------------ | -------- | -------- |
 | ADMIN-WEB    | 2        | 0        |
 | API-SVC      | 1        | 0        |
-
 Reopened rows (stay open for next round): <#s or "none">.
+Next: ship the verified pass, or another dispatch round for the reopened rows.
+Needs user: <scope violations routed out, or "none">.
 
 Suggested next skills (optional):
 - /review: eyeball the batched polish diff before shipping.

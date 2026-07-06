@@ -5,13 +5,13 @@ description: "Orchestrate herdr worker tabs for a PRD. Reads a PRD/issue URL, fi
 
 # Orchestrate herdr
 
-This is a tested, working orchestrator prompt. The **only** things that change between runs are the **PRD URL** and the **coding CLI** to launch. Do not edit, summarize, or "improve" the prompt — run it exactly as written below.
+This is a tested, working orchestrator prompt. The **only** things that change between runs are the **PRD URL** and the **coding CLI** to launch.
 
 ## Intake
 
 Everything below the `---` divider is the frozen prompt body — per this repo's
-AGENTS.md rule 8, do not edit, summarize, or reword it. This Intake section is
-the only editable part of the skill.
+AGENTS.md rule 8, do not edit, summarize, reword, or "improve" it; run it
+exactly as written. This Intake section is the only editable part of the skill.
 
 Resolve two values before running the prompt:
 
@@ -32,11 +32,29 @@ missing instead of stalling mid-run:
 3. `CODING_CLI` resolves on PATH, and `gh` is authenticated (`gh auth status`).
 4. No leftover worker tabs: if tabs named `[CODING_CLI] - GH #<n>` from a
    previous run of this PRD already exist, ask whether to monitor those
-   instead — re-running blindly creates a second tab per issue.
+   instead — re-running blindly creates a second tab per issue. If the user
+   is away, monitor the existing tabs and create tabs only for open
+   sub-issues that have none.
 5. Same-repo collision: workers run simultaneously in one shared working
    folder and the prompt bans worktrees. If more than one open sub-issue
    touches the same repo, say so and get explicit confirmation before
-   proceeding — or agree with the user to run those issues serially.
+   proceeding — or agree with the user to run those issues serially. If the
+   user is away, do not fan out: report the collision and stop — shared-tree
+   concurrency is never a safe unattended default.
+
+Run policy — supplements the frozen prompt without changing it:
+
+- **Sub-issue discovery** (the prompt's step 3): prefer
+  `gh api repos/<owner>/<repo>/issues/<n>/sub_issues`; fall back to task-list
+  checkboxes and "Tracked by" references in the PRD body. State the count
+  found and cross-check it against the PRD before creating any tab —
+  under-fanning silently drops slices.
+- **Test evidence** (the prompt's completion gate) means the worker's test
+  command plus its quoted passing output. An unquoted "tests pass" stays
+  incomplete — read the tab and get the output.
+- **After the frozen prompt's final report:** suggest `/review` on the
+  workers' diffs or `/release-notes` for what shipped — suggest only, then
+  stop.
 
 Then set the two header lines below to the resolved values and execute the prompt **verbatim**.
 

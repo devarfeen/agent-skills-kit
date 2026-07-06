@@ -19,7 +19,7 @@ Infer first from the request and cheap repo evidence (Project Matrix, cwd, `CONT
 - **REFERENCE PROJECT-CODE** — the source of behaviour truth (e.g. a legacy repo), as a full Project Matrix code.
 - **TARGET PROJECT-CODE** — where it lands, as a full Project Matrix code.
 
-Do not start discovery until all three are known. Never abbreviate or invent a PROJECT-CODE — use the matrix code exactly.
+Do not start discovery until all three are known; if the user is away and one cannot be inferred, stop with a Needs-user note naming exactly which is missing — never guess. (PROJECT-CODE discipline per Rules.)
 
 ## Source-of-truth framing
 

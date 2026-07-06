@@ -48,7 +48,7 @@ For anything not listed, map to the closest of these three by how the target ren
 ## Rules (non-negotiables)
 
 - **Suggest, never auto-chain.** After `bootstrap`, suggest verifying the preview and then beginning Workflow B. Then stop. Never start feature work here.
-- **Design-system source is required.** The guided-definition path must end in explicit user approval before any component is built. A new component always traces to a reference — if none exists, **ask the user for one**; never invent it.
+- **Design-system source is required.** The guided-definition path must end in explicit user approval before any component is built (per-component reference rules live in the consumption rule below).
 - **Decisions are artifacts.** Tokens, library, preview, the `docs/design-system/` doc, the AGENTS.md reference, and the seeded project skill all live on disk — not in chat.
 - **AGENTS.md holds a reference only.** The full design-system documentation lives under the configured docs location (`docs/design-system/`); AGENTS.md points to it and states the binding rule. Keep the AGENTS.md entry terse, the way `/agents-md` structures that file.
 - **On any UI change, the library is checked first.** The binding reference routes every UI fix/change through the library: reuse an existing component; if it's missing, build it via `/design-system` (extend) from the design-system source; if no reference exists for that component, ask the user for one. Never inline a one-off, never fabricate a component without a reference.

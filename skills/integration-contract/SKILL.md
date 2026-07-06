@@ -94,7 +94,7 @@ Touched PROJECT-CODEs: API-SVC (producer), ADMIN-WEB, LEGACY-PORTAL, MOBILE-APP
 
 Section rules:
 
-- **1. Environment & preconditions** — captured at **build** time, verified at **gate** time: where each involved PROJECT-CODE's service runs, how a code change actually reaches it (build/serve/deploy step), and the seeded data the flows need. If an environment fact isn't cheaply discoverable (compose file, `package.json` scripts, README), ask — never guess.
+- **1. Environment & preconditions** — captured at **build** time, verified at **gate** time: where each involved PROJECT-CODE's service runs, how a code change actually reaches it (build/serve/deploy step), and the seeded data the flows need. If an environment fact isn't cheaply discoverable (compose file, `package.json` scripts, README), ask — never guess; if the user is away, record `unknown — ask` in that cell, list it under Needs user, and keep building — the gate cannot pass a flow whose environment is unknown.
 - **2. Producer surface changed** — the endpoints/routes/response shapes/interfaces the producer slice (usually the API PROJECT-CODE) added or changed. One row each: `PROJECT-CODE`, `Surface`, `Change`.
 - **3. Consumers** — for each changed surface, the specific call-sites that consume it, searched across **every Project Matrix repo** (not just the PRD's), retrieved narrowly and cited as `file:symbol`. A consumer outside the PRD's slices, or a changed surface with **no located consumer** at all, gets its own `RISK` row.
 - **4. Smoke checklist** — 3–6 end-to-end flows that prove the seam holds, phrased **navigate → act → assert a visible outcome**. **Driver** states how the flow runs: `agent-browser` when the surface is browser-reachable, an exact `curl`/CLI assertion for API-only surfaces, or `manual` (step spelled out) for surfaces neither can drive — e.g. a native mobile screen. **Evidence** is filled at gate time (screenshot path, quoted response, observed text). `Status`: `pending` → `pass`/`fail`.
@@ -107,9 +107,9 @@ Section rules:
 1. Resolve `<PRD-ID>` (from context or ask once). Read the PRD and its sub-issues; consult binding `CONTEXT.md` / `docs/adr/` first.
 2. **Detect touched PROJECT-CODEs** and apply **Trigger discipline** — including the single-project sweep. Stop there when no contract is needed.
 3. Identify the **producer** slice (the one changing a shared surface — usually the API PROJECT-CODE) and the dependent **consumers**.
-4. **Section 1:** record each involved PROJECT-CODE's environment — where it runs, how a change reaches it, what data the flows need. Ask for anything not cheaply discoverable.
+4. **Section 1:** record each involved PROJECT-CODE's environment per the Section 1 rules — where it runs, how a change reaches it, what data the flows need.
 5. **Section 2:** list each producer surface added/changed, one row each.
-6. **Section 3:** for each changed surface, trace call-sites narrowly across **all Project Matrix repos**; cite `file:symbol`. Consumers outside the PRD and surfaces with no located consumer become `RISK` rows — do not omit them; for an out-of-PRD consumer, suggest a new slice via `/to-issues`.
+6. **Section 3:** trace and cite consumer call-sites per the Rules and the Section 3 rules; for an out-of-PRD consumer, also suggest a new slice via `/to-issues`.
 7. **Section 4:** write 3–6 smoke flows, each with its Driver, empty Evidence, `Status: pending`.
 8. Write `<artifacts-root>/docs/integration/<PRD-ID>-contract.md`.
 9. Emit the `Stage / Found / Next / Needs user` update:

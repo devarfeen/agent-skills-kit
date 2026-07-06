@@ -58,10 +58,12 @@ are normal sections. Emit `Known limits` and `Open questions` only when useful.
 ### Scope and slicing
 
 - Default to one thin vertical slice, small enough to review and merge
-  independently. Broad intake gets split: draft this prompt for slice 1 only
-  and record the remaining slices under `Known limits`.
+  independently. Broad intake gets split: draft this prompt for slice 1 only —
+  the contract's `Known limits` bracket owns recording the deferred slices.
 - If this prompt would force a very long grilling session, say so and ask to
-  split scope before finalizing.
+  split scope before finalizing. If the user is away, split it yourself: draft
+  slice 1, defer the rest via `Known limits`, and note the split at the top of
+  the response.
 - When the user intends parallel agent threads, split slices to minimize
   shared-file coupling.
 

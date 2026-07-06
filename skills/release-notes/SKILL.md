@@ -195,8 +195,8 @@ Rules:
 - **User-visible detail**: when commits/diffs reveal them, name the setting,
   page/screen, visible element, or route that changed — the optional
   `What changed where:` line under **Change** is where it goes. If a detail is
-  not in the history, omit it (and omit the line) — never write "not
-  explicitly visible in commit history".
+  not in the history, omit it and omit the line (rule 8's banned phrases
+  cover the disclaimer wording).
 - Commit hashes appear only under **Commits Included**, one per bullet. For a
   session summary with no commits yet, write `- (uncommitted session work)`
   instead of hashes.

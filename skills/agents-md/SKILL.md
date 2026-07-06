@@ -21,7 +21,6 @@ Generate agent instructions for VS Code workspaces only.
 - `AGENTS.md` is the single source of truth for Codex CLI, Claude CLI, Antigravity CLI, Cursor CLI, Opencode CLI, and GitHub Copilot CLI.
 - `CLAUDE.md` is only a redirect shim for Claude CLI.
 - `CLAUDE.md` must contain only the `@AGENTS.md` forward plus the short redirect note shown below. Do not add or read any other context from `CLAUDE.md`.
-- Do not duplicate operating rules in `CLAUDE.md`.
 - Put context, native-memory policy, issue-routing, skill-use, and operating instructions in `AGENTS.md`.
 
 Use this exact `CLAUDE.md`:
@@ -381,5 +380,7 @@ Verify against the generated files — each item is observable, not a recollecti
 - [ ] Regeneration: foreign sections preserved verbatim, user-filled values carried, and the shown diff confirmed — or the run stopped without writing
 - [ ] `CLAUDE.md` is exactly the shim template, nothing more
 - [ ] Re-running now would reproduce the same files — no session-specific content leaked into either file
+
+Then suggest the next startup step — `/setup-matt-pocock-skills`, and `/design-system` for each UI project — and stop; suggest only, never run them.
 
 Regenerate the `CLAUDE.md` shim only if it is missing or its marker is stale.

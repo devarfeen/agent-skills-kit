@@ -24,8 +24,8 @@ Date: 11 March 2026
 
 WAREHOUSE-APP
 
-- App now checks the scanner is ready before starting a scan, so first-try scans no longer fail
-- New Activity Log in Field Support screen lets support see what a partner did on their device
+- The app now checks scanner readiness first, so first-try scans no longer fail
+- New Activity Log shows support what a partner did on their device
 - Collection Package screen now filters out unrelated assets so the list is cleaner
 - Warning shown when a QR code and RFID tag don't match on the same asset
 - Fixed crash on Android when opening the app or selecting photos
@@ -39,7 +39,7 @@ WAREHOUSE-APP
 ### Scanner Now Checks Readiness Before Scanning
 
 **Summary**
-- The app waits for the scanner to be ready before starting a scan, so scans don't fail on the first try.
+- The app waits for scanner readiness before scanning, so first tries stop failing.
 
 **Problem**
 - Scans sometimes failed when the scanner wasn't ready yet, forcing staff to retry.
@@ -65,10 +65,10 @@ WAREHOUSE-APP
 ### Support Teams Can View Partner Activity Logs
 
 **Summary**
-- Field support can now see a log of what a partner did on their device, making troubleshooting faster.
+- Field support now sees a log of partner device actions, speeding up troubleshooting.
 
 **Problem**
-- Support had no way to see what happened on a partner's device and had to call them to ask.
+- Support couldn't see what happened on a partner's device without calling them.
 
 **Change**
 - New Activity Log section in the Field Support screen shows recent partner actions with timestamps.
@@ -100,7 +100,7 @@ Date: 11 March 2026
 
 WAREHOUSE-APP
 
-- App now checks the scanner is ready before starting a scan, so first-try scans no longer fail
+- The app now checks scanner readiness first, so first-try scans no longer fail
 
 ---
 
@@ -111,7 +111,7 @@ WAREHOUSE-APP
 ### Scanner Now Checks Readiness Before Scanning
 
 **Summary**
-- The app waits until the scanner is ready before starting, so scans don't fail on the first try.
+- The app waits for scanner readiness before starting, so first scans stop failing.
 
 **Problem**
 - Scans sometimes failed when started before the scanner was ready.
@@ -156,13 +156,13 @@ WAREHOUSE-APP
 ### Consistent Scanner Setup Across All Screens
 
 **Summary**
-- All screens that use the scanner now prepare it the same way, so scanning works reliably everywhere.
+- Every scanner screen now prepares it the same way, so scanning works reliably.
 
 **Problem**
 - Some screens prepared the scanner differently, causing scans to sometimes fail on certain pages.
 
 **Change**
-- All scanner screens now use the same setup process and show a retry message if the scanner isn't ready.
+- Scanner screens share one setup process and show a retry message when not ready.
 
 **Impact**
 - Scanning works the same way no matter which screen you're on.
@@ -211,10 +211,11 @@ This example shows the same work described in bad (verbose/corporate) style vs g
 - Planned fixes for how usernames and passwords work across Admin and Portal apps.
 
 **Problem**
-- "John" and "john" were treated as different accounts. Some password fields had a show/hide toggle, others didn't.
+- "John" and "john" were treated as different accounts.
+- Some password fields had a show/hide toggle, others didn't.
 
 **Change**
-- Wrote the plan for: making usernames always lowercase, adding show/hide to all password fields, and requiring stronger passwords.
+- Planned: lowercase usernames everywhere, show/hide on all password fields, stronger password rules.
 - Covers: Login, Sign Up, Reset Password, Invite, and User Management pages in both apps.
 
 **Impact**
@@ -246,7 +247,7 @@ Write release notes for the RFID scanning improvements
 - The app now runs the same setup steps before every scan.
 - Added readiness checks and controlled retry handling.
 - What changed where: RFID scan pages and scan action controls used by front-line teams.
-- Simple logic explanation: The app turns the scanner setup steps into the same repeatable checklist every time.
+- Simple logic explanation: The app runs the same scanner setup checklist every time.
 
 **Impact**
 - Fewer startup-related scan failures.

@@ -132,14 +132,14 @@ Avoid these failure modes:
 4. Discover related context and GitHub issues (bounded, or not at all):
    - First inspect available context for issue references or topic clues: the conversation, `AGENTS.md`, `<artifacts-root>/CONTEXT.md`, ADRs under `<artifacts-root>/docs/adr/`, local docs, local issue caches, and prior prompt context.
    - If context gives a bounded issue set, read every issue in it (`gh issue view`). If it gives reliable labels, milestones, titles, or exact search terms, run a bounded search and read every plausibly related match.
-   - If context cannot bound the search, pause and ask the user to approve a broad GitHub issue scan first — explain that it can take a long time. Not granted → continue with code, docs, tests, local context, and history, and state that broad scanning was skipped.
+   - If context cannot bound the search, pause and ask the user to approve a broad GitHub issue scan first — explain that it can take a long time. Not granted (or the user is away) → continue with code, docs, tests, local context, and history, and state that broad scanning was skipped.
    - Summarize which issues were read, which were excluded as unrelated, and whether broad scanning was skipped.
 
 5. Track candidate `CONTEXT.md` terms per `references/context-terms.md`:
    - Locate the relevant `CONTEXT.md` via the kit's artifacts-root order — (1) the directory containing a `*.code-workspace` file, (2) the per-context root in a multi-context repo (`CONTEXT-MAP.md` at root), (3) the single repo root — then nearby project docs when none exists there.
-   - Capture each candidate in the shared format (**Term**, **Suggested action**, one-sentence **description**, **Evidence**, **Why it matters**).
+   - Capture each candidate in the shared format from `references/context-terms.md`.
 
-6. Use git history only if needed (per the Evidence rules: last 2 months, explanatory not primary).
+6. Use git history only if needed, per the Evidence rules.
 
 7. Validate findings twice:
    - Pass 1: cross-check the main explanation against code, tests, docs, configs, usage sites, available context, related issues, and any history used.

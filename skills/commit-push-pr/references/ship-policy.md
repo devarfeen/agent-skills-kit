@@ -32,7 +32,7 @@ Routing state lives in the linked issue's labels. Do not add `HITL:` or `AFK:` t
 
 Read state with: `gh issue view <num> --json state,labels,title,url`. Match label names exactly.
 
-If the taxonomy itself is missing in this repo (`gh label list` shows no `bug`/`enhancement` or `ready-*`/`needs-*` labels), don't dead-end — `/triage` may not be installed either. Ask the user once: create the category + state labels now (`gh label create` each), or proceed with the closest existing labels — and record the choice in the ship output.
+If the taxonomy itself is missing in this repo (`gh label list` shows no `bug`/`enhancement` or `ready-*`/`needs-*` labels), don't dead-end — `/triage` may not be installed either. Ask the user once: create the category + state labels now (`gh label create` each), or proceed with the closest existing labels — and record the choice in the ship output. If the user is away, stop before any remote write and name the missing labels — never invent taxonomy unattended.
 
 ## Authorship policy (all supported coding agents)
 
@@ -98,7 +98,7 @@ For the test plan in ship output (issue-close comment or PR body):
 - If the change is UI: where to click, what to enter, what to see.
 - If the change is API/server: the exact `curl` or request, expected status/payload.
 - If the change is internal/refactor with no user-facing surface: how to verify via tests (`pnpm test path/to/file`, etc.) plus what should still work end-to-end.
-- 3–6 steps. If you can't write a real test plan from the diff, ask the user before shipping — do not invent one.
+- 3–6 steps. If you can't write a real test plan from the diff, ask the user before shipping — do not invent one. If the user is away, stop with the drafts presented: a ship without a real test plan never proceeds unattended.
 
 ## Commit message format
 
@@ -121,9 +121,8 @@ Notes:
 
 Rules:
 
-- Subject mirrors the GitHub issue title as closely as practical, no `HITL:` or `AFK:` marker.
+- Subject mirrors the GitHub issue title as closely as practical (naming rules per **Naming anchor**; attribution rules per **Authorship policy**).
 - Always keep the subject and the `Issue:` line. Omit any other section that has nothing to say.
-- Never add co-author or AI/tool attribution anywhere in authored output (commit message, PR title/body, issue body, comments, release notes, docs) across all supported coding agents.
 - `Files:` lists meaningful changes, not every touched file.
 - `Notes:` is for the next iteration. Skip if truly nothing.
 - Body under ~20 lines.

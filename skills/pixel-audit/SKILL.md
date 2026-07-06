@@ -40,7 +40,7 @@ Per the kit's retrieval order (`CONTEXT.md` + `docs/adr/` are binding), before t
 4. **Audit expected (source) vs actual (browser).** For each node/state, classify each mismatch:
    - **MISSING** — a source item/state is absent or wrong in the app.
    - **EXTRA** — an app item/state that is not in the source.
-   - **Extra UI is a defect.** Do not silently keep it, remove it, or restyle it. If the intent is unclear, report it for a decision.
+   - **Extra UI is a defect** — report it for a decision (handling rules under Fixing).
 
 ## The defect list artifact
 
@@ -72,7 +72,7 @@ Scope: <route + states audited>
 - **One node/page/state at a time.** Do not batch unrelated fixes.
 - **A MISSING defect that needs behaviour, data, or interface work is a slice, not a style fix.** A wholly absent error/empty/loading state or a missing action usually needs logic — record the row, route it to `/to-issues`, and do not build it here (the same boundary `/polish-batch` draws).
 - **Reuse the project UI library's components.** No one-off UI unless justified and documented (per the `*-ui-coding` reuse-vs-new rule).
-- **If a shared component must change, change it in the library + its preview + the project `*-ui-coding` skill (via `/design-system` extend) — never patch it page-local — then consume it from the page.** Because other pages consume that component, confirm with the user before changing it on the evidence of this one page's frame — the frame may be the outlier, not the component.
+- **If a shared component must change, change it in the library + its preview + the project `*-ui-coding` skill (via `/design-system` extend) — never patch it page-local — then consume it from the page.** Because other pages consume that component, confirm with the user before changing it on the evidence of this one page's frame — the frame may be the outlier, not the component. If the user is away, leave the row `open` under Needs user and continue with the other defects; never rewrite a shared component unattended.
 - **Touch nothing unrelated.** Stay strictly inside SCOPE. Cosmetic nits spotted on other pages or flows are captured with `/polish-batch`, never fixed here.
 - **Report, don't decide, on EXTRA:** any icon/button/field/action present in the app but absent from the source is surfaced for a user decision, not silently kept, removed, or restyled.
 

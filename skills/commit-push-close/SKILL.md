@@ -42,7 +42,7 @@ Rules for **How to test** live in **How-to-test rules** (`references/ship-policy
 
 2. **Resolve or create the issue** — check, in order: branch name (e.g. `feat/123-...`, `agent/PROJ-456-...`), recent commits on this branch, conversation context. If no issue can be located, switch to **Inline issue creation** (`references/ship-policy.md`) for valid small ad hoc work, then use the returned number for the rest of the workflow.
 
-3. **Read issue labels** — for issues that already existed, run `gh issue view <num> --json state,labels,title,url` and validate against the **Label validation** table in `references/ship-policy.md`. If labels are missing/conflicting or the state is `needs-triage`, `needs-info`, or `wontfix`, stop and route back to `/triage`. If the issue is already `CLOSED`, stop and ask — reopen it for this iteration, comment without closing, or target a different issue. For issues just created inline, skip this step — labels were set at creation.
+3. **Read issue labels** — for issues that already existed, run `gh issue view <num> --json state,labels,title,url` and validate against the **Label validation** table in `references/ship-policy.md`, following its outcomes (stop states route to `/triage`; the taxonomy-absence fallback applies). If the issue is already `CLOSED`, stop and ask — reopen it for this iteration, comment without closing, or target a different issue. For issues just created inline, skip this step — labels were set at creation.
 
 4. **Draft the commit message** from the issue title and diff, per **Commit message format** in `references/ship-policy.md`. For ad hoc inline issues, the new issue title and commit subject must match (see **Naming anchor**).
 
