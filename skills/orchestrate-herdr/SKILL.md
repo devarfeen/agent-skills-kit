@@ -9,9 +9,9 @@ This is a tested, working orchestrator prompt. The **only** things that change b
 
 ## Intake
 
-Everything below the `---` divider is the frozen prompt body — per this repo's
-AGENTS.md rule 8, do not edit, summarize, reword, or "improve" it; run it
-exactly as written. This Intake section is the only editable part of the skill.
+Everything below the `---` divider is the frozen prompt body — do not edit,
+summarize, reword, or "improve" it; run it exactly as written. This Intake
+section is the only editable part of the skill.
 
 Resolve two values before running the prompt:
 
@@ -55,10 +55,15 @@ Run policy — supplements the frozen prompt without changing it:
 - **Monitoring policy** (how the prompt's monitor loop resolves): emit
   `Stage / Found / Next / Needs user` at each transition — tabs created,
   prompts submitted, any worker status change, final report. A worker silent
-  for 3 consecutive checks is stalled: read its tab; resubmit once if the CLI
-  died, otherwise mark the issue blocked and surface it under Needs user. The
-  run ends when every sub-issue is completed-with-evidence, blocked, or
-  errored — then emit the final report.
+  for 3 consecutive checks is stalled: read its tab. If the CLI died, redo
+  the prompt's Worker Launch for that tab once (relaunch the CLI, wait for
+  readiness, then resubmit) — never paste the worker prompt into a dead
+  tab's shell, which would execute the prompt text as commands. If a long
+  command (test run, build) is still running, allow up to 3 more checks;
+  past that, or in any other case, mark the issue blocked and surface it
+  under Needs user. The run ends when
+  every sub-issue is completed-with-evidence, blocked, or errored — then
+  emit the final report.
 - **Labels during monitoring** (what the prompt's label line governs):
   `ready-for-agent` marks an issue a worker may take; a worker blocked on a
   human decision gets its issue flipped to `ready-for-human` with a comment
