@@ -1,17 +1,17 @@
 ---
 name: feature-discovery
-description: Use when the user asks to investigate, audit, trace, or explain how an existing feature, issue, module, workflow, API, config, or behavior works across one or more codebase projects, especially before planning, debugging, migration, refactor, or implementation. Stays read-only and surfaces code-discovered domain terms that may be missing from or stale in CONTEXT.md so the user can approve follow-up context updates.
+description: Use when the user asks to investigate, audit, trace, or explain how an existing feature, issue, module, workflow, API, config, or behavior works across one or more codebase projects, especially before planning, debugging, migration, refactor, or implementation. Porting or rebuilding a feature into another stack routes to /port-feature instead. Stays read-only and surfaces code-discovered domain terms that may be missing from or stale in CONTEXT.md so the user can approve follow-up context updates.
 ---
 
 # Feature Discovery
 
 ## Purpose
 
-Perform a read-only discovery pass over one or more projects. Explain what the
-requested topic does, how it works, where it is used, and why it may have been
-needed. Return the discovery report in chat only.
+Read-only discovery, reported in chat only. The bar: another engineer should
+come away knowing what the thing is, what it does, how it works, where it is
+used, what evidence supports that, and what remains uncertain.
 
-Use this skill for prompts shaped like:
+Structured intake looks like:
 
 ```markdown
 Projects Affected: [Project Code], [Project Code]
@@ -19,6 +19,9 @@ Projects Affected: [Project Code], [Project Code]
 What:
 [FEATURE / ISSUE / BEHAVIOR / MODULE / WORKFLOW]
 ```
+
+Free-form intake is equally valid — infer the projects and topic from the
+request and ask only when the mapping is genuinely ambiguous.
 
 ## Rules
 
@@ -43,8 +46,8 @@ What:
   does not explain the topic, and review only the last 2 months — to explain
   why or when behavior changed, not as primary truth.
 - If external dependency internals are critical and local evidence is
-  insufficient, optionally fetch targeted dependency source with `opensrc` and
-  cite concrete files/functions. Keep fetch scope minimal.
+  insufficient, optionally fetch targeted dependency source (e.g. `opensrc`,
+  when installed) and cite concrete files/functions. Keep fetch scope minimal.
 - Back every concrete claim with file paths, symbols, commands, tests, docs,
   GitHub issues, or commits. Separate confirmed facts from inference. Do not
   invent context or rationale.
@@ -58,11 +61,14 @@ What:
 - Classify unresolved unknowns by fidelity: grillable (low fidelity) stays as
   concise open decisions for `/feature-prompt` or `/grill-with-docs`;
   ungrillable ("needs to feel/see it") routes to `/handoff` + `/prototype`
+  (when installed; otherwise state the uncertainty plainly for the user)
   instead of speculative discovery.
 - Flag duplication risks explicitly: when similar behavior exists in multiple
   paths, call out likely seam-reuse opportunities for the next planning step.
 - Treat `~120K` tokens as a context-budget caution point. If unresolved core
   unknowns remain near it, stop and recommend a scope split or handoff.
+- Emit `Stage / Found / Next / Needs user` at phase transitions
+  (parsed → discovered → validated → report).
 
 **Sub-agents (when the runtime supports them and the user allows).**
 
@@ -77,11 +83,10 @@ What:
 **Candidate context terms.**
 
 - When exploration reveals domain terms, compare them with `CONTEXT.md` and
-  flag missing, stale, renamed, overloaded, or ambiguous ones.
-- Candidates must be meaningful to product or domain experts: roles, workflows,
-  states, business rules, events, integrations, user-facing concepts, or
-  project-specific names. Skip generic programming terms, helper names,
-  low-level class names, and package names unless they carry domain meaning.
+  flag missing, stale, renamed, overloaded, or ambiguous ones. What qualifies,
+  how to present the list, the away-fallback, and how to apply approvals live
+  in [`references/context-terms.md`](references/context-terms.md) (shared with
+  `feature-prompt`).
 
 ## Discovery Lens
 
@@ -90,7 +95,7 @@ Use this lens to keep discovery grounded in existing system behavior, not produc
 - **Behavior:** what currently exists and what users, systems, jobs, APIs, or operators experience.
 - **Boundary:** owning project, module, data path, entry points, exits, and explicit non-goals.
 - **Evidence:** strongest files, tests, configs, docs, issues, commands, and runtime paths.
-- **Risk:** codebase impact labels only: value risk, usability risk, feasibility risk, viability risk, data risk, security risk, or operational risk.
+- **Risk:** impact labels grounded in the code — user-value regression, usability, feasibility (can we build on it), viability (cost/maintainability), data, security, or operational risk.
 - **Uncertainty:** confirmed facts, inference, open unknowns, stale context, and contradictions.
 - **Next action:** the smallest useful next skill, human decision, test, issue read, or implementation slice.
 
@@ -109,7 +114,8 @@ Avoid these failure modes:
 ## Workflow
 
 1. Parse the request:
-   - Identify project codes from `Projects Affected` and the topic from `What`.
+   - Identify project codes and the topic — from the `Projects Affected` /
+     `What` fields when present, otherwise inferred from free-form intake.
    - Note explicit constraints, dates, branches, modules, or terms.
 
 2. Locate project roots:
@@ -129,10 +135,9 @@ Avoid these failure modes:
    - If context cannot bound the search, pause and ask the user to approve a broad GitHub issue scan first — explain that it can take a long time. Not granted → continue with code, docs, tests, local context, and history, and state that broad scanning was skipped.
    - Summarize which issues were read, which were excluded as unrelated, and whether broad scanning was skipped.
 
-5. Track candidate `CONTEXT.md` terms:
-   - Locate the relevant `CONTEXT.md` (project root, workspace root, root `CONTEXT-MAP.md`, nearby docs).
-   - For each candidate capture: **Term**, **Suggested action** (add, clarify, rename, deprecate, or ask user), a one-sentence **description** grounded in observed code behavior, **Evidence** refs, and **Why it matters** for future planning.
-   - Prefer a small, high-confidence list over a glossary dump. If no relevant `CONTEXT.md` exists, still report candidates and recommend creating or locating the file before editing.
+5. Track candidate `CONTEXT.md` terms per `references/context-terms.md`:
+   - Locate the relevant `CONTEXT.md` via the kit's artifacts-root order — (1) the directory containing a `*.code-workspace` file, (2) the per-context root in a multi-context repo (`CONTEXT-MAP.md` at root), (3) the single repo root — then nearby project docs when none exists there.
+   - Capture each candidate in the shared format (**Term**, **Suggested action**, one-sentence **description**, **Evidence**, **Why it matters**).
 
 6. Use git history only if needed (per the Evidence rules: last 2 months, explanatory not primary).
 
@@ -144,13 +149,10 @@ Avoid these failure modes:
    - Mark dead code, unclear ownership, missing tests, contradictions, skipped issue scans, stale context terms, and unverified assumptions. Avoid broad claims on partial evidence.
    - Keep a short validation note stating what each pass checked.
 
-8. Present the discovery report in chat, using the Output Format below. The bar: another engineer should come away knowing what the thing is, what it does, how it works, where it is used, what evidence supports that, and what remains uncertain.
+8. Present the discovery report in chat, using the Output Format below.
 
 9. Update `CONTEXT.md` or other artifacts only after approval:
-   - Show the exact target path(s), proposed text/section changes, and the reason for each. Wait for explicit approval.
-   - Apply only approved additions, clarifications, renames, or deprecations; preserve the file's existing structure and style; keep descriptions short and evidence-backed; never add implementation-only symbols as domain language.
-   - Use the user's wording when they edit yours — unless it conflicts with code evidence; explain the mismatch before editing.
-   - Report exactly which terms changed and which file was edited.
+   - Show the exact target path(s), proposed text/section changes, and the reason for each. Wait for explicit approval, then follow **Applying approved updates** in `references/context-terms.md` (including its away-fallback: no reply → no edits, keep the candidates in the report).
 
 ## Search Defaults
 
@@ -168,6 +170,8 @@ git log --since="2 months ago" --oneline --all -- <relevant-path>
 ## Output Format
 
 Use this structure exactly for the chat report. State if any validation or issue scan was skipped.
+
+For a trivially small in-scope question (one symbol, one config key, one route), say `Quick trace` up front and emit only sections 1–3 and 8, marking the rest N/A. Anything larger uses the full structure — do not shrink a genuine multi-project discovery.
 
 ```markdown
 # Feature Discovery: [Topic]
