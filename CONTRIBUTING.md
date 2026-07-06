@@ -154,9 +154,10 @@ Score a new or changed skill against these before approving. A "no" on any of
 | Added/removed/renamed a skill folder | `skills-manifest.md` row · README skills table · `GUIDE.md` tables if it sits on the gradient |
 | A skill's phase or gradient position | `skills-manifest.md` (single source for generated AGENTS.md tables) |
 | `ship-policy.md` in either ship skill | The other copy, byte-identical |
-| `agents-md` generated-block templates | Bump the `v1` version marker in `skills/agents-md/SKILL.md` (all three occurrences: the rule text and both file templates) |
+| `agents-md` templates or generation rules (anything that changes what it emits — routine manifest row additions don't count) | Bump the version marker in `skills/agents-md/SKILL.md` (all three occurrences: the rule text and both file templates) |
 | Companion list | `skills-manifest.md` companions table (GUIDE/BEST-PRACTICES link to it) |
 | Elevated-permission presets | `skills/agents-md/references/tool-calling.md` (model-facing source) and `GUIDE.md` (human-facing copy) |
+| Any runtime fact in `tool-calling.md` or a `*-tools.md` | Re-verify the claim against that runtime's current official docs in the same PR — CLI flags and tool names age fast; don't propagate a stale fact into more files |
 
 ### Versioning and provenance
 
