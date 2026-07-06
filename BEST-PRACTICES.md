@@ -51,31 +51,13 @@ Why: auto-chaining removes the human from exactly the moments where judgment mat
 
 ### Companion skills and MCPs are part of ad-hoc workflow
 
-Companion skills and MCPs sit beside the core gradient. They are not a second pipeline. Use them when they make the current step sharper, faster, or more verifiable.
+Companion skills and MCPs sit beside the core gradient. They are not a second pipeline. Use them when they make the current step sharper, faster, or more verifiable. The current companion list and its use-when triggers live in [GUIDE.md](GUIDE.md#companion-skills-and-mcps) (human copy) and [`skills/agents-md/references/skills-manifest.md`](skills/agents-md/references/skills-manifest.md) (the source that drives generated `AGENTS.md`).
 
-| Companion | Use when |
-| :--- | :--- |
-| Graphify | Querying a generated code/docs/media graph would save broad file reads. |
-| ask-matt | You want Matt's upstream router for choosing a user-invoked skill flow. |
-| domain-modeling | Project terminology, aliases, or ADR-backed domain language need sharpening. |
-| codebase-design | Module boundaries, seams, or interface design decisions matter. |
-| Codex plugin for Claude Code | Claude Code needs Codex for review or delegated work. |
-| Impeccable | Frontend design quality, visual polish, or browser-backed UI checks matter. |
-| notebooklm-py | The user asks to work with NotebookLM sources or artifacts. |
-| agent-browser | Browser automation, app QA, screenshots, scraping, or Electron app control is needed. |
-| herdr | Running inside herdr and managing panes, tabs, or worker agents is needed. |
-| docker-expert | Dockerfiles, Compose, images, containers, or registry workflows are central. |
-| Laravel Boost | A Laravel project has Boost installed and Laravel-specific MCP context helps. |
-| Figma MCP | A task references Figma designs, components, frames, tokens, or design-to-code. |
-| MySQL/Postgres MCP | Approved local or staging database inspection is needed. Default read-only. |
-
-Rules:
+The principles that don't change as the list does:
 
 - Do not assume a companion is installed. If missing, use the best local fallback.
 - Do not vendor companion skills or MCPs into this kit.
 - Treat companion output as evidence, not authority. Repo code, tests, ADRs, `CONTEXT.md`, and user instructions still win.
-- Use MCPs only for the current task. Do not browse unrelated external data.
-- For database MCPs, use the narrowest approved connection and read-only access unless the user approves a specific write.
 
 ### Decisions are artifacts
 
@@ -85,16 +67,10 @@ Every meaningful decision leaves a durable trace on disk or in the tracker: a re
 
 Highest/elevated/full/YOLO permission is never the default operating mode. Use
 it only when the user explicitly asks for it, and prefer an isolated container,
-VM, dev container, or disposable worktree.
-
-| Runtime | Highest elevated launch / preset |
-| :--- | :--- |
-| Codex CLI | `codex --dangerously-bypass-approvals-and-sandbox` or `codex --sandbox danger-full-access --ask-for-approval never` |
-| Claude CLI | `claude --dangerously-skip-permissions` / `--permission-mode bypassPermissions` |
-| Antigravity CLI | `agy --dangerously-skip-permissions` without `--sandbox` |
-| Cursor CLI | `agent --yolo --sandbox=disabled --approve-mcps` |
-| Opencode CLI | `opencode run --dangerously-skip-permissions`; persistent agents use `permission` keys set to `allow` |
-| GitHub Copilot CLI | `copilot --allow-all` / `--yolo` |
+VM, dev container, or disposable worktree. The per-runtime launch presets live
+in [GUIDE.md](GUIDE.md#local-parallel--background-agents-no-cloud) (human copy)
+and [`skills/agents-md/references/tool-calling.md`](skills/agents-md/references/tool-calling.md)
+(model-facing source).
 
 ---
 
