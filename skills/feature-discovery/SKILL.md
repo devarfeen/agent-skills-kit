@@ -57,7 +57,8 @@ request and ask only when the mapping is genuinely ambiguous.
 - Keep discovery scope thin. If intake spans many workflows or projects, split
   into slices and discover the first slice before expanding.
 - The human stays in charge. Discovery questions are for blocking
-  clarifications only, not open-ended interrogation.
+  clarifications only, not open-ended interrogation. If the user is away,
+  state the assumption taken and continue best-effort.
 - Classify unresolved unknowns by fidelity: grillable (low fidelity) stays as
   concise open decisions for `/feature-prompt` or `/grill-with-docs`;
   ungrillable ("needs to feel/see it") routes to `/handoff` + `/prototype`
@@ -209,7 +210,7 @@ For a trivially small in-scope question (one symbol, one config key, one route),
 
 - [If candidates exist, list each as: `Term` — suggested action; short description; evidence; why it matters.]
 - [If existing context may be stale, state the current context wording and the code evidence that may contradict it.]
-- [End with: "Reply with the term names to approve, wording changes, or `approve all` if these should be applied to CONTEXT.md."]
+- [End with: "Reply with the term names to approve, wording changes, `approve all`, or `skip context updates`."]
 - [If no candidates: "No candidate CONTEXT.md term updates found."]
 
 ## 7. Risks, Gaps, And Recommended Next Checks
