@@ -89,6 +89,22 @@ Write for a frontier agentic model — capable, tool-using, able to plan. That m
   fit the job's decision-making. Long examples, per-runtime mappings, and
   worked input/output pairs belong in `references/` where the model loads them
   on demand.
+- **State each rule once, where it binds.** A rule repeated in Purpose, Rules,
+  Workflow, and Output is four chances to drift apart. Put it at the point the
+  model acts on it; elsewhere, trust it.
+
+### How skills rot (prune for these in review)
+
+- **Sediment** — stale layers that settle because adding always feels safer
+  than deleting. Every edit should ask what it replaces.
+- **Sprawl** — the skill grows past its trigger scope until it half-covers a
+  sibling's job. Split or refuse.
+- **Duplication** — the same rule in multiple sections (or multiple skills
+  beyond the deliberate self-contained-install copies), drifting independently.
+- **No-op lines** — sentences the model obeys by default. Zero behavior change,
+  pure token cost.
+- **Premature-completion bait** — vague done-ness ("make sure it works") that
+  lets a run stop early. Completion criteria must be checkable and exhaustive.
 
 ### Kit contract — invariants every skill must respect
 

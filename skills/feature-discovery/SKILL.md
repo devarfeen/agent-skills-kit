@@ -7,7 +7,9 @@ description: Use when the user asks to investigate, audit, trace, or explain how
 
 ## Purpose
 
-Perform a read-only discovery pass over one or more projects. Explain what the requested topic does, how it works, where it is used, and why it may have been needed. Return the discovery report in chat only.
+Perform a read-only discovery pass over one or more projects. Explain what the
+requested topic does, how it works, where it is used, and why it may have been
+needed. Return the discovery report in chat only.
 
 Use this skill for prompts shaped like:
 
@@ -20,40 +22,66 @@ What:
 
 ## Rules
 
-- Stay read-only during discovery. Do not edit code, config, docs, native memory, ADRs, prompts, issues, generated artifacts, or discovery files while discovering.
-- Never create or update `docs/discovery/` files. Discovery output is chat-only.
-- `CONTEXT.md` edits and any artifact edits are separate follow-up actions. Before editing, show the exact file(s), proposed text or section changes, and reason. Only edit after explicit approval.
-- Prefer CLI tools over MCP for codebase evidence.
-- Use `rg` first for text search.
-- Use `git`, `git grep`, `find`, `gh`, package metadata, local docs, issues, and tests as needed.
-- Keep discovery scope thin. If intake spans many workflows or projects, split into slices and discover the first slice before expanding.
-- Keep the human in charge. Discovery questions are for blocking clarifications only, not open-ended interrogation.
-- Prefer code-as-source-of-truth over prose docs when evidence conflicts.
-- When the runtime supports subagents and the user has allowed them, act as the orchestrator: dispatch read-only **Explorer** lanes for independent codebase discovery and **Researcher** lanes for external docs or dependency source. Use local subagents only — never cloud agents. See the `agents-md` `tool-calling.md` reference for the role-to-mechanism map per runtime.
-- Run independent Explorer/Researcher lanes in parallel — by project, module, or evidence stream — and push long scans to local background where the runtime supports it.
-- Keep the main session responsible for synthesis, evidence quality, uncertainty calls, conflict resolution, and final reporting. Subagents return summaries, not raw transcripts.
-- Do not run `git fetch`, `git pull`, installs, migrations, or destructive commands.
-- Scan the codebase before using git history.
-- Do not write `docs/discovery/` files. Do not read legacy discovery files unless the user explicitly asks you to use a specific file. Discovery files can be stale; prefer current code, ADRs, CONTEXT, issues, tests, and fresh search.
-- Check available context before doing broad GitHub issue discovery. Context can include the current conversation, AGENTS.md, `<artifacts-root>/CONTEXT.md`, ADRs under `<artifacts-root>/docs/adr/`, local docs, local issue caches, prior issue references, and prompt context.
-- If external dependency internals are critical and local evidence is insufficient, optionally fetch targeted dependency source with `opensrc` and cite concrete files/functions. Keep fetch scope minimal.
-- If available context identifies relevant GitHub issue numbers, URLs, titles, labels, milestones, or search terms, read all GitHub issues in that bounded set.
-- If no reliable context exists for the topic, ask the user for approval before scanning broadly across GitHub issues. Explain that reading all related issues can take a long time.
-- If approval for broad GitHub issue scanning is not granted, continue with code, docs, tests, local context, and git history, and state that broad GitHub issue scanning was skipped.
-- Review git commits only when code scanning does not explain the topic clearly.
-- If git history is needed, review only the last 2 months.
-- Back concrete claims with file paths, symbols, commands, tests, docs, GitHub issues, or commits.
-- Separate confirmed facts from inference.
-- Do not invent context or rationale.
-- When code exploration reveals domain terms, compare them with available `CONTEXT.md` content and flag missing, stale, renamed, overloaded, or ambiguous terms.
-- Candidate context terms must be meaningful to product or domain experts: roles, workflows, states, business rules, events, integrations, user-facing concepts, or project-specific names. Skip generic programming terms, helper names, low-level class names, and package names unless they carry domain meaning.
-- Classify unresolved unknowns by fidelity:
-  - Grillable (low fidelity): keep as concise open decisions for `/feature-prompt` or `/grill-with-docs`.
-  - Ungrillable (high fidelity, "needs to feel/see it"): recommend `/handoff` + `/prototype` instead of speculative discovery.
-- Flag duplication risks explicitly: when similar behavior exists in multiple paths, call out likely seam reuse opportunities for the next planning step.
-- Treat `~120K` tokens as a context-budget caution point for planning-heavy sessions. If unresolved core unknowns remain near this point, stop and recommend scope split or handoff.
-- Do not give the final discovery report until findings have passed two validation scans.
-- End the chat report with `Suggested next skills (optional)` containing 1-6 recommendations. Keep them advisory only (no gating) and base them on findings plus the workspace workflow.
+**Read-only, chat-only.**
+
+- Do not edit code, config, docs, native memory, ADRs, prompts, issues, or
+  generated artifacts while discovering. `CONTEXT.md` and artifact edits happen
+  only as the approved follow-up in workflow step 9.
+- Never create `docs/discovery/` files, and do not read legacy discovery files
+  unless the user names a specific one — they go stale; prefer current code,
+  ADRs, CONTEXT, issues, tests, and fresh search.
+- Do not run `git fetch`, `git pull`, installs, migrations, or destructive
+  commands.
+
+**Evidence.**
+
+- Code is the source of truth when evidence conflicts with prose docs.
+- Use `rg` first for text search; prefer CLI tools over MCP for codebase
+  evidence. Use `git`, `git grep`, `find`, `gh`, package metadata, local docs,
+  issues, and tests as needed.
+- Scan the codebase before git history. Use history only when code scanning
+  does not explain the topic, and review only the last 2 months — to explain
+  why or when behavior changed, not as primary truth.
+- If external dependency internals are critical and local evidence is
+  insufficient, optionally fetch targeted dependency source with `opensrc` and
+  cite concrete files/functions. Keep fetch scope minimal.
+- Back every concrete claim with file paths, symbols, commands, tests, docs,
+  GitHub issues, or commits. Separate confirmed facts from inference. Do not
+  invent context or rationale.
+
+**Scope and steering.**
+
+- Keep discovery scope thin. If intake spans many workflows or projects, split
+  into slices and discover the first slice before expanding.
+- The human stays in charge. Discovery questions are for blocking
+  clarifications only, not open-ended interrogation.
+- Classify unresolved unknowns by fidelity: grillable (low fidelity) stays as
+  concise open decisions for `/feature-prompt` or `/grill-with-docs`;
+  ungrillable ("needs to feel/see it") routes to `/handoff` + `/prototype`
+  instead of speculative discovery.
+- Flag duplication risks explicitly: when similar behavior exists in multiple
+  paths, call out likely seam-reuse opportunities for the next planning step.
+- Treat `~120K` tokens as a context-budget caution point. If unresolved core
+  unknowns remain near it, stop and recommend a scope split or handoff.
+
+**Sub-agents (when the runtime supports them and the user allows).**
+
+- Act as the orchestrator: dispatch read-only **Explorer** lanes for codebase
+  discovery and **Researcher** lanes for external docs or dependency source —
+  local subagents only, never cloud. Split lanes by project, module, or
+  evidence stream; push long scans to local background where supported.
+- Lanes return file paths, symbols, commands, and uncertainty — summaries, not
+  transcripts. The main session owns synthesis, evidence quality, uncertainty
+  calls, conflict resolution, and the final report.
+
+**Candidate context terms.**
+
+- When exploration reveals domain terms, compare them with `CONTEXT.md` and
+  flag missing, stale, renamed, overloaded, or ambiguous ones.
+- Candidates must be meaningful to product or domain experts: roles, workflows,
+  states, business rules, events, integrations, user-facing concepts, or
+  project-specific names. Skip generic programming terms, helper names,
+  low-level class names, and package names unless they carry domain meaning.
 
 ## Discovery Lens
 
@@ -81,8 +109,7 @@ Avoid these failure modes:
 ## Workflow
 
 1. Parse the request:
-   - Identify project codes from `Projects Affected`.
-   - Identify the topic from `What`.
+   - Identify project codes from `Projects Affected` and the topic from `What`.
    - Note explicit constraints, dates, branches, modules, or terms.
 
 2. Locate project roots:
@@ -91,62 +118,39 @@ Avoid these failure modes:
    - If a project code cannot be mapped, state that early and continue best-effort.
 
 3. Discover the topic:
-   - Search exact terms from `What`.
-   - Search likely aliases, route names, component names, API paths, config keys, env vars, table names, filenames, and test names.
-   - Trace definitions to callers.
-   - Trace user-facing flows from entry points to lower-level services.
+   - Search exact terms from `What`, then likely aliases, route names, component names, API paths, config keys, env vars, table names, filenames, and test names.
+   - Trace definitions to callers, and user-facing flows from entry points to lower-level services.
    - Include tests, docs, configs, migrations, routes, background jobs, and feature flags when relevant.
-   - Keep notes under the Discovery Lens: behavior, boundary, evidence, risk, uncertainty, and next action.
-   - If using Explorer/Researcher lanes, split work by project, module, or evidence type and require each lane to return file paths, symbols, commands, and uncertainty (summaries, not raw transcripts).
+   - Keep notes under the Discovery Lens.
 
-4. Discover related context and GitHub issues:
-   - First inspect available context for issue references or topic clues. Search AGENTS.md, `<artifacts-root>/CONTEXT.md`, ADRs under `<artifacts-root>/docs/adr/`, docs, local issue folders, and prior prompt context.
-   - If context gives a bounded GitHub issue set, read every issue in that set with `gh issue view` or equivalent.
-   - If context gives reliable labels, milestones, titles, or exact search terms, use them to perform a bounded GitHub issue search and read every matching issue that is plausibly related.
-   - If context does not exist or is too vague to bound the search, pause and ask the user to approve a broad GitHub issue scan before running it.
+4. Discover related context and GitHub issues (bounded, or not at all):
+   - First inspect available context for issue references or topic clues: the conversation, `AGENTS.md`, `<artifacts-root>/CONTEXT.md`, ADRs under `<artifacts-root>/docs/adr/`, local docs, local issue caches, and prior prompt context.
+   - If context gives a bounded issue set, read every issue in it (`gh issue view`). If it gives reliable labels, milestones, titles, or exact search terms, run a bounded search and read every plausibly related match.
+   - If context cannot bound the search, pause and ask the user to approve a broad GitHub issue scan first — explain that it can take a long time. Not granted → continue with code, docs, tests, local context, and history, and state that broad scanning was skipped.
    - Summarize which issues were read, which were excluded as unrelated, and whether broad scanning was skipped.
 
 5. Track candidate `CONTEXT.md` terms:
-   - Locate the relevant `CONTEXT.md` by checking the project root, workspace root, root `CONTEXT-MAP.md`, and nearby docs.
-   - Compare discovered domain terms against existing context language.
-   - For each candidate, capture:
-     - **Term:** the current code or product term.
-     - **Suggested action:** add, clarify, rename, deprecate, or ask user.
-     - **Short description:** one sentence grounded in observed code behavior.
-     - **Evidence:** file paths, symbols, routes, configs, tests, issues, or docs.
-     - **Why it matters:** how missing or stale context could confuse future planning or implementation.
-   - Prefer a small, high-confidence list over a broad glossary dump.
-   - If no relevant `CONTEXT.md` exists, still report candidate terms and recommend creating or locating the context file before editing.
+   - Locate the relevant `CONTEXT.md` (project root, workspace root, root `CONTEXT-MAP.md`, nearby docs).
+   - For each candidate capture: **Term**, **Suggested action** (add, clarify, rename, deprecate, or ask user), a one-sentence **description** grounded in observed code behavior, **Evidence** refs, and **Why it matters** for future planning.
+   - Prefer a small, high-confidence list over a glossary dump. If no relevant `CONTEXT.md` exists, still report candidates and recommend creating or locating the file before editing.
 
-6. Use git history only if needed:
-   - Limit to the last 2 months.
-   - Look for commits touching discovered files or mentioning the topic.
-   - Use commit history to explain why or when behavior changed, not as the primary source of truth.
+6. Use git history only if needed (per the Evidence rules: last 2 months, explanatory not primary).
 
 7. Validate findings twice:
-   - First pass: cross-check the main explanation against code, tests, docs, configs, usage sites, available context, related GitHub issues, and git history where used.
-   - Second pass: repeat the scan with aliases and reverse lookups, re-open the strongest evidence, look for contradictory code paths, issue comments, docs, commits, and stale assumptions, then tighten or downgrade claims.
-   - Validate candidate context terms against `CONTEXT.md` and the strongest code evidence before presenting them.
-   - Check for the common discovery mistakes and correct the report before presenting it.
-   - Mark dead code, unclear ownership, missing tests, contradictory evidence, skipped issue scans, stale context terms, and unverified assumptions.
-   - Avoid broad claims when evidence is partial.
-   - Keep a short validation note for the final report that states what was checked in each pass.
+   - Pass 1: cross-check the main explanation against code, tests, docs, configs, usage sites, available context, related issues, and any history used.
+   - Pass 2: repeat with aliases and reverse lookups, re-open the strongest evidence, hunt contradictory code paths, issue comments, docs, commits, and stale assumptions — then tighten or downgrade claims.
+   - Validate candidate terms against `CONTEXT.md` and the strongest code evidence.
+   - Check the Common Discovery Mistakes list and correct the report before presenting.
+   - Mark dead code, unclear ownership, missing tests, contradictions, skipped issue scans, stale context terms, and unverified assumptions. Avoid broad claims on partial evidence.
+   - Keep a short validation note stating what each pass checked.
 
-8. Present the discovery report:
-   - Return the full report in chat.
-   - Do not save it to disk.
-   - Do not create `docs/discovery/`.
-   - Include validation and suggested next skills.
-   - State whether broad GitHub issue scanning was approved, bounded by context, skipped, or unavailable.
+8. Present the discovery report in chat, using the Output Format below. The bar: another engineer should come away knowing what the thing is, what it does, how it works, where it is used, what evidence supports that, and what remains uncertain.
 
 9. Update `CONTEXT.md` or other artifacts only after approval:
-   - After the chat report, if terms or artifacts need updates, show the exact target path(s), proposed text/section changes, and reason for each change.
-   - Wait for explicit approval before editing.
-   - If the user approves terms, inspect the target `CONTEXT.md` structure and preserve its style.
-   - Apply only the approved additions, clarifications, renames, deprecations, or artifact edits.
-   - Keep descriptions short and evidence-backed. Do not add implementation-only symbols as domain language.
+   - Show the exact target path(s), proposed text/section changes, and the reason for each. Wait for explicit approval.
+   - Apply only approved additions, clarifications, renames, or deprecations; preserve the file's existing structure and style; keep descriptions short and evidence-backed; never add implementation-only symbols as domain language.
+   - Use the user's wording when they edit yours — unless it conflicts with code evidence; explain the mismatch before editing.
    - Report exactly which terms changed and which file was edited.
-   - If the user approves with edits to wording, use the user's wording unless it conflicts with code evidence; if it conflicts, explain the mismatch before editing.
 
 ## Search Defaults
 
@@ -163,7 +167,7 @@ git log --since="2 months ago" --oneline --all -- <relevant-path>
 
 ## Output Format
 
-Use this structure exactly for the chat report. Do not save the report to disk. State if any validation or issue scan was skipped.
+Use this structure exactly for the chat report. State if any validation or issue scan was skipped.
 
 ```markdown
 # Feature Discovery: [Topic]
@@ -235,14 +239,3 @@ Prefer concise evidence bullets:
 - GitHub issue `#123`: records the requested behavior and acceptance criteria.
 - Commit `abc1234` from 2026-04-12: introduced the feature flag.
 ```
-
-## Quality Bar
-
-The final answer should let another engineer understand:
-
-- what the thing is
-- what it does
-- how it works
-- where it is used
-- what evidence supports the explanation
-- what remains uncertain
