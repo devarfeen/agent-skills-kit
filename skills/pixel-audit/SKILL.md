@@ -36,7 +36,7 @@ Per the kit's retrieval order (`CONTEXT.md` + `docs/adr/` are binding), before t
 
 1. **Map the page.** Find the routes, view/template/component files, partials, the states in scope, the data it renders, and the reusable DS components it should use. Open the project's component preview (e.g. `/ui/preview/all`) if it has one, to know what already exists.
 2. **State how source reaches the browser.** Identify the build/asset pipeline, cache, container/service, and served assets — how a class/style/component change actually gets onto the page. You will cross this pipeline on every fix.
-3. **Capture the source of truth as a written PIXEL INVENTORY — before editing.** Per node/region (frame, panel, card, row, filter, tab, modal, field, button, and every empty/error/loading/responsive variant), capture it **full-size including below the fold** — never rely on a single whole-frame screenshot. Record exact `x`/`y`, size, spacing, padding, gap, font, colour, border, radius, fill, icon size, alignment, opacity, shadow, and variant.
+3. **Capture the source of truth as a written PIXEL INVENTORY — before editing.** Per node/region (frame, panel, card, row, filter, tab, modal, field, button, and every empty/error/loading/responsive variant), capture it **full-size including below the fold** — never rely on a single whole-frame screenshot. Record exact `x`/`y`, size, spacing, padding, gap, font, colour, border, radius, fill, icon size, alignment, opacity, shadow, and variant. Where Expected values come from: with Figma MCP, read them from node metadata/variables (exact); with reference screens, measure from the screens and mark them approximate — the gate then proves relative alignment and consistency rather than absolute pixels. Concrete capture calls per source live in [`references/evidence-capture.md`](references/evidence-capture.md).
 4. **Audit expected (source) vs actual (browser).** For each node/state, classify each mismatch:
    - **MISSING** — a source item/state is absent or wrong in the app.
    - **EXTRA** — an app item/state that is not in the source.
@@ -82,7 +82,7 @@ This gate is the point of the skill. Never weaken it. "Verified/done/fixed" is a
 
 - **State the env:** host, URL, container/service, browser/session.
 - **Cross the build pipeline:** rebuild/refresh after every template/CSS/class/component change, and **confirm the changed classes/styles/components actually exist in the SERVED assets** (not just the source files).
-- **Prove each fix with element-level evidence:** selector/ref, `getBoundingClientRect()`, the relevant computed styles, the DOM, and a zoomed/clipped element screenshot when alignment matters. Full-page screenshots are overview only. Capture this with the agent-browser companion (or the runtime's equivalent browser automation); if no browser automation is available, say so, list the pending checks as manual steps for the user, and do not mark any row `verified` on assumption.
+- **Prove each fix with element-level evidence:** selector/ref, `getBoundingClientRect()`, the relevant computed styles, the DOM, and a zoomed/clipped element screenshot when alignment matters. Full-page screenshots are overview only. Capture this with the agent-browser companion (or the runtime's equivalent browser automation) — the clause-by-clause capture recipes are in [`references/evidence-capture.md`](references/evidence-capture.md). If no browser automation is available, say so, list the pending checks as manual steps for the user, and do not mark any row `verified` on assumption.
 - **These count as failure:** hidden, zero-size, collapsed, clipped, misaligned, wrong-size, or ignored-class elements.
 - **Try to falsify before declaring verified.** Actively look for the ways the fix could be wrong (wrong breakpoint, stale asset, class not applied, element off-screen) and rule them out.
 - **Do not say "verified / done / fixed" unless ALL hold:** env stated · build pipeline crossed · served assets contain the change · browser has element proof · source captured full-size · expected-vs-actual compared · every in-scope state checked.
@@ -91,13 +91,12 @@ A row is `verified` only when its fix clears every clause above; otherwise it st
 
 ## Rules (non-negotiables)
 
+Scope, reuse-never-inline, and the design-system boundary are stated where they bind (Inputs, Load first, Fixing, Purpose). Beyond those:
+
 - **Suggest, never auto-chain.** After the audit, suggest `/review` then `/commit-push-close` / `/commit-push-pr`, and stop. Never start unrelated work.
-- **Stay strictly inside SCOPE.** One page and its listed states. Never edit other pages, routes, or steps.
 - **Decisions are artifacts.** The pixel inventory and defect list live on disk, not in chat.
 - **Name the full PROJECT-CODE** from the Project Matrix everywhere. Never carry one project's conventions into another; adapt to the target stack.
-- **Reuse the project UI library; never inline.** Shared-component changes go through the library + preview + `*-ui-coding` skill, then get consumed.
-- **Per-page, feature-time conformance only.** This is distinct from `/design-system`'s startup preview verification — reference it, don't duplicate it.
-- **Local-only.** Local creds, local browser, read-only sub-agents for mapping if used; main agent owns synthesis and the gate. No cloud agents.
+- **Local-only.** Local creds, local browser; read-only sub-agents for mapping only when the user has allowed them; main agent owns synthesis and the gate. No cloud agents.
 - **Emit `Stage / Found / Next / Needs user`** at each phase change (mapped → inventory captured → audited → fixing → verified).
 
 ## Output
