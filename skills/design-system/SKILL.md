@@ -1,6 +1,6 @@
 ---
 name: design-system
-description: Project start-off skill, run once per UI project after /agents-md and setup; re-run `extend` as the design grows or to fold a shipped page's UI back into the library. Turns a provided design system — a Figma file, written spec/brand guide, reference screens, or a guided-definition session — into named tokens, a real UI library, a verifiable preview page, docs under docs/design-system/, and a short binding AGENTS.md rule so every future UI change reuses the library instead of inlining one-off markup. Stack-adaptive via the Project Matrix. A design-system source is required — never fabricated. Never auto-chains.
+description: Project start-off skill, run once per UI project after /agents-md and setup; re-run `extend` as the design grows or to fold a shipped page's UI back into the library. Turns a provided design system — a Figma file, written spec/brand guide, reference screens, or a guided-definition session — into named tokens, a real UI library, a verifiable preview page, docs under docs/design-system/, and a binding AGENTS.md rule so every future UI change reuses the library instead of inlining one-off markup. Stack-adaptive via the Project Matrix. A design-system source is required — never fabricated. Never auto-chains.
 ---
 
 # Design System
@@ -12,10 +12,10 @@ A Workflow-A (project start-off) skill. It turns a project's design system into 
 1. a real **UI library** (tokens + reusable components) in the target's stack idiom,
 2. a **preview page** the user can eyeball to verify it,
 3. **documentation under `docs/design-system/`** (the durable record — source, tokens, component inventory, rules),
-4. a short **binding reference in AGENTS.md** so every future UI change routes through the library (the consumption rule under Rules below), and
-5. a seeded **`<project-slug>-ui-coding` project skill** so later UI work loads the library-first rules automatically (see Seed the project skill, below).
+4. a short **binding reference in AGENTS.md** so every future UI change routes through the library, and
+5. a seeded **`<project-slug>-ui-coding` project skill** so later UI work loads the library-first rules automatically.
 
-Run it once per project, after `/agents-md` → `/setup-matt-pocock-skills` → placeholder fill. Re-run it in `extend` mode when one of its three triggers fires (see the extend mode below).
+Run it once per project, after `/agents-md` → `/setup-matt-pocock-skills` → placeholder fill. Re-run it in `extend` mode when one of its three triggers fires (see extend below).
 
 ## Prerequisites
 
@@ -46,18 +46,16 @@ Read the target's stack from the matrix / `AGENTS.md`, then emit in that idiom. 
 
 For anything not listed, map to the closest of these three by how the target renders UI.
 
-## Rules (non-negotiables)
+## Conventions
 
-- **Suggest, never auto-chain.** After `bootstrap`, suggest verifying the preview and then beginning Workflow B. Then stop. Never start feature work here.
-- **Design-system source is required.** The guided-definition path must end in explicit user approval before any component is built (per-component reference rules live in the consumption rule below).
-- **Decisions are artifacts.** Tokens, library, preview, the `docs/design-system/` doc, the AGENTS.md reference, and the seeded project skill all live on disk — not in chat.
-- **AGENTS.md holds a reference only.** The full design-system documentation lives under the configured docs location (`docs/design-system/`); AGENTS.md points to it and states the binding rule. Keep the AGENTS.md entry terse, the way `/agents-md` structures that file.
-- **On any UI change, the library is checked first.** The binding reference routes every UI fix/change through the library: reuse an existing component; if it's missing, build it via `/design-system` (extend) from the design-system source; if no reference exists for that component, ask the user for one. Never inline a one-off, never fabricate a component without a reference.
+These bind in every mode; the mode sections below own their remaining rules where they apply:
+
 - **Name the full PROJECT-CODE** from the Project Matrix everywhere. Never carry one project's conventions, tokens, or components into another; adapt to the target stack.
-- **Verification is the preview page — rendered with evidence, then eyeballed by the user.** Building the library is not "done" until the preview demonstrably renders (agent evidence) and the user has looked at it; if the user is away, record the eyeball as pending and say so. Per-page pixel conformance *during feature work* is `/pixel-audit`'s job — reference it, do not duplicate it here.
+- **Decisions are artifacts.** Tokens, library, preview, the `docs/design-system/` doc, the AGENTS.md reference, and the seeded project skill all live on disk — not in chat.
 - **Never hardcode locations.** Resolve artifact and docs paths from the target's stack conventions and the setup decisions; record the real paths in the doc, the AGENTS.md reference, and the project skill.
-- **Emit `Stage / Found / Next / Needs user`** at each phase transition.
 - **Local-only.** Read-only sub-agents for extraction/survey are fine when the user has allowed them; the main agent owns synthesis. No cloud agents.
+- **Emit `Stage / Found / Next / Needs user`** at each phase transition.
+- **Suggest, never auto-chain.** Recommend the next step and stop. Never start feature work here.
 
 ## Modes
 
@@ -65,33 +63,22 @@ For anything not listed, map to the closest of these three by how the target ren
 
 Full first run. If the target already has a design-system doc or library, this is not a first run — switch to `extend` and update in place instead of rebuilding over it. Produce the artifacts in order:
 
-1. **Extract the design system** from the source (Figma via MCP, spec, reference screens, or the approved guided session). Capture the token set and the base component list with their states.
+1. **Extract the design system** from the source (Figma via MCP, spec, reference screens, or the approved guided session). Capture the token set and the base component list with their states. The guided-definition path must end in explicit user approval before any component is built.
 2. **Theme / tokens** — write colours, typography, spacing, radii, and shadows as **named tokens** in the stack's native mechanism (CSS variables, Tailwind config `theme`, an RN theme object, etc.). Named, not hardcoded per use.
 3. **UI library** — build the base reusable components (buttons, inputs, selects, checkboxes/toggles, cards, alerts, badges, form sections, headings, …) faithfully to the source, built **from the tokens**, in the target's component idiom.
 4. **Preview page** — one page/route/screen that renders **every** component in its states: default, hover, focus, disabled, active; empty/loading/error where relevant; responsive. This is the verification gate, in two halves:
    - **Agent half — evidence first.** Build/serve the target, load the preview (agent-browser screenshot, or at minimum fetching the served HTML / rendered file — a status code alone can't show components), and compare what rendered against the extracted component inventory: every component appears, no error output. Quote the evidence (URL or file, status, screenshot path, components counted).
    - **Human half — the gate.** Show the user how to open it and ask them to eyeball it. If the user is away, state the preview location and the agent-half evidence, record the eyeball as pending in the phase update, and continue to the suggestions — never claim the design system verified until they have looked.
+   Per-page pixel conformance *during feature work* is `/pixel-audit`'s job — reference it, do not duplicate it here.
 5. **Document** the design system under `docs/design-system/` (see template), **add the short reference to AGENTS.md** (see template), and **seed the project skill** (see below).
 
 ### extend (re-run)
 
-Three triggers:
+Three triggers: the design system grew (e.g. a new component from Figma); a UI change needs a component the library lacks; **post-development feedback loop** — a page or feature just shipped and its UI should flow back into the library.
 
-- the design system grew (e.g. a new component from Figma);
-- a UI change needs a component the library lacks;
-- **post-development feedback loop** — a page or feature just shipped and its UI should flow back into the library.
+**On a UI change that needs a component:** check the library first. If the component **exists**, there's nothing to build — the feature reuses it; stop and say so. If it's **missing**, build it from the design-system source; if no reference covers it, **ask the user for a reference before building** — do not invent it.
 
-**On a UI change that needs a component (before/during development):**
-
-1. **Check the library first** for the needed component.
-2. If it **exists**, there's nothing to build — the feature reuses it; stop and say so.
-3. If it's **missing**, build it from the design-system source. If no reference covers it, **ask the user for a reference before building** — do not invent it.
-
-**Post-development feedback loop (after a page/feature ships):**
-
-1. Review the finished page's **diff** for UI that emerged or changed — new reusable components, altered tokens, new patterns or states.
-2. **Promote** each reusable piece into the library (build it from the shipped UI plus the design-system source).
-3. Leave **page-local one-off UI in place only when it's documented with a reason**, per the project skill's reuse-vs-new rule.
+**Post-development feedback loop:** review the finished page's **diff** for UI that emerged or changed, **promote** each reusable piece into the library (built from the shipped UI plus the design-system source), and leave page-local one-off UI in place only when it's documented with a reason, per the project skill's reuse-vs-new rule.
 
 **Always keep in sync.** Whichever trigger fired, update the **library, preview, `docs/design-system/` doc, AGENTS.md reference, and project `*-ui-coding` skill together** — a promoted or changed component must render in the preview and appear in the doc and project skill in the same pass.
 
@@ -202,18 +189,14 @@ Do not proceed past the suggestion.
 ## Checklist
 
 Before finishing:
-- [ ] TARGET PROJECT-CODE known; stack read from the Project Matrix / `AGENTS.md` (not guessed)
+
+- [ ] TARGET PROJECT-CODE known; stack read from the Project Matrix / `AGENTS.md`, not guessed (missing matrix → routed to `/agents-md`)
 - [ ] A real design-system source was used (Figma / spec / reference / guided-definition **approved by the user**) — nothing fabricated silently
-- [ ] Tokens written as named values in the stack's native mechanism (not hardcoded per use)
-- [ ] UI library built from the tokens, in the target's idiom, faithful to the source
-- [ ] Preview demonstrably renders — build/serve ran, the preview loaded (served HTML/file or screenshot quoted), and every extracted component appears in its states (default/hover/focus/disabled/active; empty/loading/error; responsive) — the stack-appropriate kind (route vs screen vs static file)
-- [ ] User was shown how to open the preview and asked to eyeball it; if the user was away, the pending eyeball is recorded in the phase update and nothing was claimed verified
-- [ ] Full documentation written to `<docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md`
-- [ ] AGENTS.md holds only a short PROJECT-CODE-keyed **reference** to that doc + the binding "on any UI change, check the library first" rule — not the full design system; updated in place on `extend`
-- [ ] `<project-slug>-ui-coding` project skill seeded, or an existing one updated (never overwritten)
-- [ ] `extend` kept library + preview + doc + AGENTS.md reference + project skill in sync; a missing component was built from a reference (asked the user when none existed), never invented
-- [ ] Post-development feedback loop (when that trigger fired): reviewed the shipped page's diff; promoted emergent reusable UI into the library; left page-local one-offs only when documented with a reason
-- [ ] `extend` updated the design system only — no commit, push, ADR, or handover (those stay `/grill-with-docs` and `/commit-push-*`)
-- [ ] No conventions carried in from another project; `/pixel-audit` referenced, not duplicated
-- [ ] Suggested the next step and stopped — no auto-chain, no feature work started
-- [ ] `Stage / Found / Next / Needs user` emitted
+- [ ] Tokens written as named values in the stack's native mechanism; library built from the tokens, in the target's idiom, faithful to the source
+- [ ] Preview demonstrably renders — build/serve ran, the preview loaded (served HTML/file or screenshot quoted), and every extracted component appears in its states (default/hover/focus/disabled/active; empty/loading/error; responsive)
+- [ ] User was shown how to open the preview and asked to eyeball it; if the user was away, the pending eyeball is recorded and nothing was claimed verified
+- [ ] Full documentation written to `<docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md`; AGENTS.md holds only the short PROJECT-CODE-keyed reference + binding library-first rule (updated in place on `extend`)
+- [ ] `<project-slug>-ui-coding` project skill seeded, or an existing one updated — never overwritten
+- [ ] `extend`: library + preview + doc + AGENTS.md reference + project skill updated together; a missing component was built from a reference (asked the user when none existed), never invented; nothing outside the design system touched — no commit, push, ADR, or handover
+- [ ] Post-development feedback loop (when that trigger fired): shipped page's diff reviewed; emergent reusable UI promoted; page-local one-offs left only when documented with a reason
+- [ ] No conventions carried in from another project; `/pixel-audit` referenced, not duplicated; suggested the next step and stopped — no auto-chain; `Stage / Found / Next / Needs user` emitted
