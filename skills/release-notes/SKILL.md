@@ -122,65 +122,23 @@ PM-facing change (Problem → Change → Impact).
 
 ## Output Format
 
-One markdown file, exactly this structure — Stakeholder Summary first, then a
-`---` rule, then Detailed Release Notes. Never put feature sections above a
-project heading or child sections outside a feature. This template is the
-single format source; the fill-in skeletons in
-[`assets/release-notes-template.md`](assets/release-notes-template.md) and
-[`assets/session-summary-template.md`](assets/session-summary-template.md)
-follow it, and worked input→output pairs live in
+One markdown file, filled from the asset skeletons — they are the single
+format source. Load the one matching the mode and fill it:
+
+- Date-based / date-range / feature mode →
+  [`assets/release-notes-template.md`](assets/release-notes-template.md)
+- Session summary →
+  [`assets/session-summary-template.md`](assets/session-summary-template.md)
+
+Worked input→output pairs live in
 [`references/examples.md`](references/examples.md) — load them when unsure how
 an entry should read.
 
-```markdown
-# Stakeholder Summary
+Rules for filling the skeleton:
 
-Date: <DD Month YYYY>
-
-<PROJECT-CODE>
-
-- <one sentence: what changed + why it matters>
-
----
-
-# Detailed Release Notes
-
-## <PROJECT-CODE>
-
-### <Feature or Improvement Name>
-
-**Summary**
-
-- <one sentence: what is now better in day-to-day operations>
-
-**Problem**
-
-- <what users or operations teams were experiencing before>
-
-**Change**
-
-- <what changed, in product/workflow language>
-- What changed where: <setting, page/screen, visible element, or route — only when the history names it>
-
-**Impact**
-
-- <concrete outcome>
-
-**Scope**
-
-- <who is affected and where the change applies>
-
-**Manual QA Steps**
-
-1. <Action> -> <Expected result>
-
-**Commits Included**
-
-- <hash>
-```
-
-Rules:
-
+- Stakeholder Summary first, then one `---` rule, then Detailed Release Notes.
+  Never put feature sections above a project heading or child sections outside
+  a feature.
 - **Stakeholder Summary** is the 30-second scan: `Date: DD Month YYYY` first
   (omit for undated session summaries), then each PROJECT-CODE as plain text on
   its own line (no heading syntax), then one bullet per feature combining
@@ -245,11 +203,12 @@ Mechanical pass first — scan the draft and fix every hit before judging tone:
 
 1. No rule-8 banned word/phrase appears anywhere; no bullet runs over 15 words;
    no Problem/Change/Impact section exceeds 2 content bullets.
-2. Structure and hierarchy match the Output Format exactly (one `---`, child
-   sections inside features, hashes only under **Commits Included**); only
-   changed projects are included; the file is saved to `docs/release-notes/`
-   with the `D-Month-YYYY` name, re-opened to confirm the saved structure
-   matches, and the reply states each saved file path.
+2. Structure and hierarchy match the loaded asset skeleton exactly (one `---`,
+   child sections inside features, hashes only under **Commits Included**);
+   only changed projects are included; the file is saved to
+   `docs/release-notes/` with the `D-Month-YYYY` name, re-opened to confirm
+   the saved structure matches the skeleton, and the reply states each saved
+   file path.
 
 Then the judgment pass:
 
