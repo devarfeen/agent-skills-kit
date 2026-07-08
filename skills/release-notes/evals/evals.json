@@ -42,7 +42,7 @@
   {
    "q": "Summarize this PR so I can review it faster",
    "expect": "no-trigger",
-   "route": "/review"
+   "route": "/code-review"
   },
   {
    "q": "Write the PR body for this change",

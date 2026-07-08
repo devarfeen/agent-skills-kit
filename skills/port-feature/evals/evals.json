@@ -77,7 +77,7 @@
   {
    "q": "Slice the port PRD into issues",
    "expect": "no-trigger",
-   "route": "/to-issues"
+   "route": "/to-tickets"
   },
   {
    "q": "Migrate the database from MySQL 5.7 to MySQL 8",

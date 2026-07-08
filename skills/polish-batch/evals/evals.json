@@ -52,7 +52,7 @@
   {
    "q": "The save button doesn't actually save — log it",
    "expect": "no-trigger",
-   "route": "/to-issues"
+   "route": "/to-tickets"
   },
   {
    "q": "Do a QA session and file issues as I report bugs",
@@ -72,7 +72,7 @@
   {
    "q": "Review the diff before shipping",
    "expect": "no-trigger",
-   "route": "/review"
+   "route": "/code-review"
   },
   {
    "q": "The API returns the wrong total on checkout",

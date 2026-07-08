@@ -57,7 +57,7 @@
   {
    "q": "Review this PR",
    "expect": "no-trigger",
-   "route": "/review"
+   "route": "/code-review"
   },
   {
    "q": "Summarize this PR for the changelog",
@@ -72,7 +72,7 @@
   {
    "q": "Split this PRD into issues",
    "expect": "no-trigger",
-   "route": "/to-issues"
+   "route": "/to-tickets"
   },
   {
    "q": "Grill me about this plan before I build it",

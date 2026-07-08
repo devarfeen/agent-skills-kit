@@ -47,7 +47,7 @@
   {
    "q": "Slice this PRD into issues",
    "expect": "no-trigger",
-   "route": "/to-issues"
+   "route": "/to-tickets"
   },
   {
    "q": "The web app breaks when the API deploys — find the root cause",
@@ -72,7 +72,7 @@
   {
    "q": "Draft the PRD for this feature",
    "expect": "no-trigger",
-   "route": "/to-prd"
+   "route": "/to-spec"
   },
   {
    "q": "Open a PR for the API change",

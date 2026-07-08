@@ -62,7 +62,7 @@
   {
    "q": "Slice the PRD into sub-issues first",
    "expect": "no-trigger",
-   "route": "/to-issues"
+   "route": "/to-tickets"
   },
   {
    "q": "Work this single issue test-first",
@@ -72,7 +72,7 @@
   {
    "q": "Review the worker's diff",
    "expect": "no-trigger",
-   "route": "/review"
+   "route": "/code-review"
   },
   {
    "q": "Generate release notes for what the workers shipped",

@@ -82,7 +82,7 @@
   {
    "q": "Review this PR's CSS changes",
    "expect": "no-trigger",
-   "route": "/review"
+   "route": "/code-review"
   },
   {
    "q": "Before we ship, walk the invoice page against Figma node 12:340 and fix anything that's off",

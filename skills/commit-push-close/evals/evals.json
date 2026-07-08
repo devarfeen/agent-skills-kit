@@ -77,12 +77,12 @@
   {
    "q": "Review my changes before I ship",
    "expect": "no-trigger",
-   "route": "/review"
+   "route": "/code-review"
   },
   {
    "q": "Create GitHub issues from this PRD",
    "expect": "no-trigger",
-   "route": "/to-issues"
+   "route": "/to-tickets"
   },
   {
    "q": "Ship this small fix — there's no issue for it yet",

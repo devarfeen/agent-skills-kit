@@ -47,12 +47,12 @@
   {
    "q": "Write the PRD for ADR-0042",
    "expect": "no-trigger",
-   "route": "/to-prd"
+   "route": "/to-spec"
   },
   {
    "q": "Slice this PRD into issues",
    "expect": "no-trigger",
-   "route": "/to-issues"
+   "route": "/to-tickets"
   },
   {
    "q": "Grill me on this plan before we build it",
@@ -100,7 +100,7 @@
   {
    "q": "Turn ADR-0017 into a prompt for the implementation agent",
    "expect": "no-trigger",
-   "route": "/to-prd"
+   "route": "/to-spec"
   }
  ],
  "last_run": {
