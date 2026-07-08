@@ -1,23 +1,23 @@
 ---
 name: orchestrate-herdr
-description: "Orchestrate herdr worker tabs for a PRD. Reads a PRD/issue URL, finds its open sub-issues, launches one herdr-managed worker tab per issue running a chosen coding CLI, then monitors the tabs until every issue is completed with test evidence, blocked, or errored. Use when running inside herdr (HERDR_ENV=1) and the user wants to fan a PRD out to per-issue workers."
+description: "Orchestrate herdr worker tabs for a spec (PRD). Reads a spec/issue URL, finds its open sub-issues, launches one herdr-managed worker tab per issue running a chosen coding CLI, then monitors the tabs until every issue is completed with test evidence, blocked, or errored. Use when running inside herdr (HERDR_ENV=1) and the user wants to fan a spec out to per-issue workers."
 ---
 
 # Orchestrate herdr
 
 ## Purpose
 
-Fan a PRD's open sub-issues out to one herdr-managed worker tab each, running a
+Fan a spec's open sub-issues out to one herdr-managed worker tab each, running a
 chosen coding CLI, and monitor them to test-backed completion. You are the
 **orchestrator**: you never implement, and you never close your own tab.
 
 ## Inputs
 
 Resolve both before anything else. Source order: skill args (a URL plus a CLI
-name, or `PRD_URL=... CODING_CLI=...`), then ask the user. Never guess; do not
-proceed until both are set.
+name, or `SPEC_URL=... CODING_CLI=...`; the legacy `PRD_URL=` key is accepted),
+then ask the user. Never guess; do not proceed until both are set.
 
-- **PRD_URL** — the PRD or parent issue whose open sub-issues become workers.
+- **SPEC_URL** — the spec (PRD) or parent issue whose open sub-issues become workers.
 - **CODING_CLI** — the full command that launches the coding CLI in each
   worker tab, including any launch flags the user wants — typically their
   auto-accept or permission-preset variant (e.g. `claude`, `codex`, or a
@@ -34,7 +34,7 @@ missing instead of stalling mid-run:
    mechanics). Load it now.
 3. `CODING_CLI` resolves on PATH, and `gh` is authenticated (`gh auth status`).
 4. **Leftover tabs:** if tabs named `[CODING_CLI] - GH #<n>` from a previous
-   run of this PRD already exist, ask whether to monitor those instead —
+   run of this spec already exist, ask whether to monitor those instead —
    re-running blindly creates a second tab per issue. If the user is away,
    monitor the existing tabs and create tabs only for open sub-issues that
    have none.
@@ -72,17 +72,17 @@ missing instead of stalling mid-run:
 - **Completion requires test evidence:** the worker's test command plus its
   quoted passing output, read from the tab. An unquoted "tests pass" stays
   incomplete.
-- **Suggest, never auto-chain.** After the final report, suggest `/review` on
+- **Suggest, never auto-chain.** After the final report, suggest `/code-review` on
   the workers' diffs or `/release-notes` for what shipped — suggest only,
   then stop.
 
 ## Workflow
 
-1. Read `PRD_URL`.
+1. Read `SPEC_URL`.
 2. **Discover open sub-issues:** prefer
    `gh api repos/<owner>/<repo>/issues/<n>/sub_issues`; fall back to task-list
-   checkboxes and "Tracked by" references in the PRD body. State the count
-   found and cross-check it against the PRD before creating any tab —
+   checkboxes and "Tracked by" references in the spec body. State the count
+   found and cross-check it against the spec before creating any tab —
    under-fanning silently drops slices.
 3. Save the current herdr workspace/session ID and working folder; every later
    step must confirm it is acting in that workspace and folder.
@@ -106,7 +106,7 @@ prompts submitted, any worker status change, final report.
 
 ## Worker prompt
 
-Each worker receives only its assigned issue — never the full PRD, never an
+Each worker receives only its assigned issue — never the full spec, never an
 identical bulk prompt:
 
 ```md
@@ -119,7 +119,7 @@ Infer project/repo context from the assigned issue.
 
 Use the installed test-first skill: `/tdd` when present, otherwise `/tdd-loop`.
 
-Do not work on the full PRD. Do not redo PRD orchestration. Do only the
+Do not work on the full spec. Do not redo spec orchestration. Do only the
 issue-level discovery this issue needs.
 
 Avoid unrelated changes.
@@ -160,7 +160,7 @@ every saved tab ID at least every 30–60 seconds.
 
 Report: workspace/session ID · working folder · tab ID map · assigned issues ·
 per-worker status · quoted test evidence · blocked/errored issues. Then
-suggest `/review` or `/release-notes` and stop.
+suggest `/code-review` or `/release-notes` and stop.
 
 ## Checklist
 
@@ -168,7 +168,7 @@ Before ending the run:
 
 - [ ] Pre-flight passed (HERDR_ENV, companion skill loaded, CLI on PATH, gh
       auth); leftover tabs and same-repo collisions resolved per Pre-flight
-- [ ] Sub-issue count stated and cross-checked against the PRD before fan-out
+- [ ] Sub-issue count stated and cross-checked against the spec before fan-out
 - [ ] One tab per open sub-issue, named `[CODING_CLI] - GH #<n>`, every tab ID
       saved at creation; every action used a saved ID
 - [ ] Every worker launched: CLI polled ready (≤60s), prompt pasted and
@@ -183,4 +183,4 @@ Before ending the run:
       issue titles edited
 - [ ] `Stage / Found / Next / Needs user` emitted at each transition; final
       report includes the full tab map and evidence
-- [ ] Suggested `/review` / `/release-notes`, then stopped — no auto-chain
+- [ ] Suggested `/code-review` / `/release-notes`, then stopped — no auto-chain
