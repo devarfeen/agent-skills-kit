@@ -82,7 +82,7 @@ Use these only when the user explicitly asks for highest/elevated/full/YOLO perm
 | Artifact | Location | Steward |
 | :--- | :--- | :--- |
 | `CONTEXT.md` | `<artifacts-root>` | `grill-with-docs` |
-| `docs/adr/` | `<artifacts-root>/docs/adr/` | `grill-with-docs` |
+| `specs/adr/` | `<artifacts-root>/specs/adr/` | `grill-with-docs` |
 
 Native CLI memory defaults: [`memory-global-defaults.md`](memory-global-defaults.md).
 

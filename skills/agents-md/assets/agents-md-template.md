@@ -1,4 +1,4 @@
-<!-- agents-md marker · v6 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v7 · re-run /agents-md to regenerate -->
 # Agent Instructions
 
 [one concise workspace intro inferred from the .code-workspace name and folder scan]
@@ -129,9 +129,11 @@ These are optional separate installs. Use them beside this kit when installed an
 
 Use `/ask-matt` when the user asks which Matt skill or flow fits. It routes over user-invoked Matt skills; it does not execute. Do not auto-run what it suggests.
 
-- Idea flow: `/grill-with-docs` → if runnable uncertainty, `/handoff` + `/prototype` + `/handoff` → for multi-session work, `/to-prd` then `/to-issues`.
-- Start a fresh session per sliced issue. Matt's flow uses `/implement`; this kit prefers `/tdd` when available.
-- `/triage` is for raw incoming issues only — not issues already created by `/to-issues`.
+- Idea flow: `/grill-with-docs` → if runnable uncertainty, `/handoff` + `/prototype` + `/handoff` → for multi-session work, `/to-spec` then `/to-tickets`.
+- An effort too big for one session (greenfield build, huge feature) → `/wayfinder` maps it as tickets on the tracker before any building.
+- Start a fresh session per ticket. Matt's flow works the ticket frontier with `/implement`; this kit prefers `/tdd` when available.
+- `/triage` is for raw incoming issues and external PRs only — not tickets already created by `/to-tickets`.
+- `/research` delegates primary-source reading to a background agent; it leaves a cited doc to grill or plan against.
 - `/improve-codebase-architecture` for codebase health; a chosen improvement becomes an idea for `/grill-with-docs`.
 - `/handoff` forks context into a new session. `/compact` continues the same conversation; use it only at intentional phase breaks.
 
@@ -141,8 +143,8 @@ Use `/ask-matt` when the user asks which Matt skill or flow fits. It routes over
 
 ### Retrieval order
 
-1. **Binding** — `CONTEXT.md` (<!-- set during setup: path to CONTEXT.md -->) and ADRs (<!-- set during setup: path to docs/adr -->). Read before implementing. These bind.
-2. **Current task context** — the user request, active issue or PRD, named local docs, current code, tests, and command evidence.
+1. **Binding** — `CONTEXT.md` (<!-- set during setup: path to CONTEXT.md -->) and ADRs (<!-- set during setup: path to specs/adr -->). Read before implementing. These bind.
+2. **Current task context** — the user request, active issue or spec, named local docs, current code, tests, and command evidence.
 3. **Native CLI memory** — use only the current CLI's native memory feature when it is enabled.
 
 ### Artifact policy
@@ -154,7 +156,7 @@ Use `/ask-matt` when the user asks which Matt skill or flow fits. It routes over
 
 ### Do not bulk-read
 
-- `docs/` is an on-demand archive, not reading material. Never load it wholesale.
+- `specs/` is an on-demand archive, not reading material. Never load it wholesale.
 - Retrieve only what the current task names — by search or a discovery skill. Reading the whole archive rots context and wastes tokens.
 
 ### Archived context
@@ -175,23 +177,24 @@ When the user triggers `/grill-with-docs`, ask up front — before the Q/A start
 
 Issue titles are findable from GitHub search and from the ADR filename. `<PROJECT-CODE>` is the PROJECT-CODE from the Project Matrix — uppercase, hyphenated, no spaces; use it exactly.
 
-**PRD issue** — title starts exactly with:
+**Spec issue** — title starts exactly with:
 
-`PRD: <PROJECT-CODE> ADR-<adr-number> <adr-name>`
+`Spec: <PROJECT-CODE> ADR-<adr-number> <adr-name>`
 
-- Derive `<adr-number>` and `<adr-name>` from the ADR filename in `docs/adr/` (without `.md`): `0042-stock-transfer-approvals.md` → `ADR-0042 stock-transfer-approvals`.
-- Example: `PRD: PAYMENTS ADR-0042 stock-transfer-approvals`
+- Derive `<adr-number>` and `<adr-name>` from the ADR filename in `specs/adr/` (without `.md`): `0042-stock-transfer-approvals.md` → `ADR-0042 stock-transfer-approvals`.
+- Example: `Spec: PAYMENTS ADR-0042 stock-transfer-approvals`
+- Issues titled `PRD: …` predate this naming; treat them as spec issues and do not retitle them.
 
-**PRD slice issue** — title starts exactly with:
+**Spec slice issue** — title starts exactly with:
 
-`Slice NNNN of <PROJECT-CODE> ADR-<adr-number> <adr-name> (#<prd-issue>): <Short heading>`
+`Slice NNNN of <PROJECT-CODE> ADR-<adr-number> <adr-name> (#<spec-issue>): <Short heading>`
 
-- `NNNN`: zero-padded four-digit slice number, local to that PRD, starting at `0001`.
-- `<prd-issue>`: GitHub issue number of the parent PRD.
+- `NNNN`: zero-padded four-digit slice number, local to that spec, starting at `0001`.
+- `<spec-issue>`: GitHub issue number of the parent spec.
 - `<Short heading>`: concise, action-oriented, scannable in an issue list.
 - Example: `Slice 0001 of PAYMENTS ADR-0042 stock-transfer-approvals (#4812): Add approval state model`
 
-**Non-PRD issue** — not tied to a PRD:
+**Non-spec issue** — not tied to a spec:
 
 `<PROJECT-CODE>: <short imperative heading>`
 
@@ -199,7 +202,7 @@ Issue titles are findable from GitHub search and from the ADR filename. `<PROJEC
 
 ## Output Style
 
-Chat only. Does not apply to code, docs, PRDs, release notes, PR bodies, or prompts.
+Chat only. Does not apply to code, docs, specs (PRDs), release notes, PR bodies, or prompts.
 
 ### 1. Plain-Language Chat
 

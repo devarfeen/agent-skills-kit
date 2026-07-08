@@ -25,21 +25,23 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | `/design-system` | kit | startup | once per UI project; re-run `extend` as the design grows | |
 | `/feature-discovery` | kit | discover | | |
 | `/port-feature` | kit | discover | reference → target gap map | |
+| `/research` | external | discover | delegable primary-source reading → cited doc | |
 | `/feature-prompt` | kit | sharpen | → prompt file | |
 | `/grill-with-docs` | external | plan | → ADR | |
-| `/to-prd` | external | plan | → PRD | |
+| `/to-spec` | external | plan | → spec (PRD) | |
+| `/wayfinder` | external | plan | work too big for one session — map tickets on the tracker first | |
 | `/prototype` | external | plan | spike ungrillable "needs to feel/see it" questions, then back to /grill-with-docs | |
 | `/handoff` | external | plan | fork context to a new session (pairs with /prototype) | |
-| `/to-issues` | external | slice | | |
+| `/to-tickets` | external | slice | | |
 | `/triage` | external | slice | existing/raw issues only — state repair, needs-info, wontfix, agent briefs | |
 | `/tdd` | external | implement | | |
 | `/tdd-loop` | kit | implement | standalone test-first loop + TDD exception protocol | |
-| `/orchestrate-herdr` | kit | implement | inside herdr only — fan a PRD out to worker tabs | |
-| `/review` | external | verify | | |
+| `/orchestrate-herdr` | kit | implement | inside herdr only — fan a spec (PRD) out to worker tabs | |
+| `/code-review` | external | verify | | |
 | `/diagnosing-bugs` | external | verify | | |
 | `/polish-batch` | kit | verify | cosmetic punch-list | |
 | `/pixel-audit` | kit | verify | per-page visual conformance | |
-| `/integration-contract` | kit | verify | multi-project seams — build after /to-issues, gate before the PRD ships | |
+| `/integration-contract` | kit | verify | multi-project seams — build after /to-tickets, gate before the spec ships | |
 | `/commit-push-close` | kit | ship | | |
 | `/commit-push-pr` | kit | ship | | |
 | `/release-notes` | kit | ship | | |

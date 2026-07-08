@@ -6,7 +6,7 @@
 
 Copy-paste snippets for **user-level** config. Merge into existing files; do not overwrite unrelated keys.
 
-This kit no longer creates repo `MEMORY.md`, wiki, discovery, or default knowledge-graph memory. Use each supported CLI's native memory only when that runtime provides it. Optional graph/index companions may be used when installed and task-fit, but their artifacts are not binding memory. Keep generated `AGENTS.md` as the shared workspace instruction file, and keep `CONTEXT.md` / `docs/adr/` as binding project context when those files exist.
+This kit no longer creates repo `MEMORY.md`, wiki, discovery, or default knowledge-graph memory. Use each supported CLI's native memory only when that runtime provides it. Optional graph/index companions may be used when installed and task-fit, but their artifacts are not binding memory. Keep generated `AGENTS.md` as the shared workspace instruction file, and keep `CONTEXT.md` / `specs/adr/` as binding project context when those files exist.
 
 ---
 
