@@ -131,7 +131,7 @@ Avoid these failure modes:
    - Keep notes under the Discovery Lens.
 
 4. Discover related context and GitHub issues (bounded, or not at all):
-   - First inspect available context for issue references or topic clues: the conversation, `AGENTS.md`, `<artifacts-root>/CONTEXT.md`, ADRs under `<artifacts-root>/docs/adr/`, local docs, local issue caches, and prior prompt context.
+   - First inspect available context for issue references or topic clues: the conversation, `AGENTS.md`, `<artifacts-root>/CONTEXT.md`, ADRs under `<artifacts-root>/specs/adr/`, local docs, local issue caches, and prior prompt context.
    - If context gives a bounded issue set, read every issue in it (`gh issue view`). If it gives reliable labels, milestones, titles, or exact search terms, run a bounded search and read every plausibly related match.
    - If context cannot bound the search, pause and ask the user to approve a broad GitHub issue scan first — explain that it can take a long time. Not granted (or the user is away) → continue with code, docs, tests, local context, and history, and state that broad scanning was skipped.
    - Summarize which issues were read, which were excluded as unrelated, and whether broad scanning was skipped.

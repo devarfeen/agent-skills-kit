@@ -161,21 +161,21 @@ Rules for filling the skeleton:
 
 ## File Output
 
-Save under `<artifacts-root>/docs/release-notes/`. Release notes are on-demand
+Save under `<artifacts-root>/specs/release-notes/`. Release notes are on-demand
 date files: they do **not** share the ADR/prompt `NNNN` sequence (ADRs live in
-`docs/adr/NNNN-<slug>.md`, prompts in `docs/prompts/NNNN-<slug>-prompt.md`).
+`specs/adr/NNNN-<slug>.md`, prompts in `specs/prompts/NNNN-<slug>-prompt.md`).
 
 Resolve `<artifacts-root>` in this order:
 
 1. **VS Code workspace (preferred):** the directory containing a
    `*.code-workspace` file found at or above cwd — all projects share one
-   `docs/release-notes/`.
+   `specs/release-notes/`.
 2. **Multi-context single repo:** with a root `CONTEXT-MAP.md`, the
-   `docs/release-notes/` of the context the change belongs to.
+   `specs/release-notes/` of the context the change belongs to.
 3. **Single repo:** the repo root.
 
 For multi-repo workspaces *without* a `.code-workspace` file, write one file
-per repo under that repo's own `docs/release-notes/`.
+per repo under that repo's own `specs/release-notes/`.
 
 Filenames — `D-Month-YYYY` (no leading zero, Title Case English month):
 
@@ -191,7 +191,7 @@ Filenames — `D-Month-YYYY` (no leading zero, Title Case English month):
 - "Today" / "current session" → the current local date.
 - Do not add `NNNN`, `-release-notes`, or a feature slug to the filename.
 
-Conflict handling: create `docs/release-notes/` lazily; overwrite a same-date
+Conflict handling: create `specs/release-notes/` lazily; overwrite a same-date
 file only if it contains purely generated content from this skill; if it has
 hand edits, show the diff and ask (overwrite, append/update, or abort) — and
 if the user is away, write a ` (2)`-suffixed sibling file instead and say so;
@@ -206,7 +206,7 @@ Mechanical pass first — scan the draft and fix every hit before judging tone:
 2. Structure and hierarchy match the loaded asset skeleton exactly (one `---`,
    child sections inside features, hashes only under **Commits Included**);
    only changed projects are included; the file is saved to
-   `docs/release-notes/` with the `D-Month-YYYY` name, re-opened to confirm
+   `specs/release-notes/` with the `D-Month-YYYY` name, re-opened to confirm
    the saved structure matches the skeleton, and the reply states each saved
    file path.
 

@@ -1,6 +1,6 @@
 ---
 name: feature-prompt
-description: Use when the user wants to turn a feature idea, change request, or rough requirement into a small prompt for grill-with-docs. When cheap repo exploration reveals domain terms missing from or stale in CONTEXT.md, surface those candidate terms for user approval before any context update. Post-decision artifacts route onward instead: turning an ADR into a PRD is /to-prd, and investigating how existing behaviour works is /feature-discovery.
+description: Use when the user wants to turn a feature idea, change request, or rough requirement into a small prompt for grill-with-docs. When cheap repo exploration reveals domain terms missing from or stale in CONTEXT.md, surface those candidate terms for user approval before any context update. Post-decision artifacts route onward instead: turning an ADR into a spec (PRD) is /to-spec, and investigating how existing behaviour works is /feature-discovery.
 ---
 
 # Feature Prompt
@@ -94,7 +94,7 @@ are normal sections. Emit `Known limits` and `Open questions` only when useful.
   before deep grilling continues.
 - Keep `Open questions` to the highest-leverage unknowns (usually 1-5). Drop
   trivia that can be decided during implementation.
-- Do not implement the feature, create a PRD, or edit ADRs. `CONTEXT.md`
+- Do not implement the feature, create a spec, or edit ADRs. `CONTEXT.md`
   changes happen only through the approved candidate-terms flow below.
 - Keep the final prompt spartan, direct, plain English — it is a generated
   artifact, never compressed shorthand.
@@ -134,7 +134,7 @@ Suggested next skills (optional):
 
 - /grill-with-docs: challenge assumptions, sharpen domain terms, and confirm decisions.
 - /handoff + /prototype: when open questions are ungrillable and need a higher-fidelity spike.
-- /to-prd: if this needs a formal spec after grilling.
+- /to-spec: if this needs a formal spec (PRD) after grilling.
 ```
 
 ## File Output
@@ -142,17 +142,17 @@ Suggested next skills (optional):
 ### Path
 
 ```text
-<artifacts-root>/docs/prompts/NNNN-<feature-slug>-prompt.md
+<artifacts-root>/specs/prompts/NNNN-<feature-slug>-prompt.md
 ```
 
 Resolve `<artifacts-root>`: (1) the directory containing a `*.code-workspace`
 file at or above cwd; (2) the per-context root in a multi-context repo
 (`CONTEXT-MAP.md` at root); (3) the single repo root.
 
-- **`NNNN`** — scan `<artifacts-root>/docs/adr/` and `docs/prompts/` for the
+- **`NNNN`** — scan `<artifacts-root>/specs/adr/` and `specs/prompts/` for the
   highest existing four-digit number and increment. This keeps prompt numbers
   from colliding with existing ADRs. ADRs are numbered independently by
-  `grill-with-docs` from `docs/adr/` alone, so the ADR born from this prompt
+  `grill-with-docs` from `specs/adr/` alone, so the ADR born from this prompt
   may carry a different number — the prompt path recorded in the ADR is the
   link, not the number.
 - **`<feature-slug>`** — kebab-case from `What is needed`, max 4 words, ASCII.
@@ -160,7 +160,7 @@ file at or above cwd; (2) the per-context root in a multi-context repo
 
 ### Conflict handling
 
-- Create `docs/prompts/` lazily. Never overwrite a number already used by
+- Create `specs/prompts/` lazily. Never overwrite a number already used by
   another artifact. Never delete unrelated files.
 - A prior same-slug prompt counts as **hand-edited** when git shows commits or
   working-tree changes to it that this session didn't make; if git can't tell
@@ -178,7 +178,7 @@ file must be drop-in usable as input to `grill-with-docs`.
 
 - [ ] Only the six allowed section headers appear, in contract order
 - [ ] `Project:` names the full Project Matrix code verbatim (when one exists)
-- [ ] `NNNN` unique across `docs/adr/` and `docs/prompts/`; slug ≤ 4 words,
+- [ ] `NNNN` unique across `specs/adr/` and `specs/prompts/`; slug ≤ 4 words,
       kebab-case ASCII, `-prompt` suffix
 - [ ] Split intake: deferred slices recorded under `Known limits`
 - [ ] File body is the prompt only — drop-in, no preface

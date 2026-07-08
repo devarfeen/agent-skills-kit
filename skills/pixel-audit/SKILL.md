@@ -27,9 +27,9 @@ Infer first from the request; interview the user only for what's missing:
 
 ## Load first
 
-Per the kit's retrieval order (`CONTEXT.md` + `docs/adr/` are binding), before touching anything:
+Per the kit's retrieval order (`CONTEXT.md` + `specs/adr/` are binding), before touching anything:
 
-- Read the project's **binding context**: `CONTEXT.md` and `docs/adr/` for the target.
+- Read the project's **binding context**: `CONTEXT.md` and `specs/adr/` for the target.
 - Read the project's **`*-ui-coding` skill** if it exists — that skill owns the component catalog, tokens, and gotchas. **Reuse its components; never inline.** If it's absent, fall back to design-system discovery (find the tokens, library, and preview from `/design-system`'s docs / the project code).
 
 ## Process
@@ -47,7 +47,7 @@ Per the kit's retrieval order (`CONTEXT.md` + `docs/adr/` are binding), before t
 Write the defect list to the configured docs location. Resolve `<artifacts-root>` the same way the other kit skills do: (1) the directory containing a `*.code-workspace` file if one exists, (2) the per-context root in a multi-context repo (`CONTEXT-MAP.md` at root), (3) the single repo root. The filename is keyed by PROJECT-CODE so two projects' same-named pages never collide at a shared workspace root:
 
 ```text
-<artifacts-root>/docs/pixel-audit/<TARGET-PROJECT-CODE>-<page-slug>-defects.md
+<artifacts-root>/specs/pixel-audit/<TARGET-PROJECT-CODE>-<page-slug>-defects.md
 ```
 
 The pixel inventory and element screenshots sit beside it, keyed the same way:
@@ -75,7 +75,7 @@ Scope: <route + states audited>
 ## Fixing
 
 - **One node/page/state at a time.** Do not batch unrelated fixes.
-- **A MISSING defect that needs behaviour, data, or interface work is a slice, not a style fix.** A wholly absent error/empty/loading state or a missing action usually needs logic — record the row, route it to `/to-issues`, and do not build it here (the same boundary `/polish-batch` draws).
+- **A MISSING defect that needs behaviour, data, or interface work is a slice, not a style fix.** A wholly absent error/empty/loading state or a missing action usually needs logic — record the row, route it to `/to-tickets`, and do not build it here (the same boundary `/polish-batch` draws).
 - **Reuse the project UI library's components.** No one-off UI unless justified and documented (per the `*-ui-coding` reuse-vs-new rule).
 - **If a shared component must change, change it in the library + its preview + the project `*-ui-coding` skill (via `/design-system` extend) — never patch it page-local — then consume it from the page.** Because other pages consume that component, confirm with the user before changing it on the evidence of this one page's frame — the frame may be the outlier, not the component. If the user is away, leave the row `open` under Needs user and continue with the other defects; never rewrite a shared component unattended.
 - **Touch nothing unrelated.** Stay strictly inside SCOPE. Cosmetic nits spotted on other pages or flows are captured with `/polish-batch`, never fixed here.
@@ -98,7 +98,7 @@ A row is `verified` only when its fix clears every clause above; otherwise it st
 
 Scope, reuse-never-inline, and the design-system boundary are stated where they bind (Inputs, Load first, Fixing, Purpose). Beyond those:
 
-- **Suggest, never auto-chain.** After the audit, suggest `/review` then `/commit-push-close` / `/commit-push-pr`, and stop. Never start unrelated work.
+- **Suggest, never auto-chain.** After the audit, suggest `/code-review` then `/commit-push-close` / `/commit-push-pr`, and stop. Never start unrelated work.
 - **Decisions are artifacts.** The pixel inventory and defect list live on disk, not in chat.
 - **Name the full PROJECT-CODE** from the Project Matrix everywhere. Never carry one project's conventions into another; adapt to the target stack.
 - **Local-only.** Local creds, local browser; read-only sub-agents for mapping only when the user has allowed them; main agent owns synthesis and the gate. No cloud agents.
@@ -109,13 +109,13 @@ Scope, reuse-never-inline, and the design-system boundary are stated where they 
 After the audit and in-scope fixes:
 
 ```markdown
-Stage: pixel-audit — audited <page-slug> (<TARGET-PROJECT-CODE>) vs <source of truth>; wrote docs/pixel-audit/<TARGET-PROJECT-CODE>-<page-slug>-defects.md.
+Stage: pixel-audit — audited <page-slug> (<TARGET-PROJECT-CODE>) vs <source of truth>; wrote specs/pixel-audit/<TARGET-PROJECT-CODE>-<page-slug>-defects.md.
 Found: <N> defects (<M> MISSING, <E> EXTRA); <V> verified, <R> reopened; <U> EXTRA items awaiting your decision.
-Next: /review the diff, then /commit-push-*. Reopened rows and EXTRA decisions stay for the next pass.
+Next: /code-review the diff, then /commit-push-*. Reopened rows and EXTRA decisions stay for the next pass.
 Needs user: <EXTRA items to decide (keep/remove/restyle), or blocked states, or "none">.
 
 Suggested next skills (optional):
-- /review: eyeball the in-scope diff before shipping.
+- /code-review: eyeball the in-scope diff before shipping.
 - /commit-push-pr (or /commit-push-close): ship the verified fixes.
 ```
 
@@ -130,10 +130,10 @@ Before claiming the page audited:
 - [ ] Asset/build pipeline identified (how a change reaches the served page)
 - [ ] Pixel inventory captured full-size incl. below-fold, per node/region/state — not whole-frame only — and written to `<TARGET-PROJECT-CODE>-<page-slug>-inventory.md`
 - [ ] Expected-vs-actual audited; each mismatch classified MISSING/EXTRA; EXTRA surfaced for decision, never silently changed
-- [ ] Defect list written to `<artifacts-root>/docs/pixel-audit/<TARGET-PROJECT-CODE>-<page-slug>-defects.md`, one row per defect with element-level evidence
-- [ ] Behaviour/data/interface-sized MISSING defects were routed to /to-issues, not built here; out-of-scope nits went to /polish-batch
+- [ ] Defect list written to `<artifacts-root>/specs/pixel-audit/<TARGET-PROJECT-CODE>-<page-slug>-defects.md`, one row per defect with element-level evidence
+- [ ] Behaviour/data/interface-sized MISSING defects were routed to /to-tickets, not built here; out-of-scope nits went to /polish-batch
 - [ ] Fixes done one node/state at a time, in scope; shared-component changes went through library + preview + `*-ui-coding`, not page-local
 - [ ] Verification gate cleared per fix: env stated · pipeline crossed · served assets contain change · element proof · source full-size · expected-vs-actual · every in-scope state — falsified first
 - [ ] No "verified" claimed without the full gate; reopened rows kept
-- [ ] Suggested `/review` → `/commit-push-*` and stopped — no auto-chain, nothing out of scope touched
+- [ ] Suggested `/code-review` → `/commit-push-*` and stopped — no auto-chain, nothing out of scope touched
 - [ ] `Stage / Found / Next / Needs user` emitted

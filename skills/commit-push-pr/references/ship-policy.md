@@ -53,7 +53,7 @@ When env keys are touched in any way (add/remove/rename/value-contract change), 
 
 ## Inline issue creation
 
-Inline issue creation is only for small ad hoc work that started from a short request with no linked GitHub issue. Planned work should already have gone through `/to-prd` and `/to-issues`; if a planned issue is missing, not ready, ambiguous, cross-project, or multi-slice, stop and route back to `/feature-prompt` or `/to-issues` instead of fabricating a ship-time issue. Use `/triage` only when an existing issue needs label/state repair, reporter follow-up, `ready-for-human`, `wontfix`, or an agent brief.
+Inline issue creation is only for small ad hoc work that started from a short request with no linked GitHub issue. Planned work should already have gone through `/to-spec` and `/to-tickets`; if a planned issue is missing, not ready, ambiguous, cross-project, or multi-slice, stop and route back to `/feature-prompt` or `/to-tickets` instead of fabricating a ship-time issue. Use `/triage` only when an existing issue needs label/state repair, reporter follow-up, `ready-for-human`, `wontfix`, or an agent brief.
 
 Do not use the ship flow to resolve planning ambiguity. If scope is still broad or unclear, route to `/feature-prompt` first. If blockers are high-fidelity ("needs to feel/see it"), route to `/handoff` + `/prototype` before returning to ship.
 
@@ -86,7 +86,7 @@ When the workflow can't locate an issue for valid ad hoc work, create one before
 Use the GitHub issue title as the naming anchor:
 
 - Existing issue: commit subject (and PR title, when shipping as a PR) should match the issue title as closely as practical.
-- PRD slice issue: preserve `Slice NNNN`, `<PROJECT-CODE>`, `ADR-<adr-number>`, `(#<prd-issue-number>)`, and the short heading. If the full `Slice NNNN of <PROJECT-CODE> ADR-<adr-number> <adr-name> (#<prd-issue-number>): <Short heading>` title is too long for a commit subject, shorten only the `<adr-name>` portion; keep the slice number, project code, ADR number, PRD issue number, and short heading intact.
+- Spec slice issue: preserve `Slice NNNN`, `<PROJECT-CODE>`, `ADR-<adr-number>`, `(#<spec-issue-number>)`, and the short heading. If the full `Slice NNNN of <PROJECT-CODE> ADR-<adr-number> <adr-name> (#<spec-issue-number>): <Short heading>` title is too long for a commit subject, shorten only the `<adr-name>` portion; keep the slice number, project code, ADR number, spec issue number, and short heading intact.
 - Ad hoc inline issue: the new issue title, commit subject, and PR title (when shipping as a PR) must be the same text unless a hard tool limit prevents it.
 - Never add `HITL:` or `AFK:` to any of these names.
 

@@ -84,7 +84,7 @@ Repeat per behavior, smallest slice first:
   [`references/summary-example.md`](references/summary-example.md) — that is
   the level of concreteness the summary must have.
 
-  Then suggest `/review`, then `/commit-push-close` or `/commit-push-pr` —
+  Then suggest `/code-review`, then `/commit-push-close` or `/commit-push-pr` —
   suggest only, never auto-chain. Name the full PROJECT-CODE when a Project
   Matrix exists.
 
