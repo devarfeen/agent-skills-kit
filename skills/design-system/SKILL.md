@@ -13,7 +13,7 @@ A Workflow-A (project start-off) skill. It turns a project's design system into 
 2. a **preview page** the user can eyeball to verify it,
 3. **documentation under `specs/design-system/`** (the durable record — source, tokens, component inventory, rules),
 4. a short **binding reference in AGENTS.md** so every future UI change routes through the library, and
-5. a seeded **`<project-slug>-ui-coding` project skill** so later UI work loads the library-first rules automatically.
+5. a seeded — or, when the project already has a UI skill, **adopted and extended** — **project UI skill** so later UI work loads the library-first rules automatically.
 
 Run it once per project, after `/agents-md` → `/setup-matt-pocock-skills` → placeholder fill. Re-run it in `extend` mode when one of its three triggers fires (see extend below).
 
@@ -70,7 +70,7 @@ Full first run. If the target already has a design-system doc or library, this i
    - **Agent half — evidence first.** Build/serve the target, load the preview (agent-browser screenshot, or at minimum fetching the served HTML / rendered file — a status code alone can't show components), and compare what rendered against the extracted component inventory: every component appears, no error output. Quote the evidence (URL or file, status, screenshot path, components counted).
    - **Human half — the gate.** Show the user how to open it and ask them to eyeball it. If the user is away, state the preview location and the agent-half evidence, record the eyeball as pending in the phase update, and continue to the suggestions — never claim the design system verified until they have looked.
    Per-page pixel conformance *during feature work* is `/pixel-audit`'s job — reference it, do not duplicate it here.
-5. **Document** the design system under `specs/design-system/` (see template), **add the short reference to AGENTS.md** (see template), and **seed the project skill** (see below).
+5. **Document** the design system under `specs/design-system/` (see template), **add the short reference to AGENTS.md** (see template), and **seed or extend the project UI skill** (see below).
 
 ### extend (re-run)
 
@@ -80,7 +80,7 @@ Three triggers: the design system grew (e.g. a new component from Figma); a UI c
 
 **Post-development feedback loop:** review the finished page's **diff** for UI that emerged or changed, **promote** each reusable piece into the library (built from the shipped UI plus the design-system source), and leave page-local one-off UI in place only when it's documented with a reason, per the project skill's reuse-vs-new rule.
 
-**Always keep in sync.** Whichever trigger fired, update the **library, preview, `specs/design-system/` doc, AGENTS.md reference, and project `*-ui-coding` skill together** — a promoted or changed component must render in the preview and appear in the doc and project skill in the same pass.
+**Always keep in sync.** Whichever trigger fired, update the **library, preview, `specs/design-system/` doc, AGENTS.md reference, and project UI skill together** — a promoted or changed component must render in the preview and appear in the doc and project skill in the same pass.
 
 **Boundary — design system only.** `extend` updates the design system and nothing else. It does **not** commit, push, write ADRs, or produce handovers; those stay `/grill-with-docs` and `/commit-push-*`, invoked separately per suggest-never-auto-chain. It is the same skill the binding rule calls into on a UI change.
 
@@ -102,7 +102,7 @@ Write the full documentation to the docs location chosen at setup. When no setup
 - **Tokens:** <path + mechanism — e.g. resources/css/tokens.css (CSS vars) / tailwind.config.js theme / src/theme.ts>
 - **Library:** <path where the components live>
 - **Preview:** <preview route or file — the verification gate>
-- **Project skill:** <project-slug>-ui-coding
+- **Project skill:** <the project UI skill's real name — `<project-slug>-ui-coding` when seeded fresh>
 
 ## Tokens
 <colour / typography / spacing / radius / shadow token groups and names>
@@ -131,16 +131,18 @@ Per project. When building or changing UI for a listed project, consume its UI l
 
 ### <TARGET-PROJECT-CODE>
 
-Design system: `<docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md` · Preview: `<preview location>` · Project skill: `<project-slug>-ui-coding`.
+Design system: `<docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md` · Preview: `<preview location>` · Project skill: `<ui-skill name>`.
 
 **On any UI change:** check the `<TARGET-PROJECT-CODE>` library first. Reuse the component if it exists. If it's missing, add it via `/design-system` (extend) from the design-system source; if no reference exists for it, ask the user for one. Never inline a one-off. Per-page pixel conformance is `/pixel-audit`.
 ```
 
-### Seed the project `<project>-ui-coding` skill
+### Seed or extend the project UI skill
 
-This project skill is the **deep, project-specific reference** an implementer opens when doing real UI work. It can grow large and hand-grown over time (component inventory, project rules, high-frequency gotchas, ADR trail). Keep the division of labour clear: the always-on "check the library first" trigger lives in the AGENTS.md reference above; **all project-specific rules — naming, allowed/forbidden patterns, per-project conventions, token names, component lists — live in this skill and the `specs/design-system/` doc, never hardcoded into `/design-system` itself.** `/design-system` is generic machinery; this seeded skill is where a project's own UI law is written.
+This project skill is the **deep, project-specific reference** an implementer opens when doing real UI work. It can grow large and hand-grown over time (component inventory, project rules, high-frequency gotchas, ADR trail). Keep the division of labour clear: the always-on "check the library first" trigger lives in the AGENTS.md reference above; **all project-specific rules — naming, allowed/forbidden patterns, per-project conventions, token names, component lists — live in this skill and the `specs/design-system/` doc, never hardcoded into `/design-system` itself.** `/design-system` is generic machinery; the project UI skill is where a project's own UI law is written.
 
-Create a **project-local** operational skill named `<project-slug>-ui-coding` (kebab-case, matching the target's existing project naming — e.g. `admin-web-ui-coding` for `ADMIN-WEB`) at the kit's project-local skills location: `<project>/.agents/skills/<project-slug>-ui-coding/SKILL.md`, which the generated AGENTS.md tells every runtime to read. When the current runtime also discovers project skills natively from its own directory (e.g. `.claude/skills/`, `.cursor/skills/`), add a copy or symlink there by that runtime's mechanism — the `.agents/skills/` copy stays canonical. It captures the operational rules an implementer needs:
+**Detect an existing UI skill first.** Before seeding anything, survey the project's and workspace's skill locations — `<project>/.agents/skills/` plus the runtime dirs in use (`.claude/skills/`, `.cursor/skills/`, …) — for a skill whose name or description already owns UI work for this project (UI coding, frontend, components, design, styling). Found one → **adopt and extend it in place; never seed a parallel `<project-slug>-ui-coding` beside it** — two UI skills would compete for routing. Expand and improve the existing skill from the design system: fold in the real token/library/preview/doc paths, the component inventory and states, the reuse-before-new discipline, the missing-component procedure, and the binding consume-the-library rule; sharpen its description so UI work still routes to it. Preserve its hand-grown conventions and voice — show the diff of what you'd change, and where an existing rule contradicts the design system, surface the conflict to the user rather than silently rewriting either side. Record the adopted skill's **real name** (not `<project-slug>-ui-coding`) in the doc's `Project skill:` line and the AGENTS.md reference — that reference is the pointer other skills and sessions follow.
+
+Only when no UI skill exists anywhere in the project: create a **project-local** operational skill named `<project-slug>-ui-coding` (kebab-case, matching the target's existing project naming — e.g. `admin-web-ui-coding` for `ADMIN-WEB`) at the kit's project-local skills location: `<project>/.agents/skills/<project-slug>-ui-coding/SKILL.md`, which the generated AGENTS.md tells every runtime to read. When the current runtime also discovers project skills natively from its own directory (e.g. `.claude/skills/`, `.cursor/skills/`), add a copy or symlink there by that runtime's mechanism — the `.agents/skills/` copy stays canonical. Seeded or adopted, the skill captures the operational rules an implementer needs:
 
 - where the tokens, library, preview, and design-system doc live (the real paths);
 - the base component inventory and their states;
@@ -148,9 +150,7 @@ Create a **project-local** operational skill named `<project-slug>-ui-coding` (k
 - how a missing component is added (via `/design-system` extend, from the reference — ask the user for a reference if none exists) and that the preview must render it;
 - the binding "consume the library, never inline covered markup" rule, pointing back to the AGENTS.md reference and the `specs/design-system/` doc.
 
-**If the project already has a `<project>-ui-coding` skill (e.g. a mature project), detect it and UPDATE it — merge the new rules/paths in. Never overwrite hand-grown conventions.** Show the diff of what you'd change and keep the project's existing voice.
-
-Minimal seed frontmatter + shape (match the kit's skill format):
+Minimal seed frontmatter + shape for the fresh-seed path (match the kit's skill format):
 
 ```markdown
 ---
@@ -173,7 +173,7 @@ After `bootstrap` (or `extend`):
 - **Emit the phase update:**
 
 ```markdown
-Stage: design-system (<bootstrap|extend>) — built tokens + library + preview for <TARGET-PROJECT-CODE>; wrote <docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md; added AGENTS.md reference; seeded/updated <project-slug>-ui-coding.
+Stage: design-system (<bootstrap|extend>) — built tokens + library + preview for <TARGET-PROJECT-CODE>; wrote <docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md; added AGENTS.md reference; seeded/extended <ui-skill name>.
 Found: <N> tokens, <M> components (<states covered>); source = <Figma|spec|reference|guided(approved)>; stack = <from matrix>.
 Next: open <preview location> and eyeball every component/state; then start Workflow B for the first feature.
 Needs user: verify the preview, and confirm any guided-definition choices or DS/stack deviations.
@@ -196,7 +196,7 @@ Before finishing:
 - [ ] Preview demonstrably renders — build/serve ran, the preview loaded (served HTML/file or screenshot quoted), and every extracted component appears in its states (default/hover/focus/disabled/active; empty/loading/error; responsive)
 - [ ] User was shown how to open the preview and asked to eyeball it; if the user was away, the pending eyeball is recorded and nothing was claimed verified
 - [ ] Full documentation written to `<docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md`; AGENTS.md holds only the short PROJECT-CODE-keyed reference + binding library-first rule (updated in place on `extend`)
-- [ ] `<project-slug>-ui-coding` project skill seeded, or an existing one updated — never overwritten
+- [ ] Project UI skill handled: an existing UI skill (any name) was detected, adopted, and extended in place — hand-grown conventions preserved, conflicts surfaced, real name recorded in the doc + AGENTS.md reference — or, only when none existed, `<project-slug>-ui-coding` was seeded; never a parallel duplicate
 - [ ] `extend`: library + preview + doc + AGENTS.md reference + project skill updated together; a missing component was built from a reference (asked the user when none existed), never invented; nothing outside the design system touched — no commit, push, ADR, or handover
 - [ ] Post-development feedback loop (when that trigger fired): shipped page's diff reviewed; emergent reusable UI promoted; page-local one-offs left only when documented with a reason
 - [ ] No conventions carried in from another project; `/pixel-audit` referenced, not duplicated; suggested the next step and stopped — no auto-chain; `Stage / Found / Next / Needs user` emitted
