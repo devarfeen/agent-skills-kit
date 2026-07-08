@@ -12,6 +12,11 @@ feature — into release notes a Project Manager can scan in 30 seconds. The
 audience is PMs, QA, and operations stakeholders, not engineers: every entry
 explains what changed, why, and what is better now, in plain language.
 
+**Not this skill.** Turning a rough idea into a prompt for planning is
+`/feature-prompt`; filing bugs conversationally is `/qa`; reviewing a diff is
+`/code-review`. This skill only summarizes work that already happened — it
+never plans, files issues, or reviews code.
+
 ## Writing Rules
 
 The #1 priority is **clarity for non-technical readers**. Every sentence must
@@ -164,6 +169,9 @@ Rules for filling the skeleton:
 Save under `<artifacts-root>/specs/release-notes/`. Release notes are on-demand
 date files: they do **not** share the ADR/prompt `NNNN` sequence (ADRs live in
 `specs/adr/NNNN-<slug>.md`, prompts in `specs/prompts/NNNN-<slug>-prompt.md`).
+
+Release notes are a generated document: keep all co-author, AI, and tool
+attribution out of both the saved file and the chat response.
 
 Resolve `<artifacts-root>` in this order:
 

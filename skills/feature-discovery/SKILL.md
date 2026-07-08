@@ -11,6 +11,11 @@ Read-only discovery, reported in chat only. The bar: another engineer should
 come away knowing what the thing is, what it does, how it works, where it is
 used, what evidence supports that, and what remains uncertain.
 
+**Not this skill.** This traces a bounded feature, module, or behavior. Porting
+one into another stack is `/port-feature`; a broad whole-repo architecture
+summary or graph-scale "how does everything connect" question is where the
+graphify companion (when installed) beats a discovery pass.
+
 Structured intake looks like:
 
 ```markdown

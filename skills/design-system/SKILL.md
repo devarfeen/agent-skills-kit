@@ -17,6 +17,8 @@ A Workflow-A (project start-off) skill. It turns a project's design system into 
 
 Run it once per project, after `/agents-md` → `/setup-matt-pocock-skills` → placeholder fill. Re-run it in `extend` mode when one of its three triggers fires (see extend below).
 
+**Not this skill.** Building the library is this skill; consuming it to make one page match its design pixel-for-pixel is `/pixel-audit`; a scattered cosmetic QA tail is `/polish-batch`; bringing a feature (and its UI) over from a reference stack is `/port-feature`; tracing how existing UI works is `/feature-discovery`.
+
 ## Prerequisites
 
 - The workspace already has a binding `AGENTS.md` with a Project Matrix (from `/agents-md`) and setup decisions incl. the docs location (from `/setup-matt-pocock-skills`). If the Project Matrix is missing, stop and route to `/agents-md` first.
@@ -94,47 +96,11 @@ Write the full documentation to the docs location chosen at setup. When no setup
 <docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md
 ```
 
-```markdown
-# Design System — <TARGET-PROJECT-CODE>
-
-- **Source:** <Figma URL | spec doc | reference app | guided-definition (approved <date>)>
-- **Stack:** <from the Project Matrix>
-- **Tokens:** <path + mechanism — e.g. resources/css/tokens.css (CSS vars) / tailwind.config.js theme / src/theme.ts>
-- **Library:** <path where the components live>
-- **Preview:** <preview route or file — the verification gate>
-- **Project skill:** <the project UI skill's real name — `<project-slug>-ui-coding` when seeded fresh>
-
-## Tokens
-<colour / typography / spacing / radius / shadow token groups and names>
-
-## Components
-| Component | States | Notes |
-| --------- | ------ | ----- |
-| Button | default/hover/focus/disabled/active | primary, secondary, ghost |
-| ... | ... | ... |
-
-## Consumption rule
-On any UI change: check this library first → reuse an existing component; if missing, add it via `/design-system` (extend) from the source, or ask the user for a reference when none exists → never inline a one-off. Per-page pixel conformance is `/pixel-audit`.
-
-## Deviations
-<any place the build departs from the source, and why>
-```
+Fill the doc skeleton in [`references/registration-templates.md`](references/registration-templates.md) §1 — Source, Stack, token/library/preview paths, `Project skill:` (the UI skill's real name), a component/states table, the consumption rule, and any deviations.
 
 ### The AGENTS.md reference (short, binding, PROJECT-CODE-keyed)
 
-Add only a terse reference into the binding `AGENTS.md`, integrated the way `/agents-md` structures that file. Update the subsection in place on `extend`; never duplicate it. **Do not put the full design system in AGENTS.md** — it points to the doc:
-
-```markdown
-## Design System / UI Library
-
-Per project. When building or changing UI for a listed project, consume its UI library and tokens — never inline markup the library covers. Full docs under `<docs-root>/design-system/`.
-
-### <TARGET-PROJECT-CODE>
-
-Design system: `<docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md` · Preview: `<preview location>` · Project skill: `<ui-skill name>`.
-
-**On any UI change:** check the `<TARGET-PROJECT-CODE>` library first. Reuse the component if it exists. If it's missing, add it via `/design-system` (extend) from the design-system source; if no reference exists for it, ask the user for one. Never inline a one-off. Per-page pixel conformance is `/pixel-audit`.
-```
+Add only a terse reference into the binding `AGENTS.md`, integrated the way `/agents-md` structures that file. Update the subsection in place on `extend`; never duplicate it. **Do not put the full design system in AGENTS.md** — it points to the doc. Fill [`references/registration-templates.md`](references/registration-templates.md) §2: the PROJECT-CODE-keyed pointer (doc path · preview · project skill) plus the binding library-first rule.
 
 ### Seed or extend the project UI skill
 
@@ -150,20 +116,7 @@ Only when no UI skill exists anywhere in the project: create a **project-local**
 - how a missing component is added (via `/design-system` extend, from the reference — ask the user for a reference if none exists) and that the preview must render it;
 - the binding "consume the library, never inline covered markup" rule, pointing back to the AGENTS.md reference and the `specs/design-system/` doc.
 
-Minimal seed frontmatter + shape for the fresh-seed path (match the kit's skill format):
-
-```markdown
----
-name: <project-slug>-ui-coding
-description: UI-coding rules for <TARGET-PROJECT-CODE> — on any UI change, consume the design-system library and tokens; reuse existing components, extend from the reference for missing ones, never inline covered markup. Docs: <docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md.
----
-
-# <TARGET-PROJECT-CODE> UI Coding
-
-- Tokens: <path/mechanism> · Library: <path> · Preview: <route/file> · Docs: <doc path>
-- On any UI change: check the library first; reuse before new; promote repeated markup to the library; no undocumented one-offs.
-- Add/change a component only via /design-system (extend), from the reference (ask the user if none), then verify it in the preview.
-```
+Fresh-seed frontmatter + shape (fresh-seed path only): [`references/registration-templates.md`](references/registration-templates.md) §3.
 
 ## Output
 

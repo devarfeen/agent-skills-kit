@@ -12,6 +12,8 @@ Four-step ship for one GitHub-issue iteration (with an inline create-if-missing 
 3. **Push** to the current branch.
 4. **Close** the GitHub issue with a comment explaining how to test it.
 
+**Close vs PR.** This skill closes the issue directly. When the work should land through a pull request instead, that is `/commit-push-pr` — same shared ship policy, the final step opens a PR with `Closes #N` rather than closing the issue.
+
 ## Shared ship policy
 
 Read [`references/ship-policy.md`](references/ship-policy.md) first. It holds the rules both ship skills share and that this workflow depends on: **Read state**, **Label validation**, **Authorship policy**, **Env parity policy**, **Inline issue creation**, **Naming anchor**, **How-to-test rules**, **Commit message format** (with the HEREDOC form and commit examples), **Pre-commit safety**, and the **Response footer**. This `SKILL.md` only covers what is specific to closing the issue directly.
