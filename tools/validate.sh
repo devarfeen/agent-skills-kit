@@ -6,7 +6,8 @@
 #
 # What it enforces (see CONTRIBUTING.md for the why):
 #   1. Every skills/<dir>/ has a SKILL.md with `name:` + `description:` frontmatter;
-#      name matches the folder and is kebab-case.
+#      name matches the folder and is kebab-case; frontmatter parses as strict YAML
+#      (an unquoted description with a ': ' colon-space breaks the skills CLI).
 #   2. Duplicated-by-design shared files (ship-policy.md, context-terms.md)
 #      are byte-identical across their copies.
 #   3. Every skill folder has a row in skills/agents-md/references/skills-manifest.md.
@@ -60,6 +61,61 @@ for dir in skills/*/; do
   fi
 done
 note "frontmatter checked for $(ls -d skills/*/ | wc -l | tr -d ' ') skills"
+
+# Strict YAML parse of each frontmatter block. The checks above only confirm the
+# fields are present; a regex misses YAML hazards a strict parser (the one the
+# skills CLI uses) rejects — most notably an unquoted description containing
+# ': ' (colon-space), which the CLI reports as "mapping values are not allowed
+# here" and refuses to install. Prefer PyYAML; fall back to a stdlib heuristic.
+if command -v python3 >/dev/null 2>&1; then
+  yaml_out="$(python3 - <<'PYEOF'
+import glob
+try:
+    import yaml
+    have = True
+except Exception:
+    have = False
+
+def frontmatter(t):
+    if not t.startswith("---"):
+        return None
+    end = t.find("\n---", 3)
+    return t[3:end] if end != -1 else None
+
+bad = []
+for f in sorted(glob.glob("skills/*/SKILL.md")):
+    fm = frontmatter(open(f, encoding="utf-8").read())
+    if fm is None:
+        bad.append(f + ": no closing --- for frontmatter"); continue
+    if have:
+        try:
+            yaml.safe_load(fm)
+        except Exception as e:
+            bad.append(f + ": " + str(e).splitlines()[0])
+    else:
+        import re
+        for ln in fm.splitlines():
+            m = re.match(r'^(name|description):\s*(.*)$', ln)
+            if not m:
+                continue
+            v = m.group(2).strip()
+            if v[:1] == '"':
+                if not (len(v) >= 2 and v.endswith('"')):
+                    bad.append(f + ": " + m.group(1) + " has an unbalanced opening quote")
+            elif ": " in v:
+                bad.append(f + ": " + m.group(1) + " is unquoted and contains ': ' (quote the value)")
+for b in bad:
+    print(b)
+PYEOF
+)"
+  if [[ -n "$yaml_out" ]]; then
+    while IFS= read -r line; do
+      [[ -n "$line" ]] && fail "frontmatter YAML — $line"
+    done <<< "$yaml_out"
+  else
+    note "frontmatter parses as strict YAML"
+  fi
+fi
 
 echo "== 2. Duplicated-by-design copies byte-identical =="
 # Skills install standalone, so shared text is duplicated per skill and must
