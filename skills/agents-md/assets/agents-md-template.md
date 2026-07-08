@@ -1,4 +1,4 @@
-<!-- agents-md marker · v7 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v8 · re-run /agents-md to regenerate -->
 # Agent Instructions
 
 [one concise workspace intro inferred from the .code-workspace name and folder scan]
@@ -146,6 +146,13 @@ Use `/ask-matt` when the user asks which Matt skill or flow fits. It routes over
 1. **Binding** — `CONTEXT.md` (<!-- set during setup: path to CONTEXT.md -->) and ADRs (<!-- set during setup: path to specs/adr -->). Read before implementing. These bind.
 2. **Current task context** — the user request, active issue or spec, named local docs, current code, tests, and command evidence.
 3. **Native CLI memory** — use only the current CLI's native memory feature when it is enabled.
+
+### North star
+
+[NORTH STAR — emit this subsection only when the scan found a `VISION.md` / `vision.md`, per the SKILL.md rules; otherwise delete it. List each found file: `<path>` — workspace, or the PROJECT-CODE it belongs to.]
+
+- The vision file(s) above are the project's north star. Read the relevant one before planning-phase work — feature prompts, grilling, specs, tickets, wayfinding — and align plans with it.
+- The north star guides direction and tie-breaking; it does not override binding sources. When a plan or request conflicts with the vision file, surface the conflict — never resolve it silently in either direction.
 
 ### Artifact policy
 

@@ -218,6 +218,7 @@ Guidelines:
 Generated `AGENTS.md` encodes how agents retrieve context:
 
 - **Retrieval order:** `CONTEXT.md` + `specs/adr/` are **binding** (read before implementing) -> current task context (the active request, issue or spec) -> the current CLI's native memory when enabled.
+- **North star:** when the workspace (or a project) keeps a `VISION.md`, the generated `AGENTS.md` binds it as the project's north star — agents read it before planning-phase work and surface, never silently resolve, conflicts between plans and the vision. No vision file → no north-star section is emitted or fabricated.
 - **Never bulk-read `specs/`.** Treat it as an on-demand archive — retrieve only what the task names, via search or a discovery skill. Loading the whole tree rots context and wastes tokens.
 - **Native memory only.** Do not create repo memory files, wiki files, discovery files, or default knowledge-graph memory. Optional graph/index companions may be used when installed and task-fit, but their artifacts are not binding memory. Do not sync memory between CLIs.
 - **Archived context on grill.** When you trigger `/grill-with-docs`, the agent asks up front whether you have archived context (prior discussions, original intent) for the feature. Paste it — captured verbatim into the ADR with provenance — or continue without. Old/current names it reveals are offered as `CONTEXT.md` aliases.
