@@ -45,7 +45,7 @@ would waste tokens.
 The description must answer, in one breath: *when should a runtime load this?*
 Include the trigger verbs and nouns users actually say ("commit, push, and
 close", "punch list", "pixel-audit"), the scope boundary ("cosmetic scope only",
-"multi-project PRDs only"), and what the skill refuses to do ("never implements,
+"multi-project specs only"), and what the skill refuses to do ("never implements,
 never auto-chains"). Look at `skills/polish-batch/SKILL.md` for a strong example.
 
 ### Token budget (three-tier loading)
@@ -79,8 +79,8 @@ Write for a frontier agentic model — capable, tool-using, able to plan. That m
   highest-signal content in a skill (see the commit-message examples in
   `commit-push-close`).
 - **Make refusal boundaries explicit.** The best skills in this kit say exactly
-  when to stop: single-project PRD → "no contract needed", behavioural change →
-  "not a nit, route to /to-issues". This is what keeps autonomous runs safe.
+  when to stop: single-project spec → "no contract needed", behavioural change →
+  "not a nit, route to /to-tickets". This is what keeps autonomous runs safe.
 - **End with a checklist** the model verifies before claiming done. Every recent
   skill has one; it is the cheapest self-review loop we have. Phrase completion
   as observable evidence ("quote the failing run", "name the command you ran"),
