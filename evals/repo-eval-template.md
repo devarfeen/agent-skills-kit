@@ -9,12 +9,13 @@ sheet catches what per-skill scoring cannot see.
 bash tools/validate.sh
 ```
 
-Nine checks: frontmatter (name matches folder, kebab-case, description present,
+Ten checks: frontmatter (name matches folder, kebab-case, description present,
 ≤1024 chars, parses as **strict YAML**), duplicated-by-design copies
 byte-identical, manifest↔folder agreement in both directions, README table rows,
 relative links and cross-file anchors resolve, zero-attribution tripwire on files
 and branch commits, `agents-md` version markers in sync, manifest phases valid,
-trigger-eval sets parse.
+trigger-eval sets parse, and **eval provenance** — every live description still
+matches the one judged in the run its `last_run` records.
 
 Green is a gate, not a score. It proves nothing about whether the skills are good.
 
@@ -35,7 +36,7 @@ Green is a gate, not a score. It proves nothing about whether the skills are goo
 
 ## Kit score
 
-Average the per-skill averages from each `skills/<name>/evals/quality.md`.
+Average the per-skill averages from each `skills/<name>/evals/final.md`.
 Record the date, the rubric version, and how many readers scored each skill —
 a single-reader pass and a panel are not the same evidence.
 

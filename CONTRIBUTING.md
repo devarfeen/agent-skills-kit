@@ -177,7 +177,8 @@ Score a new or changed skill against these before approving. A "no" on any of
 This is the **merge gate** — pass/fail, per PR. For ranking skills against each
 other and deciding where the next edit goes, [`evals/`](evals/) carries the
 scored instrument: eleven categories, 1–5 anchors, and per-skill results at
-`skills/<name>/evals/quality.md`. The nine below are a subset of the eleven.
+`skills/<name>/evals/` (`rubric.md`, `baseline.md`, `final.md`, `test-cases.md`).
+The nine below are a subset of the eleven.
 When the two disagree, this file wins — it is what CI enforces.
 
 1. **Trigger quality** — could a runtime pick this skill from the description
@@ -241,6 +242,7 @@ eval pass.
 | Companion list | `skills-manifest.md` companions table (GUIDE/BEST-PRACTICES link to it) |
 | Elevated-permission presets | `skills/agents-md/references/tool-calling.md` (model-facing source) and `GUIDE.md` (human-facing copy) |
 | Any runtime fact in `tool-calling.md`, a `*-tools.md`, `memory-global-defaults.md`, or `skills/tdd-loop/references/test-commands.md` | Re-verify the claim against that tool's current official docs in the same PR — CLI flags, tool names, and test-runner syntax age fast; don't propagate a stale fact into more files |
+| A skill's frontmatter `description` | Re-run the trigger evals, restamp that skill's `last_run`, and refresh `tools/trigger-evals/last-run-descriptions.json` (`score.py … --write-snapshot`). `validate.sh` check 10 fails until you do — a description edited after a passing run silently invalidates that run's result |
 
 ### Versioning and provenance
 

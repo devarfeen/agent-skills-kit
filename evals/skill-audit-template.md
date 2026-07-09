@@ -1,6 +1,6 @@
 # Skill audit template
 
-Copy into `skills/<name>/evals/quality.md` and fill in. Delete this line and the
+Copy into `skills/<name>/evals/final.md` (or `baseline.md`) and fill in. Delete this line and the
 heading above; keep the structure below.
 
 ---

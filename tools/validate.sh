@@ -20,6 +20,9 @@
 #      stated skill version.
 #   8. Manifest gradient rows carry a valid phase.
 #   9. Every skills/*/evals/evals.json parses and carries queries + last_run.
+#  10. Eval provenance: each live description still matches the one that was
+#      actually judged in the run its last_run records. A description edited
+#      after a passing run silently invalidates that run's result.
 
 set -u
 
@@ -281,6 +284,58 @@ PYEOF
   fi
 done
 note "eval sets parsed ($EV_COUNT files)"
+
+echo "== 10. Eval provenance: descriptions match their recorded run =="
+# The frontmatter description IS the router, and last_run records the result of
+# judging *that* text. Edit a description after a passing run and the recorded
+# result becomes a claim about a string that no longer exists. This check makes
+# that drift loud instead of silent. (It once let the kit carry a 280/280 claim
+# while actually scoring 277/280.)
+SNAP="tools/trigger-evals/last-run-descriptions.json"
+if [[ ! -f "$SNAP" ]]; then
+  fail "$SNAP is missing — cannot verify that eval results match the judged descriptions"
+elif command -v python3 >/dev/null 2>&1; then
+  prov_out="$(python3 - "$SNAP" <<'PYEOF'
+import glob, hashlib, json, os, re, sys
+
+snap = json.load(open(sys.argv[1]))
+want = snap["descriptions_sha256"]
+ref  = snap.get("recorded_at_commit", "the recorded run")
+
+def parse_desc(text):
+    m = re.match(r"^---\n(.*?)\n---", text, re.S)
+    if not m:
+        return None
+    for line in m.group(1).splitlines():
+        if line.startswith("description:"):
+            v = line[len("description:"):].strip()
+            if len(v) >= 2 and v[0] == '"' and v[-1] == '"':
+                v = v[1:-1]
+            return v
+    return None
+
+for f in sorted(glob.glob("skills/*/SKILL.md")):
+    name = os.path.basename(os.path.dirname(f))
+    desc = parse_desc(open(f, encoding="utf-8").read())
+    if desc is None:
+        print(f"{name}: no description to verify"); continue
+    if name not in want:
+        print(f"{name}: no recorded description for it — add one by re-running the evals"); continue
+    if hashlib.sha256(desc.encode()).hexdigest() != want[name]:
+        print(f"{name}: description changed since the eval run recorded in its last_run "
+              f"(snapshot @ {ref}) — re-run the trigger evals and restamp last_run")
+PYEOF
+)"
+  if [[ -n "$prov_out" ]]; then
+    while IFS= read -r line; do
+      [[ -n "$line" ]] && fail "eval provenance — $line"
+    done <<< "$prov_out"
+    printf '  remedy: bash tools/trigger-evals/build-catalog.sh, run 3 judges, then\n'
+    printf '          python3 tools/trigger-evals/score.py … --write-snapshot\n'
+  else
+    note "every description matches the run its last_run records"
+  fi
+fi
 
 echo
 if [[ "$FAIL" -ne 0 ]]; then

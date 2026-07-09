@@ -1,0 +1,19 @@
+{
+ "_comment": "sha256 of each skill's frontmatter description as it stood at the commit recorded in that skill's evals.json last_run. tools/validate.sh check 10 fails when a live description no longer matches -- meaning the recorded eval result is stale and the evals must be re-run. Regenerate with score.py --write-snapshot after a passing run.",
+ "recorded_at_commit": "working tree at the time of the run",
+ "descriptions_sha256": {
+  "agents-md": "cf4f164c590f4e549de54366578c62ea929249c7c7481e49a05e96720b72c5bb",
+  "commit-push-close": "3f8cd575ff3fb2052bba78dde6fa66669b8db3c4052b9f3edde5d105ce6f68f8",
+  "commit-push-pr": "6af06365fe386be16e6a93ab551469ec03534ed99ef562b114470449a9be3dfa",
+  "design-system": "e203ceb7061259f0d126f1fb683c840c79d822870043e82c29388627ff0da2ae",
+  "feature-discovery": "628493fb890ac1fd00fd84655730fc58c41387d1bc3658c770afccedd8849f00",
+  "feature-prompt": "3b5eabb682494f83ef0f42af99962549d587faaac8139115bf7d17f481058228",
+  "integration-contract": "1f551e4c9020a6125143e27e8ac72d7bf954c143d4682fa206f83ba40ec31995",
+  "orchestrate-herdr": "d60cae7b0620bebec7e019d71b6c8946efa692701363e209bf8a3cf0ed51d462",
+  "pixel-audit": "e427663267d8dfa91c278308cf54792149d69f03f8dd0cdb0fa853beb00d4bc0",
+  "polish-batch": "89bde3bd0e75cecd2977785568436db6468a1bf70160616cdffba8d8e217492a",
+  "port-feature": "f7bb293124f8d748525f338b2f1b551a192dd4b80581efad2423a79cac088945",
+  "release-notes": "637b6543cb0f483b7062002596b5e532f88184f39e764723714db6aa425f4649",
+  "tdd-loop": "3fd335a99f6c9b7cabe237d6ec7d884cebb4e3d573c379a56796dea08107285f"
+ }
+}

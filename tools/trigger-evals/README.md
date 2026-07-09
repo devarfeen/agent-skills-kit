@@ -35,6 +35,12 @@ maintainer can re-run the baseline comparably.
    not pass/fail.
 6. Record `date`, `method`, `result`, `model`, and the catalog provenance in
    each eval file's `last_run`.
+7. Refresh the description snapshot: re-run step 4 with `--write-snapshot`. It
+   writes `last-run-descriptions.json` (sha256 per description) and refuses on
+   anything short of a clean sweep — a snapshot taken from a failing run would
+   bless the very text that failed. `tools/validate.sh` check 10 compares live
+   descriptions against it, so a description edited after a passing run is
+   caught instead of quietly invalidating the recorded result.
 
 ## Acting on failures
 
