@@ -29,13 +29,14 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | `/feature-prompt` | kit | sharpen | → prompt file | |
 | `/grill-with-docs` | external | plan | → ADR | |
 | `/to-spec` | external | plan | → spec (PRD) | |
-| `/wayfinder` | external | plan | work too big for one session — map tickets on the tracker first | |
+| `/wayfinder` | external | plan | fog, not size — decisions gate the scope; map them as tracker tickets, resolve one per session, exit to /to-spec | |
 | `/prototype` | external | plan | spike ungrillable "needs to feel/see it" questions, then back to /grill-with-docs | |
 | `/handoff` | external | plan | fork context to a new session (pairs with /prototype) | |
 | `/to-tickets` | external | slice | | |
 | `/triage` | external | slice | existing/raw issues only — state repair, needs-info, wontfix, agent briefs | |
-| `/tdd` | external | implement | | |
-| `/tdd-loop` | kit | implement | standalone test-first loop + TDD exception protocol | |
+| `/implement` | external | implement | optional ticket driver — calls /tdd-loop at each seam; stops after /code-review, never commits (Rule 13) | |
+| `/tdd` | external | implement | reference only — test quality and seam choice; never use it alone as a loop | |
+| `/tdd-loop` | kit | implement | the test-first procedure — gates, completion evidence, exception protocol; stands alone | |
 | `/orchestrate-herdr` | kit | implement | inside herdr only — fan a spec (PRD) out to worker tabs | |
 | `/code-review` | external | verify | | |
 | `/diagnosing-bugs` | external | verify | | |

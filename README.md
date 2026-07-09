@@ -68,12 +68,12 @@ workspace/project. Full behavior, modes, and rules live in each skill's
 
 | Skill | Phase | What it does | Example prompt |
 | :--- | :--- | :--- | :--- |
-| [`agents-md`](skills/agents-md/SKILL.md) | startup | Generates the workspace-root `AGENTS.md` (Project Matrix, 12 non-negotiable rules, skills gradient, context policy) plus a `CLAUDE.md` redirect shim, from a `.code-workspace` file | `Generate AGENTS.md for this workspace` |
+| [`agents-md`](skills/agents-md/SKILL.md) | startup | Generates the workspace-root `AGENTS.md` (Project Matrix, 13 non-negotiable rules, skills gradient, context policy) plus a `CLAUDE.md` redirect shim, from a `.code-workspace` file | `Generate AGENTS.md for this workspace` |
 | [`design-system`](skills/design-system/SKILL.md) | startup | Turns a provided design system (Figma, spec, reference screens, or guided session) into tokens + a UI library + a verifiable preview + a binding AGENTS.md rule; re-run `extend` as the design grows | `Set up the design system for ADMIN-WEB from this Figma file` |
 | [`feature-discovery`](skills/feature-discovery/SKILL.md) | discover | Read-only, evidence-backed trace of how a feature, module, or behavior works; report returned in chat | `Trace the invite-user workflow across ADMIN-WEB and API-SERVICE` |
 | [`port-feature`](skills/port-feature/SKILL.md) | discover | Maps a feature from a REFERENCE implementation into a TARGET stack as one gap map, then hands to planning | `Port stock-transfer approvals from LEGACY-PORTAL to ADMIN-WEB` |
 | [`feature-prompt`](skills/feature-prompt/SKILL.md) | sharpen | Turns a rough idea into a small, PR-sized prompt file for `grill-with-docs` | `Help me create a feature prompt for stock transfer approvals` |
-| [`tdd-loop`](skills/tdd-loop/SKILL.md) | implement | Enforceable test-first loop — one failing test, watch it fail right, smallest change to green, widen, refactor on green — plus an exception protocol for spikes, legacy code, hotfixes, and infra work | `Fix this bug test-first` |
+| [`tdd-loop`](skills/tdd-loop/SKILL.md) | implement | Enforceable test-first loop — one failing test, watch it fail right, smallest change to green, widen, refactor on green — plus an exception protocol for spikes, legacy code, hotfixes, and infra work. Called by `/implement` at each seam when that's installed; stands alone when it isn't | `Fix this bug test-first` |
 | [`orchestrate-herdr`](skills/orchestrate-herdr/SKILL.md) | implement | Inside [herdr](https://herdr.dev) only: fans a spec's (PRD's) open sub-issues out to one local coding-CLI worker tab each and monitors for test-backed completion | `orchestrate-herdr for <spec URL> using codex` |
 | [`pixel-audit`](skills/pixel-audit/SKILL.md) | verify | Strict per-page visual-conformance audit against Figma or reference screens, with an element-level verification gate on served assets | `Pixel-audit the assets list page in ADMIN-WEB against this Figma node` |
 | [`polish-batch`](skills/polish-batch/SKILL.md) | verify | Captures cosmetic QA nits without fixing them, dispatches them per PROJECT-CODE in one bounded pass, then verifies | `Punch-list this for SPEC-142: Billing header says "Recieve invoices"` |
@@ -82,16 +82,27 @@ workspace/project. Full behavior, modes, and rules live in each skill's
 | [`commit-push-pr`](skills/commit-push-pr/SKILL.md) | ship | Commits, pushes (branching off `main` first), and opens a PR with `Closes #N`, summary, and test plan | `Commit, push, and open a PR for this issue` |
 | [`release-notes`](skills/release-notes/SKILL.md) | ship | Turns git history, the current session, or a feature into PM-friendly release notes with QA steps | `Generate release notes for 11 March 2026` |
 
-The gradient's plan/slice/implement/verify core (`/grill-with-docs`, `/to-spec`,
-`/to-tickets`, `/tdd`, `/implement`, `/code-review`, `/diagnosing-bugs`,
-`/triage`) comes from
+The gradient's plan/slice/implement/verify core (`/grill-with-docs`,
+`/wayfinder`, `/to-spec`, `/to-tickets`, `/implement`, `/tdd`, `/code-review`,
+`/diagnosing-bugs`, `/triage`) comes from
 [Matt Pocock's skills](https://github.com/mattpocock/skills) — separate
 installs this kit is designed to interlock with. Run
 `/setup-matt-pocock-skills` once per workspace (see the First-Time Setup
-sequence in [GUIDE.md](GUIDE.md)) before using them. The kit's own
-`tdd-loop` is the test-first *procedure* (gates, completion evidence,
-exception protocol) and stands alone; when Matt's `/tdd` is installed it owns
-test *quality* and seam choice, and the two compose.
+sequence in [GUIDE.md](GUIDE.md)) before using them.
+
+Two of those interlocks are worth stating plainly, because both upstream skills
+are **optional** and neither replaces a kit skill:
+
+- **Implementing** stacks three layers. `/implement` is an optional *ticket
+  driver*; the kit's `tdd-loop` is the test-first *procedure* it calls at each
+  seam (gates, completion evidence, exception protocol); Matt's `/tdd` is the
+  *test-quality reference*. Install none of the upstream ones and `tdd-loop`
+  still stands alone. `/implement` stops after `/code-review` — the kit's ship
+  skills own every commit.
+- **Planning** forks on fog. If you can state the destination and every open
+  decision sharply, `/feature-prompt` → `/grill-with-docs`. If decisions gate
+  the scope, `/wayfinder` charts them as tracker tickets and resolves them one
+  per session. Both arms rejoin at `/to-spec`.
 
 ## Workflow Guide
 
@@ -137,7 +148,7 @@ skills from the wider agent-skills ecosystem.
   guide.
 - The non-negotiable discipline in `agents-md` was originally seeded by
   Forrest Chang's Karpathy-inspired `CLAUDE.md` guidelines and later expanded
-  in this repo into a 12-rule core:
+  in this repo into a 13-rule core:
   https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md
   The upstream repository is MIT licensed. This repo records credit here rather
   than emitting source notes into generated `AGENTS.md` files.

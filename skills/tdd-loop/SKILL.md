@@ -1,15 +1,31 @@
 ---
 name: tdd-loop
-description: Enforceable test-first loop for features and bug fixes. Use when the user wants to build or fix something test-first, says "TDD", "red-green", "write a failing test", or wants a bug fixed with a reproducing test — and when TDD must be adapted for a spike, legacy code without tests, an urgent hotfix, infra/config work, or an exploratory refactor (the exception protocol). Standalone; composes with Matt Pocock's /tdd, which owns test quality and seam choice when installed.
+description: Enforceable test-first loop for features and bug fixes. Use when the user wants to build or fix something test-first, says "TDD", "red-green", "write a failing test", or wants a bug fixed with a reproducing test — and when TDD must be adapted for a spike, legacy code without tests, an urgent hotfix, infra/config work, or an exploratory refactor (the exception protocol). Standalone; when Matt Pocock's /implement drives a ticket it calls this loop at each seam, and /tdd supplies test quality and seam choice — this loop is the procedure either way.
 ---
 
 # TDD Loop
 
 TDD is one failing test turned green at a time. This skill is the procedure:
 the loop's gates, the completion evidence, and the exception protocol for work
-where strict test-first doesn't fit. When Matt Pocock's `/tdd` skill is
-installed, it owns test quality and seam choice; this loop is the procedure
-either way.
+where strict test-first doesn't fit.
+
+## Where this loop sits
+
+Three layers, each optional above this one:
+
+- **Ticket level — `/implement`** (Matt Pocock, optional). Drives one ticket:
+  works it, runs typechecking regularly, runs the full suite once at the end,
+  then hands to `/code-review`. It calls this loop at each pre-agreed seam. It
+  must not commit — shipping belongs to `/commit-push-close` or
+  `/commit-push-pr`.
+- **Behavior level — this loop.** Red → green → widen → refactor, with the
+  completion evidence below. Without `/implement` installed, drive this loop
+  directly, once per ticket. Same outcome, one less wrapper.
+- **Test quality — `/tdd`** (Matt Pocock, optional). A reference: what a good
+  test is, where seams go, the anti-patterns. It is not a loop; never use it
+  alone in place of this procedure.
+
+Both layers are optional. This loop stands alone.
 
 ## Before the loop
 

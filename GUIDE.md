@@ -154,27 +154,47 @@ These are optional separate installs. Use them beside this kit when installed an
 | New Workspace | `/agents-md` | Establish the Project Matrix, paths, and Non-Negotiable Rules. |
 | Unsure Which Matt Skill Fits | `/ask-matt` | Route to a user-invoked upstream skill flow without auto-chaining. |
 | Unclear Behavior | `/feature-discovery` | Read-only audit before planning. |
-| Rough Idea | `/feature-prompt` | Infer-first prompt drafting; asks only what it can't infer. |
+| Rough Idea, No Fog | `/feature-prompt` | Destination and decisions are already sharp; infer-first prompt drafting. |
+| Rough Idea, Decisions Unresolved | `/wayfinder` | Fog gates the scope. Chart the decisions as tracker tickets; resolve one per session. |
 | Broken Behavior | `/diagnosing-bugs` | Systematic root cause analysis. |
 | Design Spike | `/prototype` | Validate UI/state before spec/tickets. |
-| Issue Work | `/tdd` + `/tdd-loop` | Test-first implementation. `/tdd-loop` is the kit's procedure (gates, completion evidence, exception protocol) and stands alone; Matt's `/tdd` adds test quality and seam choice when installed. |
+| Issue Work | `/implement` or `/tdd-loop` | Test-first implementation. `/implement` (optional) drives a ticket and calls `/tdd-loop` at each seam; without it, drive `/tdd-loop` directly. `/tdd-loop` is the kit's procedure (gates, completion evidence, exception protocol) and stands alone; Matt's `/tdd` is the test-quality reference, never a loop on its own. |
 | Porting A Feature | `/port-feature` | Trace a reference feature into a target stack as a gap map. |
 | Project Needs A UI Library | `/design-system` | Turn a design system into tokens + components + a verifiable preview. |
 | Page Must Match Design | `/pixel-audit` | Strict per-page visual conformance with an element-level gate. |
 | Cosmetic QA Tail | `/polish-batch` | Batch small copy/spacing/alignment nits, then fix in one pass. |
 | Multi-Project Spec | `/integration-contract` | Map the cross-repo seam and smoke-test it before shipping. |
-| Work Too Big For One Session | `/wayfinder` | Map a huge effort as tracker tickets; resolve them until the way is clear. |
+| Greenfield Build | `/wayfinder` | No code to discover; chart the destination and its decisions first. |
 | Delegable Reading Legwork | `/research` | Background agent reads primary sources into a cited Markdown doc. |
 | Session Pause | `/handoff` | Continuation doc for the next agent. |
 
 ## Core Progression
 
 ```text
-/agents-md -> /setup-matt-pocock-skills -> /design-system -> /feature-discovery -> /feature-prompt -> /grill-with-docs -> /to-spec -> /to-tickets -> /tdd -> /pixel-audit -> /commit-push-pr -> /release-notes
+/agents-md -> /setup-matt-pocock-skills -> /design-system -> /feature-discovery
+                                                                     |
+                                                              [ the fog test ]
+                                                              /              \
+                                                      no fog                fog
+                                                         |                   |
+                                                 /feature-prompt        /wayfinder
+                                                         |             (map; resolve
+                                                 /grill-with-docs       one ticket
+                                                         |              per session)
+                                                          \                 /
+                                                           \               /
+                                                            -> /to-spec <-
+                                                                   |
+                        /to-tickets -> /implement (optional; drives /tdd-loop)
+                                                                   |
+                        /code-review -> /pixel-audit -> /commit-push-pr -> /release-notes
 ```
 
-Two variations branch off this line:
+**The fog test** decides the fork. Ask: can you state the destination in one line *and* name every open decision as a sharp question, right now? If yes, `/feature-prompt`. If not, that's fog — `/wayfinder` charts the decisions as tracker tickets and resolves them one per session until nothing is left to decide. Fog, not size, is the test: a large mechanical refactor has no fog and belongs in `/to-tickets` as expand–contract, while a two-file change gated on one unresolved architectural decision *is* fog. Greenfield work, with no code to discover, enters at `/wayfinder` directly.
 
+Variations branch off this line:
+
+- **Implementing** a ticket runs `/implement` when installed — it drives `/tdd-loop` at each pre-agreed seam, with `/tdd` supplying test quality and seam choice. Without `/implement`, drive `/tdd-loop` directly. `/implement` stops after `/code-review`; it never commits.
 - **Porting** a feature from a reference implementation starts with `/port-feature` (in place of `/feature-discovery` → `/feature-prompt`), which writes a gap map and hands to `/grill-with-docs`.
 - **Verify** is a cluster, not one skill: `/pixel-audit` for per-page conformance, manual QA + `/polish-batch` for the cosmetic tail, and `/integration-contract` when the spec spans more than one PROJECT-CODE. After a UI slice ships, `/design-system` (extend) folds any new reusable UI back into the library.
 
@@ -183,9 +203,9 @@ Two variations branch off this line:
 Before creating, editing, or renaming any GitHub issue:
 
 1. Read local workspace instructions (`AGENTS.md`; Claude CLI reads the `CLAUDE.md` shim).
-2. Select the exact issue title pattern (`Spec`, `Slice`, or non-spec implementation form). Issues titled `PRD:` predate the spec rename — treat them as spec issues; do not retitle.
-3. Select exactly one category label (`bug` or `enhancement`) and one state label.
-4. Confirm no routing marker (`HITL:` / `AFK:`) is present in issue titles.
+2. Select the exact issue title pattern (`Spec:`, `Ticket NNNN of …`, `Way:`, or the non-spec implementation form). Issues titled `PRD:` predate the spec rename and `Slice NNNN of …` predates the ticket rename — treat them as spec and ticket issues respectively; do not retitle either.
+3. Select exactly one category label (`bug` or `enhancement`) and one state label. **Delivery issues only.** `Way:` issues are planning artifacts: they carry only `/wayfinder`'s own labels (`wayfinder:map`, `wayfinder:research` / `prototype` / `grilling` / `task`), get no category or state label, and are closed before `/to-spec` runs.
+4. Confirm no routing marker (`HITL:` / `AFK:` / `BLOCKER:`) is present in issue titles. Wayfinder's HITL/AFK classification is a ticket *type*, carried by labels — never by a title.
 
 If tracker vocabulary is missing, stop and run `/setup-matt-pocock-skills` first.
 Do not publish issues with inferred naming patterns or partial labels.
@@ -207,10 +227,11 @@ Guidelines:
 - Keep it short: 1-6 suggestions maximum.
 - Use workflow adjacency first (current step -> likely next step).
 - Lead with evidence-raising suggestions before risky edits:
-  - after discovery of unclear behavior: `/feature-prompt` or `/diagnosing-bugs`
+  - after discovery of unclear behavior: `/feature-prompt`, `/wayfinder` (if decisions gate the scope), or `/diagnosing-bugs`
   - after prompt drafting: `/grill-with-docs`
-  - after ticket slicing: `/tdd` for the first ready ticket
-  - after implementation completion: `/commit-push-pr` or `/commit-push-close`, then `/release-notes`
+  - after a wayfinder ticket resolves: the next frontier ticket, or `/to-spec` when the map is exhausted
+  - after ticket slicing: `/implement` (or `/tdd-loop`) for the first ready ticket
+  - after implementation completion: `/code-review`, then `/commit-push-pr` or `/commit-push-close`, then `/release-notes`
 - If confidence is low, suggest one conservative next step instead of a long list.
 
 ## Context & Native Memory Model
@@ -229,11 +250,12 @@ Skills are ad-hoc, not a pipeline. Work follows a gradient — discover → shar
 
 Use two valid issue paths:
 
-- **Planned work:** `/feature-discovery` -> `/feature-prompt` -> `/grill-with-docs` -> `/to-spec` -> `/to-tickets` -> `/tdd` -> `/commit-push-*`. The spec and ticket issues exist before coding. `/to-spec` and `/to-tickets` apply ready labels in the normal path, so no separate `/triage` step is required.
+- **Planned work:** `/feature-discovery` -> `/feature-prompt` -> `/grill-with-docs` -> `/to-spec` -> `/to-tickets` -> `/implement` (or `/tdd-loop` directly) -> `/code-review` -> `/commit-push-*`. The spec and ticket issues exist before coding. `/to-spec` and `/to-tickets` apply ready labels in the normal path, so no separate `/triage` step is required.
+- **Foggy work:** `/wayfinder` -> chart the map -> resolve one ticket per session -> map exhausted -> rejoins planned work at `/to-spec`. The map's `Way:` issues are closed before the spec exists.
 - **Existing or incoming issue work:** use `/triage` when an issue needs state changes, reporter follow-up, `ready-for-human`, `wontfix`, or an agent brief before implementation.
-- **Ad hoc work:** one-line request -> `/diagnosing-bugs` or direct fix -> `/tdd` when useful -> `/commit-push-*`. Do not fabricate a detailed GitHub issue before coding. The ship skill creates the issue at the end from the original request, final diff, decisions, and validation.
+- **Ad hoc work:** one-line request -> `/diagnosing-bugs` or direct fix -> `/tdd-loop` when useful -> `/commit-push-*`. Do not fabricate a detailed GitHub issue before coding. The ship skill creates the issue at the end from the original request, final diff, decisions, and validation.
 
-If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, stop and route it through `/feature-prompt` or `/to-tickets` before continuing. Use `/triage` only if there is already an issue whose state or labels need repair.
+If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, stop and route it through `/feature-prompt` or `/to-tickets` before continuing. If it turns out the scope is gated on unresolved decisions, route to `/wayfinder` instead. Use `/triage` only if there is already an issue whose state or labels need repair.
 
 ## Workflow Gates
 
@@ -244,12 +266,13 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 | Issue preflight | `Issue-writing skills` | Title pattern and both required labels are validated from local workspace instructions. |
 | Discovery | `/feature-discovery` | Evidence-backed report is returned in chat; discovery files are never written. |
 | Port | `/port-feature` | Gap map written to `specs/port/`; reference behaviour vs target state mapped; a thin first slice named. |
-| Prompt | `/feature-prompt` | Implementation-ready prompt is reviewed by user. |
+| Prompt | `/feature-prompt` | Implementation-ready prompt is reviewed by user. Fog test passed — destination and open decisions are sharp. |
+| Wayfinding | `/wayfinder` | Map charted with a named destination; or, when working it, exactly one ticket resolved, closed, and indexed on the map. Map exhausted → nothing left to decide → `/to-spec`. |
 | Grill | `/grill-with-docs` | `Recommended answer:` is explicit; ambiguities resolve against ADRs and domain language. |
 | Spec | `/to-spec` | Spec is clear; dependency order is known. |
 | Tickets | `/to-tickets` | Tickets are testable; prerequisites, blocking edges, and unblocked work are ordered. |
 | Existing issue triage | `/triage` | Existing issue state is clear, or an Agent Brief / needs-info / wontfix outcome is recorded. |
-| Build | `/tdd` + `/tdd-loop` | Failure verified (Red), Fix verified (Green). |
+| Build | `/implement` or `/tdd-loop` | Failure verified (Red), Fix verified (Green), completion evidence quoted. `/implement` stops after `/code-review` without committing. |
 | Pixel conformance | `/pixel-audit` | Defect list cleared; every fix passes the element-level gate on served assets. |
 | QA polish | `/polish-batch` | Cosmetic nits captured, dispatched per PROJECT-CODE, and verified. |
 | Cross-repo seam | `/integration-contract` | Multi-project spec's producer/consumer contract built and smoke gate green (single-project auto-skips). |
@@ -259,11 +282,12 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 ## Recovery Loops
 
 - **Vague Prompt:** Back to `/feature-prompt`.
+- **Scope Gated On Unresolved Decisions:** That is fog — `/wayfinder`, not a longer grilling session.
 - **Domain Ambiguity:** Stay in `/grill-with-docs` (updates `CONTEXT.md` inline).
 - **Too Many Questions / Drift:** Narrow to one thin slice with `/feature-prompt`, then resume `/grill-with-docs`.
 - **High-Fidelity Uncertainty (feel/UI/interaction):** `/handoff` -> `/prototype` -> back to `/grill-with-docs`.
 - **Context Budget Pressure:** Treat `~120K` as a caution threshold during planning-heavy sessions; split scope or handoff before quality drops.
-- **Broken Tests:** Stay in `/tdd` or pivot to `/diagnosing-bugs`.
+- **Broken Tests:** Stay in `/tdd-loop` or pivot to `/diagnosing-bugs`.
 - **Large Tickets:** Back to `/to-tickets` for smaller slices.
 - **UI Drifts From Design:** `/pixel-audit` the page against its source of truth; clear the element-level gate before shipping.
 - **Cosmetic Nits Pile Up:** `/polish-batch` — capture them, then dispatch in one pass per PROJECT-CODE.

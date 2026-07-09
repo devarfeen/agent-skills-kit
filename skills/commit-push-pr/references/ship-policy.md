@@ -86,7 +86,7 @@ When the workflow can't locate an issue for valid ad hoc work, create one before
 Use the GitHub issue title as the naming anchor:
 
 - Existing issue: commit subject (and PR title, when shipping as a PR) should match the issue title as closely as practical.
-- Spec slice issue: preserve `Slice NNNN`, `<PROJECT-CODE>`, `ADR-<adr-number>`, `(#<spec-issue-number>)`, and the short heading. If the full `Slice NNNN of <PROJECT-CODE> ADR-<adr-number> <adr-name> (#<spec-issue-number>): <Short heading>` title is too long for a commit subject, shorten only the `<adr-name>` portion; keep the slice number, project code, ADR number, spec issue number, and short heading intact.
+- Spec ticket issue: preserve `Ticket NNNN`, `<PROJECT-CODE>`, `ADR-<adr-number>`, `(#<spec-issue-number>)`, and the short heading. If the full `Ticket NNNN of <PROJECT-CODE> ADR-<adr-number> <adr-name> (#<spec-issue-number>): <Short heading>` title is too long for a commit subject, shorten only the `<adr-name>` portion; keep the ticket number, project code, ADR number, spec issue number, and short heading intact.
 - Ad hoc inline issue: the new issue title, commit subject, and PR title (when shipping as a PR) must be the same text unless a hard tool limit prevents it.
 - Never add `HITL:` or `AFK:` to any of these names.
 

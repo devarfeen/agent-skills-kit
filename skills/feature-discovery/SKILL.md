@@ -238,6 +238,11 @@ For a trivially small in-scope question (one symbol, one config key, one route),
 - [Examples: `/feature-prompt` to frame a change request, `/diagnosing-bugs` when a reproducible bug is identified.]
 ```
 
+When the trace leaves decisions unresolved that gate the scope — you cannot yet
+state the destination and every open question sharply — suggest `/wayfinder`
+instead of `/feature-prompt`. That is fog, and a PR-sized prompt cannot be
+written through it.
+
 ## Evidence Style
 
 Prefer concise evidence bullets:

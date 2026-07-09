@@ -57,6 +57,12 @@ are normal sections. Emit `Known limits` and `Open questions` only when useful.
 
 ### Scope and slicing
 
+- Before drafting, apply the fog test: can you state the destination in one
+  line *and* name every open decision as a sharp question, right now? If not,
+  stop and suggest `/wayfinder` — it charts those decisions as tracker tickets
+  and resolves them one per session. Do not write a PR-sized prompt for foggy
+  work. Fog, not size, is the test: a large mechanical change with nothing left
+  to decide is not fog.
 - Default to one thin vertical slice, small enough to review and merge
   independently. Broad intake gets split: draft this prompt for slice 1 only —
   the contract's `Known limits` bracket owns recording the deferred slices.
