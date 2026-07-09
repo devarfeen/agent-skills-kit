@@ -23,6 +23,9 @@ then ask the user. Never guess; do not proceed until both are set.
   auto-accept or permission-preset variant (e.g. `claude`, `codex`, or a
   flagged form from the user's own launcher alias). The prompt is never one
   of those arguments (see Rules).
+- **CLI_NAME** — the first token of `CODING_CLI`, the bare binary with no
+  flags. PATH checks and worker-tab names use `CLI_NAME`, never the full
+  command, so they stay stable when only the launch flags change between runs.
 
 ## Pre-flight
 
@@ -32,8 +35,9 @@ missing instead of stalling mid-run:
 1. `HERDR_ENV=1` is set — you are inside herdr. Not set → stop.
 2. The herdr companion skill is installed (tab create / submit / read / monitor
    mechanics). Load it now.
-3. `CODING_CLI` resolves on PATH, and `gh` is authenticated (`gh auth status`).
-4. **Leftover tabs:** if tabs named `[CODING_CLI] - GH #<n>` from a previous
+3. `CLI_NAME` resolves on PATH — check the bare binary, not the flagged
+   command, which never resolves — and `gh` is authenticated (`gh auth status`).
+4. **Leftover tabs:** if tabs named `[CLI_NAME] - GH #<n>` from a previous
    run of this spec already exist, ask whether to monitor those instead —
    re-running blindly creates a second tab per issue. If the user is away,
    monitor the existing tabs and create tabs only for open sub-issues that
@@ -87,7 +91,9 @@ missing instead of stalling mid-run:
 3. Save the current herdr workspace/session ID and working folder; every later
    step must confirm it is acting in that workspace and folder.
 4. For each open sub-issue, create one worker tab in the saved workspace and
-   folder, named `[CODING_CLI] - GH #<n>`. Save its tab ID immediately.
+   folder, named `[CLI_NAME] - GH #<n>` — the bare binary, so a re-run whose
+   launch flags differ still matches the Pre-flight leftover-tab check. Save
+   its tab ID immediately.
 5. **Launch the workers** — parallelize the slow parts across tabs:
    - Start `CODING_CLI` in every saved tab first, so the CLIs boot
      concurrently.
@@ -169,7 +175,7 @@ Before ending the run:
 - [ ] Pre-flight passed (HERDR_ENV, companion skill loaded, CLI on PATH, gh
       auth); leftover tabs and same-repo collisions resolved per Pre-flight
 - [ ] Sub-issue count stated and cross-checked against the spec before fan-out
-- [ ] One tab per open sub-issue, named `[CODING_CLI] - GH #<n>`, every tab ID
+- [ ] One tab per open sub-issue, named `[CLI_NAME] - GH #<n>`, every tab ID
       saved at creation; every action used a saved ID
 - [ ] Every worker launched: CLI polled ready (≤60s), prompt pasted and
       submitted, first response seen
