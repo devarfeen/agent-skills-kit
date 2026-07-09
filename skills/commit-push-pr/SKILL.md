@@ -9,7 +9,7 @@ Ship one GitHub-issue iteration as a reviewable PR (with an inline create-if-mis
 
 1. **Resolve or create** the GitHub issue.
 2. **Commit** the diff with a structured message.
-3. **Push** the current branch (when starting from the default branch, a confirmed feature branch is created first — step 4 of the workflow).
+3. **Push** the current branch.
 4. **Open a PR** with `Closes #N`, a summary, and a how-to-test plan.
 
 ## Shared ship policy
@@ -61,7 +61,7 @@ The `Closes #N` line is mandatory and must be on its own line near the top of th
 
 5. **Draft the commit message** from the issue title and diff, per **Commit message format** in `references/ship-policy.md`. For ad hoc inline issues, the new issue title and commit subject must match (see **Naming anchor**).
 
-6. **Draft the PR title and body** — title mirrors the commit subject with no routing marker; body has `Closes #N`, summary, optional decisions, how-to-test, optional notes (format above). If the test plan isn't obvious, ask the user before continuing.
+6. **Draft the PR title and body** — title mirrors the commit subject with no routing marker; body has `Closes #N`, summary, optional decisions, how-to-test, optional notes (format above). If the test plan isn't obvious, ask the user before continuing. If the how-to-test plan opens with a test or validation command — one that passes or fails, not a long-running server — run it now and paste the passing tail into the drafted body, so the body the user approves in step 7 is the final body. A failing run stops here (fix or ask).
 
    Before presenting drafts, run the **Authorship policy** scrub and, if env files/keys changed, the **Env parity policy** sync pass — both in `references/ship-policy.md`.
 
@@ -79,10 +79,12 @@ The `Closes #N` line is mandatory and must be on its own line near the top of th
     - Tracks a remote → `git push`.
     - No upstream → `git push -u origin <branch>`.
 
-11. **Open the PR** against the detected default branch. First, when the
-    How-to-test plan opens with a runnable test command, run it once and quote
-    the passing tail in the PR body — a failing run stops the PR (fix or ask);
-    never open a PR whose own test plan fails. Then:
+11. **Open the PR** against the detected default branch. When the how-to-test
+    plan opens with a test or validation command, confirm the passing tail
+    already quoted into the approved body (step 6) still holds against the
+    just-pushed commit before calling `gh pr create` — never open a PR whose
+    own test plan fails.
+    Then:
     ```bash
     gh pr create \
       --base "<default-branch>" \
@@ -143,7 +145,10 @@ Checkout charges are now idempotent on `x-request-id`; replays return the origin
 - Reused existing `x-request-id` header instead of introducing a new one
 
 ## How to test
-1. `pnpm test server/checkout/handler.test.ts` — all green
+1. `pnpm test server/checkout/handler.test.ts` — passing tail quoted below:
+       Test Files  1 passed (1)
+            Tests  6 passed (6)
+         Duration  1.24s
 2. Hit `POST /checkout` twice with the same `x-request-id` — second call returns the first response, no second Stripe charge
 3. Hit twice with different IDs — two distinct charges as before
 
@@ -165,7 +170,7 @@ Before reporting done, verify:
 - [ ] Push succeeded with upstream set
 - [ ] PR body has `Closes #<num>` on its own line near the top
 - [ ] PR body has **Summary** + **How to test**
-- [ ] If the test plan opens with a runnable command, it ran green and its output tail is quoted in the body (a failure stopped the PR)
+- [ ] If the test plan opens with a pass/fail test or validation command, it ran green and its output tail is quoted in the body (a failure stopped the PR)
 - [ ] No duplicate PR created (existing PR was edited instead)
 - [ ] PR read back after create/edit (`gh pr view --json title,body,baseRefName,headRefName`): title, base, head, and the `Closes #<num>` line all verified
 - [ ] Final report line printed

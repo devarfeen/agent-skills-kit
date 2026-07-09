@@ -69,7 +69,7 @@ Scope: <route + states audited>
 | 2 | Row actions, extra "Delete" | /assets · list | pages/assets/index | not in source | — | delete icon present | EXTRA | ref=…, screenshot | open |
 ```
 
-- **Kind** is `MISSING` or `EXTRA`. **Evidence** is element-level (selector/ref, `getBoundingClientRect()`, computed styles, screenshot ref) — not "looks off".
+- **Kind** is `MISSING` or `EXTRA`. **Evidence** is element-level per the Verification gate — not "looks off".
 - **Status** lifecycle: `open` → `fixed` → `verified` (or `reopened` if the gate fails). A row reaches `verified` only after the verification gate passes for it.
 
 ## Fixing
@@ -83,7 +83,7 @@ Scope: <route + states audited>
 
 ## Verification gate
 
-This gate is the point of the skill. Never weaken it. "Verified/done/fixed" is a claim you must earn per fix.
+"Verified/done/fixed" is a claim you must earn per fix.
 
 - **State the env:** host, URL, container/service, browser/session.
 - **Cross the build pipeline:** rebuild/refresh after every template/CSS/class/component change, and **confirm the changed classes/styles/components actually exist in the SERVED assets** (not just the source files).

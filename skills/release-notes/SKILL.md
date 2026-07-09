@@ -48,7 +48,8 @@ pass: "Would a PM or QA person understand this without asking a developer?"
    - "added test coverage" → "reduced regression risk by validating scanner setup behavior"
 8. **Banned words/phrases:** workstream, artifact, canonical, process drift,
    touchpoint, formally, standardized, operationally, implementation, ad hoc,
-   scope (as jargon), aligned, resolution, "it is suitable for", "this reduces
+   scope (as jargon — the structural **Scope** section header is exempt),
+   aligned, resolution, "it is suitable for", "this reduces
    the chance of", "without X, Y is easier to Z", "not explicitly visible in
    commit history", any bullet phrase over 15 words.
 9. **If logic changed, add one sentence a 5th grader could understand** inside
@@ -209,8 +210,10 @@ never overwrite hand edits unconfirmed. Never delete unrelated files.
 
 Mechanical pass first — scan the draft and fix every hit before judging tone:
 
-1. No rule-8 banned word/phrase appears anywhere; no bullet runs over 15 words;
-   no Problem/Change/Impact section exceeds 2 content bullets.
+1. No rule-8 banned word/phrase appears in narrative text — the structural
+   **Scope** section header is exempt, since rule 8 bans "scope" only as
+   narrative jargon; no bullet runs over 15 words; no Problem/Change/Impact
+   section exceeds 2 content bullets.
 2. Structure and hierarchy match the loaded asset skeleton exactly (one `---`,
    child sections inside features, hashes only under **Commits Included**);
    only changed projects are included; the file is saved to

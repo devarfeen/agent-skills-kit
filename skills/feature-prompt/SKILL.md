@@ -5,7 +5,7 @@ description: "Use when the user wants to turn a feature idea, change request, or
 
 # Feature Prompt
 
-Turn a rough feature request into a minimal, drop-in prompt for
+Feature-prompt turns a rough feature request into a minimal, drop-in prompt for
 `grill-with-docs`.
 
 This skill does not create an implementation spec. It creates the smallest
@@ -94,10 +94,9 @@ are normal sections. Emit `Known limits` and `Open questions` only when useful.
   `Doc anchors`, `Integration`, `Constraints`, or `Acceptance` sections. Fold
   useful facts into the six contract sections; user-stated hard decisions go
   under `Known limits`.
-- Classify unclear decisions by fidelity: grillable (low-fidelity) questions
-  stay under `Open questions`; ungrillable ones ("needs to feel/see it") are
-  described under `Open questions` and routed to `/handoff` + `/prototype`
-  before deep grilling continues.
+- Classify unclear decisions by fidelity: both kinds land under
+  `Open questions`, but ungrillable ones ("needs to feel/see it") also route to
+  `/handoff` + `/prototype` before deep grilling continues.
 - Keep `Open questions` to the highest-leverage unknowns (usually 1-5). Drop
   trivia that can be decided during implementation.
 - Do not implement the feature, create a spec, or edit ADRs. `CONTEXT.md`
@@ -113,14 +112,14 @@ to fill this. The shared flow — what qualifies as a candidate, how to present
 the list, the away-fallback, and how to apply approvals — lives in
 [`references/context-terms.md`](references/context-terms.md). Show candidates
 before finalizing the prompt, apply only approved updates, and report the
-edited path before saving. Do not add a `Domain terms` section to the prompt;
-terms still needing review stay under `Open questions`.
+edited path before saving. Terms still needing review stay under
+`Open questions`.
 
 ## Agent Use
 
 When the runtime supports subagents and the user has allowed them, use
-read-only agents only for fast, independent context checks. The main session
-owns judgment and final wording. No worker agents, no code edits.
+read-only agents only for fast, independent context checks. No worker agents,
+no code edits.
 
 ## Final Output
 
@@ -129,7 +128,9 @@ owns judgment and final wording. No worker agents, no code edits.
    user is away, save it as drafted and note at the top of the response that
    it is unconfirmed.
 3. If candidate context terms were found, run the shared approval flow.
-4. Verify the pre-save checklist, then save the final prompt to disk (below), then re-open the saved file — its sections and path must match the approved draft before the reply reports it.
+4. Verify the pre-save checklist. Save the final prompt to the path below.
+   Re-open the saved file and confirm its sections and path match the approved
+   draft before the reply reports it.
 5. Add only:
 
 ```markdown
@@ -155,8 +156,9 @@ Resolve `<artifacts-root>`: (1) the directory containing a `*.code-workspace`
 file at or above cwd; (2) the per-context root in a multi-context repo
 (`CONTEXT-MAP.md` at root); (3) the single repo root.
 
-- **`NNNN`** — scan `<artifacts-root>/specs/adr/` and `specs/prompts/` for the
-  highest existing four-digit number and increment. This keeps prompt numbers
+- **`NNNN`** — scan `<artifacts-root>/specs/adr/` and
+  `<artifacts-root>/specs/prompts/` for the highest existing four-digit number
+  and increment. This keeps prompt numbers
   from colliding with existing ADRs. ADRs are numbered independently by
   `grill-with-docs` from `specs/adr/` alone, so the ADR born from this prompt
   may carry a different number — the prompt path recorded in the ADR is the

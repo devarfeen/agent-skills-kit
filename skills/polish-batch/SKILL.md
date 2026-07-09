@@ -58,10 +58,10 @@ Columns:
 - **PROJECT-CODE** — full code from the Project Matrix.
 - **Where** — the exact surface: screen › region › element, or the response field / string key. Precise enough to find without hunting.
 - **Wrong → Right** — current state → intended state, in one line. This is the acceptance criterion verify checks against.
-- **Shot** — relative path under `specs/qa/shots/` to a captured screenshot, or the literal `(no shot — text only)` fallback when no browser is available.
+- **Shot** — relative path under `specs/qa/shots/` to a captured screenshot, or the literal `(no shot — text only)` fallback when the surface isn't browser-reachable.
 - **Status** — lifecycle: `open` → `dispatched` → `verified` or `reopened`.
 
-**Screenshots.** When agent-browser is available, use it to screenshot the affected state into `<artifacts-root>/specs/qa/shots/` and record the path in **Shot**. When agent-browser is not installed or the surface is not browser-reachable (e.g. an API string), fall back to the **Where** text and write `(no shot — text only)` in **Shot**. Never block a capture on a missing screenshot.
+**Screenshots.** Never block a capture on a missing screenshot: when agent-browser can't reach the surface (e.g. an API string), use the **Shot**-column fallback and rely on the **Where** text.
 
 ## Modes
 
@@ -73,7 +73,7 @@ The mode you are in unless the user explicitly says dispatch or verify.
 2. For each nit the user reports:
    - Confirm it is **cosmetic** (copy / spacing / alignment / wrong string / visual state only). If it touches behaviour, data, or an interface, stop, name it, and route it to `/to-tickets` — do not add it as a row. Genuinely unsure whether it's cosmetic → no row yet; list it under Needs user **and** under a `## Held — awaiting cosmetic/behavioural call` footer in the punch-list file so it survives the session; on the user's call it becomes a row or routes to `/to-tickets`.
    - Confirm the **PROJECT-CODE** from the matrix.
-   - Screenshot the state with agent-browser into `specs/qa/shots/` if available; otherwise note `(no shot — text only)`.
+   - Screenshot the state with agent-browser into `specs/qa/shots/` if available; otherwise use the **Shot**-column fallback.
    - Append **one row** with status `open`. Change nothing else.
 3. Keep a running count of open rows.
 4. Emit the capture batch update (template under Output format).
@@ -86,7 +86,7 @@ Runs **only** when the user explicitly says to dispatch, as a fresh instruction 
 2. **Group by PROJECT-CODE.** Within each group, order rows trivial → structural (pure text/string fixes first, then spacing/alignment).
 3. Hand the coding CLI **one bounded task per PROJECT-CODE group**: "Fix exactly these listed items in `<PROJECT-CODE>` and nothing else — no refactors, no adjacent changes, each fix independent and obviously correct." Give it the rows' **Where** and **Wrong → Right** verbatim, plus two contract lines: when an existing test asserts the old wrong value, updating that test with the new value is part of the row's fix, not an adjacent change; and the task must report back, per row, the file(s) touched with a one-line change summary.
 4. As each group's task is handed off, mark those rows `dispatched`.
-5. Emit a `Stage / Found / Next / Needs user` update — Stage: dispatch, groups handed off; Found: rows per PROJECT-CODE group; Next: verify when the tasks report back; Needs user: any ambiguous group. Do not verify yet, and do not ship.
+5. Emit the dispatch update (template under Output format). Do not verify yet, and do not ship.
 
 Use local subagents/background per the runtime when dispatching multiple project groups; the main session keeps the merge and final-judgment seat.
 
@@ -119,6 +119,15 @@ Found: <total> open rows — <PROJECT-CODE>: x, <PROJECT-CODE>: y.
 Routed out (not nits): <item> → /to-tickets (touches <behaviour|data|interface>).  [omit if none]
 Next: keep capturing, or say "dispatch" to fix the open rows.
 Needs user: <ambiguous PROJECT-CODE or borderline-cosmetic item, or "none">.
+```
+
+**Dispatch update** (after handing off the per-project tasks):
+
+```markdown
+Stage: dispatch — handed off <G> group(s), rows marked dispatched.
+Found: <PROJECT-CODE>: n rows, <PROJECT-CODE>: m rows.
+Next: verify when the dispatched tasks report back. No ship yet.
+Needs user: <ambiguous group, or "none">.
 ```
 
 **Verify report:**

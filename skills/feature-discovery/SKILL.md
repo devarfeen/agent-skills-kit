@@ -43,7 +43,7 @@ request and ask only when the mapping is genuinely ambiguous.
 
 **Evidence.**
 
-- Code is the source of truth when evidence conflicts with prose docs.
+- Code is the source of truth when evidence conflicts with prose docs, issues, or comments.
 - Use `rg` first for text search; prefer CLI tools over MCP for codebase
   evidence. Use `git`, `git grep`, `find`, `gh`, package metadata, local docs,
   issues, and tests as needed.
@@ -64,6 +64,8 @@ request and ask only when the mapping is genuinely ambiguous.
 - The human stays in charge. Discovery questions are for blocking
   clarifications only, not open-ended interrogation. If the user is away,
   state the assumption taken and continue best-effort.
+- Stop after presenting the report. Suggest the next skill; never invoke it or
+  start implementation without a fresh request.
 - Classify unresolved unknowns by fidelity: grillable (low fidelity) stays as
   concise open decisions for `/feature-prompt` or `/grill-with-docs`;
   ungrillable ("needs to feel/see it") routes to `/handoff` + `/prototype`
@@ -96,7 +98,7 @@ request and ask only when the mapping is genuinely ambiguous.
 
 ## Discovery Lens
 
-Use this lens to keep discovery grounded in existing system behavior, not product coaching:
+Use this lens to keep discovery grounded in existing system behavior:
 
 - **Behavior:** what currently exists and what users, systems, jobs, APIs, or operators experience.
 - **Boundary:** owning project, module, data path, entry points, exits, and explicit non-goals.
@@ -110,7 +112,7 @@ Use this lens to keep discovery grounded in existing system behavior, not produc
 Avoid these failure modes:
 
 - Reading stale discovery files before current code and tests.
-- Treating docs, issues, comments, or native memory as stronger evidence than code.
+- Treating comments or native memory as stronger than code.
 - Explaining implementation symbols without tracing user-facing behavior and usage sites.
 - Running broad GitHub issue scans when local context does not bound the search.
 - Dumping symbols instead of describing the behavior, boundary, evidence, risks, and unknowns.
@@ -262,6 +264,6 @@ Before delivering the report:
 - [ ] Read-only held — `git status` shows no files created or modified by this discovery
 - [ ] Every factual claim in sections 1–8 carries a citation (file:line/symbol, route, command output, issue, or commit)
 - [ ] All nine sections present in order — or Quick trace declared, with sections 1–3 and 8 emitted and the rest marked N/A
-- [ ] Section 6 ends with the four-option ask verbatim (approve names / wording changes / `approve all` / `skip context updates`) or the no-candidates line
+- [ ] Section 6 ends with the four-option approval ask as templated in the Output Format, or the no-candidates line
 - [ ] Section 8 lists only checks actually run, with the commands named; anything skipped is stated
 - [ ] Report delivered in chat; no discovery file written

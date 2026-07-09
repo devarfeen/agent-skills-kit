@@ -357,9 +357,7 @@ WAREHOUSE-ADMIN
 
 ## Example 6: Output File Naming
 
-Release notes live in `<artifacts-root>/specs/release-notes/`. They are on-demand date files and do not use the ADR/prompt `NNNN` sequence. Feature prompts (`-prompt`) live in the sibling `<artifacts-root>/specs/prompts/` folder.
-
-`<artifacts-root>` resolves to (1) the directory containing the `*.code-workspace` file when a VS Code workspace is present, (2) the per-context root in a multi-context repo (`CONTEXT-MAP.md` at root), or (3) the repo root for single-repo projects. Workspace mode is preferred — it keeps artifacts out of individual project repos.
+`<artifacts-root>` resolution and the `NNNN`/naming rules are canonical in SKILL.md "File Output"; this example shows only the resulting file paths.
 
 ### User Request
 Generate release notes for 12 March 2026

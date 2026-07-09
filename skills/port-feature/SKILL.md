@@ -9,7 +9,7 @@ description: Use when the user wants to port, migrate, rebuild, or recreate a fe
 
 Port a feature that already works in a **REFERENCE** implementation into a **TARGET** stack. The reference (often a legacy repo) is where the real behaviour lives; the target is where it needs to land, in the target's own idiom. The confidence to do this safely — what the feature actually does, what the target already has, what's missing, what to reuse — usually lives only in someone's head. This skill pulls it onto disk as **one gap map**, then hands off to planning.
 
-It sits at the **discover → plan** entry of the gradient. It is a single pass, not a loop and not a pipeline: read context → discover the reference → survey the target → write the gap map → suggest `/grill-with-docs` → **stop**.
+It sits at the **discover → plan** entry of the gradient — a single pass, not a loop and not a pipeline (see Process).
 
 ## Inputs
 
@@ -128,9 +128,11 @@ Before finishing:
 - [ ] Target binding context (`CONTEXT.md`, `specs/adr/`, `AGENTS.md`, UI-coding skill) read first; no stack rules hardcoded
 - [ ] Reference discovered `/feature-discovery`-style (behaviour, workflow, navigation, permissions, states, data effects), evidence-backed and narrow — no bulk reads
 - [ ] Any port-critical rule missing from the target's binding context was surfaced as an open question, not guessed
-- [ ] Target current state surveyed; if UI, the target component preview (`/ui/preview/all`) was opened
+- [ ] Target current state surveyed; if UI, the target component preview (e.g. `/ui/preview/all`) was opened
 - [ ] Sub-agents, if used, were user-allowed, non-overlapping, and read-only; the main agent synthesised; no duplicate discovery
-- [ ] Gap map written to `<artifacts-root>/specs/port/<feature-slug>-gapmap.md` and re-opened — all nine section headings verified present; reference kept as behaviour-truth and target DS as UI-truth (deviations recorded)
+- [ ] Gap map written to `<artifacts-root>/specs/port/<feature-slug>-gapmap.md` and re-opened; all nine section headings present
+- [ ] Every claim in sections 1–4 carries a concrete evidence ref (`file:symbol`/route/migration/test); unproven claims marked as inference
+- [ ] Reference kept as behaviour-truth and target DS as UI-truth; every forced DS deviation recorded
 - [ ] First slice is thin and independently testable
 - [ ] Suggested `/grill-with-docs` and stopped — nothing implemented, no issue fabricated, no auto-chain
 - [ ] Final `Stage / Found / Next / Needs user` update emitted

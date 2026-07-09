@@ -13,19 +13,14 @@ where strict test-first doesn't fit.
 
 Three layers, each optional above this one:
 
-- **Ticket level — `/implement`** (Matt Pocock, optional). Drives one ticket:
-  works it, runs typechecking regularly, runs the full suite once at the end,
-  then hands to `/code-review`. It calls this loop at each pre-agreed seam. It
-  must not commit — shipping belongs to `/commit-push-close` or
-  `/commit-push-pr`.
+- **Ticket level — `/implement`** (Matt Pocock, optional). Drives one ticket,
+  calling this loop at each pre-agreed seam.
 - **Behavior level — this loop.** Red → green → widen → refactor, with the
   completion evidence below. Without `/implement` installed, drive this loop
-  directly, once per ticket. Same outcome, one less wrapper.
+  directly, once per ticket.
 - **Test quality — `/tdd`** (Matt Pocock, optional). A reference: what a good
   test is, where seams go, the anti-patterns. It is not a loop; never use it
   alone in place of this procedure.
-
-Both layers are optional. This loop stands alone.
 
 ## Before the loop
 

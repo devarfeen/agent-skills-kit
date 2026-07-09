@@ -58,6 +58,12 @@ Design system: `<docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md
 Only for the fresh-seed path (no existing UI skill anywhere in the project); when
 one exists, adopt and extend it in place instead. Match the kit's skill format.
 
+**Location.** Create it at `<project>/.agents/skills/<project-slug>-ui-coding/SKILL.md`
+— the generated AGENTS.md tells every runtime to read that canonical copy. When the
+current runtime also discovers project skills natively from its own directory (e.g.
+`.claude/skills/`, `.cursor/skills/`), add a copy or symlink there by that runtime's
+mechanism; the `.agents/skills/` copy stays canonical.
+
 ```markdown
 ---
 name: <project-slug>-ui-coding

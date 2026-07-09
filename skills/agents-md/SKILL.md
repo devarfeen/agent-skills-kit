@@ -114,7 +114,14 @@ The gradient and companion tables are generated from `references/skills-manifest
 
 Column semantics (`skill`, `kind`, `phase`, `note`, `use-when`) are documented in the manifest's own header — read them there, not here. One rendering rule binds here: `kit` and `external` skills render in the gradient table alike — the "Do not assume a skill exists; use what is installed" rule already covers separate installs.
 
-Then fill the skeleton's `[RUNTIME TOOL-CALLING …]` slot with a `### Runtime Tool-Calling` subsection. Read `references/tool-calling.md` only — its "All runtimes (index)", "Parallel & background mechanism by runtime", and "Highest elevated permission by runtime" tables carry everything the emitted tables need; consult a per-runtime `*-tools.md` only when a cell there is missing or unclear. Emit three compact tables for the supported runtimes: (1) how each runtime invokes a skill, (2) its local parallel/background mechanism, and (3) the highest elevated launch / permission preset. Inline the results in `AGENTS.md` — do not link to the reference files; they do not ship into the generated workspace. Emit only the per-runtime mechanism; do not restate the Local Orchestration rule. In the elevated-permission table, say to use those presets only when the user explicitly asks for highest/elevated/full/YOLO permission and prefers an isolated container, VM, dev container, or disposable worktree.
+Then fill the skeleton's `[RUNTIME TOOL-CALLING …]` slot with a `### Runtime Tool-Calling` subsection, following each of these:
+
+- Read `references/tool-calling.md` only — its "All runtimes (index)", "Parallel & background mechanism by runtime", and "Highest elevated permission by runtime" tables carry everything the emitted tables need.
+- Consult a per-runtime `*-tools.md` only when a cell in those tables is missing or unclear.
+- Emit three compact tables for the supported runtimes: (1) how each runtime invokes a skill, (2) its local parallel/background mechanism, and (3) the highest elevated launch / permission preset.
+- Inline the results in `AGENTS.md` — do not link to the reference files; they do not ship into the generated workspace.
+- Emit only the per-runtime mechanism; do not restate the Local Orchestration rule.
+- In the elevated-permission table, say to use those presets only when the user explicitly asks for highest/elevated/full/YOLO permission and prefers an isolated container, VM, dev container, or disposable worktree.
 
 ## Versioning & Regeneration
 
@@ -135,7 +142,7 @@ Regenerate the `CLAUDE.md` shim only if it is missing or its marker is stale.
 
 Verify against the generated files — each item is observable, not a recollection:
 
-- [ ] `AGENTS.md` contains, in order: intro (+ multi-stack warning when detected), Project Matrix, Non-Negotiable Rules 1–12, Working With Skills (gradient table, startup note, companion table, Matt routing only when installed, Runtime Tool-Calling), Context & Native Memory (North star only when a vision file was found), GitHub Issue Titles, Output Style
+- [ ] `AGENTS.md` contains, in order: intro (+ multi-stack warning when detected), Project Matrix, Non-Negotiable Rules 1–13, Working With Skills (gradient table, startup note, companion table, Matt routing only when installed, Runtime Tool-Calling), Context & Native Memory (North star only when a vision file was found), GitHub Issue Titles, Output Style
 - [ ] Project Matrix row count equals the `.code-workspace` `folders` count — no invented or dropped rows; every Stack cell traces to a manifest that was actually read
 - [ ] Both generated files open with the current version marker; the two Context & Native Memory placeholders are intact (fresh run) or carried over filled (regeneration)
 - [ ] Regeneration: foreign sections preserved verbatim, user-filled values carried, and the shown diff confirmed — or the run stopped without writing

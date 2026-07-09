@@ -130,7 +130,7 @@ Completion requires test evidence: the test command and its passing output.
 ```
 
 Workers with neither `/tdd` nor `/tdd-loop` installed still owe test evidence;
-say so in the dispatch report.
+say so in the prompts-submitted phase update.
 
 ## Monitoring
 

@@ -66,6 +66,7 @@ Rules for **How to test** live in **How-to-test rules** (`references/ship-policy
    - Tracks a remote → `git push`.
    - No upstream → `git push -u origin <branch>`.
    - **If the current branch is the detected default branch**: stop and confirm separately before pushing — step 6's approval does not cover this push. If the user is away, leave the commit local and unpushed, skip the close (a close comment must reference a pushed commit), and surface both under Needs user in the report.
+   - **Confirm the push landed** before the close — non-error exit and `git status -sb` shows the branch up-to-date with its remote. A rejected push (non-fast-forward, auth expiry) stops the close, since the close comment must reference a commit that is actually on `<branch>`.
 
 10. **Close the issue** — first, when the How-to-test plan opens with a
     runnable test command, run it once and quote the passing tail in the close
@@ -85,7 +86,7 @@ Rules for **How to test** live in **How-to-test rules** (`references/ship-policy
     check, not assumed from a zero exit code; quote the returned state in the
     report.
 
-11. **Report** — one line: `<SHA> pushed to <branch>; issue #<num> closed (state CLOSED verified)`. Then append the **Response footer** from `references/ship-policy.md` (1-6 advisory suggestions).
+11. **Report** — one line: `<SHA> pushed to <branch>; issue #<num> closed (state CLOSED verified)`. If the push and close were skipped (default branch, user away), report instead `<SHA> committed locally on <branch>; push and close deferred`, then a `Needs user:` line naming the default-branch-push confirmation still required. If the push was attempted and rejected (non-fast-forward, auth expiry — step 9), report `<SHA> committed locally on <branch>; push REJECTED (<reason>), close stopped`, then a `Needs user:` line naming the push fix required (rebase/pull, re-auth) before this iteration can finish — this is a failure, not a deferral. In every case, append the **Response footer** from `references/ship-policy.md` (1-6 advisory suggestions).
 
 ## Examples
 
