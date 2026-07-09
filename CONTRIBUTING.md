@@ -174,6 +174,12 @@ PR.
 Score a new or changed skill against these before approving. A "no" on any of
 1–5 blocks merge.
 
+This is the **merge gate** — pass/fail, per PR. For ranking skills against each
+other and deciding where the next edit goes, [`evals/`](evals/) carries the
+scored instrument: eleven categories, 1–5 anchors, and per-skill results at
+`skills/<name>/evals/quality.md`. The nine below are a subset of the eleven.
+When the two disagree, this file wins — it is what CI enforces.
+
 1. **Trigger quality** — could a runtime pick this skill from the description
    alone, and *not* pick it for neighbouring requests? No overlap with an
    existing skill's trigger space.
