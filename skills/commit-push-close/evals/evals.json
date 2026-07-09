@@ -100,9 +100,10 @@
  ],
  "last_run": {
   "date": "2026-07-09",
-  "method": "3 independent catalog-routing judges over the 280-query mixed set (all thirteen eval files interleaved, deterministic shuffle seed 20260706), majority vote per query; judges saw only the catalog — no repo access",
+  "method": "3 independent catalog-routing judges over the 280-query mixed set (all thirteen eval files interleaved, deterministic shuffle seed 20260706), majority vote per query; judges saw only the catalog — no repo access, no SKILL.md",
   "result": "21/21 pass — unanimous majority on every query",
-  "judge_model": "claude-fable-5 (3 independent runs)",
-  "catalog": "tools/trigger-evals/build-catalog.sh (kit descriptions read live, post mattpocock/skills v1.1.0 alignment — to-spec/to-tickets/code-review renames) + catalog-externals.md snapshot dated 2026-07-09"
+  "judge_model": "claude-opus-4-8 (3 independent catalog-only runs)",
+  "catalog": "tools/trigger-evals/build-catalog.sh (kit descriptions read live, after the 2026-07-09 routing fixes to /agents-md, /design-system and /tdd-loop) + catalog-externals.md snapshot dated 2026-07-09",
+  "supersedes": "the 2026-07-09 record claiming 280/280 was stale: commit 0efea5f edited /tdd-loop's description after that run without re-running. A re-run of the shipped tree scored 277/280 — /agents-md lost both Project Matrix queries to /design-system (3/3 judges) and /tdd-loop lost 'Implement slice 0003 test-first' to /implement. Three descriptions were fixed; this record is the passing re-run that followed."
  }
 }
