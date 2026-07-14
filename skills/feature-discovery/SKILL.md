@@ -44,6 +44,16 @@ request and ask only when the mapping is genuinely ambiguous.
 **Evidence.**
 
 - Code is the source of truth when evidence conflicts with prose docs, issues, or comments.
+- Check for a graphify knowledge base before broad searching:
+  `graphify-out/graph.json` at the project root, else at the workspace root
+  (the directory containing the `*.code-workspace` file). Found → scope the
+  trace with `graphify query` / `graphify path` / `graphify explain` before
+  broad `rg` sweeps, and verify graph answers against current code before
+  citing them. Missing in both places → skip graphify entirely; do not hunt
+  elsewhere or suggest installing it.
+- Treat the graph as stale when `graph.json` is older than ~7 days: still use
+  it for scoping, but flag the staleness in the report and recommend the user
+  run `graphify update .` — never run it yourself; discovery stays read-only.
 - Use `rg` first for text search; prefer CLI tools over MCP for codebase
   evidence. Use `git`, `git grep`, `find`, `gh`, package metadata, local docs,
   issues, and tests as needed.
@@ -112,6 +122,8 @@ Use this lens to keep discovery grounded in existing system behavior:
 Avoid these failure modes:
 
 - Reading stale discovery files before current code and tests.
+- Ignoring an existing graphify knowledge base before broad sweeps — or
+  hunting for one after both the project root and workspace root came up empty.
 - Treating comments or native memory as stronger than code.
 - Explaining implementation symbols without tracing user-facing behavior and usage sites.
 - Running broad GitHub issue scans when local context does not bound the search.
@@ -167,6 +179,8 @@ Avoid these failure modes:
 Adapt commands to the repo. Keep command output summarized in the final report.
 
 ```bash
+graphify query "exact topic"   # only when graphify-out/graph.json exists — project root, else workspace root
+find graphify-out/graph.json -mtime +7   # output means the graph is >7 days old — recommend `graphify update .`
 rg -n "exact topic|likely alias|route|config_key" .
 find . -maxdepth 4 \( -name package.json -o -name README.md -o -name .git \)
 git grep -n "term"

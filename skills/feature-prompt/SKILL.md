@@ -54,6 +54,10 @@ are normal sections. Emit `Known limits` and `Open questions` only when useful.
   cannot be inferred safely.
 - Use repo evidence when cheap: Project Matrix, cwd, `CONTEXT.md`,
   `CONTEXT-MAP.md`, and ADR names. Do not run a broad code scan by default.
+  A graphify knowledge base counts as cheap evidence when one exists —
+  `graphify-out/graph.json` at the project root, else at the workspace root;
+  missing in both places → skip graphify. If the graph is older than ~7 days,
+  say so and recommend the user run `graphify update .`.
 
 ### Scope and slicing
 

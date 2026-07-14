@@ -26,7 +26,7 @@ build  →  (implement the slices)  →  gate
 
 ## Rules
 
-- **Narrow retrieval only.** Trace consumer call-sites the way `/feature-discovery` does — targeted `rg`/`git grep` for the exact route, path, method name, or response field. **Never** bulk-read a consumer repo or its `specs/` tree "to find the call-sites". Every located consumer is cited with `file:symbol`.
+- **Narrow retrieval only.** Trace consumer call-sites the way `/feature-discovery` does — targeted `rg`/`git grep` for the exact route, path, method name, or response field. **Never** bulk-read a consumer repo or its `specs/` tree "to find the call-sites". Every located consumer is cited with `file:symbol`. When a graphify knowledge base exists (`graphify-out/graph.json` at the repo root, else at the workspace root), use `graphify query`/`graphify path` to locate candidate call-sites first, then confirm each with `rg` before citing it; graph older than ~7 days → recommend the user run `graphify update .`; missing in both places → skip graphify.
 - **Retrieval order.** `CONTEXT.md` + `specs/adr/` are binding (read before deciding) > the current spec, sub-issues, and code > native CLI memory.
 - **Decisions are artifacts.** The output is the durable contract file, not a chat summary. Chat only reports what was written and the Stage/Found/Next/Needs-user update.
 - **Always name full PROJECT-CODEs** from the Project Matrix — for the producer, every consumer, and every smoke flow. Never mix one project's conventions into another (e.g. API JSON contracts vs Livewire web vs CodeIgniter legacy vs React Native): each consumer is traced and reasoned about in its own idiom.

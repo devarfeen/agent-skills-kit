@@ -54,7 +54,7 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | ask-matt | companion | | | You want Matt's upstream router for choosing a user-invoked skill flow. |
 | domain-modeling | companion | | | Project terminology, aliases, or ADR-backed domain language need sharpening. |
 | codebase-design | companion | | | Module boundaries, seams, or interface design decisions matter. |
-| Graphify | companion | | | Querying a generated code/docs/media graph would save broad file reads. |
+| Graphify | companion | | | Querying a generated code/docs/media graph would save broad file reads. Check `graphify-out/graph.json` at the project root, else the workspace root; absent in both → skip it. Graph older than ~7 days → recommend `graphify update .`. |
 | Codex plugin for Claude Code | companion | | | Claude Code needs Codex for review or delegated work. |
 | Impeccable | companion | | | Frontend design quality, visual polish, or browser-backed UI checks matter. |
 | notebooklm-py | companion | | | The user asks to work with NotebookLM sources or artifacts. |

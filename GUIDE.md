@@ -128,7 +128,7 @@ These are optional separate installs. Use them beside this kit when installed an
 
 | Companion | Use when |
 | :--- | :--- |
-| Graphify | Querying a generated code/docs/media graph would save broad file reads. |
+| Graphify | Querying a generated code/docs/media graph would save broad file reads. Check `graphify-out/graph.json` at the project root, else the workspace root; absent in both → skip it. Graph older than ~7 days → recommend `graphify update .`. |
 | ask-matt | You want Matt's upstream router for choosing a user-invoked skill flow. |
 | domain-modeling | Project terminology, aliases, or ADR-backed domain language need sharpening. |
 | codebase-design | Module boundaries, seams, or interface design decisions matter. |
