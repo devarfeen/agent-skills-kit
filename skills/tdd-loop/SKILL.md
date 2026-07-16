@@ -123,6 +123,19 @@ Done means you can show all of these:
 
 "Tests pass" without a witnessed red is not TDD evidence.
 
+## Autonomy boundary
+
+Proceed without asking when the ticket carries numbered acceptance criteria,
+the seam is pre-agreed, and the requirement is unambiguous after at most one
+focused question. Where the ticket numbers its criteria, name the criterion
+in each test's description (`AC-3: locks after five failed attempts`) — the
+traceability is part of the evidence.
+
+Stop and ask when requirements stay ambiguous, a slice outgrows its ticket's
+acceptance criteria, or the change touches auth, payments, or data
+migration — those test scenarios need the user's sign-off before you pursue
+green.
+
 ## Exception protocol
 
 TDD adapts to real work — it never silently disappears. Declare the exception
