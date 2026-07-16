@@ -6,12 +6,7 @@ description: Ship one iteration of work on a GitHub issue as a pull request — 
 
 # commit-push-pr
 
-Ship one GitHub-issue iteration as a reviewable PR (with an inline create-if-missing step for the issue):
-
-1. **Resolve or create** the GitHub issue.
-2. **Commit** the diff with a structured message.
-3. **Push** the current branch.
-4. **Open a PR** with `Closes #N`, a summary, and a how-to-test plan.
+Ship one GitHub-issue iteration as a reviewable pull request whose `Closes #N` line auto-closes the issue on merge. The boundary against `/commit-push-close`: that skill ends by closing the issue directly; this one ends in a PR awaiting review.
 
 ## Shared ship policy
 
@@ -107,30 +102,11 @@ The `Closes #N` line is mandatory and must be on its own line near the top of th
     - If a PR already exists for this branch (`gh pr list --head <branch> --json number`), do not create a duplicate. Update the existing PR's title/body with `gh pr edit <num>` instead, and report that path back.
     - **Read the PR back** after create or edit: `gh pr view <pr-num> --json title,body,baseRefName,headRefName,url` — the title matches the commit subject, `Closes #<num>` sits on its own line in the body, base is the default branch, head is the current branch. Fix any mismatch with `gh pr edit` and re-read before reporting.
 
-12. **Report** — one line: `<SHA> pushed to <branch>; PR #<pr-num> opened (Closes #<issue-num>)`. Then append the **Response footer** from `references/ship-policy.md` (1-6 advisory suggestions).
+12. **Report** — one line: `<SHA> pushed to <branch>; PR #<pr-num> opened (Closes #<issue-num>)`. Then append the **Response footer** from `references/ship-policy.md` (1-3 advisory suggestions).
 
-## Examples
+## Example
 
-The matching commit messages live in **Commit examples** (`references/ship-policy.md`, issues #204 and #418).
-
-### Minimal
-
-PR title: `wire signup form to /api/users`
-
-PR body:
-```
-Closes #204
-
-## Summary
-Signup form now POSTs to /api/users and surfaces server errors inline.
-
-## How to test
-1. `pnpm dev`, open http://localhost:3000/signup
-2. Submit with a duplicate email — expect inline "email already in use"
-3. Submit with a fresh email — expect redirect to /welcome
-```
-
-### Full
+The matching commit message lives in **Commit examples** (`references/ship-policy.md`, issue #418). Optional sections (**Decisions**, **Notes**) are simply omitted when empty.
 
 PR title: `add idempotency keys to checkout flow`
 
@@ -157,22 +133,11 @@ Checkout charges are now idempotent on `x-request-id`; replays return the origin
 - Stripe webhook path still unguarded — see follow-up #419
 ```
 
-## Checklist
+## Completion criteria
 
-Before reporting done, verify:
-- [ ] Issue resolved (or created inline) + labels read/created → one category label + ready state label
-- [ ] If on default branch, a feature branch was created and confirmed
-- [ ] Commit subject mirrors the GitHub issue title as closely as practical and has no routing marker
-- [ ] `Issue:` line present in commit body
-- [ ] No co-author or AI/tool attribution text in commit message, PR title/body, issue content, comments, release notes, or docs
-- [ ] If env keys changed: existing env-family key sets synchronized, sample/example updated, docs updated, gitignored copies updated locally and reported (**Env parity policy**)
-- [ ] No secret files staged
+- [ ] Push landed — `git status` shows the branch up to date with its upstream
+- [ ] PR read back (`gh pr view --json title,body,baseRefName,headRefName`): title, base, head, and the `Closes #<num>` line on its own all verified
+- [ ] When the test plan opens with a pass/fail test or validation command, its passing output tail is quoted in the PR body
+- [ ] No co-author or AI/tool attribution text in the commit message, PR title/body, or issue content
 - [ ] Hooks ran (no `--no-verify`)
-- [ ] Push succeeded with upstream set
-- [ ] PR body has `Closes #<num>` on its own line near the top
-- [ ] PR body has **Summary** + **How to test**
-- [ ] If the test plan opens with a pass/fail test or validation command, it ran green and its output tail is quoted in the body (a failure stopped the PR)
-- [ ] No duplicate PR created (existing PR was edited instead)
-- [ ] PR read back after create/edit (`gh pr view --json title,body,baseRefName,headRefName`): title, base, head, and the `Closes #<num>` line all verified
-- [ ] Final report line printed
-- [ ] `Suggested next skills (optional)` footer appended — appending is required; its 1-6 suggestions are advisory, no gating
+- [ ] Report line printed and the `Suggested next skills (optional)` footer appended (1-3 advisory suggestions, no gating)
