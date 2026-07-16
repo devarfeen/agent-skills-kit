@@ -3,7 +3,7 @@ name: tdd-loop
 description: Enforceable test-first loop for features and bug fixes. Use when the user wants to build or fix something test-first, says "TDD", "red-green", "write a failing test", wants a bug fixed with a reproducing test, or asks to implement a slice, ticket, or issue "test-first" — and when TDD must be adapted for a spike, legacy code without tests, an urgent hotfix, infra/config work, or an exploratory refactor (the exception protocol). A bare "implement this ticket" with no test-first ask belongs to /implement; adding test-first routes here. Standalone; when Matt Pocock's /implement drives a ticket it calls this loop at each seam, and /tdd supplies test quality and seam choice — this loop is the procedure either way.
 ---
 
-# TDD Loop
+# TDD loop
 
 TDD is one failing test turned green at a time. This skill is the procedure:
 the loop's gates, the completion evidence, and the exception protocol for work
@@ -13,12 +13,12 @@ where strict test-first doesn't fit.
 
 Three layers, each optional above this one:
 
-- **Ticket level — `/implement`** (Matt Pocock, optional). Drives one ticket,
+- **Ticket level — `/implement`** (Matt Pocock). Drives one ticket,
   calling this loop at each pre-agreed seam.
 - **Behavior level — this loop.** Red → green → widen → refactor, with the
   completion evidence below. Without `/implement` installed, drive this loop
   directly, once per ticket.
-- **Test quality — `/tdd`** (Matt Pocock, optional). A reference: what a good
+- **Test quality — `/tdd`** (Matt Pocock). A reference: what a good
   test is, where seams go, the anti-patterns. It is not a loop; never use it
   alone in place of this procedure.
 
@@ -42,16 +42,14 @@ Three layers, each optional above this one:
 No focused-test command, no loop. Finding how to run one test in this repo is
 step-2 work, not a reason to skip red.
 
-Emit a `Stage / Found / Next / Needs user` update at phase transitions — seam
-located, each slice's red → green, and completion.
+Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field. Transitions: seam located, each slice's red → green, completion.
 
 ## The loop
 
 Repeat per behavior, smallest slice first. When one session works a batch —
 several tickets or bug fixes — each slice runs only its focused and widened
 commands; the project's full check runs once, after the last slice (see the
-completion criterion). A full-suite run after every item burns time and
-context for no added signal.
+completion criterion) — a full run per slice adds no signal.
 
 1. **Red.** Write ONE failing test asserting the new behavior. Run the focused
    test and read the failure.
@@ -97,12 +95,11 @@ context for no added signal.
   ```
 
   A filled instance lives in
-  [`references/summary-example.md`](references/summary-example.md) — that is
-  the level of concreteness the summary must have.
+  [`references/summary-example.md`](references/summary-example.md) — match
+  its concreteness.
 
   Then suggest `/code-review`, then `/commit-push-close` or `/commit-push-pr` —
-  suggest only, never auto-chain. Name the full PROJECT-CODE when a Project
-  Matrix exists.
+  suggest only, never auto-chain. Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
 
 ## Completion criterion — evidence, not assurance
 
