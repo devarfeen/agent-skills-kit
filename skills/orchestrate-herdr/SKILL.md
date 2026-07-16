@@ -161,6 +161,9 @@ every saved tab ID at least every 30–60 seconds.
   `HITL:` markers).
 - **Completion:** apply the test-evidence rule per issue — read the tab and
   quote the passing output.
+- **Status board:** on every sweep or state-change wake, emit a one-line
+  count — `N running · M completed · K blocked/needs-user` — naming any tab
+  whose state changed, so the session always shows how many workers are live.
 
 ## Final report
 
@@ -187,6 +190,7 @@ Before ending the run:
 - [ ] Completions accepted only with quoted test evidence; blocked issues
       flipped to `ready-for-human` with a comment naming the decision; no
       issue titles edited
-- [ ] `Stage / Found / Next / Needs user` emitted at each transition; final
-      report includes the full tab map and evidence
+- [ ] `Stage / Found / Next / Needs user` emitted at each transition; a
+      status-board count emitted on every monitoring sweep; final report
+      includes the full tab map and evidence
 - [ ] Suggested `/code-review` / `/release-notes`, then stopped — no auto-chain
