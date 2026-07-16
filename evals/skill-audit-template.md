@@ -36,16 +36,13 @@ delete it.
 
 | `file:line` | Category | Problem | Exact fix | Gate |
 | :--- | :--- | :--- | :--- | :--- |
-| | | | | `none` / `dup-pair` / `rule-8-gated` / `description-locked` |
+| | | | | `none` / `dup-pair` / `description-locked` |
 
 **Gates** mean the fix cannot land as an ordinary edit:
 
 - `dup-pair` — the text is duplicated by design (`ship-policy.md`,
   `context-terms.md`). Edit every copy together or `tools/validate.sh` check 2
   fails.
-- `rule-8-gated` — `orchestrate-herdr` workflow, worker prompt, or monitoring.
-  Requires re-validation against a live herdr fan-out, recorded in the commit
-  (AGENTS.md rule 8).
 - `description-locked` — the fix would change frontmatter `description`, which
   invalidates the trigger-eval baseline. Needs a maintainer eval re-run.
 
