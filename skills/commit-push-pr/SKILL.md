@@ -1,7 +1,7 @@
 ---
 name: commit-push-pr
 disable-model-invocation: true
-description: Ship one iteration of work on a GitHub issue as a pull request — stage and commit with a structured message, push the current branch, and open a PR that uses `Closes #N` to auto-close the linked issue on merge. If no GitHub issue can be located, the skill creates one inline before committing for valid small ad hoc work. Routing state lives in issue labels, not commit or PR title markers. Use when the user says "commit, push, and open a PR", "ship this as a PR", "PR this issue", or otherwise wants to wrap up issue work as a reviewable PR rather than a direct close.
+description: Ship one iteration of GitHub-issue work as a pull request — commit with a structured message, push the branch, and open a PR whose `Closes #N` auto-closes the issue on merge; creates the issue inline when none exists. Use when the user says "commit, push, and open a PR" or wants issue work wrapped up as a reviewable PR rather than a direct close (a direct close is /commit-push-close).
 ---
 
 # commit-push-pr

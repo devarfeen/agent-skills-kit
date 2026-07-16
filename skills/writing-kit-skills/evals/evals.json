@@ -1,0 +1,77 @@
+{
+ "skill": "writing-kit-skills",
+ "kind": "trigger-eval",
+ "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
+ "queries": [
+  {
+   "q": "Add a new skill to the agent-skills-kit repo",
+   "expect": "trigger"
+  },
+  {
+   "q": "Rewrite this SKILL.md to match the kit's house style",
+   "expect": "trigger"
+  },
+  {
+   "q": "What's the word budget for a kit SKILL.md?",
+   "expect": "trigger"
+  },
+  {
+   "q": "Tighten the description of the polish-batch skill",
+   "expect": "trigger"
+  },
+  {
+   "q": "Where do the canonical one-liners for the kit live?",
+   "expect": "trigger"
+  },
+  {
+   "q": "Draft the SKILL.md for a new dep-upgrade kit skill",
+   "expect": "trigger"
+  },
+  {
+   "q": "Move this skill's long examples out of SKILL.md properly",
+   "expect": "trigger"
+  },
+  {
+   "q": "Write release notes for last week",
+   "expect": "no-trigger",
+   "route": "/release-notes"
+  },
+  {
+   "q": "Generate the workspace AGENTS.md",
+   "expect": "no-trigger",
+   "route": "/agents-md"
+  },
+  {
+   "q": "Write a skill for my other project's deploy flow",
+   "expect": "no-trigger",
+   "route": "none"
+  },
+  {
+   "q": "Improve this prompt for grill-with-docs",
+   "expect": "no-trigger",
+   "route": "/feature-prompt"
+  },
+  {
+   "q": "Document our coding style in CONTRIBUTING",
+   "expect": "no-trigger",
+   "route": "none"
+  },
+  {
+   "q": "Refactor this module to be more readable",
+   "expect": "no-trigger",
+   "route": "none"
+  },
+  {
+   "q": "Run the trigger evals for the kit",
+   "expect": "no-trigger",
+   "route": "none"
+  }
+ ],
+ "last_run": {
+  "date": "pending",
+  "method": "pending",
+  "result": "pending",
+  "judge_model": "pending",
+  "note": "not yet run — awaiting first trigger-eval sweep"
+ }
+}

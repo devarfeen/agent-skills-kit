@@ -163,6 +163,8 @@ These are optional separate installs. Use them beside this kit when installed an
 | Project Needs A UI Library | `/design-system` | Turn a design system into tokens + components + a verifiable preview. |
 | Page Must Match Design | `/pixel-audit` | Strict per-page visual conformance with an element-level gate. |
 | Cosmetic QA Tail | `/polish-batch` | Batch small copy/spacing/alignment nits, then fix in one pass. |
+| PR Review Comments | `/pr-feedback` | Classify reviewer threads, fix what you accept, reply with the fixing SHAs. |
+| Staging Broken | `/staging-fix` | Fix locally with a test; ship an auto-merge PR to `staging` — never touch the server. |
 | Multi-Project Spec | `/integration-contract` | Map the cross-repo seam and smoke-test it before shipping. |
 | Greenfield Build | `/wayfinder` | No code to discover; chart the destination and its decisions first. |
 | Delegable Reading Legwork | `/research` | Background agent reads primary sources into a cited Markdown doc. |
@@ -275,6 +277,8 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 | Build | `/implement` or `/tdd-loop` | Failure verified (Red), Fix verified (Green), completion evidence quoted. `/implement` stops after `/code-review` without committing. |
 | Pixel conformance | `/pixel-audit` | Defect list cleared; every fix passes the element-level gate on served assets. |
 | QA polish | `/polish-batch` | Cosmetic nits captured, dispatched per PROJECT-CODE, and verified. |
+| PR feedback worked | `/pr-feedback` | Reviewer threads classified, accepted fixes shipped, replies cite SHAs. |
+| Staging fixed via CI | `/staging-fix` | Local fix with test; PR to `staging` auto-merged; no server touched. |
 | Cross-repo seam | `/integration-contract` | Multi-project spec's producer/consumer contract built and smoke gate green (single-project auto-skips). |
 | Ship | `/commit-push-*` | Branch pushed and issue/PR linked with test proof. |
 | Release | `/release-notes` | PM-friendly summary saved to `specs/release-notes/`. |

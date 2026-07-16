@@ -1,7 +1,7 @@
 ---
 name: commit-push-close
 disable-model-invocation: true
-description: Ship one iteration of work on a GitHub issue — stage and commit with a structured message, push to the current branch, then close the linked GitHub issue with a comment that explains how to test the change. If no GitHub issue can be located, the skill creates one inline before committing for valid small ad hoc work. Routing state lives in issue labels, not commit subject markers. Use when the user says "commit, push, and close", "ship this issue", "I'm done with this issue", or otherwise wants to wrap up issue work in one step.
+description: Ship one iteration of GitHub-issue work directly — commit with a structured message, push, then close the linked issue with a comment that explains how to test the change; creates the issue inline when none exists. Use when the user says "commit, push, and close" or "ship this issue" and wants the issue closed without a PR (a reviewable PR is /commit-push-pr).
 ---
 
 # commit-push-close

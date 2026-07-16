@@ -80,7 +80,10 @@ workspace/project. Full behavior, modes, and rules live in each skill's
 | [`integration-contract`](skills/integration-contract/SKILL.md) | verify | For multi-project specs (PRDs) only: writes a producer/consumer contract plus a smoke gate (agent-browser / curl / manual) that must pass before the spec ships | `Build the integration contract for SPEC-142` |
 | [`commit-push-close`](skills/commit-push-close/SKILL.md) | ship | Commits with a structured message, pushes, and closes the linked GitHub issue with a how-to-test comment | `I'm done with #418, ship it` |
 | [`commit-push-pr`](skills/commit-push-pr/SKILL.md) | ship | Commits, pushes (branching off `main` first), and opens a PR with `Closes #N`, summary, and test plan | `Commit, push, and open a PR for this issue` |
+| [`pr-feedback`](skills/pr-feedback/SKILL.md) | ship | Works reviewer feedback on an open PR — classifies every thread, fixes what the user accepts, replies citing the fixing commits | `Address the review comments on PR #87` |
+| [`staging-fix`](skills/staging-fix/SKILL.md) | ship | Fixes a staging bug locally with a test and ships it as an auto-merge PR to `staging` — servers are never touched | `Staging is broken: checkout 500s since this morning` |
 | [`release-notes`](skills/release-notes/SKILL.md) | ship | Turns git history, the current session, or a feature into PM-friendly release notes with QA steps | `Generate release notes for 11 March 2026` |
+| [`writing-kit-skills`](skills/writing-kit-skills/SKILL.md) | — | Kit-internal house style for authoring and editing this repo's skills: skeleton, word budget, canonical one-liners, output caps, eval gates | `Rewrite this SKILL.md to house style` |
 
 The gradient's plan/slice/implement/verify core (`/grill-with-docs`,
 `/wayfinder`, `/to-spec`, `/to-tickets`, `/implement`, `/tdd`, `/code-review`,

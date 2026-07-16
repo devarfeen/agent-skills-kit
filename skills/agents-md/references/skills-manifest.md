@@ -23,6 +23,7 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | ----- | ---- | ----- | ---- | -------- |
 | `/agents-md` | kit | startup | once per workspace; re-run to refresh the Project Matrix | |
 | `/design-system` | kit | startup | once per UI project; re-run `extend` as the design grows | |
+| `/writing-kit-skills` | kit | startup | kit-internal — house style for authoring this repo's skills; not workspace routing | |
 | `/feature-discovery` | kit | discover | | |
 | `/port-feature` | kit | discover | reference → target gap map | |
 | `/research` | external | discover | delegable primary-source reading → cited doc | |
@@ -45,6 +46,8 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | `/integration-contract` | kit | verify | multi-project seams — build after /to-tickets, gate before the spec ships | |
 | `/commit-push-close` | kit | ship | | |
 | `/commit-push-pr` | kit | ship | | |
+| `/pr-feedback` | kit | ship | address reviewer comments on an open PR — classify, fix, reply with SHAs | |
+| `/staging-fix` | kit | ship | staging bug → local fix with test → PR to `staging` with auto-merge; servers never touched | |
 | `/release-notes` | kit | ship | | |
 
 ## Companion Skills And MCPs
