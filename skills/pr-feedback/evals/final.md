@@ -1,14 +1,24 @@
-# Quality scorecard — `/integration-contract`
+# Quality scorecard — `/pr-feedback`
 
-**Scored:** 2026-07-17 · **Reader:** fresh rescorer (round 2) · **Rubric:** `evals/skill-quality-rubric.md`
+**Scored:** 2026-07-17 · **Reader:** fresh rescorer (round 4) · **Rubric:** `evals/skill-quality-rubric.md`
 
 ## Trigger eval
 
-Routing baseline: unchanged description; 2026-07-09 baseline stands (22/22, re-confirmed unanimous 2026-07-14 after body-only edits). The pending 2026-07-16/17 maintainer sweep covers other skills' descriptions only; none of the new/edited descriptions collides with this skill's trigger queries.
+Routing baseline: maintainer sweep pending for the 2026-07-16/17 description batch. Read the 18
+`evals.json` queries against the 16-description catalog: every should-trigger phrasing appears in
+or is directly implied by the description, and both nearest siblings are explicitly negated
+("Reviewing a PR yourself routes to /code-review; opening a new PR routes to /commit-push-pr").
+No colliding sibling and no misrouting query could be named.
 
-## Round-1 fix verification
+## Round-3 fix verification
 
-- `SKILL.md:108-110` — the build-update template now carries `[or: …]` single-project branches on all three affected lines: `Stage: … [or: single project — no contract needed (matrix swept; no external call-sites)]`, `Found: … [or: matrix swept for <K> changed surfaces; no external call-sites]`, `Next: … [or: proceed per-slice — no integration gate needed]`. The branch text is consistent with build step 2 and with completion criterion 1's quoted phrase `single project — no contract needed`. Fixed as specified; no new defect introduced.
+- Defect (step-5 record had no field in the one-line final report): fixed. Step 8
+  (`SKILL.md:84`) now reads "One line — plus a second line carrying any step-5 record
+  (pre-existing failures or a no-coverage note) — then the footer.", and the Output
+  final-report line (`SKILL.md:100`) mirrors it ("a second line carries any step-5 record").
+  Step 5's mandate and the report shape no longer conflict.
+
+## Quality
 
 | Category | Score | Note (only if below 5) |
 | :--- | :---: | :--- |
@@ -28,7 +38,7 @@ Routing baseline: unchanged description; 2026-07-09 baseline stands (22/22, re-c
 `N/A` is permitted only on TDD / testing compat, and only with a justification
 sentence here:
 
-> _(unused — the skill plans work that will be tested: its Section 4 flows carry driver-named, assertable acceptance criteria, and the gate demands per-flow Evidence with `pending`-not-`pass` discipline.)_
+> _(unused — the skill applies code fixes and gates on their tests; category 9 is scored)_
 
 ## Defects
 

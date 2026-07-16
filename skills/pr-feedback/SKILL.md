@@ -63,7 +63,7 @@ Wait for the combined approval. The user may reclassify any item — a pushback 
 
 ### 5. Apply the accepted fixes
 
-Work through the accepted items on the head branch — the smallest change that answers each comment — and run the tests the touched code has: name the command, quote its passing tail, and open the PR's how-to-test plan with it; if no tests cover the touched code, say so in the feedback-list report. An item that hits the scope-creep stop signal gets parked as needs-discussion; keep going on the rest.
+Work through the accepted items on the head branch — the smallest change that answers each comment — and run the tests the touched code has: name the command, quote its passing tail, and open the PR's how-to-test plan with it. Failures that persist with the fixes stashed are pre-existing — record them in the final report (step 8) and continue; failures the fixes introduced stop the item. No tests cover the touched code → say so in the final report (step 8). An item that hits the scope-creep stop signal gets parked as needs-discussion; keep going on the rest.
 
 ### 6. Ship through /commit-push-pr
 
@@ -81,7 +81,7 @@ Only now, and only for settled items:
 
 ### 8. Report
 
-One line, then the footer.
+One line — plus a second line carrying any step-5 record (pre-existing failures or a no-coverage note) — then the footer.
 
 ## Output
 
@@ -97,7 +97,7 @@ Decisions needed on 2–3. Nothing is committed, pushed, or replied to yet.
 
 Thread replies: 1–2 sentences, citing the fixing commit SHA.
 
-Final report, one line: `PR #<num>: <a> fixed and replied (<sha…>), <b> replied wontfix, <c> still open for discussion`.
+Final report, one line: `PR #<num>: <a> fixed and replied (<sha…>), <b> replied wontfix, <c> still open for discussion`; a second line carries any step-5 record.
 
 Then `Suggested next skills (optional)` — 1–3 advisory items (e.g. /code-review to self-review the fix commits), never gating.
 

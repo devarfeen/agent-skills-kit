@@ -1,10 +1,15 @@
 # Quality scorecard — `/commit-push-close`
 
-**Scored:** 2026-07-17 · **Reader:** fresh scorer agent (post-revamp rescore) · **Rubric:** evals/skill-quality-rubric.md
+**Scored:** 2026-07-17 · **Reader:** fresh rescorer (round 2) · **Rubric:** `evals/skill-quality-rubric.md`
 
 ## Trigger eval
 
 Routing baseline: maintainer sweep pending for the 2026-07-16/17 description batch
+
+## Round-1 fix verification
+
+- Defect 1 (ordering-dependent test gate): fixed. Step 10 (`SKILL.md:67`) now reads "when the How-to-test plan contains a runnable test command" and completion criterion 2 (`SKILL.md:99`) reads "when the plan contains a runnable test command" — the "opens with" ordering dependency is gone at both anchors.
+- Defect 2 (no phase updates): fixed. `SKILL.md:37` carries the canonical one-liner byte-exact directly under `## Workflow` ("Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field."); `tools/validate.sh` check 13 passes.
 
 ## Quality
 
@@ -16,12 +21,12 @@ Routing baseline: maintainer sweep pending for the 2026-07-16/17 description bat
 | Instruction quality | 5 | |
 | Brevity | 5 | |
 | Engineering usefulness | 5 | |
-| Agent usability | 4 | Multi-step workflow with a slow post-approval stretch (step 10 can run a full test command before the close) emits no phase updates — the caller cannot tell a slow run from a stuck one (`evals/agent-usability-eval.md`, "Phase updates"). |
+| Agent usability | 5 | |
 | Verification quality | 5 | |
-| TDD / testing compat | 4 | The test-evidence gate fires only "when the How-to-test plan **opens with** a runnable test command" — a plan that contains a runnable command at step 2+ ships with that command never executed and no output quoted. |
+| TDD / testing compat | 5 | |
 | Maintainability | 5 | |
 | Frontier readiness | 5 | |
-| **Average** | **4.82** | |
+| **Average** | **5.00** | |
 
 ## Defects
 
@@ -30,8 +35,7 @@ delete it.
 
 | `file:line` | Category | Problem | Exact fix | Gate |
 | :--- | :--- | :--- | :--- | :--- |
-| `skills/commit-push-close/SKILL.md:65` (echoed at `:97`) | TDD / testing compat | Gate condition "when the How-to-test plan opens with a runnable test command" is ordering-dependent: a plan whose runnable command sits at step 2+ (e.g. UI steps first, `pnpm test e2e/...` third) closes the issue without executing it or quoting output — the shipped comment then asserts a run that never happened | Replace "opens with a runnable test command" with "contains a runnable test command" in both step 10 (line 65) and completion criterion 2 (line 97); keep the rest of the sentence unchanged | `none` |
-| `skills/commit-push-close/SKILL.md:35` | Agent usability | No `Stage / Found / Next / Needs user` phase updates anywhere in the 11-step workflow; between step 6 approval and the step 11 report the agent stages, commits, pushes, runs the test plan's command, comments, and closes with zero interim visibility | Add the canonical one-liner (byte-exact, per `skills/writing-kit-skills/SKILL.md`) directly under the `## Workflow` heading: "Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field." | `none` |
+| — | — | none | — | — |
 
 **Gates** mean the fix cannot land as an ordinary edit:
 
@@ -41,10 +45,8 @@ delete it.
 - `description-locked` — the fix would change frontmatter `description`, which
   invalidates the trigger-eval baseline. Needs a maintainer eval re-run.
 
-Both fixes are ordinary edits: neither phrase lives in `references/ship-policy.md` (verified — the two ship-policy copies are byte-identical and contain neither string), and neither touches the frontmatter description.
-
 ## Verdict
 
-- [ ] Averages 5.00 — nothing left to point at
-- [x] Below 5.00 — the blocking defects are listed above, each with an owner
+- [x] Averages 5.00 — nothing left to point at
+- [ ] Below 5.00 — the blocking defects are listed above, each with an owner
       and a gate

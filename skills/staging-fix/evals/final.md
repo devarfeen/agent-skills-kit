@@ -1,14 +1,24 @@
-# Quality scorecard — `/integration-contract`
+# Quality scorecard — `/staging-fix`
 
-**Scored:** 2026-07-17 · **Reader:** fresh rescorer (round 2) · **Rubric:** `evals/skill-quality-rubric.md`
+**Scored:** 2026-07-17 · **Reader:** fresh rescorer (round 4) · **Rubric:** `evals/skill-quality-rubric.md`
 
 ## Trigger eval
 
-Routing baseline: unchanged description; 2026-07-09 baseline stands (22/22, re-confirmed unanimous 2026-07-14 after body-only edits). The pending 2026-07-16/17 maintainer sweep covers other skills' descriptions only; none of the new/edited descriptions collides with this skill's trigger queries.
+Routing baseline: maintainer sweep pending for the 2026-07-16/17 description batch (new skill —
+no recorded run yet). Read the 15 `evals.json` queries against the 16-description catalog: every
+should-trigger names staging plus a fix intent, which only this description claims; the negatives
+are covered by the description's explicit negative-routing clauses (/commit-push-pr,
+/commit-push-close, /diagnosing-bugs) or lack the fix intent entirely. No colliding sibling found.
 
-## Round-1 fix verification
+## Round-3 fix verification
 
-- `SKILL.md:108-110` — the build-update template now carries `[or: …]` single-project branches on all three affected lines: `Stage: … [or: single project — no contract needed (matrix swept; no external call-sites)]`, `Found: … [or: matrix swept for <K> changed surfaces; no external call-sites]`, `Next: … [or: proceed per-slice — no integration gate needed]`. The branch text is consistent with build step 2 and with completion criterion 1's quoted phrase `single project — no contract needed`. Fixed as specified; no new defect introduced.
+- Defect (hardcoded `--base staging` despite Inputs treating the branch name as a confirmed
+  variable): fixed. The ship command (`SKILL.md:46`) now reads `--base <staging-branch>`, the
+  read-back (`SKILL.md:50`) confirms "the base is the confirmed staging branch", and the
+  completion criterion (`SKILL.md:62`) checks "the confirmed staging branch as base". The name
+  confirmed in Inputs now threads through command, read-back, and criterion.
+
+## Quality
 
 | Category | Score | Note (only if below 5) |
 | :--- | :---: | :--- |
@@ -28,7 +38,7 @@ Routing baseline: unchanged description; 2026-07-09 baseline stands (22/22, re-c
 `N/A` is permitted only on TDD / testing compat, and only with a justification
 sentence here:
 
-> _(unused — the skill plans work that will be tested: its Section 4 flows carry driver-named, assertable acceptance criteria, and the gate demands per-flow Evidence with `pending`-not-`pass` discipline.)_
+> _(unused — the skill produces a code fix with a test; category 9 is scored)_
 
 ## Defects
 

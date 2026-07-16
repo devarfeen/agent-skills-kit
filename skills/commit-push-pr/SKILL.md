@@ -42,6 +42,8 @@ The `Closes #N` line is mandatory and must be on its own line near the top of th
 
 ## Workflow
 
+Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.
+
 1. **Read state** — run the **Read state** commands in `references/ship-policy.md` (parallel git reads, default-branch detection, `gh` availability check).
 
 2. **Resolve or create the issue** — branch name → recent commits → conversation context. If none, switch to **Inline issue creation** (`references/ship-policy.md`) for valid small ad hoc work — the issue is drafted now but created only after the combined approval in step 7; once created, fill its number into the commit `Issue:` line and the PR `Closes #<num>`.

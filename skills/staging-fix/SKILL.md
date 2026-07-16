@@ -35,7 +35,7 @@ If read-only staging inspection was explicitly approved this session, use it —
 
 ### 2. Fix locally with a test
 
-On a local branch (never directly on `staging` or the default branch), write a failing test that captures the bug, then make it pass. Where a test is genuinely impractical — config-only or env-shape changes — say so and name what was verified instead. Run the repo's existing check suite before shipping: failures that persist with the fix stashed are pre-existing — record them and continue; failures introduced by the fix stop the workflow here.
+On a local branch (never directly on `staging` or the default branch), write a failing test that captures the bug, then make it pass. Where a test is genuinely impractical — config-only or env-shape changes — say so and name what was verified instead. Run the repo's existing check suite before shipping: failures that persist with the fix stashed are pre-existing — record them in the PR body alongside the test tail and continue; failures introduced by the fix stop the workflow here.
 
 ### 3. Ship
 
@@ -43,11 +43,11 @@ Draft the commit message and PR (title, body with the fix summary and the passin
 
 ```bash
 git push -u origin <branch>
-gh pr create --base staging --head <branch> --title "<subject>" --body "<body>"
+gh pr create --base <staging-branch> --head <branch> --title "<subject>" --body "<body>"
 gh pr merge <pr-num> --auto
 ```
 
-Read the PR back (`gh pr view <pr-num> --json baseRefName,autoMergeRequest,url`) and confirm the base is `staging` and auto-merge is enabled; fix any mismatch with `gh pr edit` or a re-run of `gh pr merge --auto` before reporting. The passing test tail (or the stated substitute verification) must appear in the PR body the user approved.
+Read the PR back (`gh pr view <pr-num> --json baseRefName,autoMergeRequest,url`) and confirm the base is the confirmed staging branch and auto-merge is enabled; fix any mismatch with `gh pr edit` or a re-run of `gh pr merge --auto` before reporting. The passing test tail (or the stated substitute verification) must appear in the PR body the user approved.
 
 ### 4. Report the deploy expectation
 
@@ -59,7 +59,7 @@ The one-line report from step 4, plus at most two bullets: what the fix was, and
 
 ## Completion criteria
 
-- [ ] `gh pr view <pr-num> --json baseRefName,autoMergeRequest` shows base `staging` and auto-merge enabled
+- [ ] `gh pr view <pr-num> --json baseRefName,autoMergeRequest` shows the confirmed staging branch as base and auto-merge enabled
 - [ ] The passing test tail (or the stated substitute verification) is quoted in the PR body
 - [ ] No co-author or AI/tool attribution text in the commit message or PR title/body
 - [ ] Report line printed

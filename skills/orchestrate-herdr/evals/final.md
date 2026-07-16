@@ -1,10 +1,17 @@
 # Quality scorecard — `/orchestrate-herdr`
 
-**Scored:** 2026-07-17 · **Reader:** fresh scorer agent (post-revamp rescore) · **Rubric:** `evals/skill-quality-rubric.md`
+**Scored:** 2026-07-17 · **Reader:** fresh rescorer (round 2) · **Rubric:** `evals/skill-quality-rubric.md`
 
 ## Trigger eval
 
 Routing baseline: unchanged description; 2026-07-09 baseline stands (re-confirmed 21/21 unanimous on 2026-07-14, per `evals.json` `last_run`).
+
+## Round-1 fix verification
+
+| Round-1 defect | Anchor | Verified |
+| :--- | :--- | :--- |
+| `ready-for-agent` stated a dispatch permission no workflow step consumed | `SKILL.md:46`, `SKILL.md:103` | Fixed verbatim in commit `671a1e5` — §2 now states "Fan-out covers every open sub-issue; the `ready-for-agent` label does not filter the set", and the Monitor Labels line is trimmed to the `ready-for-human` flip protocol; the two lines no longer conflict |
+| Pre-flight item 6 human gate with no away-fallback | `SKILL.md:42` | Fixed verbatim — item 6 now ends "User away → the flags already in `CODING_CLI` are the confirmed mode; none set → proceed and note in the phase update that every worker will pause at its own approval prompts", matching items 4 and 5's away pattern |
 
 ## Quality
 
@@ -13,37 +20,36 @@ Routing baseline: unchanged description; 2026-07-09 baseline stands (re-confirme
 | Purpose clarity | 5 | |
 | Trigger clarity | 5 | |
 | Scope control | 5 | |
-| Instruction quality | 4 | `SKILL.md:103` defines a dispatch permission (`ready-for-agent` "marks an issue a worker may take") that no workflow step consumes — §2/§3 fan out on "open" alone |
+| Instruction quality | 5 | |
 | Brevity | 5 | |
 | Engineering usefulness | 5 | |
-| Agent usability | 4 | `SKILL.md:42` is the one pre-flight human gate without an explicit "User away →" clause; items 4 and 5 both carry one |
+| Agent usability | 5 | |
 | Verification quality | 5 | |
 | TDD / testing compat | 5 | |
 | Maintainability | 5 | |
 | Frontier readiness | 5 | |
-| **Average** | **4.82** | |
+| **Average** | **5.00** | |
 
 TDD / testing compat is scored (not N/A): the skill gates on workers' tests and requires the quoted command + passing output read back from the tab (`SKILL.md:26`, `SKILL.md:104`, `SKILL.md:115`) — the gates-on-someone-else's-tests surface at its 5/5 bar.
 
+## Category notes (what was checked)
+
+- **Agent usability:** every pre-flight human gate now carries an explicit away behavior — leftover tabs (item 4, monitor existing), same-repo collision (item 5, do not fan out and stop), permission mode (item 6, flags = confirmed mode / none → proceed and note). The input gate (`SKILL.md:13`) encodes its away behavior as "do not proceed until both are set" — the correct direction for a run that cannot exist without them. Status board per sweep (`SKILL.md:105`) keeps a background run legible.
+- **Instruction quality:** the label semantics no longer contradict the fan-out set; discovery cross-checks the count before any tab exists (`SKILL.md:46`); dead-tab, stall, permission-prompt, and long-command branches each have a distinct action (`SKILL.md:98-102`).
+- **Verification:** all five completion criteria are read-back observations (tab map read back, prompts visible, quoted test output, `gh issue view` label state, transcript ends at the suggestion).
+- **Maintainability:** `agents/openai.yaml` parity present; `last_run` provenance stamped; body 1,399 words, under the ceiling.
+
 ## Defects
 
-| `file:line` | Category | Problem | Exact fix | Gate |
-| :--- | :--- | :--- | :--- | :--- |
-| `skills/orchestrate-herdr/SKILL.md:103` | Instruction quality | "`ready-for-agent` marks an issue a worker may take" states a dispatch filter no step applies — §2 discovers and §3 fans out to *every* open sub-issue, so the clause is either an unstated filter (risking fan-out to human-owned issues) or dead vocabulary | Resolve the semantic in §2 (`SKILL.md:46`): either add "only open sub-issues labeled `ready-for-agent` become workers; state how many open sub-issues were excluded" or add "`ready-for-agent` never filters fan-out — every open sub-issue gets a worker", then trim `:103` to the `ready-for-human` flip protocol | `none` |
-| `skills/orchestrate-herdr/SKILL.md:42` | Agent usability | Pre-flight item 6 gates fan-out on "Confirm the mode with the user" with no explicit away behavior — items 4 and 5 each state "User away → …", so an autonomous run cannot tell whether a silent user blocks fan-out or the args-supplied flags stand as the answer | Append to item 6: "User away → the flags already in `CODING_CLI` are the confirmed mode; none set → proceed and note in the phase update that every worker will pause at its own approval prompts" | `none` |
+One row per defect. A defect with no anchor and no exact edit is an opinion —
+delete it.
 
-**Gates** mean the fix cannot land as an ordinary edit:
-
-- `dup-pair` — the text is duplicated by design (`ship-policy.md`,
-  `context-terms.md`). Edit every copy together or `tools/validate.sh` check 2
-  fails.
-- `description-locked` — the fix would change frontmatter `description`, which
-  invalidates the trigger-eval baseline. Needs a maintainer eval re-run.
+None — both round-1 defects were fixed verbatim at their anchors, and a fresh full-file read found no new anchored defect.
 
 ## Verdict
 
-- [ ] Averages 5.00 — nothing left to point at
-- [x] Below 5.00 — the blocking defects are listed above, each with an owner
+- [x] Averages 5.00 — nothing left to point at
+- [ ] Below 5.00 — the blocking defects are listed above, each with an owner
       and a gate
 
-Note: both fixes touch the Workflow/monitoring text, so AGENTS.md rule 8 applies on top of the `none` gates — landing them requires re-validation against a live herdr fan-out recorded in the commit. The rule-8 live-run record for the 2026-07-16 body edits remains a separate, still-outstanding ship gate; it is a process obligation, not a text defect, and is not scored here.
+Note: the round-1 fixes (commit `671a1e5`) changed §2 discovery, the pre-flight gate, and the Monitor Labels line — workflow/monitoring text covered by AGENTS.md rule 8. The commit records no live herdr fan-out (herdr version, scenario, date), so the rule-8 re-validation record remains an outstanding ship obligation. It is a process gate, not a text defect, and is not scored here — consistent with round 1's treatment.

@@ -1,10 +1,17 @@
 # Quality scorecard — `/release-notes`
 
-**Scored:** 2026-07-17 · **Reader:** fresh scorer agent (post-revamp rescore) · **Rubric:** `evals/skill-quality-rubric.md`
+**Scored:** 2026-07-17 · **Reader:** fresh rescorer (round 2) · **Rubric:** `evals/skill-quality-rubric.md`
 
 ## Trigger eval
 
-Routing baseline: maintainer sweep pending for the 2026-07-16/17 description batch (description gained the `/handoff` negative route in 192b37b; last passing run 22/22 on 2026-07-14 predates it).
+Routing baseline: maintainer sweep pending for the 2026-07-16/17 description batch (description carries the `/handoff` negative route; last passing run 22/22 on 2026-07-14 predates it).
+
+## Round-1 fix verification
+
+- Defect 1 (no phase visibility): fixed. The canonical one-liner sits byte-exact at the end of "Agent use" (`SKILL.md:104`); `tools/validate.sh` check 13 passes.
+- Defect 2 (self-assessed completion criterion): fixed. The "re-read as a PM" criterion is replaced by an observable read-back (`SKILL.md:190-191`): every Manual QA step is `Action -> Expected Result` naming a screen, button, or field; every Impact bullet states a behavior change.
+- Defect 3 (footer cap drift): fixed. `SKILL.md:193` now reads "1–3 advisory suggestions", matching `skills/writing-kit-skills/SKILL.md:52`.
+- Body word count is 1,495 — under the 1,500 validator ceiling (check 12 passes); closeness is not a defect.
 
 ## Quality
 
@@ -16,12 +23,12 @@ Routing baseline: maintainer sweep pending for the 2026-07-16/17 description bat
 | Instruction quality | 5 | |
 | Brevity | 5 | |
 | Engineering usefulness | 5 | |
-| Agent usability | 4 | Multi-step skill (multi-repo scan, lane dispatch, cluster, write) with no `Stage / Found / Next / Needs user` phase updates; per `evals/agent-usability-eval.md` that caps at 4 — a caller cannot tell a slow multi-repo run from a stuck one. Ten sibling skills carry the canonical line. |
-| Verification quality | 4 | One completion criterion is self-assessment ("a QA reader knows what to test"), which the rubric excludes from done-ness; the other five criteria are observable. |
+| Agent usability | 5 | |
+| Verification quality | 5 | |
 | TDD / testing compat | N/A | |
-| Maintainability | 4 | Footer cap drifted from the house source of truth: SKILL.md says 1–6 suggestions where `skills/writing-kit-skills/SKILL.md:52` (and sibling skills) fix the `Suggested next skills (optional)` cap at 1–3. |
+| Maintainability | 5 | |
 | Frontier readiness | 5 | |
-| **Average** | **4.70** | |
+| **Average** | **5.00** | |
 
 `N/A` is permitted only on TDD / testing compat, and only with a justification
 sentence here:
@@ -35,9 +42,7 @@ delete it.
 
 | `file:line` | Category | Problem | Exact fix | Gate |
 | :--- | :--- | :--- | :--- | :--- |
-| `skills/release-notes/SKILL.md:102` | Agent usability | Long-running multi-step run (per-repo git scans, optional lane dispatch, clustering, file output) emits no phase visibility; lane announcements cover only the sub-agent path, so a lane-less run is silent until the file lands | Append the canonical one-liner byte-exact at the end of the "Agent use" section: `Emit \`Stage / Found / Next / Needs user\` at each phase transition — one line per field.` (validate.sh check 13 then binds it) | `none` |
-| `skills/release-notes/SKILL.md:188-190` | Verification quality | Completion criterion "Re-read the saved file as a PM: every entry understandable without code context … a QA reader knows what to test" is self-assessment — it cannot fail observably | Replace the criterion with an observable read-back: `- [ ] Every Manual QA step in the saved file is \`Action -> Expected Result\` and names a screen, button, or field; every Impact bullet states a behavior change, not a risk reduction.` | `none` |
-| `skills/release-notes/SKILL.md:192` | Maintainability | Footer cap "1–6 advisory suggestions" contradicts the house output cap of 1–3 (`skills/writing-kit-skills/SKILL.md:52`; `pr-feedback` and `commit-push-pr` both say 1–3) | Change "1–6 advisory suggestions" to "1–3 advisory suggestions" | `none` |
+| — | — | none | — | — |
 
 **Gates** mean the fix cannot land as an ordinary edit:
 
@@ -49,6 +54,6 @@ delete it.
 
 ## Verdict
 
-- [ ] Averages 5.00 — nothing left to point at
-- [x] Below 5.00 — the blocking defects are listed above, each with an owner
+- [x] Averages 5.00 — nothing left to point at
+- [ ] Below 5.00 — the blocking defects are listed above, each with an owner
       and a gate
