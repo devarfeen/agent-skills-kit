@@ -6,14 +6,7 @@ description: Ship one iteration of work on a GitHub issue — stage and commit w
 
 # commit-push-close
 
-Four-step ship for one GitHub-issue iteration (with an inline create-if-missing step for the issue):
-
-1. **Resolve or create** the GitHub issue.
-2. **Commit** the diff with a structured message.
-3. **Push** to the current branch.
-4. **Close** the GitHub issue with a comment explaining how to test it.
-
-**Close vs PR.** This skill closes the issue directly. When the work should land through a pull request instead, that is `/commit-push-pr` — same shared ship policy, the final step opens a PR with `Closes #N` rather than closing the issue.
+Close the linked GitHub issue directly as the final step of a ship — when the work should land through a pull request instead, that is `/commit-push-pr`: same shared ship policy, but its final step opens a PR with `Closes #N` rather than closing the issue.
 
 ## Shared ship policy
 
@@ -21,7 +14,7 @@ Read [`references/ship-policy.md`](references/ship-policy.md) first. It holds th
 
 ## Issue-close comment format
 
-Posted as a comment on the issue right before closing:
+Posted as a comment on the issue right before closing. Optional sections are omitted when empty — the Notes line disappears when there are no follow-ups.
 
 ```
 Closed by <SHA> on `<branch>`.
@@ -69,46 +62,19 @@ Rules for **How to test** live in **How-to-test rules** (`references/ship-policy
    - **If the current branch is the detected default branch**: stop and confirm separately before pushing — step 6's approval does not cover this push. If the user is away, leave the commit local and unpushed, skip the close (a close comment must reference a pushed commit), and surface both under Needs user in the report.
    - **Confirm the push landed** before the close — non-error exit and `git status -sb` shows the branch up-to-date with its remote. A rejected push (non-fast-forward, auth expiry) stops the close, since the close comment must reference a commit that is actually on `<branch>`.
 
-10. **Close the issue** — first, when the How-to-test plan opens with a
-    runnable test command, run it once and quote the passing tail in the close
-    comment — a failing run stops the close: leave the issue open, report the
-    failure (the commit is already pushed), and treat any fix as a new
-    iteration through this skill; never close an issue whose own test plan
-    fails. Then fill the drafted comment with the real
-    values (short SHA from `git rev-parse --short HEAD`, current branch),
-    write it to a temp file, then comment, close, and verify:
+10. **Close the issue** — first, when the How-to-test plan opens with a runnable test command, run it once and quote the passing tail in the close comment — a failing run stops the close: leave the issue open, report the failure (the commit is already pushed), and treat any fix as a new iteration through this skill; never close an issue whose own test plan fails. Then fill the drafted comment with the real values (short SHA from `git rev-parse --short HEAD`, current branch), write it to a temp file, then comment, close, and verify:
     ```bash
     gh issue comment <num> --body-file <temp-file>.md
     gh issue close <num> --reason completed
     gh issue view <num> --json state -q .state   # expect CLOSED
     ```
-    The body file keeps backticks and `$` literal — nothing to escape and
-    nothing for the shell to interpolate. "Closed" is earned by the state
-    check, not assumed from a zero exit code; quote the returned state in the
-    report.
+    The body file keeps backticks and `$` literal — nothing to escape and nothing for the shell to interpolate. "Closed" is earned by the state check, not assumed from a zero exit code; quote the returned state in the report.
 
-11. **Report** — one line: `<SHA> pushed to <branch>; issue #<num> closed (state CLOSED verified)`. If the push and close were skipped (default branch, user away), report instead `<SHA> committed locally on <branch>; push and close deferred`, then a `Needs user:` line naming the default-branch-push confirmation still required. If the push was attempted and rejected (non-fast-forward, auth expiry — step 9), report `<SHA> committed locally on <branch>; push REJECTED (<reason>), close stopped`, then a `Needs user:` line naming the push fix required (rebase/pull, re-auth) before this iteration can finish — this is a failure, not a deferral. In every case, append the **Response footer** from `references/ship-policy.md` (1-6 advisory suggestions).
+11. **Report** — one line: `<SHA> pushed to <branch>; issue #<num> closed (state CLOSED verified)`. If the push and close were skipped (default branch, user away), report instead `<SHA> committed locally on <branch>; push and close deferred`, then a `Needs user:` line naming the default-branch-push confirmation still required. If the push was attempted and rejected (non-fast-forward, auth expiry — step 9), report `<SHA> committed locally on <branch>; push REJECTED (<reason>), close stopped`, then a `Needs user:` line naming the push fix required (rebase/pull, re-auth) before this iteration can finish — this is a failure, not a deferral. In every case, append the **Response footer** from `references/ship-policy.md` (1-3 advisory suggestions).
 
-## Examples
+## Example
 
-The matching commit messages live in **Commit examples** (`references/ship-policy.md`, issues #204 and #418).
-
-### Minimal
-
-Close comment:
-```
-Closed by a1b2c3d on `feat/204-signup-wire`.
-
-**Summary**
-Signup form now POSTs to /api/users and surfaces server errors inline.
-
-**How to test**
-1. `pnpm dev`, open http://localhost:3000/signup
-2. Submit with a duplicate email — expect inline "email already in use"
-3. Submit with a fresh email — expect redirect to /welcome
-```
-
-### Full
+The matching commit message lives in **Commit examples** (`references/ship-policy.md`, issue #418).
 
 Close comment:
 ```
@@ -125,18 +91,12 @@ Checkout charges are now idempotent on `x-request-id`; replays return the origin
 Notes: Stripe webhook path still unguarded — see follow-up #419.
 ```
 
-## Checklist
+## Completion criteria
 
-Before marking the iteration done, verify:
-- [ ] Issue resolved (or created inline) + labels read/created → one category label + ready state label
-- [ ] Commit subject mirrors the GitHub issue title as closely as practical and has no routing marker
-- [ ] `Issue:` line present in commit body
-- [ ] No co-author or AI/tool attribution text in commit message, issue content, comments, release notes, or docs
-- [ ] If env keys changed: existing env-family key sets synchronized, sample/example updated, docs updated, gitignored copies updated locally and reported (**Env parity policy**)
-- [ ] No secret files staged
-- [ ] Hooks ran (no `--no-verify`)
-- [ ] Push succeeded (or, on the default branch, was confirmed separately; if the push was skipped user-away, the close was skipped with it)
-- [ ] If the test plan opens with a runnable test command, it ran green and its output tail is quoted in the close comment (a failure stopped the close)
-- [ ] Issue closed with comment containing **Summary** + **How to test**, and `gh issue view --json state` returned `CLOSED`
-- [ ] Final report line printed
-- [ ] `Suggested next skills (optional)` footer appended — appending is required; its 1-6 suggestions are advisory, no gating
+- [ ] `gh issue view <num> --json state -q .state` returned `CLOSED`, and that state is quoted in the report
+- [ ] Close comment posted containing **Summary** + **How to test**; when the plan opens with a runnable test command, its passing output tail is quoted in the comment
+- [ ] Push landed: non-error exit and `git status -sb` shows the branch up-to-date with its remote — or the report carries the deferral/rejection line plus `Needs user:`
+- [ ] `Issue:` line present in the commit body
+- [ ] Label state valid: `gh issue view <num> --json labels` shows one category label + a ready state label (read in step 3, or set at inline creation)
+- [ ] No co-author or AI/tool attribution text present in the commit message, issue content, or comments
+- [ ] Hooks ran on the commit — no `--no-verify` in the command that made it
