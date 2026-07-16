@@ -66,7 +66,7 @@ Compression never touches: refusal boundaries and scope gates (AGENTS.md rule 7 
 
 ## Failure modes to hunt
 
-**Sediment** — layers that settle because adding feels safe; prune on every edit. **Sprawl** — over budget even when every line is live; cure by disclosure to `references/`, not by thinning safety language. **Duplication** — the same meaning twice in one file (description↔body, rules↔checklist); keep one. **No-op** — a line the agent already obeys by default; delete the sentence, don't trim it.
+**Sediment** — layers that settle because adding feels safe; prune on every edit. **Sprawl** — over budget even when every line is live; cure by disclosure to `references/`, not by thinning safety language. **Duplication** — the same meaning twice in one file (description↔body, rules↔checklist); keep one. **No-op** — a line the agent already obeys by default; delete the sentence, don't trim it. **Phantom tooling** — documented commands or pointers that don't hold: a flag absent from the script's `--help`, a reference committed as placeholder scaffolding. If scripts ever land, flag↔`--help` parity becomes a validator check.
 
 ## Completion criteria
 
