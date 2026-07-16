@@ -84,6 +84,9 @@ your tooling injects.
 Report back when completed, errored, or blocked.
 
 Completion requires test evidence: the test command and its passing output.
+End the report with two fields, one line each:
+Decisions: <choices made that the issue didn't dictate, or "none">
+Open items: <what a next session must resolve, or "none">
 ```
 
 Workers with neither skill installed still owe test evidence; say so in the prompts-submitted phase update.
@@ -103,7 +106,7 @@ Prefer the herdr companion's wait/state-change primitives to react the moment a 
 
 ### 6. Report
 
-Report workspace/session ID, working folder, tab ID map, assigned issues, and blocked/errored issues, plus per worker its end state and the shortest decisive test tail — the pass/fail line and counts; never dump full logs.
+Report workspace/session ID, working folder, tab ID map, assigned issues, and blocked/errored issues, plus per worker its end state, the shortest decisive test tail — the pass/fail line and counts; never dump full logs — and its reported `Decisions` / `Open items` lines.
 
 ## Completion criteria
 
