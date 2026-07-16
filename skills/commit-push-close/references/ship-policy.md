@@ -190,4 +190,4 @@ Notes:
 
 ## Response footer
 
-End the final response with `Suggested next skills (optional)` containing 1-6 advisory recommendations. Keep it recommendation-only (no gating). Choose next steps from workflow context, for example `/release-notes`, `/handoff`, or `/triage`.
+End the final response with `Suggested next skills (optional)` containing 1-3 advisory recommendations. Keep it recommendation-only (no gating). Choose next steps from workflow context, for example `/release-notes`, `/handoff`, or `/triage`.
