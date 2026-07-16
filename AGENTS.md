@@ -36,13 +36,6 @@ so precision beats volume.
 7. **Preserve refusal boundaries.** When editing a skill, keep its "stops and
    refuses" lines (never auto-chain, scope gates, cosmetic-only, etc.) — they
    are the safety property, not filler.
-8. **`skills/orchestrate-herdr/SKILL.md` is live-run validated.** Converted
-   from a frozen-prompt wrapper to a normal skill (2026-07-07, scratch-PRD
-   validation run recorded in that commit). Edits follow normal review, but
-   any change to its workflow, worker prompt, or monitoring rules must be
-   re-validated against a live herdr fan-out, with the run recorded (herdr
-   version, scenario, date) in the commit.
-
 ## Graphify
 
 This project may have a knowledge graph at `graphify-out/` (god nodes, community
