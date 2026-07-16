@@ -1,75 +1,49 @@
-# Final — `/orchestrate-herdr`
+# Quality scorecard — `/orchestrate-herdr`
 
-**Date:** 2026-07-09 · **Method:** 3 fresh catalog-only judge agents (re-run after fixes) ·
-**Quality:** re-scored by a reader who did not author the edits
+**Scored:** 2026-07-17 · **Reader:** fresh scorer agent (post-revamp rescore) · **Rubric:** `evals/skill-quality-rubric.md`
 
 ## Trigger eval
 
-**21/21** (21/21 unanimous) — baseline was 21/21. Routing was never the problem here.
+Routing baseline: unchanged description; 2026-07-09 baseline stands (re-confirmed 21/21 unanimous on 2026-07-14, per `evals.json` `last_run`).
 
 ## Quality
-
-4.45 → **5.00**
 
 | Category | Score | Note (only if below 5) |
 | :--- | :---: | :--- |
 | Purpose clarity | 5 | |
 | Trigger clarity | 5 | |
 | Scope control | 5 | |
-| Instruction quality | 5 | |
+| Instruction quality | 4 | `SKILL.md:103` defines a dispatch permission (`ready-for-agent` "marks an issue a worker may take") that no workflow step consumes — §2/§3 fan out on "open" alone |
 | Brevity | 5 | |
 | Engineering usefulness | 5 | |
-| Agent usability | 5 | |
+| Agent usability | 4 | `SKILL.md:42` is the one pre-flight human gate without an explicit "User away →" clause; items 4 and 5 both carry one |
 | Verification quality | 5 | |
 | TDD / testing compat | 5 | |
 | Maintainability | 5 | |
 | Frontier readiness | 5 | |
-| **Average** | **5.00** | |
+| **Average** | **4.82** | |
 
-## Ship gate — NOT YET VALIDATED
+TDD / testing compat is scored (not N/A): the skill gates on workers' tests and requires the quoted command + passing output read back from the tab (`SKILL.md:26`, `SKILL.md:104`, `SKILL.md:115`) — the gates-on-someone-else's-tests surface at its 5/5 bar.
 
-The quality score is earned on the text. **It is not permission to ship.**
+## Defects
 
-The patch below changed **Workflow step 4**, which AGENTS.md rule 8 places behind a live herdr
-fan-out. Until that run happens and is recorded, this skill is improved but unblessed.
+| `file:line` | Category | Problem | Exact fix | Gate |
+| :--- | :--- | :--- | :--- | :--- |
+| `skills/orchestrate-herdr/SKILL.md:103` | Instruction quality | "`ready-for-agent` marks an issue a worker may take" states a dispatch filter no step applies — §2 discovers and §3 fans out to *every* open sub-issue, so the clause is either an unstated filter (risking fan-out to human-owned issues) or dead vocabulary | Resolve the semantic in §2 (`SKILL.md:46`): either add "only open sub-issues labeled `ready-for-agent` become workers; state how many open sub-issues were excluded" or add "`ready-for-agent` never filters fan-out — every open sub-issue gets a worker", then trim `:103` to the `ready-for-human` flip protocol | `none` |
+| `skills/orchestrate-herdr/SKILL.md:42` | Agent usability | Pre-flight item 6 gates fan-out on "Confirm the mode with the user" with no explicit away behavior — items 4 and 5 each state "User away → …", so an autonomous run cannot tell whether a silent user blocks fan-out or the args-supplied flags stand as the answer | Append to item 6: "User away → the flags already in `CODING_CLI` are the confirmed mode; none set → proceed and note in the phase update that every worker will pause at its own approval prompts" | `none` |
 
-### What was fixed
+**Gates** mean the fix cannot land as an ordinary edit:
 
-Two blocking defects, one root cause: `CODING_CLI` is the full launch command *including flags*,
-but was used in two places that require a flag-stable token.
-
-1. **Pre-flight item 3** checked that `CODING_CLI` "resolves on PATH". A flagged command string
-   never resolves on PATH — only its first token does. The check failed for exactly the flagged
-   form the Inputs section calls typical.
-2. **Workflow step 4** named worker tabs `[CODING_CLI] - GH #<n>`, and **Pre-flight item 4**
-   detected leftovers by matching that literal. A re-run whose flags differed produced a different
-   name, detection missed, and a **second tab per issue** was created — the exact failure item 4
-   exists to prevent.
-
-### The fix
-
-`CLI_NAME` — the first token of `CODING_CLI`, the bare binary with no flags — is defined once in
-**Inputs** and threaded through the four sites that need a flag-stable token: Pre-flight items 3
-and 4, Workflow step 4, and the Checklist. `CODING_CLI` is retained everywhere the full flagged
-command is genuinely correct: launching the CLI, the permission-mode discussion, "never launch
-`CODING_CLI` from inside another `CODING_CLI`", and "workers run only `CODING_CLI` from it".
-
-### To clear the gate
-
-Run a live herdr fan-out against a scratch spec with at least two open sub-issues, exercising:
-
-- [ ] Pre-flight passes with a **flagged** `CODING_CLI` (the PATH check must not reject it)
-- [ ] Tabs are created as `[<bare-binary>] - GH #<n>`
-- [ ] A **re-run with different launch flags** detects the leftover tabs and does **not** create a
-      second tab per issue — the regression this patch exists to fix
-- [ ] A dead CLI is relaunched once; a permission-prompt wait is surfaced, not relaunched
-- [ ] Completion is accepted only with quoted test evidence
-
-Record herdr version, scenario, and date in the commit, per AGENTS.md rule 8 and CONTRIBUTING's
-"Versioning and provenance".
+- `dup-pair` — the text is duplicated by design (`ship-policy.md`,
+  `context-terms.md`). Edit every copy together or `tools/validate.sh` check 2
+  fails.
+- `description-locked` — the fix would change frontmatter `description`, which
+  invalidates the trigger-eval baseline. Needs a maintainer eval re-run.
 
 ## Verdict
 
-- [x] Trigger eval passes 21/21
-- [x] Quality averages 5.00 on the text
-- [ ] **Rule-8 live-run validation — outstanding. Do not push as blessed until this is done.**
+- [ ] Averages 5.00 — nothing left to point at
+- [x] Below 5.00 — the blocking defects are listed above, each with an owner
+      and a gate
+
+Note: both fixes touch the Workflow/monitoring text, so AGENTS.md rule 8 applies on top of the `none` gates — landing them requires re-validation against a live herdr fan-out recorded in the commit. The rule-8 live-run record for the 2026-07-16 body edits remains a separate, still-outstanding ship gate; it is a process obligation, not a text defect, and is not scored here.

@@ -57,7 +57,7 @@ A single markdown table:
 Runs only on the user's fresh, explicit dispatch instruction — capturing a nit, even the last open one, never triggers it; neither does an upfront "fix them all later" said while capturing.
 
 1. Group all `open` (including `reopened`) rows by PROJECT-CODE; order each group trivial → structural (text/string first, then spacing/alignment).
-2. Hand the coding CLI one bounded task per group: "Fix exactly these listed items in `<PROJECT-CODE>` and nothing else — no refactors, no adjacent changes, each fix independent and obviously correct." **Where** stays precise enough to find without hunting; pass the rows' **Where** and **Wrong → Right** verbatim, plus: a test asserting the old wrong value updates as part of the row's fix, not as an adjacent change; report back per row the file(s) touched, one line each.
+2. Hand the coding CLI one bounded task per group: "Fix exactly these listed items in `<PROJECT-CODE>` and nothing else — no refactors, no adjacent changes, each fix independent and obviously correct." **Where** stays precise enough to find without hunting; pass the rows' **Where** and **Wrong → Right** verbatim, plus: any existing test asserting the old wrong value is updated as part of the row's fix, not as an adjacent change; report back per row the file(s) touched, one line each.
 3. Mark handed-off rows `dispatched` and emit the dispatch update. Do not verify or ship yet.
 
 ### verify

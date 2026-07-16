@@ -40,7 +40,7 @@ Full first run; an existing design-system doc or library → switch to `extend` 
 2. **Tokens** — colours, typography, spacing, radii, shadows as named tokens in the stack's native mechanism (CSS variables, Tailwind `theme`, RN theme object, …), never hardcoded per use.
 3. **UI library** — build the base components (buttons, inputs, selects, toggles, cards, alerts, badges, …) from the tokens, faithful to the source.
 4. **Preview page** — one page/route/screen rendering every component in its states (default/hover/focus/disabled/active; empty/loading/error where relevant; responsive) — the verification gate, in two halves:
-   - **Agent half — evidence first.** Build/serve the target, load the preview, and check every extracted component appears with no error output. An agent-browser screenshot is the evidence floor for any stack; a served-HTML fetch substitutes only for server-rendered output. **Exception — client-rendered stacks (React Native, React SPA):** the served HTML is an empty root, so a screenshot or rendered DOM/tree snapshot is required — a plain HTML fetch is not evidence there. Quote the evidence: URL/file, status, screenshot path, component count.
+   - **Agent half — evidence first.** Build/serve the target, load the preview, and check every extracted component appears with no error output. An agent-browser screenshot is the evidence floor for any stack; a served-HTML fetch substitutes only for server-rendered output. **Exception — client-rendered stacks (React Native, React SPA):** the served HTML is an empty root, so a screenshot or rendered DOM/tree snapshot is required — a plain HTML fetch is not evidence there. Quote the evidence: URL/file, status, screenshot path, and the rendered component list (DOM query, tree snapshot, or served-HTML match) checked off against the extracted inventory — a bare aggregate count is not evidence.
    - **Human half — the gate.** Show the user how to open the preview and ask them to eyeball it. If the user is away, state the preview location and the agent-half evidence, record the eyeball as pending in the phase update, and continue to the suggestions — never claim the design system verified until they have looked.
    Where a snapshot harness exists, add a minimal render/snapshot test per base component. Per-page pixel conformance during feature work stays `/pixel-audit`'s — reference, don't duplicate.
 5. **Register** — write the doc, the AGENTS.md reference, and the project UI skill (below).
@@ -81,7 +81,7 @@ Emit the phase update and stop:
 ```markdown
 Stage: design-system (<bootstrap|extend>) — tokens+library+preview for <TARGET-PROJECT-CODE>; doc <docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md; AGENTS.md reference added; <ui-skill name> seeded/extended.
 Found: <N> tokens, <M> components (<states covered>); source = <Figma|spec|reference|guided(approved)>; stack = <from matrix>.
-Next: open <preview location>, eyeball every component/state; then Workflow B for the first feature.
+Next: open <preview location>, eyeball every component/state; then `/feature-prompt` for the first feature.
 Needs user: verify the preview; confirm guided-definition choices or DS/stack deviations.
 
 Suggested next skills (optional):

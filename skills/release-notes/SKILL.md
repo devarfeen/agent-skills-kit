@@ -53,7 +53,7 @@ pass: "Would a PM or QA person understand this without asking a developer?"
 10. **Write like telling a coworker what you did today** — not a formal document.
 
 Avoid vague verbs ("enhanced", "optimized", "improved") without saying what
-changed in behavior. If exact metrics are unavailable, use directional impact
+changed in behavior. Without exact metrics, use directional impact
 grounded in observed behavior. Never state anything not supported by the
 workspace, git history, or context the user provided.
 
@@ -101,6 +101,8 @@ hashes, affected files, user-visible changes, likely grouping, uncertainty —
 never transcripts; the main session owns clustering, plain-language rewriting,
 QA-step quality, and file output.
 
+Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.
+
 ## Commit clustering
 
 Never narrate commit-by-commit — cluster related commits into one PM-facing
@@ -111,7 +113,7 @@ unrelated bugs stay separate. When uncertain, keep them separate.
 
 ## Output format
 
-One markdown file, filled from the asset skeleton matching the mode — the
+One markdown file, filled from the mode's asset skeleton — the
 skeletons are the single format source:
 
 - Date-based / date-range / feature mode →
@@ -185,8 +187,7 @@ never overwrite hand edits unconfirmed. Never delete unrelated files.
 - [ ] Every cluster presented as shipped passed `git branch --contains` or
   carries its "in progress on `<branch>`" label.
 - [ ] At least one bullet names an affected workflow or team.
-- [ ] Re-read the saved file as a PM: every entry understandable without code
-  context, each impact bullet an observable outcome, a QA reader knows what
-  to test.
+- [ ] Every Manual QA step is `Action -> Expected Result` naming a screen,
+  button, or field; every Impact bullet states a behavior change.
 - [ ] The reply states each saved file path and ends with
-  `Suggested next skills (optional)` — 1–6 advisory suggestions, never gating.
+  `Suggested next skills (optional)` — 1–3 advisory suggestions, never gating.

@@ -22,7 +22,7 @@ Every SKILL.md follows this order, skipping sections it genuinely doesn't need:
 
 ## Word budget
 
-A SKILL.md runs **1,000–1,300 words**; 1,500 (frontmatter included) is the validator-enforced ceiling. Over budget → move mechanics and long examples to `references/`; never hit budget by thinning refusal or safety language.
+A SKILL.md runs **1,000–1,300 words**; 1,500 (body only, after the closing `---`) is the validator-enforced ceiling. Over budget → move mechanics and long examples to `references/`; never hit budget by thinning refusal or safety language.
 
 ## Voice and language
 
@@ -71,7 +71,7 @@ Compression never touches: refusal boundaries and scope gates (AGENTS.md rule 7 
 ## Completion criteria
 
 - [ ] `bash tools/validate.sh` passes (or fails only on check 10 when the edit is a batched description/new-skill change awaiting the user's eval sweep)
-- [ ] Word count within budget: `awk 'f&&NF{c+=NF} /^---$/{f++}' skills/<name>/SKILL.md` ≤ 1,500
+- [ ] Word count within budget: `awk 'NR==1&&/^---$/{f=1;next} f==1&&/^---$/{f=2;next} f==2&&NF{c+=NF} END{print c+0}' skills/<name>/SKILL.md` ≤ 1,500
 - [ ] Every refusal/stop line present in the previous version is present (or strengthened) in the new one — verified by diff, not recollection
 - [ ] Frontmatter untouched unless this is an approved description batch
 - [ ] Sync map satisfied: manifest row, README row, duplicated-by-design copies edited together

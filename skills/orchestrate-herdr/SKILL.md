@@ -39,11 +39,11 @@ Fail fast before creating anything, naming what is missing:
 3. `CLI_NAME` resolves on PATH — check the bare binary, not the flagged command, which never resolves — and `gh` is authenticated (`gh auth status`).
 4. **Leftover tabs:** tabs named `[CLI_NAME] - GH #<n>` from a previous run of this spec already exist → ask whether to monitor those instead; re-running blindly creates a second tab per issue. User away → monitor the existing tabs and create tabs only for open sub-issues that have none.
 5. **Same-repo collision:** workers run simultaneously in one shared working folder. More than one open sub-issue touches the same repo → say so and get explicit confirmation, or agree with the user to run those issues serially. User away → do not fan out: report the collision and stop — shared-tree concurrency is never a safe unattended default.
-6. **Worker permission mode:** a fresh `CODING_CLI` session pauses at its own approval prompts (shell, `gh`, test commands) unless launched with an auto-accept/permission preset or the folder pre-approves them. Confirm the mode with the user before fan-out: use the flags they give in `CODING_CLI`, or warn that every worker will need manual approvals. Never pick an elevated or dangerous mode yourself — that is always the user's explicit call.
+6. **Worker permission mode:** a fresh `CODING_CLI` session pauses at its own approval prompts (shell, `gh`, test commands) unless launched with an auto-accept/permission preset or the folder pre-approves them. Confirm the mode with the user before fan-out: use the flags they give in `CODING_CLI`, or warn that every worker will need manual approvals. Never pick an elevated or dangerous mode yourself — that is always the user's explicit call. User away → the flags already in `CODING_CLI` are the confirmed mode; none set → proceed and note in the phase update that every worker will pause at its own approval prompts.
 
 ### 2. Discover sub-issues
 
-Read `SPEC_URL`. Prefer `gh api repos/<owner>/<repo>/issues/<n>/sub_issues`; fall back to task-list checkboxes and "Tracked by" references in the spec body. State the count found and cross-check it against the spec before creating any tab — under-fanning silently drops slices.
+Read `SPEC_URL`. Prefer `gh api repos/<owner>/<repo>/issues/<n>/sub_issues`; fall back to task-list checkboxes and "Tracked by" references in the spec body. State the count found and cross-check it against the spec before creating any tab — under-fanning silently drops slices. Fan-out covers every open sub-issue; the `ready-for-agent` label does not filter the set.
 
 ### 3. Create worker tabs
 
@@ -100,7 +100,7 @@ Prefer the herdr companion's wait/state-change primitives to react the moment a 
   - The CLI died → redo Launch workers for that tab once (relaunch the CLI, wait for readiness, resubmit). Never paste the prompt into a dead shell.
   - A long command (test run, build) still running → allow up to ~3 more minutes.
   - Past that, or any other case → mark the issue blocked and surface it under Needs user.
-- **Labels:** `ready-for-agent` marks an issue a worker may take; a worker blocked on a human decision gets its issue flipped to `ready-for-human` with a comment naming the decision. Issue order and dependency notes only sequence dispatch. Never edit issue titles (no `BLOCKER:`, `AFK:`, or `HITL:` markers).
+- **Labels:** a worker blocked on a human decision gets its issue flipped to `ready-for-human` with a comment naming the decision. Issue order and dependency notes only sequence dispatch. Never edit issue titles (no `BLOCKER:`, `AFK:`, or `HITL:` markers).
 - **Completion:** apply the test-evidence rule per issue — read the tab and quote the passing output.
 - **Status board:** on every sweep or state-change wake, emit a one-line count — `N running · M completed · K blocked/needs-user` — naming any tab whose state changed.
 

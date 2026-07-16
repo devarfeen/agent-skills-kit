@@ -57,7 +57,7 @@ The `Closes #N` line is mandatory and must be on its own line near the top of th
 
 5. **Draft the commit message** from the issue title and diff, per **Commit message format** in `references/ship-policy.md`. For ad hoc inline issues, the new issue title and commit subject must match (see **Naming anchor**).
 
-6. **Draft the PR title and body** — title mirrors the commit subject with no routing marker; body has `Closes #N`, summary, optional decisions, how-to-test, optional notes (format above). If the test plan isn't obvious, ask the user before continuing. If the how-to-test plan opens with a test or validation command — one that passes or fails, not a long-running server — run it now and paste the passing tail into the drafted body, so the body the user approves in step 7 is the final body. A failing run stops here (fix or ask).
+6. **Draft the PR title and body** — title mirrors the commit subject with no routing marker; body has `Closes #N`, summary, optional decisions, how-to-test, optional notes (format above). If the test plan isn't obvious, ask the user before continuing. If the how-to-test plan contains a test or validation command — one that passes or fails, not a long-running server — run it now and paste the passing tail into the drafted body, so the body the user approves in step 7 is the final body. A failing run stops here (fix or ask).
 
    Before presenting drafts, run the **Authorship policy** scrub and, if env files/keys changed, the **Env parity policy** sync pass — both in `references/ship-policy.md`.
 
@@ -76,10 +76,10 @@ The `Closes #N` line is mandatory and must be on its own line near the top of th
     - No upstream → `git push -u origin <branch>`.
 
 11. **Open the PR** against the detected default branch. When the how-to-test
-    plan opens with a test or validation command, confirm the passing tail
-    already quoted into the approved body (step 6) still holds against the
-    just-pushed commit before calling `gh pr create` — never open a PR whose
-    own test plan fails.
+    plan contains a test or validation command, re-run that command when any
+    commit exists that step 6's run did not test; a changed tail stops here —
+    fix and refresh the drafted body before `gh pr create` — never open a PR
+    whose own test plan fails.
     Then:
     ```bash
     gh pr create \
@@ -137,7 +137,7 @@ Checkout charges are now idempotent on `x-request-id`; replays return the origin
 
 - [ ] Push landed — `git status` shows the branch up to date with its upstream
 - [ ] PR read back (`gh pr view --json title,body,baseRefName,headRefName`): title, base, head, and the `Closes #<num>` line on its own all verified
-- [ ] When the test plan opens with a pass/fail test or validation command, its passing output tail is quoted in the PR body
+- [ ] When the test plan contains a pass/fail test or validation command, its passing output tail is quoted in the PR body
 - [ ] No co-author or AI/tool attribution text in the commit message, PR title/body, or issue content
 - [ ] Hooks ran (no `--no-verify`)
 - [ ] Report line printed and the `Suggested next skills (optional)` footer appended (1-3 advisory suggestions, no gating)

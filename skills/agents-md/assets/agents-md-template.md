@@ -1,4 +1,4 @@
-<!-- agents-md marker · v10 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v11 · re-run /agents-md to regenerate -->
 # Agent Instructions
 
 [one concise workspace intro inferred from the .code-workspace name and folder scan]
@@ -170,7 +170,7 @@ Use `/ask-matt` when the user asks which Matt skill or flow fits. It routes over
 - `/improve-codebase-architecture` for codebase health; a chosen improvement becomes an idea for `/grill-with-docs`.
 - `/handoff` forks context into a new session. `/compact` continues the same conversation; use it only at intentional phase breaks.
 
-[RUNTIME TOOL-CALLING — emit the `### Runtime Tool-Calling` subsection here, per the Skills Manifest rules in SKILL.md]
+[RUNTIME TOOL-CALLING — emit the `### Runtime Tool-Calling` subsection here, per the Working with skills rules in SKILL.md]
 
 ## Context & Native Memory
 

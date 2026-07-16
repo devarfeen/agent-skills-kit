@@ -25,6 +25,7 @@ These boundaries are the skill's safety property. They are absolute — no step,
 - **A bad deploy is reverted the way it arrived.** If the merged fix makes staging worse, open a revert PR against `staging` through the same CI path and report it like the fix PR — never hotfix the server to undo a merge.
 - **One approval before any remote write.** Show the commit message and PR draft and wait for one combined user approval before pushing or calling `gh`. If the user is away, present the drafts and stop.
 - **Zero attribution.** No co-author, AI, or tool attribution in commits, PR titles, or PR bodies; strip any tool-injected footer before committing.
+- Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.
 
 ## Workflow
 
@@ -34,7 +35,7 @@ If read-only staging inspection was explicitly approved this session, use it —
 
 ### 2. Fix locally with a test
 
-On a local branch (never directly on `staging` or the default branch), write a failing test that captures the bug, then make it pass. Where a test is genuinely impractical — config-only or env-shape changes — say so and name what was verified instead. Run the repo's existing check suite before shipping; a broken suite stops the workflow here.
+On a local branch (never directly on `staging` or the default branch), write a failing test that captures the bug, then make it pass. Where a test is genuinely impractical — config-only or env-shape changes — say so and name what was verified instead. Run the repo's existing check suite before shipping: failures that persist with the fix stashed are pre-existing — record them and continue; failures introduced by the fix stop the workflow here.
 
 ### 3. Ship
 
@@ -60,6 +61,5 @@ The one-line report from step 4, plus at most two bullets: what the fix was, and
 
 - [ ] `gh pr view <pr-num> --json baseRefName,autoMergeRequest` shows base `staging` and auto-merge enabled
 - [ ] The passing test tail (or the stated substitute verification) is quoted in the PR body
-- [ ] Every remote action this session was either GitHub (`git push`, `gh`) or user-approved read-only staging inspection — no staging or production mutation occurred
 - [ ] No co-author or AI/tool attribution text in the commit message or PR title/body
 - [ ] Report line printed

@@ -36,7 +36,7 @@ Carry this framing through every section of the gap map:
 - **Retrieval order.** `CONTEXT.md` + `specs/adr/` are binding (read before deciding) > the current request, reference/target code, and tests > native CLI memory.
 - **Decisions are artifacts.** The output is the durable gap map file, not a chat summary; chat reports only what was written and the phase update.
 - **Don't fabricate an issue before coding.** Issues come later, from `/to-tickets` after `/grill-with-docs`.
-- Sub-agents: local lanes only when the user allows them — never cloud agents; announce the lane count at dispatch and report each lane as it completes. Never cloud agents.
+- Sub-agents: local lanes only when the user allows them — never cloud agents; announce the lane count at dispatch and report each lane as it completes.
 
 ## Process
 
@@ -122,5 +122,5 @@ Suggested next skills (optional):
 ## Completion criteria
 
 - [ ] The gap map exists at the resolved `<artifacts-root>/specs/port/<feature-slug>-gapmap.md` with all nine section headings present and non-empty
-- [ ] `git status` shows no diff outside the gap map file — nothing implemented
+- [ ] `git status` shows no files created or modified by this run outside the gap map file — nothing implemented
 - [ ] The final `Stage / Found / Next / Needs user` update was emitted, ending at the `/grill-with-docs` suggestion

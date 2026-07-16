@@ -106,8 +106,8 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
 
 ```markdown
 Stage: build — wrote specs/integration/<SPEC-ID>-contract.md. [or: single project — no contract needed (matrix swept; no external call-sites)]
-Found: producer <PROJECT-CODE>; consumers <PROJECT-CODE>, <PROJECT-CODE>; <K> changed surfaces; <R> risk row(s).
-Next: implement the slices, then integration-contract gate mode before spec-level ship and PM handoff.
+Found: producer <PROJECT-CODE>; consumers <PROJECT-CODE>, <PROJECT-CODE>; <K> changed surfaces; <R> risk row(s). [or: matrix swept for <K> changed surfaces; no external call-sites]
+Next: implement the slices, then integration-contract gate mode before spec-level ship and PM handoff. [or: proceed per-slice — no integration gate needed]
 Needs user: <risk rows to confirm, environment facts, or "none">.
 ```
 

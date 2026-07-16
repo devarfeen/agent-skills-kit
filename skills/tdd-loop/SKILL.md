@@ -121,8 +121,6 @@ Done means you can show all of these:
 - [ ] Docs updated, or "nothing documents this behavior".
 - [ ] Any exception was declared up front and its follow-up test plan recorded.
 
-"Tests pass" without a witnessed red is not TDD evidence.
-
 ## Autonomy boundary
 
 Proceed without asking when the ticket carries numbered acceptance criteria,

@@ -6,7 +6,7 @@ description: "Address reviewer feedback on an existing open GitHub PR — fetch 
 
 # pr-feedback
 
-One iteration of working reviewer feedback on an existing open GitHub PR: fetch every review comment and thread, classify them, get the user's decision, apply the accepted fixes, ship through /commit-push-pr on the same branch, and answer each addressed thread. The boundary against its neighbours: /code-review produces a review, this skill consumes one; /commit-push-pr opens or updates the PR, this skill never creates one.
+One iteration of working reviewer feedback on an open PR, ending in pushed fix commits and a reply on every settled thread. The boundary against its neighbours: /code-review produces a review, this skill consumes one; /commit-push-pr opens or updates the PR, this skill never creates one.
 
 ## Inputs
 
@@ -28,7 +28,7 @@ One iteration of working reviewer feedback on an existing open GitHub PR: fetch 
 
 ### 1. Locate the PR
 
-Resolve per Inputs, then read it: `gh pr view <num> --json number,title,url,state,headRefName,baseRefName`. State not `OPEN` → stop and report; feedback on a merged or closed PR needs the user's call.
+Resolve per Inputs, then read it: `gh pr view <num> --json number,title,url,state,headRefName,baseRefName`. State not `OPEN` → stop and report; feedback on a merged or closed PR needs the user's call. Record the pre-run remote head for the completion check: `git rev-parse origin/<head-branch>`.
 
 ### 2. Fetch every thread
 
@@ -36,10 +36,14 @@ Review threads — with thread IDs and resolved state — exist only in GraphQL:
 
 ```bash
 gh api graphql -f query='query { repository(owner:"<owner>", name:"<repo>") {
-  pullRequest(number:<num>) { reviewThreads(first:100) { nodes {
+  pullRequest(number:<num>) { reviewThreads(first:100) {
+    pageInfo { hasNextPage endCursor }
+    nodes {
     id isResolved isOutdated path line
     comments(first:50) { nodes { databaseId author { login } body } } } } } } }'
 ```
+
+Re-query with `after: <endCursor>` until `hasNextPage` is false — same idea for any thread whose comments exceed the first 50.
 
 Also collect top-level review bodies and issue-style PR comments (`gh pr view <num> --json reviews,comments`) — reviewers often put the substantive ask there, not on a line. Skip threads already resolved.
 
@@ -59,7 +63,7 @@ Wait for the combined approval. The user may reclassify any item — a pushback 
 
 ### 5. Apply the accepted fixes
 
-Work through the accepted items on the head branch — the smallest change that answers each comment — and run the tests the touched code has. An item that hits the scope-creep stop signal gets parked as needs-discussion; keep going on the rest.
+Work through the accepted items on the head branch — the smallest change that answers each comment — and run the tests the touched code has: name the command, quote its passing tail, and open the PR's how-to-test plan with it; if no tests cover the touched code, say so in the feedback-list report. An item that hits the scope-creep stop signal gets parked as needs-discussion; keep going on the rest.
 
 ### 6. Ship through /commit-push-pr
 
@@ -72,6 +76,7 @@ Only now, and only for settled items:
 - Fixed items: reply on the thread citing the SHA — `gh api repos/<owner>/<repo>/pulls/<num>/comments/<comment-id>/replies -f body='Fixed in <sha> — <what changed>.'`
 - User-approved wontfix or pushback: post the approved reply; leave the thread unresolved so the reviewer gets the last word.
 - Resolve a thread (GraphQL `resolveReviewThread`) only when its fix commit is pushed and its reply posted.
+- Settled non-thread items — top-level review bodies and issue-style comments from step 2: answer with `gh pr comment <num> --body 'Fixed in <sha> — <what changed>.'`
 - needs-discussion items: no reply unless the user supplied one — report them as still open.
 
 ### 8. Report
@@ -100,6 +105,6 @@ Then `Suggested next skills (optional)` — 1–3 advisory items (e.g. /code-rev
 
 - [ ] Threads re-fetched after replying: every accepted item's thread carries a reply citing a SHA that `git branch -r --contains <sha>` places on the PR's head branch
 - [ ] No thread replied to or resolved whose disposition was not fixed-and-pushed or user-approved wontfix — checked against the step 4 disposition list
-- [ ] `git log origin/<head-branch>` shows only added commits — no rewritten SHAs
+- [ ] `git merge-base --is-ancestor <recorded-sha> origin/<head-branch>` succeeds, where `<recorded-sha>` is the pre-run remote head from step 1 — history only grew, no rewritten SHAs
 - [ ] Pushed commits, replies, and PR edits read back with no attribution text
 - [ ] Final report line printed and the `Suggested next skills (optional)` footer appended

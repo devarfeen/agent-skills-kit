@@ -34,6 +34,8 @@ Rules for **How to test** live in **How-to-test rules** (`references/ship-policy
 
 ## Workflow
 
+Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.
+
 1. **Read state** — run the **Read state** commands in `references/ship-policy.md` (parallel git reads, default-branch detection, `gh` availability check). If the current branch is not the detected default branch, the code this close refers to may sit unmerged — say so and confirm the direct close vs routing to `/commit-push-pr`; confirm likewise when the repo requires PRs. If the user is away, continue drafting and surface this choice with the step-6 drafts — that combined approval remains the hard gate.
 
 2. **Resolve or create the issue** — check, in order: branch name (e.g. `feat/123-...`, `agent/PROJ-456-...`), recent commits on this branch, conversation context. If no issue can be located, switch to **Inline issue creation** (`references/ship-policy.md`) for valid small ad hoc work — the issue is drafted now but created only after the combined approval in step 6; once created, fill its number into the commit `Issue:` line and use it as `<num>` in step 10.
@@ -62,7 +64,7 @@ Rules for **How to test** live in **How-to-test rules** (`references/ship-policy
    - **If the current branch is the detected default branch**: stop and confirm separately before pushing — step 6's approval does not cover this push. If the user is away, leave the commit local and unpushed, skip the close (a close comment must reference a pushed commit), and surface both under Needs user in the report.
    - **Confirm the push landed** before the close — non-error exit and `git status -sb` shows the branch up-to-date with its remote. A rejected push (non-fast-forward, auth expiry) stops the close, since the close comment must reference a commit that is actually on `<branch>`.
 
-10. **Close the issue** — first, when the How-to-test plan opens with a runnable test command, run it once and quote the passing tail in the close comment — a failing run stops the close: leave the issue open, report the failure (the commit is already pushed), and treat any fix as a new iteration through this skill; never close an issue whose own test plan fails. Then fill the drafted comment with the real values (short SHA from `git rev-parse --short HEAD`, current branch), write it to a temp file, then comment, close, and verify:
+10. **Close the issue** — first, when the How-to-test plan contains a runnable test command, run it once and quote the passing tail in the close comment — a failing run stops the close: leave the issue open, report the failure (the commit is already pushed), and treat any fix as a new iteration through this skill; never close an issue whose own test plan fails. Then fill the drafted comment with the real values (short SHA from `git rev-parse --short HEAD`, current branch), write it to a temp file, then comment, close, and verify:
     ```bash
     gh issue comment <num> --body-file <temp-file>.md
     gh issue close <num> --reason completed
@@ -94,7 +96,7 @@ Notes: Stripe webhook path still unguarded — see follow-up #419.
 ## Completion criteria
 
 - [ ] `gh issue view <num> --json state -q .state` returned `CLOSED`, and that state is quoted in the report
-- [ ] Close comment posted containing **Summary** + **How to test**; when the plan opens with a runnable test command, its passing output tail is quoted in the comment
+- [ ] Close comment posted containing **Summary** + **How to test**; when the plan contains a runnable test command, its passing output tail is quoted in the comment
 - [ ] Push landed: non-error exit and `git status -sb` shows the branch up-to-date with its remote — or the report carries the deferral/rejection line plus `Needs user:`
 - [ ] `Issue:` line present in the commit body
 - [ ] Label state valid: `gh issue view <num> --json labels` shows one category label + a ready state label (read in step 3, or set at inline creation)
