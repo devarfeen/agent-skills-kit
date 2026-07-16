@@ -55,7 +55,7 @@ These bind in every mode; the mode sections below own their remaining rules wher
 - **Name the full PROJECT-CODE** from the Project Matrix everywhere. Never carry one project's conventions, tokens, or components into another; adapt to the target stack.
 - **Decisions are artifacts.** Tokens, library, preview, the `specs/design-system/` doc, the AGENTS.md reference, and the seeded project skill all live on disk — not in chat.
 - **Never hardcode locations.** Resolve artifact and docs paths from the target's stack conventions and the setup decisions; record the real paths in the doc, the AGENTS.md reference, and the project skill.
-- **Local-only.** Read-only sub-agents for extraction/survey are fine when the user has allowed them; the main agent owns synthesis.
+- **Local-only.** Read-only sub-agents for extraction/survey are fine when the user has allowed them; the main agent owns synthesis. Announce the lane count at dispatch and report each lane as it completes.
 - **Emit `Stage / Found / Next / Needs user`** at each phase transition.
 - **Suggest, never auto-chain.** Recommend the next step and stop. Never start feature work here.
 

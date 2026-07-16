@@ -35,6 +35,23 @@ bar never changes.
   empty/error/loading, each breakpoint) before its row can pass — a default-
   state check proves nothing about the others.
 
+## Capture efficiently
+
+The evidence bar never drops; the call count does.
+
+- One authenticated session for the whole audit; never restart the browser or
+  re-auth between rows.
+- Batch each row into one flow — navigate → interact → eval assertion — not
+  separate open/wait/snapshot/click/console calls.
+- Snapshot once per page to harvest refs, then drive rows with stable
+  `data-test`/CSS selectors; re-snapshot only after a re-render invalidates a
+  ref (Livewire and similar).
+- Wait on URL or DOM state, never toast timing or `networkidle`. An ordinary
+  route flow over ~5 seconds is a defect to diagnose, not a wait to lengthen.
+- Short explicit timeouts (3–8 s) on every command; one command at a time per
+  session — an orphaned wait blocks it. If a reused session fails a ~2 s health
+  check, close and reopen that session only, never all sessions.
+
 ## Falsify before "verified"
 
 Rule out, and say you ruled out: stale served assets (cache-bust or hash

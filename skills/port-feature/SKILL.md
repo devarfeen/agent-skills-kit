@@ -45,7 +45,7 @@ Carry this framing through every section of the gap map:
 1. **Read the TARGET's binding context first** — `CONTEXT.md` and `specs/adr/` in the target's `<artifacts-root>`, per the kit's retrieval order, plus the target's `AGENTS.md` and UI-coding skill for stack/DS rules. This sets the idiom every later section must respect.
 2. **Discover the REFERENCE** (not the target), `/feature-discovery`-style: trace the real behaviour, workflow, navigation, permissions, states, and data effects, evidence-backed and narrow. Capture concrete refs (`file:symbol`, route, migration, test) for each claim.
 3. **Survey the TARGET's current state** for the same feature: what already exists, what's partial or wrong versus the reference, and which design-system components and existing patterns are reusable. If the feature has UI, open the target's component preview (e.g. `/ui/preview/all`) to inventory available DS components before deciding what to build.
-4. **Bounded sub-agents (optional):** only if the user has allowed sub-agents, dispatch read-only Explorer lanes for non-overlapping discovery (e.g. one on the reference, one on the target survey). The main agent merges and owns synthesis, uncertainty calls, and the final artifact. No two lanes discover the same thing.
+4. **Bounded sub-agents (optional):** only if the user has allowed sub-agents, dispatch read-only Explorer lanes for non-overlapping discovery (e.g. one on the reference, one on the target survey). The main agent merges and owns synthesis, uncertainty calls, and the final artifact. No two lanes discover the same thing. Announce the lane count at dispatch and report each lane as it completes.
 
 ## The gap map artifact
 

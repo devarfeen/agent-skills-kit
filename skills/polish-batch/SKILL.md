@@ -88,7 +88,7 @@ Runs **only** when the user explicitly says to dispatch, as a fresh instruction 
 4. As each group's task is handed off, mark those rows `dispatched`.
 5. Emit the dispatch update (template under Output format). Do not verify yet, and do not ship.
 
-Use local subagents/background per the runtime when dispatching multiple project groups; the main session keeps the merge and final-judgment seat.
+Use local subagents/background per the runtime when dispatching multiple project groups; the main session keeps the merge and final-judgment seat. Announce the lane count at dispatch and report each lane as it completes.
 
 ### verify
 
@@ -99,6 +99,7 @@ Runs after the dispatched tasks report back.
    - copy/string rows — quote the rendered string from the served screen or response field;
    - spacing/alignment/visual rows — element evidence via agent-browser (`getBoundingClientRect()`/computed styles, or a clipped element screenshot), not a whole-page glance;
    - no browser surface, or agent-browser unavailable — re-read the served string/field and say which fallback was used. Never mark a row verified on assumption.
+   Verify all rows in **one authenticated browser session**, batching rows on the same route into one navigate → assert flow with stable `data-test`/CSS selectors; wait on URL/DOM state, never toast timing or `networkidle`.
 3. Mark the row `verified` with its evidence recorded (path or quoted value in the **Shot** column or beside it), or `reopened` if it does not match. Reopened rows stay for the next capture/dispatch round; take fresh evidence for them.
 4. Report the verify table (Output format below) inside a `Stage / Found / Next / Needs user` update.
 5. Per the suggest-never-auto-chain rule: everything verified → recommend the next step and stop; any reopened → suggest another dispatch round for those rows.

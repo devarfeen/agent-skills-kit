@@ -1,4 +1,4 @@
-<!-- agents-md marker · v9 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v10 · re-run /agents-md to regenerate -->
 # Agent Instructions
 
 [one concise workspace intro inferred from the .code-workspace name and folder scan]
@@ -47,6 +47,8 @@ Touch only required lines. Match local style. Do not refactor unrelated code. Cl
 
 Define success before edits. Turn bugs into reproductions, changes into checks. Verify before reporting done.
 
+Match check scope to change scope: verify each fix with its focused test or module-scope command. The project's full check (whole suite or CI command, e.g. `composer test`) runs **once per batch** — after the last item of a multi-item task list, before shipping — never after every item. A full-suite run per item burns time and context for no added signal.
+
 ### 8. Systematic Debugging
 
 Find the root cause; don't patch symptoms.
@@ -74,6 +76,7 @@ When the user approves parallelism:
 - Run long or noisy lanes locally — background or async. Await and integrate every lane.
 - Never use cloud or remote agents: Cursor Cloud, Copilot cloud agent, Codex Cloud/web, Antigravity managed/remote, Claude Routines (`/schedule`), claude.ai background agents. Claude Code agent teams are local but also banned — the main session stays the only orchestrator.
 - Use local role lanes — Explorer, Researcher, Planner, Implementer, Reviewer, Tester, Tool-runner — with tools matched to role (read-only for discovery/review/planning, write for implementation, shell for tests). Subagents return summaries, not transcripts. Final synthesis stays in main.
+- Keep parallel state visible — enforced by Rule 11: at dispatch, state how many lanes are launching and what each does; report every completion or failure as it lands. This covers every parallel mechanism in every runtime — subagents, background tasks and shells, worktree agents, fleets, delegated jobs — whatever this CLI calls them.
 
 **Checkouts:** Work only in the existing workspace checkouts. Do not clone repos or create new paths. Never use git worktrees unless the user explicitly asks for them.
 
@@ -87,6 +90,7 @@ Enforced. No exceptions.
 - Stop only when user input, approval, or a scope decision is needed.
 - After discovery, investigation, or broad file reads, give the phase update before planning, edits, tests, commits, PRs, or issue updates.
 - Never report work done while any part is skipped, stubbed, or unverified. Surface constraints, risks, and assumptions up front.
+- While any subagent, background task, or job is active — under any name, in any runtime — every visible update states the count and state (`N running / M done / K blocked`) and what each running lane is doing. Work running silently in the background is a reporting violation, exactly like claiming unverified work is done.
 - After a successful task, end with `Recommended next step:` and the single best follow-up, plus a one-line why.
 - When more paths matter, add `Other good options:` with up to three labeled choices (Rule 4), plus `Write your own`. Suggest only — never chain or auto-advance.
 
@@ -107,6 +111,23 @@ Only `/commit-push-close` and `/commit-push-pr` may commit, push, open a PR, or 
 - The ship skills own branch-off-main, the structured commit message, issue linking, the how-to-test evidence, and Rule 12. A commit made outside them bypasses all of it.
 
 **Why:** a bare commit lands before the ship policy gets a say, and by then the branch, the message, and any tool attribution are already wrong.
+
+### 14. Efficient Browser Verification
+
+Enforced for every browser mechanism in every runtime — agent-browser, a built-in browser subagent, a Playwright/CDP MCP, whatever this CLI drives a page with. These are hard rules, not preferences: browser checks verify behavior, and every extra call, snapshot, or blind wait is spent time and context that verified nothing.
+
+- Keep one authenticated session for the whole task; never restart the browser or re-login mid-task. Persist auth by session name/profile so a daemon restart doesn't force re-login.
+- Drive each route as one batched flow — open → interact → deterministic assertion — not separate calls for open, wait, snapshot, click, errors, console. When the project provides a browser flow runner or JSON flow mode, use it instead of direct per-call driving.
+- Short explicit timeouts: 3–8 s on every browser command — never inherit a long default. One outer timeout per flow, and clean up spawned wait processes on exit: an orphaned wait blocks the whole session.
+- One command at a time per session, never overlapping. Health-check a reused session first (~2 s URL read); if it fails, close and reopen **that session only** — never close all sessions, which destroys other agents' auth and state.
+- Isolate mutation checks: record original values, change one setting, verify it, restore it before the next — and restore even when the flow fails, or the next save persists contaminated fields.
+- Prefer stable selectors (`data-test`, CSS) over framework-generated element refs that re-renders invalidate (Livewire, React, …); re-snapshot only after a re-render breaks a ref.
+- Assert stable state — URL, DOM/component state, or a database row — never toast timing or `networkidle`.
+- Use compact JS eval assertions; snapshot only the specific element when its selector is unknown. Full-page snapshots are overview only.
+- One interaction flow plus one evidence check per behavior in the browser; cross-page persistence and data coverage belong in the project's test suite.
+- An ordinary route flow taking over ~5 seconds is a defect to diagnose (Rule 8), not a reason to add waits.
+
+**Why:** Verification sessions slow down from chatty per-call driving, oversized snapshots, and unstable waits — the browser itself is rarely the bottleneck.
 
 ## Working With Skills
 
@@ -143,6 +164,7 @@ Use `/ask-matt` when the user asks which Matt skill or flow fits. It routes over
 - Both arms rejoin at `/to-spec`. A `/wayfinder` map is exhausted when nothing is left to decide.
 - Start a fresh session per ticket. Work the ticket frontier with `/implement` when it is installed: it drives `/tdd-loop` at each pre-agreed seam, and `/tdd` supplies test quality and seam choice. Without `/implement`, drive `/tdd-loop` directly — same outcome, one less wrapper. `/tdd` is a reference, not a loop; never use it alone.
 - `/implement` stops after `/code-review`. It must not commit (Rule 13).
+- `/diagnosing-bugs` finds the root cause; implement the fix through `/tdd-loop` — the diagnosis's reproduction becomes the failing regression test. For a bug list, that is one red → green per bug (each bug keeps its permanent regression test and module-scope run); the full check runs once at batch end (Rule 7).
 - `/triage` is for raw incoming issues and external PRs only — not tickets already created by `/to-tickets`.
 - `/research` delegates primary-source reading to a background agent; it leaves a cited doc to grill or plan against.
 - `/improve-codebase-architecture` for codebase health; a chosen improvement becomes an idea for `/grill-with-docs`.

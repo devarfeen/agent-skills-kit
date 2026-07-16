@@ -123,7 +123,7 @@ edited path before saving. Terms still needing review stay under
 
 When the runtime supports subagents and the user has allowed them, use
 read-only agents only for fast, independent context checks. No worker agents,
-no code edits.
+no code edits. Announce how many are running and report each as it completes.
 
 ## Final Output
 

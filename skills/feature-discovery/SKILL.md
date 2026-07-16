@@ -97,6 +97,8 @@ request and ask only when the mapping is genuinely ambiguous.
 - Lanes return file paths, symbols, commands, and uncertainty — summaries, not
   transcripts. The main session owns synthesis, evidence quality, uncertainty
   calls, conflict resolution, and the final report.
+- Announce the lane count at dispatch and report each lane as it completes;
+  while lanes run, updates state how many are still running.
 
 **Candidate context terms.**
 

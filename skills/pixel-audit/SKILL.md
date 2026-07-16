@@ -101,7 +101,7 @@ Scope, reuse-never-inline, and the design-system boundary are stated where they 
 - **Suggest, never auto-chain.** After the audit, suggest `/code-review` then `/commit-push-close` / `/commit-push-pr`, and stop. Never start unrelated work.
 - **Decisions are artifacts.** The pixel inventory and defect list live on disk, not in chat.
 - **Name the full PROJECT-CODE** from the Project Matrix everywhere. Never carry one project's conventions into another; adapt to the target stack.
-- **Local-only.** Local creds, local browser; read-only sub-agents for mapping only when the user has allowed them; main agent owns synthesis and the gate. No cloud agents.
+- **Local-only.** Local creds, local browser; read-only sub-agents for mapping only when the user has allowed them; main agent owns synthesis and the gate. No cloud agents. Announce the lane count at dispatch and report each lane as it completes.
 - **Emit `Stage / Found / Next / Needs user`** at each phase change (mapped → inventory captured → audited → fixing → verified).
 
 ## Output

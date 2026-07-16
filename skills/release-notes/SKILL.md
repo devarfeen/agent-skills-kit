@@ -113,6 +113,7 @@ independent feature clusters (local subagents only — never cloud). Each lane
 returns commit hashes, affected files, user-visible changes, likely grouping,
 and uncertainty — summaries, not transcripts. The main session owns final
 clustering, plain-language rewriting, QA-step quality, and file output.
+Announce the lane count at dispatch and report each lane as it completes.
 
 ## Commit Clustering
 

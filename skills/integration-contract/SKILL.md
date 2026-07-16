@@ -35,7 +35,7 @@ build  →  (implement the slices)  →  gate
 - **Gate failures are surfaced, not shipped.** A failing smoke flow reopens the contract — see the gate.
 - **Companion, not a pipeline. Suggest, never auto-chain.** build does not auto-run gate; gate does not auto-run `/commit-push-*`. Recommend the next step and stop.
 - **Read-only in build.** build traces and writes only the contract file. It does not edit product code, config, issues, or ADRs.
-- **Local-only.** Use local subagents/background where the runtime supports it and the user has allowed them; never hand work to cloud agents.
+- **Local-only.** Use local subagents/background where the runtime supports it and the user has allowed them; never hand work to cloud agents. Announce the lane count at dispatch and report each lane as it completes.
 
 ## The contract artifact
 
@@ -131,7 +131,7 @@ build never runs the gate and never edits product code.
    - **The change is in what's running.** Cross the pipeline (rebuild/redeploy per Section 1) and confirm the changed surface exists in the served artifact — a changed response field, a grep in the served/built assets, a version string. A flow run against a stale build proves nothing; do not count it.
    - **The contract still matches the implementation.** Spot-check Sections 2–3 against the implemented code (targeted grep per surface). A surface renamed or reshaped during implementation reopens the contract — update the rows before running flows.
    - Data preconditions are seeded.
-2. Drive each flow per its **Driver** (agent-browser / curl / manual), record **Evidence** (screenshot path, quoted response, observed text), and mark `pass`/`fail`. No evidence → the flow stays `pending`.
+2. Drive each flow per its **Driver** (agent-browser / curl / manual), record **Evidence** (screenshot path, quoted response, observed text), and mark `pass`/`fail`. No evidence → the flow stays `pending`. Run all browser flows in one authenticated session, each as one batched open → interact → assert pass with stable selectors; wait on URL/DOM/database state, never toast timing or `networkidle`.
 3. **Any `fail` reopens the contract:** record it, surface it in the report, and block the current step (do not commit-push, do not hand to PM). Route the failing seam back to `/to-tickets` (or `/diagnosing-bugs` if it is a defect, not a missing slice). Do not silently drop a fail.
 4. **Driver unavailable** (agent-browser not installed; a manual step that can't be run now): state that, list those flows as manual steps for the user, and leave them `pending` — never mark a flow `pass` on assumption.
 5. Append the **Gate log** line: `<date> · <pre-ship|PM handoff> · <N> pass / <M> fail (#s) · <how the environment was verified>`.
