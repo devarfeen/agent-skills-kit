@@ -75,7 +75,7 @@ Touched PROJECT-CODEs: API-SVC (producer), ADMIN-WEB, MOBILE-APP
 Section rules:
 
 - **1** — captured at build, verified at gate: where each PROJECT-CODE runs, how a change reaches it (build/serve/deploy step), the flows' data. Fact not cheaply discoverable → ask — never guess; user away → record `unknown — ask` under Needs user and keep building — the gate cannot pass a flow whose environment is unknown.
-- **2** — one row per surface the producer slice added or changed. `Change` also states auth/permission impact and any added or exposed personal data — a breaking change to either is a `RISK` row and requires a smoke flow.
+- **2** — one row per surface the producer slice added or changed. `Change` also states auth/permission impact and any added or exposed personal data — a breaking change to either is a `RISK` row and requires a smoke flow. A `RISK` row on an internet-facing or personal-data-carrying surface always gets a smoke flow, breaking or not.
 - **4** — 3–6 end-to-end flows phrased **navigate → act → assert a visible outcome**. **Driver**: `agent-browser` when browser-reachable, an exact `curl`/CLI assertion for API-only surfaces, else `manual` with the step spelled out. When a changed surface carries auth, include one negative flow — the unauthorized caller or role is denied — not just the happy path.
 - **Gate log** — one appended line per run, `<date> · <pre-ship|PM handoff> · <N> pass / <M> fail (#s) · <how the environment was verified>`; `Status` shows the latest, the log keeps history.
 
