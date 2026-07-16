@@ -4,17 +4,14 @@ disable-model-invocation: true
 description: "Use when the user wants to turn a feature idea, change request, or rough requirement into a small prompt for grill-with-docs. When cheap repo exploration reveals domain terms missing from or stale in CONTEXT.md, surface those candidate terms for user approval before any context update. Post-decision artifacts route onward instead: turning an ADR into a spec (PRD) is /to-spec, and investigating how existing behaviour works is /feature-discovery."
 ---
 
-# Feature Prompt
+# feature-prompt
 
-Feature-prompt turns a rough feature request into a minimal, drop-in prompt for
-`grill-with-docs`.
+Produces the smallest useful handoff for the next step — not an implementation
+spec. `grill-with-docs` will challenge the plan, inspect code/docs when needed,
+sharpen domain terms, update `CONTEXT.md`, and offer ADRs only for hard
+decisions.
 
-This skill does not create an implementation spec. It creates the smallest
-useful handoff for the next step. `grill-with-docs` will challenge the plan,
-inspect code/docs when needed, sharpen domain terms, update `CONTEXT.md`, and
-offer ADRs only for hard decisions.
-
-## Output Contract
+## Output contract
 
 Final prompts use this shape:
 
@@ -55,10 +52,7 @@ are normal sections. Emit `Known limits` and `Open questions` only when useful.
   cannot be inferred safely.
 - Use repo evidence when cheap: Project Matrix, cwd, `CONTEXT.md`,
   `CONTEXT-MAP.md`, and ADR names. Do not run a broad code scan by default.
-  A graphify knowledge base counts as cheap evidence when one exists —
-  `graphify-out/graph.json` at the project root, else at the workspace root;
-  missing in both places → skip graphify. If the graph is older than ~7 days,
-  say so and recommend the user run `graphify update .`.
+- If `graphify-out/graph.json` exists (project root, else workspace root), query it before raw search; older than ~7 days → suggest `graphify update .`; missing → skip graphify.
 
 ### Scope and slicing
 
@@ -109,7 +103,7 @@ are normal sections. Emit `Known limits` and `Open questions` only when useful.
 - Keep the final prompt spartan, direct, plain English — it is a generated
   artifact, never compressed shorthand.
 
-## Candidate Context Terms
+## Candidate context terms
 
 Only when cheap repo evidence or user-requested exploration reveals domain
 terms missing from or stale in `CONTEXT.md` — never run extra exploration just
@@ -120,13 +114,11 @@ before finalizing the prompt, apply only approved updates, and report the
 edited path before saving. Terms still needing review stay under
 `Open questions`.
 
-## Agent Use
+## Agent use
 
-When the runtime supports subagents and the user has allowed them, use
-read-only agents only for fast, independent context checks. No worker agents,
-no code edits. Announce how many are running and report each as it completes.
+Sub-agents: local lanes only when the user allows them — never cloud agents; announce the lane count at dispatch and report each lane as it completes. Lanes are for fast, independent context checks only — no worker agents, no code edits.
 
-## Final Output
+## Final output
 
 1. Draft the final prompt.
 2. For non-trivial or inferred prompts, show it once for correction. If the
@@ -149,7 +141,7 @@ Suggested next skills (optional):
 - /to-spec: if this needs a formal spec (PRD) after grilling.
 ```
 
-## File Output
+## File output
 
 ### Path
 
@@ -157,9 +149,7 @@ Suggested next skills (optional):
 <artifacts-root>/specs/prompts/NNNN-<feature-slug>-prompt.md
 ```
 
-Resolve `<artifacts-root>`: (1) the directory containing a `*.code-workspace`
-file at or above cwd; (2) the per-context root in a multi-context repo
-(`CONTEXT-MAP.md` at root); (3) the single repo root.
+Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`CONTEXT-MAP.md` at repo root), else the repo root.
 
 - **`NNNN`** — scan `<artifacts-root>/specs/adr/` and
   `<artifacts-root>/specs/prompts/` for the highest existing four-digit number
