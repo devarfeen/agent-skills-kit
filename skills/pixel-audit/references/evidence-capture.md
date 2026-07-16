@@ -52,6 +52,14 @@ The evidence bar never drops; the call count does.
   session — an orphaned wait blocks it. If a reused session fails a ~2 s health
   check, close and reopen that session only, never all sessions.
 
+## If the browser wedges
+
+Commands hang, or errors claim an existing connection: `agent-browser close
+--all`, clear stale browser profile locks, relaunch, and re-verify the
+session renders the target page before resuming — evidence from an
+unverified session is void. Two failed recoveries → stop and show the user
+the exact error and what the screen shows.
+
 ## Falsify before "verified"
 
 Rule out, and say you ruled out: stale served assets (cache-bust or hash
