@@ -1,5 +1,6 @@
 ---
 name: polish-batch
+disable-model-invocation: true
 description: Batch the UI-polish tail at the verify phase — during manual QA, capture many tiny cosmetic fixes (copy, spacing, alignment, wrong string) WITHOUT fixing any of them, then dispatch them per PROJECT-CODE in one bounded pass, then verify. Use when the user is doing manual QA and logging small nits, says "punch list", "polish pass", "cosmetic cleanup", "batch these nits", "capture this for later", or wants to collect cosmetic fixes now and fix them all in one go. Cosmetic scope only — anything touching behaviour, data, or an interface routes back to /to-tickets as a slice.
 ---
 

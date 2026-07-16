@@ -1,5 +1,6 @@
 ---
 name: integration-contract
+disable-model-invocation: true
 description: After /to-tickets, pull cross-repo confidence out of your head into a durable contract + a smoke gate — but only when a spec (PRD) touches more than one PROJECT-CODE. It maps the producer surface that changed (usually the API PROJECT-CODE), traces each consumer's call-sites narrowly like /feature-discovery, and writes an agent-browser smoke checklist that proves the seam holds. Use when a multi-project spec (PRD) is sliced and you want to know the integration won't break before shipping or handing to the PM. Single-project spec with no cross-project consumers → it reports "single project — no contract needed" and stops.
 ---
 

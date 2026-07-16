@@ -1,5 +1,6 @@
 ---
 name: port-feature
+disable-model-invocation: true
 description: Use when the user wants to port, migrate, rebuild, or recreate a feature that already exists in a REFERENCE implementation into a TARGET stack (e.g. bring a legacy screen into the new app). Sits at the discover → plan entry — reads the target's binding context, traces the reference's real behaviour/workflow/permissions/states the way /feature-discovery does, surveys what the target already has, and writes ONE gap map artifact, then suggests /grill-with-docs and stops. The reference is truth for behaviour; the target's design system is truth for UI. Never implements, never auto-chains; interviews for any missing input.
 ---
 

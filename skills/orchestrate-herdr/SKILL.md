@@ -1,5 +1,6 @@
 ---
 name: orchestrate-herdr
+disable-model-invocation: true
 description: "Orchestrate herdr worker tabs for a spec (PRD). Reads a spec/issue URL, finds its open sub-issues, launches one herdr-managed worker tab per issue running a chosen coding CLI, then monitors the tabs until every issue is completed with test evidence, blocked, or errored. Use when running inside herdr (HERDR_ENV=1) and the user wants to fan a spec out to per-issue workers."
 ---
 
