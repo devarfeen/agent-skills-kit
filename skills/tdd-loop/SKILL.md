@@ -47,7 +47,11 @@ located, each slice's red → green, and completion.
 
 ## The loop
 
-Repeat per behavior, smallest slice first:
+Repeat per behavior, smallest slice first. When one session works a batch —
+several tickets or bug fixes — each slice runs only its focused and widened
+commands; the project's full check runs once, after the last slice (see the
+completion criterion). A full-suite run after every item burns time and
+context for no added signal.
 
 1. **Red.** Write ONE failing test asserting the new behavior. Run the focused
    test and read the failure.
@@ -59,8 +63,9 @@ Repeat per behavior, smallest slice first:
      (rewrite it).
 2. **Green.** Make the smallest change that passes the focused test — no
    speculative parameters, no adjacent cleanup. Re-run the focused test.
-3. **Widen.** Run the surrounding suite (module or package scope). A new
-   failure your change caused is part of this slice — fix it now.
+3. **Widen.** Run the surrounding suite (module or package scope — never the
+   project's full suite here). A new failure your change caused is part of
+   this slice — fix it now.
    - A failure that predates your change is not this slice's to fix: confirm
      it fails the same way with your change stashed, note it on the summary's
      Scope run line, and judge the scope green apart from it.
@@ -85,7 +90,7 @@ Repeat per behavior, smallest slice first:
   ```markdown
   Behavior: <the one-sentence behavior>
   Red → Green: <test name(s)> — seen failing (<how>), now passing
-  Scope run: <focused command> · <widened command> · <full check | widest feasible — why>[; pre-existing failures: <names — verified with change stashed>]
+  Scope run: <focused command> · <widened command> · <full check | deferred to batch end | widest feasible — why>[; pre-existing failures: <names — verified with change stashed>]
   Edges: <covered: …> · <deferred: … — why>
   Docs: <path updated | nothing documents this behavior>
   Exception: <declared exception + follow-up test plan | none>
@@ -109,9 +114,10 @@ Done means you can show all of these:
 - [ ] Focused test passes and the widened scope passes (pre-existing failures
       verified as such and noted on the Scope run line); both commands named.
 - [ ] Before suggesting ship: the project's full check (whole suite or the CI
-      command) ran green once for this slice, apart from failures verified as
-      pre-existing and noted — or the summary states why the widened scope is
-      the widest feasible run.
+      command) ran green once for the batch — after the last slice when the
+      session works several slices, tickets, or bug fixes, never per slice —
+      apart from failures verified as pre-existing and noted; or the summary
+      states why the widened scope is the widest feasible run.
 - [ ] No assertion weakened, no failing test deleted to reach green (or the
       contract change is flagged with the user's call).
 - [ ] Edges covered or explicitly deferred, each named.
