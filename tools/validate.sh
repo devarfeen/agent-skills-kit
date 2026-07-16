@@ -398,8 +398,10 @@ done
 note "canonical one-liners byte-exact where used"
 
 echo "== 14. No placeholder scaffolding in references/assets =="
-PLACEHOLDER_RE='Scenario 1, Scenario 2|Detailed explanation of the pattern|\[TODO|Lorem ipsum|PLACEHOLDER-CONTENT'
-if grep -rniE "$PLACEHOLDER_RE" skills/*/references skills/*/assets 2>/dev/null; then
+# Case-sensitive: agents-md's template legitimately uses a lowercase `[todo]`
+# state anchor; scaffolding markers are conventionally uppercase.
+PLACEHOLDER_RE='Scenario 1, Scenario 2|Detailed explanation of the pattern|\[TODO|Lorem ipsum|lorem ipsum|PLACEHOLDER-CONTENT'
+if grep -rnE "$PLACEHOLDER_RE" skills/*/references skills/*/assets 2>/dev/null; then
   fail "placeholder scaffolding found (see lines above) — reference/asset files must carry real content"
 else
   note "no placeholder scaffolding in references/assets"
