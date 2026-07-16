@@ -23,6 +23,14 @@
 #  10. Eval provenance: each live description still matches the one that was
 #      actually judged in the run its last_run records. A description edited
 #      after a passing run silently invalidates that run's result.
+#  11. Invocation parity: `disable-model-invocation: true` in SKILL.md
+#      frontmatter ⇔ an `agents/openai.yaml` with
+#      `allow_implicit_invocation: false` (the Codex-side mirror of the flag).
+#  12. SKILL.md body word ceiling (1500) — sprawl guard from the house style
+#      (skills/writing-kit-skills/SKILL.md).
+#  13. Canonical one-liners: where a SKILL.md covers a shared protocol
+#      (artifacts-root, graphify, sub-agent lanes, PROJECT-CODE, phase update),
+#      it must carry the house one-liner byte-exact, not a paraphrase.
 
 set -u
 
@@ -336,6 +344,56 @@ PYEOF
     note "every description matches the run its last_run records"
   fi
 fi
+
+echo "== 11. Invocation parity: frontmatter flag ⇔ agents/openai.yaml =="
+for dir in skills/*/; do
+  name="$(basename "$dir")"
+  fm="$(awk 'NR==1 && /^---$/{n=1; next} /^---$/{exit} n==1{print}' "${dir}SKILL.md" 2>/dev/null)"
+  has_flag=0
+  printf '%s\n' "$fm" | grep -q '^disable-model-invocation:[[:space:]]*true' && has_flag=1
+  if [[ "$has_flag" -eq 1 ]]; then
+    if [[ ! -f "${dir}agents/openai.yaml" ]]; then
+      fail "skills/$name sets disable-model-invocation but has no agents/openai.yaml mirror"
+    elif ! grep -q 'allow_implicit_invocation:[[:space:]]*false' "${dir}agents/openai.yaml"; then
+      fail "skills/$name/agents/openai.yaml does not set allow_implicit_invocation: false"
+    fi
+  else
+    [[ -f "${dir}agents/openai.yaml" ]] && fail "skills/$name has agents/openai.yaml but no disable-model-invocation flag — remove one or add the other"
+  fi
+done
+note "invocation parity checked"
+
+echo "== 12. SKILL.md body word ceiling =="
+CEILING=1500
+for f in skills/*/SKILL.md; do
+  words="$(awk 'NR==1&&/^---$/{f=1;next} f==1&&/^---$/{f=2;next} f==2&&NF{c+=NF} END{print c+0}' "$f")"
+  if (( words > CEILING )); then
+    fail "$f body is $words words (> $CEILING) — disclose to references/, don't sprawl (see skills/writing-kit-skills/SKILL.md)"
+  fi
+done
+note "all SKILL.md bodies <= $CEILING words"
+
+echo "== 13. Canonical one-liners byte-exact where used =="
+# marker<TAB>canonical line. If a SKILL.md contains the marker, it must carry
+# the full canonical line (source of truth: skills/writing-kit-skills/SKILL.md).
+CANON=$(cat <<'EOF'
+<artifacts-root>	Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`CONTEXT-MAP.md` at repo root), else the repo root.
+graphify-out/graph.json	If `graphify-out/graph.json` exists (project root, else workspace root), query it before raw search; older than ~7 days → suggest `graphify update .`; missing → skip graphify.
+lane count at dispatch	Sub-agents: local lanes only when the user allows them — never cloud agents; announce the lane count at dispatch and report each lane as it completes.
+never mix one project	Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
+Stage / Found / Next / Needs user	Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.
+EOF
+)
+for f in skills/*/SKILL.md; do
+  [[ "$f" == "skills/writing-kit-skills/SKILL.md" ]] && continue
+  while IFS=$'\t' read -r marker canon; do
+    [[ -z "$marker" ]] && continue
+    if grep -qF "$marker" "$f" && ! grep -qF "$canon" "$f"; then
+      fail "$f mentions '$marker' without the canonical one-liner — paste it byte-exact from skills/writing-kit-skills/SKILL.md"
+    fi
+  done <<< "$CANON"
+done
+note "canonical one-liners byte-exact where used"
 
 echo
 if [[ "$FAIL" -ne 0 ]]; then
