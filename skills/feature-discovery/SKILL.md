@@ -3,283 +3,96 @@ name: feature-discovery
 description: Use when the user asks to investigate, audit, trace, or explain how an existing feature, issue, module, workflow, API, config, or behavior works — or what uses a module, service, or symbol and why it exists — across one or more codebase projects, especially before planning, debugging, migration, refactor, or implementation. Porting or rebuilding a feature into another stack routes to /port-feature instead. Stays read-only and surfaces code-discovered domain terms that may be missing from or stale in CONTEXT.md so the user can approve follow-up context updates.
 ---
 
-# Feature Discovery
+# Feature discovery
 
-## Purpose
+Feature-discovery traces how an existing feature, module, or behavior works and reports it in chat, evidence-cited: another engineer comes away knowing what it is, how it works, where it is used, and what remains uncertain. Porting into another stack is `/port-feature`; a whole-repo "how does everything connect" question belongs to the graphify companion (when installed).
 
-Read-only discovery, reported in chat only. The bar: another engineer should
-come away knowing what the thing is, what it does, how it works, where it is
-used, what evidence supports that, and what remains uncertain.
+## Inputs
 
-**Not this skill.** This traces a bounded feature, module, or behavior. Porting
-one into another stack is `/port-feature`; a broad whole-repo architecture
-summary or graph-scale "how does everything connect" question is where the
-graphify companion (when installed) beats a discovery pass.
-
-Structured intake looks like:
-
-```markdown
-Projects Affected: [Project Code], [Project Code]
-
-What:
-[FEATURE / ISSUE / BEHAVIOR / MODULE / WORKFLOW]
-```
-
-Free-form intake is equally valid — infer the projects and topic from the
-request and ask only when the mapping is genuinely ambiguous.
+Intake may be structured — `Projects Affected:` plus a `What:` block — or free-form; infer the projects and topic; ask only when the mapping is genuinely ambiguous. Questions are for blocking clarifications only; user away → state the assumption and continue best-effort.
 
 ## Rules
 
-**Read-only, chat-only.**
-
-- Do not edit code, config, docs, native memory, ADRs, prompts, issues, or
-  generated artifacts while discovering. `CONTEXT.md` and artifact edits happen
-  only as the approved follow-up in workflow step 9.
-- Never create `docs/discovery/` files, and do not read legacy discovery files
-  unless the user names a specific one — they go stale; prefer current code,
-  ADRs, CONTEXT, issues, tests, and fresh search.
-- Do not run `git fetch`, `git pull`, installs, migrations, or destructive
-  commands.
-
-**Evidence.**
-
-- Code is the source of truth when evidence conflicts with prose docs, issues, or comments.
-- Check for a graphify knowledge base before broad searching:
-  `graphify-out/graph.json` at the project root, else at the workspace root
-  (the directory containing the `*.code-workspace` file). Found → scope the
-  trace with `graphify query` / `graphify path` / `graphify explain` before
-  broad `rg` sweeps, and verify graph answers against current code before
-  citing them. Missing in both places → skip graphify entirely; do not hunt
-  elsewhere or suggest installing it.
-- Treat the graph as stale when `graph.json` is older than ~7 days: still use
-  it for scoping, but flag the staleness in the report and recommend the user
-  run `graphify update .` — never run it yourself; discovery stays read-only.
-- Use `rg` first for text search; prefer CLI tools over MCP for codebase
-  evidence. Use `git`, `git grep`, `find`, `gh`, package metadata, local docs,
-  issues, and tests as needed.
-- Scan the codebase before git history. Use history only when code scanning
-  does not explain the topic, and review only the last 2 months — to explain
-  why or when behavior changed, not as primary truth.
-- If external dependency internals are critical and local evidence is
-  insufficient, optionally fetch targeted dependency source (e.g. `opensrc`,
-  when installed) and cite concrete files/functions. Keep fetch scope minimal.
-- Back every concrete claim with file paths, symbols, commands, tests, docs,
-  GitHub issues, or commits. Separate confirmed facts from inference. Do not
-  invent context or rationale.
-
-**Scope and steering.**
-
-- Keep discovery scope thin. If intake spans many workflows or projects, split
-  into slices and discover the first slice before expanding.
-- The human stays in charge. Discovery questions are for blocking
-  clarifications only, not open-ended interrogation. If the user is away,
-  state the assumption taken and continue best-effort.
-- Stop after presenting the report. Suggest the next skill; never invoke it or
-  start implementation without a fresh request.
-- Classify unresolved unknowns by fidelity: grillable (low fidelity) stays as
-  concise open decisions for `/feature-prompt` or `/grill-with-docs`;
-  ungrillable ("needs to feel/see it") routes to `/handoff` + `/prototype`
-  (when installed; otherwise state the uncertainty plainly for the user)
-  instead of speculative discovery.
-- Flag duplication risks explicitly: when similar behavior exists in multiple
-  paths, call out likely seam-reuse opportunities for the next planning step.
-- Treat `~120K` tokens as a context-budget caution point. If unresolved core
-  unknowns remain near it, stop and recommend a scope split or handoff.
-- Emit `Stage / Found / Next / Needs user` at phase transitions
-  (parsed → discovered → validated → report).
-
-**Sub-agents (when the runtime supports them and the user allows).**
-
-- Act as the orchestrator: dispatch read-only **Explorer** lanes for codebase
-  discovery and **Researcher** lanes for external docs or dependency source —
-  local subagents only, never cloud. Split lanes by project, module, or
-  evidence stream; push long scans to local background where supported.
-- Lanes return file paths, symbols, commands, and uncertainty — summaries, not
-  transcripts. The main session owns synthesis, evidence quality, uncertainty
-  calls, conflict resolution, and the final report.
-- Announce the lane count at dispatch and report each lane as it completes;
-  while lanes run, updates state how many are still running.
-
-**Candidate context terms.**
-
-- When exploration reveals domain terms, compare them with `CONTEXT.md` and
-  flag missing, stale, renamed, overloaded, or ambiguous ones. What qualifies,
-  how to present the list, the away-fallback, and how to apply approvals live
-  in [`references/context-terms.md`](references/context-terms.md) (shared with
-  `feature-prompt`).
-
-## Discovery Lens
-
-Use this lens to keep discovery grounded in existing system behavior:
-
-- **Behavior:** what currently exists and what users, systems, jobs, APIs, or operators experience.
-- **Boundary:** owning project, module, data path, entry points, exits, and explicit non-goals.
-- **Evidence:** strongest files, tests, configs, docs, issues, commands, and runtime paths.
-- **Risk:** impact labels grounded in the code — user-value regression, usability, feasibility (can we build on it), viability (cost/maintainability), data, security, or operational risk.
-- **Uncertainty:** confirmed facts, inference, open unknowns, stale context, and contradictions.
-- **Next action:** the smallest useful next skill, human decision, test, issue read, or implementation slice.
-
-## Common Discovery Mistakes
-
-Avoid these failure modes:
-
-- Reading stale discovery files before current code and tests.
-- Ignoring an existing graphify knowledge base before broad sweeps — or
-  hunting for one after both the project root and workspace root came up empty.
-- Treating comments or native memory as stronger than code.
-- Explaining implementation symbols without tracing user-facing behavior and usage sites.
-- Running broad GitHub issue scans when local context does not bound the search.
-- Dumping symbols instead of describing the behavior, boundary, evidence, risks, and unknowns.
-- Skipping alias searches, reverse lookups, contradiction checks, or dead-code checks.
-- Turning codebase discovery into product discovery, interview planning, opportunity solution trees, or experiment design unless the user explicitly pivots to another skill.
+- **Read-only, chat-only.** Do not edit code, config, docs, native memory, ADRs, prompts, issues, or generated artifacts while discovering — `CONTEXT.md` and artifact edits wait for step 6 approval. Never create `docs/discovery/` files, and do not read legacy discovery files unless the user names a specific one — they go stale; prefer current code, ADRs, CONTEXT, issues, tests, and fresh search. No `git fetch`, `git pull`, installs, migrations, or destructive commands.
+- **Code is the source of truth when evidence conflicts with prose docs, issues, or comments.** Back every claim with file paths, symbols, commands, tests, docs, GitHub issues, or commits; separate confirmed facts from inference; never invent rationale. The tell: a comment, issue, or native memory outranking the code it describes.
+- If `graphify-out/graph.json` exists (project root, else workspace root), query it before raw search; older than ~7 days → suggest `graphify update .`; missing → skip graphify. Scope with `graphify query`/`path`/`explain` before broad `rg` sweeps. Verify graph answers against current code and flag staleness — never run `graphify update .` yourself; discovery stays read-only. Do not hunt for a graph elsewhere or suggest installing it.
+- **Trace behavior, not just symbols.** Follow definitions to callers and user-facing flows from entry points down; flag seam-reuse when similar behavior exists in multiple paths. The tell: a symbol dump with no usage site or user-visible effect.
+- **Keep scope thin.** Broad intake gets split; discover the first slice before expanding. Near `~120K` tokens with core unknowns unresolved, stop and recommend a scope split or handoff. The tell: drifting into product discovery, interview planning, opportunity trees, or experiment design without an explicit pivot.
+- **Stop after presenting the report.** Suggest the next skill; never invoke it or start implementation without a fresh request. Grillable unknowns stay as open decisions for `/feature-prompt` or `/grill-with-docs`; ungrillable ones ("needs to feel/see it") route to `/handoff` + `/prototype` (when installed; else state the uncertainty plainly). Scope-gating decisions still foggy — destination or open questions not yet sharp — suggest `/wayfinder`, not `/feature-prompt`; a PR-sized prompt cannot be written through fog.
+- Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field. Phases: parsed, discovered, validated, report.
+- Sub-agents: local lanes only when the user allows them — never cloud agents; announce the lane count at dispatch and report each lane as it completes. Never cloud; summaries back, not transcripts; synthesis stays in the main session.
 
 ## Workflow
 
-1. Parse the request:
-   - Identify project codes and the topic — from the `Projects Affected` /
-     `What` fields when present, otherwise inferred from free-form intake.
-   - Note explicit constraints, dates, branches, modules, or terms.
+### 1. Parse and locate
 
-2. Locate project roots:
-   - Find relevant git roots and package/app boundaries.
-   - Map project codes to folders by repo names, package metadata, READMEs, config, or naming conventions.
-   - If a project code cannot be mapped, state that early and continue best-effort.
+Identify project codes and topic from intake or inference. Map codes to git roots and package boundaries via repo names, package metadata, or READMEs; unmappable → say so early, continue best-effort.
 
-3. Discover the topic:
-   - Search exact terms from `What`, then likely aliases, route names, component names, API paths, config keys, env vars, table names, filenames, and test names.
-   - Trace definitions to callers, and user-facing flows from entry points to lower-level services.
-   - Include tests, docs, configs, migrations, routes, background jobs, and feature flags when relevant.
-   - Keep notes under the Discovery Lens.
+### 2. Discover the topic
 
-4. Discover related context and GitHub issues (bounded, or not at all):
-   - First inspect available context for issue references or topic clues: the conversation, `AGENTS.md`, `<artifacts-root>/CONTEXT.md`, ADRs under `<artifacts-root>/specs/adr/`, local docs, local issue caches, and prior prompt context.
-   - If context gives a bounded issue set, read every issue in it (`gh issue view`). If it gives reliable labels, milestones, titles, or exact search terms, run a bounded search and read every plausibly related match.
-   - If context cannot bound the search, pause and ask the user to approve a broad GitHub issue scan first — explain that it can take a long time. Not granted (or the user is away) → continue with code, docs, tests, local context, and history, and state that broad scanning was skipped.
-   - Summarize which issues were read, which were excluded as unrelated, and whether broad scanning was skipped.
+Search exact terms from `What`, then likely aliases, routes, components, API paths, config keys, env vars, tables, filenames, and test names — `rg` first; prefer CLI over MCP for codebase evidence. Include tests, docs, configs, migrations, background jobs, and feature flags when relevant. Critical dependency internals with thin local evidence → optionally fetch targeted dependency source (`opensrc`, when installed), minimal scope, cited concretely. Git history only when code scanning does not explain the topic, and only the last 2 months — why or when behavior changed, never primary truth.
 
-5. Track candidate `CONTEXT.md` terms per `references/context-terms.md`:
-   - Locate the relevant `CONTEXT.md` via the kit's artifacts-root order — (1) the directory containing a `*.code-workspace` file, (2) the per-context root in a multi-context repo (`CONTEXT-MAP.md` at root), (3) the single repo root — then nearby project docs when none exists there.
-   - Capture each candidate in the shared format from `references/context-terms.md`.
+### 3. Read issues bounded, or not at all
 
-6. Use git history only if needed, per the Evidence rules.
+First mine context for issue references: the conversation, `AGENTS.md`, `<artifacts-root>/CONTEXT.md`, ADRs under `<artifacts-root>/specs/adr/`, local docs, and issue caches. A bounded issue set → read every issue with comments (`gh issue view <n> --comments`); reliable labels or exact terms → bounded search, reading every plausible match. If context cannot bound the search, pause and ask the user to approve a broad GitHub issue scan first — explain that it can take a long time. Not granted, or user away → continue with code, docs, tests, and history, stating that broad scanning was skipped.
 
-7. Validate findings twice:
-   - Pass 1: cross-check the main explanation against code, tests, docs, configs, usage sites, available context, related issues, and any history used.
-   - Pass 2: repeat with aliases and reverse lookups, re-open the strongest evidence, hunt contradictory code paths, issue comments, docs, commits, and stale assumptions — then tighten or downgrade claims.
-   - Validate candidate terms against `CONTEXT.md` and the strongest code evidence.
-   - Check the Common Discovery Mistakes list and correct the report before presenting.
-   - Mark dead code, unclear ownership, missing tests, contradictions, skipped issue scans, stale context terms, and unverified assumptions. Avoid broad claims on partial evidence.
-   - Keep a short validation note stating what each pass checked.
+Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`CONTEXT-MAP.md` at repo root), else the repo root.
 
-8. Present the discovery report in chat, using the Output Format below.
+### 4. Track candidate context terms
 
-9. Update `CONTEXT.md` or other artifacts only after approval:
-   - Show the exact target path(s), proposed text/section changes, and the reason for each. Wait for explicit approval, then follow **Applying approved updates** in `references/context-terms.md` (including its away-fallback: no reply → no edits, keep the candidates in the report).
+Compare discovered domain terms with `CONTEXT.md` — at `<artifacts-root>`, else nearby project docs — and flag missing, stale, renamed, overloaded, or ambiguous ones. What qualifies, presentation, the away-fallback, and applying approvals live in [`references/context-terms.md`](references/context-terms.md) (shared with `feature-prompt`).
 
-## Search Defaults
+### 5. Validate twice
 
-Adapt commands to the repo. Keep command output summarized in the final report.
+Pass 1: cross-check the explanation against code, tests, docs, configs, context, related issues, and any history used. Pass 2: repeat with aliases and reverse lookups, hunting contradictory code paths and stale assumptions; tighten or downgrade claims. Validate candidate terms against the strongest code evidence, sweep the tells in Rules, and mark dead code, unclear ownership, missing tests, contradictions, and skipped scans; note what each pass checked.
 
-```bash
-graphify query "exact topic"   # only when graphify-out/graph.json exists — project root, else workspace root
-find graphify-out/graph.json -mtime +7   # output means the graph is >7 days old — recommend `graphify update .`
-rg -n "exact topic|likely alias|route|config_key" .
-find . -maxdepth 4 \( -name package.json -o -name README.md -o -name .git \)
-git grep -n "term"
-gh issue view <issue-number> --comments
-gh issue list --state all --search "exact topic OR likely alias"
-git log --since="2 months ago" --oneline --all -- <relevant-path>
-```
+### 6. Present the report and stop
 
-## Output Format
+For `CONTEXT.md` or other artifact updates after the report: show each target path, proposed text, and reason; wait for explicit approval, then follow **Applying approved updates** in `references/context-terms.md` (away-fallback: no reply → no edits; candidates stay in the report).
 
-Use this structure exactly for the chat report. State if any validation or issue scan was skipped.
+## Output
 
-For a trivially small in-scope question (one symbol, one config key, one route), say `Quick trace` up front and emit only sections 1–3 and 8, marking the rest N/A. Anything larger uses the full structure — do not shrink a genuine multi-project discovery.
+Use this structure exactly: ≤3 bullets per section; keep the whole report under ~500 words unless the trace spans multiple projects. For a trivially small question (one symbol, config key, or route), say `Quick trace` up front and emit only sections 1–3 and 8, marking the rest N/A — never shrink a genuine multi-project discovery this way.
 
 ```markdown
-# Feature Discovery: [Topic]
+# Feature discovery: [Topic]
 
 ## 1. Summary
+- [What this is, where it lives, main finding, key caveat.]
 
-- [Short answer: what this is and where it lives.]
-- [Main finding or current behavior.]
-- [Important caveat, if any.]
+## 2. What it does
+- [Behavior in product/domain terms: inputs, outputs, side effects, project(s).]
 
-## 2. What It Does
+## 3. How it works
+- [Flow; key files, functions, routes, configs, jobs; conditions, flags, error paths.]
 
-- [Describe the behavior in product/domain terms.]
-- [Mention inputs, outputs, side effects, or user-visible result.]
-- [Mention relevant project(s).]
+## 4. Where it is used
+- [Usage sites with file references; tests/docs/configs confirming usage.]
 
-## 3. How It Works
+## 5. Why it was needed / context
+- [From conversation, docs, comments, issues, or recent commits — or: "No reliable rationale found in context, docs, comments, or recent history."]
 
-- [Step-by-step flow.]
-- [Key files, functions, classes, routes, configs, jobs, services, or data models.]
-- [Important conditions, flags, dependencies, or error paths.]
+## 6. Candidate CONTEXT.md terms
+- [`Term` — suggested action; short description; evidence; why it matters. Stale context → quote current wording beside the contradicting code.]
+- [End with: "Reply with the term names to approve, wording changes, `approve all`, or `skip context updates`." If none: "No candidate CONTEXT.md term updates found."]
 
-## 4. Where It Is Used
+## 7. Risks, gaps, and recommended next checks
+- [Risk (user-value, usability, feasibility, viability, data, security, operational), dead code, missing test, or unclear owner; next check; what could not be verified.]
 
-- [Usage site 1 with file reference.]
-- [Usage site 2 with file reference.]
-- [Tests/docs/configs that confirm usage.]
+## 8. Validation performed
+- [Checks run in each pass, commands named; anything skipped stated, including whether broad issue scanning was approved, bounded, skipped, or unavailable; which issues were read and which excluded as unrelated.]
 
-## 5. Why It Was Needed / Context
-
-- [Use the conversation, local docs, comments, issues, or recent commits if available.]
-- [If not found: "No reliable rationale found in available context, docs, comments, or recent git history."]
-
-## 6. Candidate CONTEXT.md Terms
-
-- [If candidates exist, list each as: `Term` — suggested action; short description; evidence; why it matters.]
-- [If existing context may be stale, state the current context wording and the code evidence that may contradict it.]
-- [End with: "Reply with the term names to approve, wording changes, `approve all`, or `skip context updates`."]
-- [If no candidates: "No candidate CONTEXT.md term updates found."]
-
-## 7. Risks, Gaps, And Recommended Next Checks
-
-- [Risk, ambiguity, dead code, missing test, or unclear owner.]
-- [Recommended next check.]
-- [State what could not be verified.]
-
-## 8. Validation Performed
-
-- [Pass 1: code/tests/docs/configs/context/issues/history checked.]
-- [Pass 2: aliases/reverse lookups/contradictions/stale assumptions checked.]
-- [Common mistake check: stale discovery files, docs-over-code, unbounded issue scans, symbol dumps, product-discovery drift.]
-- [State whether broad GitHub issue scanning was approved, bounded by context, skipped, or unavailable.]
-
-## 9. Suggested Next Skills (Optional)
-
-- [/skill-name: reason tied to this report.]
-- [Prefer adjacent workflow steps; include only 1-6.]
-- [Examples: `/feature-prompt` to frame a change request, `/diagnosing-bugs` when a reproducible bug is identified.]
+## 9. Suggested next skills (optional)
+- [/skill-name: reason tied to this report. 1–3 items, adjacent workflow steps.]
 ```
 
-When the trace leaves decisions unresolved that gate the scope — you cannot yet
-state the destination and every open question sharply — suggest `/wayfinder`
-instead of `/feature-prompt`. That is fog, and a PR-sized prompt cannot be
-written through it.
+**Evidence style.** Cite `file:line` (or file plus symbol) with its role; issues as `#123`, commits as short hash plus date. For quoted command output, quote the shortest decisive tail — the pass/fail line and counts — and name the rest.
 
-## Evidence Style
+## Completion criteria
 
-Prefer concise evidence bullets:
-
-```markdown
-- `apps/admin/src/routes/users.ts`: defines the route.
-- `packages/auth/src/session.ts`: validates the session before the route runs.
-- `apps/admin/src/routes/users.test.ts`: covers the disabled-user case.
-- GitHub issue `#123`: records the requested behavior and acceptance criteria.
-- Commit `abc1234` from 2026-04-12: introduced the feature flag.
-```
-
-## Checklist
-
-Before delivering the report:
-
-- [ ] Read-only held — `git status` shows no files created or modified by this discovery
 - [ ] Every factual claim in sections 1–8 carries a citation (file:line/symbol, route, command output, issue, or commit)
-- [ ] All nine sections present in order — or Quick trace declared, with sections 1–3 and 8 emitted and the rest marked N/A
-- [ ] Section 6 ends with the four-option approval ask as templated in the Output Format, or the no-candidates line
-- [ ] Section 8 lists only checks actually run, with the commands named; anything skipped is stated
-- [ ] Report delivered in chat; no discovery file written
+
+- [ ] `git status` shows no files created or modified by this discovery
+- [ ] All nine sections in order — or `Quick trace` declared, with sections 1–3 and 8 and the rest N/A
+- [ ] Section 6 ends with the four-option approval ask, or the no-candidates line
+- [ ] Session stopped after the report — no skill invoked, no implementation started
