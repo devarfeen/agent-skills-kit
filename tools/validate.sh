@@ -31,6 +31,8 @@
 #  13. Canonical one-liners: where a SKILL.md covers a shared protocol
 #      (artifacts-root, graphify, sub-agent lanes, PROJECT-CODE, phase update),
 #      it must carry the house one-liner byte-exact, not a paraphrase.
+#  14. No placeholder scaffolding in references/ or assets/ — a stub file a
+#      SKILL.md cites as real content is worse than a dead link.
 
 set -u
 
@@ -394,6 +396,14 @@ for f in skills/*/SKILL.md; do
   done <<< "$CANON"
 done
 note "canonical one-liners byte-exact where used"
+
+echo "== 14. No placeholder scaffolding in references/assets =="
+PLACEHOLDER_RE='Scenario 1, Scenario 2|Detailed explanation of the pattern|\[TODO|Lorem ipsum|PLACEHOLDER-CONTENT'
+if grep -rniE "$PLACEHOLDER_RE" skills/*/references skills/*/assets 2>/dev/null; then
+  fail "placeholder scaffolding found (see lines above) — reference/asset files must carry real content"
+else
+  note "no placeholder scaffolding in references/assets"
+fi
 
 echo
 if [[ "$FAIL" -ne 0 ]]; then
