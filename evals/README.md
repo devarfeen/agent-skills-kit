@@ -8,7 +8,7 @@ How this kit judges its own skills. Three layers, three different questions.
 | **Quality rubric** | Is the skill worth loading once triggered? | [`skill-quality-rubric.md`](skill-quality-rubric.md) → scored into `skills/<name>/evals/final.md` | Any reviewer or agent |
 | **Repo eval** | Do the kit-wide invariants still hold? | [`repo-eval-template.md`](repo-eval-template.md) | `bash tools/validate.sh`, then by hand |
 
-The two are independent on purpose. A skill can route perfectly and still waste
+Trigger and quality are independent on purpose. A skill can route perfectly and still waste
 the context it earns; a superb body is dead weight if nothing loads it.
 
 ## Scope boundary

@@ -59,7 +59,7 @@ Without `/implement`, drive `/tdd-loop` directly per ticket — same outcome, on
 
 Not every skill lives on the discover→ship line:
 
-- **Project start-off:** `/design-system` runs once per project (see Workflow A) to turn a design system into a real UI library + a preview you verify + a binding `AGENTS.md` rule, and seeds a project-local `<project>-ui-coding` skill. Re-run it to extend the library or, after a page ships, to fold its emergent UI back in.
+- **Project start-off:** `/design-system` runs once per project (see Workflow A) to turn a design system into a real UI library + a preview you verify + a binding `AGENTS.md` rule, and seeds a project-local `<project-slug>-ui-coding` skill. Re-run it to extend the library or, after a page ships, to fold its emergent UI back in.
 - **Porting:** `/port-feature` is a discover→plan variant for bringing a feature that already exists in a reference implementation into a target stack (see Workflow D). It writes a gap map and hands off to `/grill-with-docs`.
 
 **UI work has its own discipline.** Once a project has a design system, every UI change consumes its library — never inline markup the library covers. A missing component gets added via `/design-system` (extend) from the reference, or you ask for one. Per-page pixel conformance during feature work is `/pixel-audit`; the cosmetic tail during QA is `/polish-batch`.
@@ -158,7 +158,7 @@ Workspace-root level. Each step produces an artifact the next step consumes.
    - **Manual QA + `/polish-batch`** — verify against the QA doc; capture the cosmetic tail (copy/spacing/alignment/wrong-string nits) without fixing them, then dispatch per PROJECT-CODE in one pass. Anything touching behaviour, data, or an interface is not a nit — route it back to `/to-tickets`.
    - **`/integration-contract`** — when the spec touches more than one PROJECT-CODE, build the cross-repo seam contract and run its smoke gate before shipping. Single-project specs skip it automatically.
 8. **Ship** — at the end of a slice, a single issue, or the whole spec, run `/commit-push-close` or `/commit-push-pr`.
-9. **Feed UI back** *(if the slice grew the design system)* — run `/design-system` (extend) to promote new reusable UI into the library, preview, `specs/design-system/`, the `AGENTS.md` reference, and the `<project>-ui-coding` skill, so the next feature inherits it. This updates the design system only; it does not commit or write ADRs.
+9. **Feed UI back** *(if the slice grew the design system)* — run `/design-system` (extend) to promote new reusable UI into the library, preview, `specs/design-system/`, the `AGENTS.md` reference, and the `<project-slug>-ui-coding` skill, so the next feature inherits it. This updates the design system only; it does not commit or write ADRs.
 
 > **The thread to notice:** prompt file → ADR → spec issue → ticket issues → tested code → QA doc. Each link is grabbable on its own, and the whole chain is auditable.
 
@@ -232,7 +232,7 @@ What separates intentional use from vibe coding:
 - **Using `/tdd` as a loop.** Since upstream v1.1.0 it is a reference document — what a good test is, where seams go. Invoking it alone gets you no witnessed red. The procedure is `/tdd-loop`.
 - **Treating native memory as authority.** Native memory is user-local recall. `CONTEXT.md` and ADRs bind.
 - **Recreating secondary recall systems.** Do not create repo `MEMORY.md`, wiki, discovery, or default knowledge-graph memory. Use native CLI memory only. Use optional graph/index companions only when task-fit.
-- **Inlining UI the library already covers.** Once a project has a design system, hand-rolling markup in a page instead of consuming its `<project>-ui-coding` library. A missing component goes through `/design-system` (extend), not a one-off.
+- **Inlining UI the library already covers.** Once a project has a design system, hand-rolling markup in a page instead of consuming its `<project-slug>-ui-coding` library. A missing component goes through `/design-system` (extend), not a one-off.
 - **Claiming a UI fix "verified" by eye.** Per-page conformance needs `/pixel-audit`'s element-level gate — served assets, `getBoundingClientRect()`, computed styles — not a glance at a full-page screenshot.
 - **Fixing nits live during QA.** Steering the agent nit-by-nit fractures the QA pass. Capture with `/polish-batch`, then dispatch in one bounded pass per PROJECT-CODE.
 - **Shipping a multi-project spec on faith.** A producer surface change with no traced consumer is a risk — `/integration-contract` finds it before it breaks in another repo.

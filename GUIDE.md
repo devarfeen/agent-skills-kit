@@ -89,7 +89,8 @@ keep it honest. The full mental model lives in
 [BEST-PRACTICES.md](BEST-PRACTICES.md); the chat-visible behaviors —
 PROJECT-CODEs in chat, `Stage / Found / Next / Needs user` phase updates,
 understanding checks that wait for approval — are bound by the generated
-`AGENTS.md` rules, not restated here.
+`AGENTS.md` rules (phase updates also by each skill's own canonical line, so
+they hold in standalone installs too), not restated here.
 
 Two habits worth restating because nothing else enforces them:
 
@@ -103,7 +104,7 @@ Two habits worth restating because nothing else enforces them:
 1. **`/agents-md`**: Creates the workspace-root `AGENTS.md` (source of truth) and the `CLAUDE.md` redirect shim — the Project Matrix (each project keyed by its **PROJECT-CODE**: uppercase, hyphenated, emoji-stripped, e.g. `Payments API` → `PAYMENTS-API`), the Non-Negotiable Rules, Working With Skills, and a Context & Native Memory section with fill-after-setup placeholders. Generates no per-repo files.
 2. **`/setup-matt-pocock-skills`**: Configures the issue tracker, labels, and where `CONTEXT.md` and the artifacts tree live. Point the docs location at `specs/` — the kit's convention (kept off `docs/` so GitHub Pages' `/docs` publishing mode never collides with it).
 3. **Fill the placeholders**: replace the `AGENTS.md` Context & Native Memory placeholders with the real `CONTEXT.md` and `specs/adr/` paths from setup. Mechanical fill, not a rewrite.
-4. **`/design-system`** *(per project that has UI)*: turn that project's design system (a Figma file, a written spec, reference screens, or a guided-definition session) into named tokens + a UI library + a preview you eyeball to verify. It documents the system under `specs/design-system/`, adds a short binding reference to `AGENTS.md`, and seeds a project-local `<project>-ui-coding` skill so every later UI change consumes the library instead of inlining markup. Re-run `extend` as the design grows or to fold a shipped page's UI back in. Stack-adaptive; never auto-chains. Steps 1–3 are once per workspace; this is once per UI project.
+4. **`/design-system`** *(per project that has UI)*: turn that project's design system (a Figma file, a written spec, reference screens, or a guided-definition session) into named tokens + a UI library + a preview you eyeball to verify. It documents the system under `specs/design-system/`, adds a short binding reference to `AGENTS.md`, and adopts and extends an existing project UI skill — or seeds a project-local `<project-slug>-ui-coding` when none exists — so every later UI change consumes the library instead of inlining markup. Re-run `extend` as the design grows or to fold a shipped page's UI back in. Stack-adaptive; never auto-chains. Steps 1–3 are once per workspace; this is once per UI project.
 
 > **Older workspaces:** re-running `/agents-md` on a workspace whose artifacts still live under `docs/` offers a one-time, ask-first `docs/` → `specs/` migration — it renames the tree and updates the `AGENTS.md` paths, moving only the artifacts subfolders.
 
@@ -164,7 +165,7 @@ These are optional separate installs. Use them beside this kit when installed an
 | Page Must Match Design | `/pixel-audit` | Strict per-page visual conformance with an element-level gate. |
 | Cosmetic QA Tail | `/polish-batch` | Batch small copy/spacing/alignment nits, then fix in one pass. |
 | PR Review Comments | `/pr-feedback` | Classify reviewer threads, fix what you accept, reply with the fixing SHAs. |
-| Staging Broken | `/staging-fix` | Fix locally with a test; ship an auto-merge PR to `staging` — never touch the server. |
+| Staging Broken | `/staging-fix` | Fix locally with a test; ship an auto-merge PR to the confirmed staging branch (default `staging`) — never touch the server. |
 | Multi-Project Spec | `/integration-contract` | Map the cross-repo seam and smoke-test it before shipping. |
 | Greenfield Build | `/wayfinder` | No code to discover; chart the destination and its decisions first. |
 | Delegable Reading Legwork | `/research` | Background agent reads primary sources into a cited Markdown doc. |
@@ -226,7 +227,7 @@ Guidelines:
 - Keep it recommendation-only. Do not enforce a gate or auto-chain.
 - Apply this footer after any substantial step, including local and third-party skills.
 - Include companion skills or MCPs when they are the best next helper for the current step.
-- Keep it short: 1-6 suggestions maximum.
+- Keep it short: 1-3 suggestions maximum.
 - Use workflow adjacency first (current step -> likely next step).
 - Lead with evidence-raising suggestions before risky edits:
   - after discovery of unclear behavior: `/feature-prompt`, `/wayfinder` (if decisions gate the scope), or `/diagnosing-bugs`
@@ -264,7 +265,7 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 | Gate | Skill | Continue When |
 | :--- | :--- | :--- |
 | Workspace | `/agents-md` | The PROJECT-CODE matrix and Non-Negotiable Rules are active. |
-| Design system | `/design-system` | Tokens + library built; preview renders and the user has eyeballed it; `AGENTS.md` reference + `<project>-ui-coding` seeded. |
+| Design system | `/design-system` | Tokens + library built; preview renders and the user has eyeballed it; `AGENTS.md` reference + `<project-slug>-ui-coding` seeded or extended. |
 | Issue preflight | `Issue-writing skills` | Title pattern and both required labels are validated from local workspace instructions. |
 | Discovery | `/feature-discovery` | Evidence-backed report is returned in chat; discovery files are never written. |
 | Port | `/port-feature` | Gap map written to `specs/port/`; reference behaviour vs target state mapped; a thin first slice named. |
@@ -278,7 +279,7 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 | Pixel conformance | `/pixel-audit` | Defect list cleared; every fix passes the element-level gate on served assets. |
 | QA polish | `/polish-batch` | Cosmetic nits captured, dispatched per PROJECT-CODE, and verified. |
 | PR feedback worked | `/pr-feedback` | Reviewer threads classified, accepted fixes shipped, replies cite SHAs. |
-| Staging fixed via CI | `/staging-fix` | Local fix with test; PR to `staging` auto-merged; no server touched. |
+| Staging fixed via CI | `/staging-fix` | Local fix with test; PR to the confirmed staging branch auto-merged; no server touched. |
 | Cross-repo seam | `/integration-contract` | Multi-project spec's producer/consumer contract built and smoke gate green (single-project auto-skips). |
 | Ship | `/commit-push-*` | Branch pushed and issue/PR linked with test proof. |
 | Release | `/release-notes` | PM-friendly summary saved to `specs/release-notes/`. |

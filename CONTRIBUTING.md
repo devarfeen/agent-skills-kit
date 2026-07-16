@@ -197,7 +197,7 @@ When the two disagree, this file wins — it is what CI enforces.
 7. **One strong example** — at least one concrete worked example or template of
    good output.
 8. **Failure modes named** — the mistakes the skill is designed to prevent are
-   written down (see "Common Discovery Mistakes" in `feature-discovery`).
+   written down (see the "The tell:" lines in `feature-discovery`'s Rules).
 9. **Trigger near-misses considered** — for a new skill, write down 3 requests
    that *should* trigger it and 3 adjacent requests that should trigger a
    sibling skill instead (e.g. cosmetic nit → `/polish-batch`, pixel mismatch →
@@ -206,8 +206,8 @@ When the two disagree, this file wins — it is what CI enforces.
 ## Trigger evals
 
 A skill's description is its router, so test it like one. **Every kit skill**
-carries an eval set at `skills/<name>/evals/evals.json`: ~9 should-trigger
-queries (varied phrasings, several that never name the skill) and ~9 near-miss
+carries an eval set at `skills/<name>/evals/evals.json`: ~10 should-trigger
+queries (varied phrasings, several that never name the skill) and ~10 near-miss
 negatives (requests that should route to a named sibling —
 obviously-irrelevant negatives prove nothing). A new skill ships with its eval
 set in the same PR.

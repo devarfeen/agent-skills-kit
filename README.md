@@ -7,8 +7,8 @@ GitHub Copilot CLI. No other agent runtime is supported by this kit.
 A *skill* is a small, self-contained bundle of instructions, examples, and
 templates that teaches an agent how to do one specific job well — for example,
 "write PM-friendly release notes from git history". Install a skill into your
-agent's workflow and the agent picks it up automatically when a matching
-request comes in.
+agent's workflow and the agent picks it up — automatically or via
+`/skill-name` — when a matching request comes in.
 
 Each folder under `skills/` follows the
 [Agent Skills spec](https://agentskills.io/specification): a `SKILL.md` with
@@ -30,7 +30,9 @@ agent-skills-kit/
 └── skills/<name>/       # One folder per skill
     ├── SKILL.md         # Required: frontmatter + instructions
     ├── references/      # Optional: on-demand docs
-    └── assets/          # Optional: output templates
+    ├── assets/          # Optional: output templates
+    ├── agents/          # Optional: per-runtime invocation policy (openai.yaml)
+    └── evals/           # Trigger-eval set + rubric scorecards (never loaded into context)
 ```
 
 ## Installing a Skill
@@ -46,9 +48,11 @@ npx skills update https://github.com/devarfeen/agent-skills-kit --skill <skill-n
 ```
 
 The `skills` CLI fetches the named subfolder from this repo and installs it
-into your agent's local skills directory. After install, just talk to your
-agent normally — it invokes the skill when your request matches its
-description.
+into your agent's local skills directory. After install, invoke a skill with
+`/skill-name` — most kit skills mark themselves for explicit invocation
+(`disable-model-invocation: true`), so the slash command is the reliable path;
+only `feature-discovery` and `tdd-loop` also trigger automatically when a
+request matches their description.
 
 Skills avoid changing your git state unless their own instructions say
 otherwise; skills that inspect history only read commits already available on
@@ -68,7 +72,7 @@ workspace/project. Full behavior, modes, and rules live in each skill's
 
 | Skill | Phase | What it does | Example prompt |
 | :--- | :--- | :--- | :--- |
-| [`agents-md`](skills/agents-md/SKILL.md) | startup | Generates the workspace-root `AGENTS.md` (Project Matrix, 13 non-negotiable rules, skills gradient, context policy) plus a `CLAUDE.md` redirect shim, from a `.code-workspace` file | `Generate AGENTS.md for this workspace` |
+| [`agents-md`](skills/agents-md/SKILL.md) | startup | Generates the workspace-root `AGENTS.md` (Project Matrix, 14 non-negotiable rules, skills gradient, context policy) plus a `CLAUDE.md` redirect shim, from a `.code-workspace` file | `Generate AGENTS.md for this workspace` |
 | [`design-system`](skills/design-system/SKILL.md) | startup | Turns a provided design system (Figma, spec, reference screens, or guided session) into tokens + a UI library + a verifiable preview + a binding AGENTS.md rule; re-run `extend` as the design grows | `Set up the design system for ADMIN-WEB from this Figma file` |
 | [`feature-discovery`](skills/feature-discovery/SKILL.md) | discover | Read-only, evidence-backed trace of how a feature, module, or behavior works; report returned in chat | `Trace the invite-user workflow across ADMIN-WEB and API-SERVICE` |
 | [`port-feature`](skills/port-feature/SKILL.md) | discover | Maps a feature from a REFERENCE implementation into a TARGET stack as one gap map, then hands to planning | `Port stock-transfer approvals from LEGACY-PORTAL to ADMIN-WEB` |
@@ -151,7 +155,7 @@ skills from the wider agent-skills ecosystem.
   guide.
 - The non-negotiable discipline in `agents-md` was originally seeded by
   Forrest Chang's Karpathy-inspired `CLAUDE.md` guidelines and later expanded
-  in this repo into a 13-rule core:
+  in this repo into a 14-rule core:
   https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md
   The upstream repository is MIT licensed. This repo records credit here rather
   than emitting source notes into generated `AGENTS.md` files.
