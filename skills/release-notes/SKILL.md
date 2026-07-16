@@ -4,21 +4,15 @@ disable-model-invocation: true
 description: Generate clear, PM-friendly release notes, changelogs, and session summaries from git commits, feature work, or the current development session. Use when the user asks for release notes (for a date, date range, project, or feature), a changelog, a PM/stakeholder update, or to summarize what changed in plain language for non-technical readers.
 ---
 
-# Release Notes
+# release-notes
 
-## Purpose
+Turn development activity into release notes a Project Manager can scan in 30
+seconds: every entry tells PMs, QA, and operations — not engineers — what
+changed, why, and what is better now. It only summarizes work that already
+happened — it never plans, files issues, or reviews code (those are
+`/feature-prompt`, `/qa`, and `/code-review`).
 
-Turn development activity — git commits, the current session, or a completed
-feature — into release notes a Project Manager can scan in 30 seconds. The
-audience is PMs, QA, and operations stakeholders, not engineers: every entry
-explains what changed, why, and what is better now, in plain language.
-
-**Not this skill.** Turning a rough idea into a prompt for planning is
-`/feature-prompt`; filing bugs conversationally is `/qa`; reviewing a diff is
-`/code-review`. This skill only summarizes work that already happened — it
-never plans, files issues, or reviews code.
-
-## Writing Rules
+## Writing rules
 
 The #1 priority is **clarity for non-technical readers**. Every sentence must
 pass: "Would a PM or QA person understand this without asking a developer?"
@@ -60,96 +54,82 @@ pass: "Would a PM or QA person understand this without asking a developer?"
 
 Avoid vague verbs ("enhanced", "optimized", "improved") without saying what
 changed in behavior. If exact metrics are unavailable, use directional impact
-grounded in observed behavior.
+grounded in observed behavior. Never state anything not supported by the
+workspace, git history, or context the user provided.
 
-## Generation Modes
+## Generation modes
 
-| Mode | Example prompt | Behavior |
-| :--- | :--- | :--- |
-| Date-based (single date or range) | `Generate release notes for 11 March 2026` | Read local git history, filter by date, group by project, cluster related commits |
-| Session summary | `Summarize what we changed this session` | Review session-modified files, notes, and diffs; combine into logical improvements |
-| Feature summary | `Write release notes for the RFID scanning improvements` | Find the feature's commits and explain them as one Problem → Change → Impact story |
+- **Date-based** (date or range; `Generate release notes for 11 March 2026`) — filter local git history by date, group by project, cluster commits.
+- **Session summary** (`Summarize what we changed this session`) — combine session-modified files, notes, and diffs into logical improvements.
+- **Feature summary** (`Write release notes for the RFID scanning improvements`) — the feature's commits explained as one Problem → Change → Impact story.
 
-## Git Data Collection
+## Git data collection
 
 Never run `git fetch`, `git pull`, or anything that modifies local git state.
 Read only what is already available locally.
 
 ### Multi-repo workspaces
 
-Missing a repo means silently missing a whole project's notes, so:
-
 1. Find every git root in the workspace:
    ```bash
    find <workspace-root> -maxdepth 3 -name ".git" | sed 's/\/.git$//'
    ```
-   No `-type d` — in worktrees and submodules `.git` is a file, and filtering
-   to directories silently drops those whole projects from the notes.
-2. Run `git log` in **each** repo — never assume the workspace root is the only
-   repo:
+   No `-type d` — in worktrees and submodules `.git` is a file; filtering to
+   directories silently drops those projects.
+2. Run the log in **each** repo, never only the workspace root:
    ```bash
    git log --all --after="YYYY-MM-DDT00:00:00" --before="YYYY-MM-DDT23:59:59" --oneline --no-merges
    ```
-   `--all` catches work merged into any local branch; `--no-merges` skips merge
-   noise. Use `--format="%H %s"` for richer detail. `--all` also sweeps
-   unmerged and abandoned branches, so before presenting a cluster check it
-   reached the default branch (`git branch --contains <hash>`); work that
-   hasn't gets labeled "in progress on `<branch>`" in its Summary, never mixed
-   silently into shipped notes.
+   Before presenting a cluster, verify it reached the default branch
+   (`git branch --contains <hash>`); work that hasn't is labeled
+   "in progress on `<branch>`" in its Summary, never mixed silently into
+   shipped notes.
 3. If the user names a project and no commits are found, say so explicitly:
    "No commits found for <Project> on <date>. The local branch may not be up to
    date — try running `git pull` in that repo." Never silently omit a project.
 
 ### Project discovery
 
-Map commits to projects via the `AGENTS.md` Project Matrix, repo docs,
-workspace metadata, repo paths, or user context. When a Project Matrix code
-exists, use the full PROJECT-CODE exactly as written, everywhere.
+Map commits to projects via the `AGENTS.md` Project Matrix, repo docs, paths,
+or user context. Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
 
 ### Agent use
 
-When the runtime supports subagents and the user has allowed them, dispatch
-read-only **Explorer** lanes in parallel for separate repos, date ranges, or
-independent feature clusters (local subagents only — never cloud). Each lane
-returns commit hashes, affected files, user-visible changes, likely grouping,
-and uncertainty — summaries, not transcripts. The main session owns final
-clustering, plain-language rewriting, QA-step quality, and file output.
-Announce the lane count at dispatch and report each lane as it completes.
+Sub-agents: local lanes only when the user allows them — never cloud agents; announce the lane count at dispatch and report each lane as it completes. Split lanes by
+repo, date range, or feature cluster; lanes return summaries — commit
+hashes, affected files, user-visible changes, likely grouping, uncertainty —
+never transcripts; the main session owns clustering, plain-language rewriting,
+QA-step quality, and file output.
 
-## Commit Clustering
+## Commit clustering
 
-Do not narrate commit-by-commit. Cluster related commits into one logical,
-PM-facing change (Problem → Change → Impact).
+Never narrate commit-by-commit — cluster related commits into one PM-facing
+Problem → Change → Impact change. Commits sharing a product, feature or
+workflow, bug, file area, or one objective cluster together (including
+iterative and bugfix sequences); different products, workflows, features, or
+unrelated bugs stay separate. When uncertain, keep them separate.
 
-- **Cluster together** commits sharing a product/app/module, feature or
-  workflow, bug or user problem, file area, or one implementation objective —
-  including iterative work and bugfix sequences with similar wording.
-- **Keep separate** commits for different products, workflows, features,
-  unrelated bugs, or independent user-facing changes.
-- **When uncertain, keep commits separate** rather than merging unrelated work.
+## Output format
 
-## Output Format
-
-One markdown file, filled from the asset skeletons — they are the single
-format source. Load the one matching the mode and fill it:
+One markdown file, filled from the asset skeleton matching the mode — the
+skeletons are the single format source:
 
 - Date-based / date-range / feature mode →
   [`assets/release-notes-template.md`](assets/release-notes-template.md)
 - Session summary →
   [`assets/session-summary-template.md`](assets/session-summary-template.md)
 
-Worked input→output pairs live in
-[`references/examples.md`](references/examples.md) — load them when unsure how
-an entry should read.
+Worked examples live in [`references/examples.md`](references/examples.md);
+load when unsure how an entry should read.
 
-Rules for filling the skeleton:
+Filling rules:
 
-- Stakeholder Summary first, then one `---` rule, then Detailed Release Notes.
-  Never put feature sections above a project heading or child sections outside
-  a feature.
+- Stakeholder Summary first, then one `---` rule, then Detailed Release Notes;
+  feature sections sit under their project heading, child sections inside
+  their feature.
 - **Stakeholder Summary** is the 30-second scan: `Date: DD Month YYYY` first
-  (omit for undated session summaries), then each PROJECT-CODE as plain text on
-  its own line (no heading syntax), then one bullet per feature combining
+  (omit for undated session summaries), each PROJECT-CODE as plain text on
+  its own line (no heading syntax), one bullet per feature combining
   Summary + Change into a single sentence.
 - **Repeat the feature block** for multiple features under one project.
 - **Manual QA Steps**: 3–5 practical steps per feature, each
@@ -157,50 +137,36 @@ Rules for filling the skeleton:
   case, written so a manual tester needs no code knowledge — name the screen,
   button, or field.
 - **Include only projects with at least one confirmed change** in the selected
-  scope. No unchanged-project sections.
-- **User-visible detail**: when commits/diffs reveal them, name the setting,
-  page/screen, visible element, or route that changed — the optional
-  `What changed where:` line under **Change** is where it goes. If a detail is
-  not in the history, omit it and omit the line (rule 8's banned phrases
-  cover the disclaimer wording).
-- Commit hashes appear only under **Commits Included**, one per bullet. For a
-  session summary with no commits yet, write `- (uncommitted session work)`
-  instead of hashes.
+  scope — no unchanged-project sections.
+- **User-visible detail** goes on the optional `What changed where:` line
+  under **Change** — the setting, page/screen, element, or route, only when
+  commits/diffs reveal it; otherwise omit the line (rule 8 bans disclaimer
+  wording).
+- Commit hashes appear only under **Commits Included**, one per bullet; a
+  session summary with no commits yet writes `- (uncommitted session work)`
+  instead.
 
-## File Output
+## File output
 
-Save under `<artifacts-root>/specs/release-notes/`. Release notes are on-demand
-date files: they do **not** share the ADR/prompt `NNNN` sequence (ADRs live in
-`specs/adr/NNNN-<slug>.md`, prompts in `specs/prompts/NNNN-<slug>-prompt.md`).
+Save under `<artifacts-root>/specs/release-notes/`.
 
 Release notes are a generated document: keep all co-author, AI, and tool
 attribution out of both the saved file and the chat response.
 
-Resolve `<artifacts-root>` in this order:
+Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`CONTEXT-MAP.md` at repo root), else the repo root.
+Multi-repo workspaces *without* a `.code-workspace` file get one file per
+repo, under each repo's own `specs/release-notes/`.
 
-1. **VS Code workspace (preferred):** the directory containing a
-   `*.code-workspace` file found at or above cwd — all projects share one
-   `specs/release-notes/`.
-2. **Multi-context single repo:** with a root `CONTEXT-MAP.md`, the
-   `specs/release-notes/` of the context the change belongs to.
-3. **Single repo:** the repo root.
-
-For multi-repo workspaces *without* a `.code-workspace` file, write one file
-per repo under that repo's own `specs/release-notes/`.
-
-Filenames — `D-Month-YYYY` (no leading zero, Title Case English month):
-
-| Mode | Filename |
-| :--- | :--- |
-| Date-based / feature / session | `10-March-2026.md` |
-| Date range | `10-March-2026-to-12-March-2026.md` |
+Filenames — `D-Month-YYYY`, no leading zero, Title Case English month:
+`10-March-2026.md`; date ranges `10-March-2026-to-12-March-2026.md`.
 
 - Feature summaries use the **release date**, not the feature name; if no date
-  is given and the user doesn't clearly mean the current session, ask. If the
-  user is away, use the current local date and note the assumption at the top
-  of the response.
+  is given and the user doesn't clearly mean the current session, ask — or, if
+  the user is away, use the current local date and note the assumption up
+  top.
 - "Today" / "current session" → the current local date.
-- Do not add `NNNN`, `-release-notes`, or a feature slug to the filename.
+- Do not add `NNNN`, `-release-notes`, or a feature slug to the filename —
+  release notes do not share the ADR/prompt `NNNN` sequence.
 
 Conflict handling: create `specs/release-notes/` lazily; overwrite a same-date
 file only if it contains purely generated content from this skill; if it has
@@ -208,27 +174,19 @@ hand edits, show the diff and ask (overwrite, append/update, or abort) — and
 if the user is away, write a ` (2)`-suffixed sibling file instead and say so;
 never overwrite hand edits unconfirmed. Never delete unrelated files.
 
-## Quality Check Before Finalizing
+## Completion criteria
 
-Mechanical pass first — scan the draft and fix every hit before judging tone:
-
-1. No rule-8 banned word/phrase appears in narrative text — the structural
-   **Scope** section header is exempt, since rule 8 bans "scope" only as
-   narrative jargon; no bullet runs over 15 words; no Problem/Change/Impact
-   section exceeds 2 content bullets.
-2. Structure and hierarchy match the loaded asset skeleton exactly (one `---`,
-   child sections inside features, hashes only under **Commits Included**);
-   only changed projects are included; the file is saved to
-   `specs/release-notes/` with the `D-Month-YYYY` name, re-opened to confirm
-   the saved structure matches the skeleton, and the reply states each saved
-   file path.
-
-Then the judgment pass:
-
-3. A PM can understand every entry without code context; a QA person knows what
-   to test; each impact bullet is an observable operational outcome.
-4. At least one bullet names affected workflows or teams; technical identifiers
-   are out of the main narrative; logic changes carry their one simple sentence.
-5. Nothing is speculated beyond the workspace, git history, or provided context.
-6. End the chat response with `Suggested next skills (optional)` — 1–6 advisory
-   suggestions based on what the user should likely do next (no gating).
+- [ ] The saved file contains zero rule-8 banned words in narrative text
+  (**Scope** header exempt), no bullet over 15 words, no Problem/Change/Impact
+  section over 2 content bullets.
+- [ ] Each file exists at `specs/release-notes/<D-Month-YYYY>.md` under the
+  resolved root and re-opens matching the loaded skeleton's structure, with
+  only changed projects present.
+- [ ] Every cluster presented as shipped passed `git branch --contains` or
+  carries its "in progress on `<branch>`" label.
+- [ ] At least one bullet names an affected workflow or team.
+- [ ] Re-read the saved file as a PM: every entry understandable without code
+  context, each impact bullet an observable outcome, a QA reader knows what
+  to test.
+- [ ] The reply states each saved file path and ends with
+  `Suggested next skills (optional)` — 1–6 advisory suggestions, never gating.
