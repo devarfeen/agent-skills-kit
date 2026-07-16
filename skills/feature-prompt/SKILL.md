@@ -98,6 +98,9 @@ are normal sections. Emit `Known limits` and `Open questions` only when useful.
   `/handoff` + `/prototype` before deep grilling continues.
 - Keep `Open questions` to the highest-leverage unknowns (usually 1-5). Drop
   trivia that can be decided during implementation.
+- A vague answer to a sharp question ("as fast as possible", "all users") is
+  not an answer — ask once for a number or a named segment; still vague →
+  park it under `Open questions` as written.
 - Do not implement the feature, create a spec, or edit ADRs. `CONTEXT.md`
   changes happen only through the approved candidate-terms flow below.
 - Keep the final prompt spartan, direct, plain English — it is a generated
