@@ -71,78 +71,10 @@ WAREHOUSE-APP
 
 ### Support Teams Can View Partner Activity Logs
 
-**Summary**
-- Field support now sees a log of partner device actions, speeding up troubleshooting.
+(Each additional feature under the same project heading repeats the full
+feature block — Summary through Commits Included.)
 
-**Problem**
-- Support couldn't see what happened on a partner's device without calling them.
-
-**Change**
-- New Activity Log section in the Field Support screen shows recent partner actions with timestamps.
-
-**Impact**
-- Support can troubleshoot without calling the partner.
-
-**Scope**
-- Field Support screen in WAREHOUSE-APP.
-
-**Manual QA Steps**
-1. Log in as field support and open a partner's Activity Log → Recent actions should appear with timestamps.
-2. Do a few actions as a partner (scan, lookup, submit), then check the log → All actions should be listed.
-3. Filter the log by date → Only matching entries should show.
-
-**Commits Included**
-- mno7890
-
-## Example 2: Single Project on a Date
-
-### User Request
-Generate release notes for WAREHOUSE-APP on 11 March
-
-### Example Output
-
-# Stakeholder Summary
-
-Date: 11 March 2026
-
-WAREHOUSE-APP
-
-- The app now checks scanner readiness first, so first-try scans no longer fail
-
----
-
-# Detailed Release Notes
-
-## WAREHOUSE-APP
-
-### Scanner Now Checks Readiness Before Scanning
-
-**Summary**
-- The app waits for scanner readiness before starting, so first scans stop failing.
-
-**Problem**
-- Scans sometimes failed when started before the scanner was ready.
-
-**Change**
-- Stock Lookup screen now shows a "Ready" indicator before scans can begin.
-- App retries automatically if the scanner is slow to connect.
-
-**Impact**
-- Fewer failed scans during stock checks.
-
-**Scope**
-- Stock Lookup screen in WAREHOUSE-APP.
-
-**Manual QA Steps**
-1. Open Stock Lookup and start a scan → "Ready" indicator should appear first.
-2. Switch between screens and scan again → Each scan should wait for readiness.
-3. Start a scan with a slow connection → App should show "waiting" then proceed.
-
-**Commits Included**
-- abc1234
-- def5678
-
-## Example 3: Session Summary
+## Example 2: Session Summary
 
 ### User Request
 Summarize today's development session
@@ -186,7 +118,7 @@ WAREHOUSE-APP
 **Commits Included**
 - (uncommitted session work)
 
-## Example 4: Bad vs Good (Writing Style Reference)
+## Example 3: Bad vs Good (Writing Style Reference)
 
 This example shows the same work described in bad (verbose/corporate) style vs good (clear/simple) style.
 
@@ -239,6 +171,8 @@ This example shows the same work described in bad (verbose/corporate) style vs g
 - Each bullet is one short sentence
 - No jargon: no "workstreams", "touchpoints", "ad hoc", "formally prepared"
 - A PM can read it in 10 seconds and know exactly what's happening
+
+## Example 4: Feature Summary
 
 ### User Request
 Write release notes for the RFID scanning improvements
@@ -302,69 +236,17 @@ WAREHOUSE-ADMIN
 
 ### RFID Scanner Reliability
 
-**Summary**
-- Scanner startup became more consistent in daily operations.
-
-**Problem**
-- Teams faced failed first scans in some operational flows.
-
-**Change**
-- Scanner startup now follows the same steps across updated flows.
-- What changed where: scan setup setting and scan status indicator.
-
-**Impact**
-- Fewer failed first-scan attempts.
-
-**Scope**
-- RFID-enabled operational flows in WAREHOUSE-APP.
-
-**Manual QA Steps**
-1. Open an RFID scan screen -> Scan status should be visible before scanning.
-2. Start a scan -> The first scan should complete without a startup failure.
-3. Leave and return to the scan screen -> Scanner setup should still behave the same way.
-
-**Commits Included**
-- 148cfb8f
-- f626e8fa
+(Full feature block — Summary through Commits Included — as in Example 1.)
 
 ## WAREHOUSE-ADMIN
 
 ### Intake Validation Clarity
 
-**Summary**
-- Intake warnings are clearer before submission.
-
-**Problem**
-- Users missed required fields during intake.
-
-**Change**
-- Added clearer required-field guidance in intake screens.
-- What changed where: intake page warning banner and submit-state message.
-
-**Impact**
-- Fewer intake retries due to missing fields.
-
-**Scope**
-- Intake flow for warehouse supervisors.
-
-**Manual QA Steps**
-1. Open the intake page with a missing required field -> A clear warning should appear.
-2. Fill the missing field -> The warning should clear.
-3. Submit a complete intake form -> The form should submit normally.
-
-**Commits Included**
-- a1b2c3d4
+(Full feature block — Summary through Commits Included — as in Example 1.)
 
 ## Example 6: Output File Naming
 
 `<artifacts-root>` resolution and the `NNNN`/naming rules are canonical in SKILL.md "File Output"; this example shows only the resulting file paths.
-
-### User Request
-Generate release notes for 12 March 2026
-
-### Expected Output File
-- Workspace mode: `<workspace-dir>/specs/release-notes/12-March-2026.md`
-- Single repo: `specs/release-notes/12-March-2026.md`
 
 ### User Request
 Write release notes for RFID Scanner Reliability for 12 March 2026
