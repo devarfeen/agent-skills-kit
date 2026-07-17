@@ -129,7 +129,7 @@ These are optional separate installs. Use them beside this kit when installed an
 
 | Companion | Use when |
 | :--- | :--- |
-| Graphify | Querying a generated code/docs/media graph would save broad file reads. Check `graphify-out/graph.json` at the project root, else the workspace root; absent in both → skip it. Graph older than ~7 days → recommend `graphify update .`. |
+| Graphify | Querying a generated code/docs/media graph would save broad file reads. Check `graphify-out/graph.json` at the project root, else the workspace root; absent in both → skip it. Multi-project workspaces: AST `update` for code, full LLM `extract` for docs — see [Graphify in multi-project workspaces](#graphify-in-multi-project-workspaces). |
 | ask-matt | You want Matt's upstream router for choosing a user-invoked skill flow. |
 | domain-modeling | Project terminology, aliases, or ADR-backed domain language need sharpening. |
 | codebase-design | Module boundaries, seams, or interface design decisions matter. |
@@ -147,6 +147,135 @@ These are optional separate installs. Use them beside this kit when installed an
 - Do not assume a companion is installed. If missing, use the best local fallback.
 - Use MCPs only for the current task. Do not browse unrelated external data.
 - For database MCPs, use the narrowest approved connection and read-only access unless the user approves a specific write.
+
+## Graphify In Multi-Project Workspaces
+
+Graphify is a separate install ([graphify](https://github.com/safishamsi/graphify)). In a VS Code `.code-workspace` with several PROJECT-CODE folders, there is no single built-in “index the whole workspace” command. Build **one graph per project**, **merge** them at the workspace root, then **query** the merged graph for cross-repo questions.
+
+Run every command from the **workspace root** — the folder that holds the `.code-workspace` file and `AGENTS.md`. Use the `Path` column from the Project Matrix (skip the `.` meta row).
+
+Graphify has two extraction layers. Use both deliberately:
+
+| Layer | What it captures | Command | Cost |
+| :--- | :--- | :--- | :--- |
+| **AST (structural)** | Imports, symbols, call graphs in code files | `graphify update <path>` | Free; incremental |
+| **LLM (semantic)** | Docs, ADRs, papers, images, inferred cross-file relationships AST cannot see | `graphify extract <path>` or `/graphify <path>` | Tokens; uses API key or agent session |
+
+`graphify update` always runs AST on changed code. It runs the LLM pass only when changed files include docs, papers, or images. `graphify extract` and `/graphify` always run AST **and** semantic extraction (semantic is skipped automatically on a code-only corpus).
+
+Set `GEMINI_API_KEY` or `GOOGLE_API_KEY` for headless semantic extraction via `graphify extract --backend gemini`. Without a key, `/graphify` uses the host agent session for semantic chunks.
+
+### First-time build (AST + LLM)
+
+Use `graphify extract` per project folder so each project keeps its own `graphify-out/` (running `/graphify` on each subfolder from the workspace root would clobber the same output directory). First build is always a full pass — structural edges from code plus semantic edges from docs and inferred relationships.
+
+```bash
+graphify extract ./payments-api/ --backend gemini
+graphify extract ./web-app/ --backend gemini
+graphify extract ./shared-lib/ --backend gemini
+
+graphify merge-graphs \
+  ./payments-api/graphify-out/graph.json \
+  ./web-app/graphify-out/graph.json \
+  ./shared-lib/graphify-out/graph.json \
+  --out graphify-out/graph.json
+```
+
+Agent-driven alternative (same full pipeline, semantic via subagents when no API key):
+
+```bash
+/graphify ./payments-api/
+/graphify ./web-app/
+/graphify ./shared-lib/
+# then merge-graphs as above
+```
+
+Optional: add `--wiki` on the first full build if you want `graphify-out/wiki/index.md` for broad navigation. Add `--mode deep` for richer INFERRED edges (more tokens).
+
+### Update all projects — AST only (code changes)
+
+After day-to-day code edits, loop `graphify update` over every matrix path, then re-merge. This is incremental, AST-only when only code changed, and costs no LLM tokens.
+
+**Explicit paths** (replace with your Project Matrix `Path` values):
+
+```bash
+for path in ./payments-api ./web-app ./shared-lib; do
+  if [ -f "$path/graphify-out/graph.json" ]; then
+    graphify update "$path"
+  else
+    graphify extract "$path" --backend gemini
+  fi
+done
+
+graphify merge-graphs \
+  ./payments-api/graphify-out/graph.json \
+  ./web-app/graphify-out/graph.json \
+  ./shared-lib/graphify-out/graph.json \
+  --out graphify-out/graph.json
+```
+
+**From the `.code-workspace` file** (skips the `.` meta folder automatically):
+
+```bash
+for path in $(jq -r '.folders[].path' *.code-workspace); do
+  [ "$path" = "." ] && continue
+  if [ -f "$path/graphify-out/graph.json" ]; then
+    graphify update "$path"
+  else
+    graphify extract "$path" --backend gemini
+  fi
+done
+
+graphify merge-graphs ./*/graphify-out/graph.json --out graphify-out/graph.json
+```
+
+### Update all projects — full LLM re-extract
+
+Re-run semantic extraction when docs/ADRs/specs changed, the graph is stale (~7+ days), you need richer inferred edges, or AST-only updates left cross-document links wrong. Loop `graphify extract` (or `/graphify`) per project, then re-merge.
+
+```bash
+for path in $(jq -r '.folders[].path' *.code-workspace); do
+  [ "$path" = "." ] && continue
+  graphify extract "$path" --backend gemini
+done
+
+graphify merge-graphs ./*/graphify-out/graph.json --out graphify-out/graph.json
+```
+
+`/graphify <path> --update` is the agent-driven equivalent when you want incremental detection but semantic re-extraction on changed docs — use it per project, not from the workspace root.
+
+### When to use which
+
+| Situation | Use |
+| :--- | :--- |
+| First build | `graphify extract` or `/graphify` per project (AST + LLM) |
+| Code-only edits since last run | `graphify update` loop (AST only) |
+| Docs, ADRs, specs, or papers changed | `graphify extract` loop (full LLM) on affected projects |
+| Graph older than ~7 days | Full LLM re-extract loop |
+| Large refactor, many deleted symbols | Full LLM re-extract; add `--force` to `graphify update` if node count drops |
+| Code-only project, no docs corpus | `graphify extract` still works — semantic pass is skipped automatically |
+
+Always re-merge at the workspace root after either loop.
+
+### Query the merged graph
+
+```bash
+graphify query "How does auth flow from the API to the web app?"
+graphify path "AuthModule" "Database"
+graphify explain "PaymentService"
+```
+
+Agents check `graphify-out/graph.json` at the **project root first**, then the **workspace root** — so the merged file at the workspace root is what cross-project discovery skills use.
+
+### When a single scan is enough
+
+For a small workspace (well under 500 files), `/graphify .` from the workspace root can build one graph in a single pass. Prefer per-project extract + merge when the corpus is large or projects are independent repos.
+
+### Staleness
+
+- **Daily / after code work:** AST `graphify update` loop + re-merge.
+- **Weekly or before `/integration-contract`:** full LLM `graphify extract` loop + re-merge.
+- Discovery skills may suggest an update but stay read-only — you run the refresh.
 
 ## Choosing A Starting Point
 

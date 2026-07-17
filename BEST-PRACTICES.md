@@ -140,6 +140,36 @@ understanding checks) are bound by the generated `AGENTS.md` rules themselves.
 
 > **Why placeholders, not guesswork:** `/agents-md` runs *before* you've decided where context lives, so it must not invent a path. Leaving labelled placeholders turns the fill step into a mechanical edit instead of a rewrite. `/agents-md` writes the *rules of engagement*; `/setup-matt-pocock-skills` owns the *locations*.
 
+### Optional: Graphify across the Project Matrix
+
+When [Graphify](https://github.com/safishamsi/graphify) is installed and broad codebase questions would otherwise mean huge `rg` sweeps, treat it as a workspace-level companion — not binding memory.
+
+Graphify builds two layers: **AST** (structural code edges, free) and **LLM semantic** (docs, ADRs, inferred cross-file links, costs tokens). First build always needs the full pass; day-to-day refresh can stay AST-only.
+
+**Build once after setup (or when you add a folder to the matrix):**
+
+1. From the workspace root, `graphify extract <path>` (AST + LLM) for each Project Matrix folder (not the `.` meta row). Set `GEMINI_API_KEY` for headless semantic extraction, or use `/graphify <path>` per project.
+2. `graphify merge-graphs ... --out graphify-out/graph.json` at the workspace root.
+3. Query from the root: `graphify query "..."`, `graphify path "A" "B"`, `graphify explain "X"`.
+
+**Refresh all projects in one pass:**
+
+| Cadence | Loop | When |
+| :--- | :--- | :--- |
+| **AST** | `graphify update <path>` per matrix folder → re-merge | After code edits; free and incremental |
+| **Full LLM** | `graphify extract <path>` per matrix folder → re-merge | Docs/ADRs/specs changed, graph ~7+ days old, or cross-document links look wrong |
+
+Full command examples: [GUIDE.md — Graphify in multi-project workspaces](GUIDE.md#graphify-in-multi-project-workspaces).
+
+**Habits:**
+
+- **Per project, merge at root.** Never run `/graphify` on each subfolder from the workspace root — outputs collide in the same `graphify-out/`. `graphify extract` writes inside each project.
+- **Re-merge after every batch update.** Per-project graphs and the workspace merged graph are different files; updating projects without merging leaves cross-project queries stale.
+- **Match refresh to what changed.** Code-only week → AST loop. Docs or binding context (`CONTEXT.md`, `specs/adr/`) moved → full LLM re-extract on affected projects.
+- **Verify against code.** Graphify is evidence that speeds discovery (`/feature-discovery`, `/integration-contract`); repo code and tests still win when they disagree.
+- **Do not bulk-read the graph.** Query narrowly (`graphify query`, `path`, `explain`) the same way you retrieve from `specs/` — never load `graph.json` or `GRAPH_REPORT.md` wholesale into chat.
+- **Cadence:** AST loop after active coding days; full LLM loop weekly or before a multi-project spec. Discovery skills may suggest an update but stay read-only — you run the refresh.
+
 ---
 
 ## 4. Workflow B — New Feature
@@ -212,6 +242,8 @@ Wayfinder is **planning, not doing.** It produces decisions, not deliverables. T
 ## 8. Weekly Cadence
 
 - **`/release-notes`** — at the end of the week, generate a PM-friendly summary of what shipped, from the week's commits and closed work. Saved for handoff to your project manager.
+- **Graphify AST refresh** *(when installed)* — `graphify update` loop per matrix folder + re-merge after active coding weeks (see [GUIDE.md](GUIDE.md#graphify-in-multi-project-workspaces)).
+- **Graphify full LLM refresh** *(when installed)* — `graphify extract` loop per matrix folder + re-merge weekly, when docs/ADRs changed, or before `/integration-contract`.
 
 ---
 
@@ -222,6 +254,9 @@ What separates intentional use from vibe coding:
 - **Auto-chaining skills.** Letting the agent run `discover → … → ship` unattended. Suggest and stop; the human steers every transition.
 - **Bulk-reading `specs/`.** Loading the whole archive "for context." Retrieve narrowly instead.
 - **Treating companion tools as default memory.** Graph or index tools can help a task, but their artifacts are not binding context.
+- **Updating per-project graphs but not re-merging.** Cross-project `graphify query` reads the workspace-root `graphify-out/graph.json`; stale merge = wrong answers across PROJECT-CODEs.
+- **Running `/graphify` on each matrix folder from the workspace root.** Outputs overwrite the same `graphify-out/` — use `graphify extract <path>` per project instead.
+- **AST-only refresh when docs moved.** `graphify update` skips LLM on code-only diffs — re-extract semantically when `CONTEXT.md`, ADRs, or specs changed.
 - **Fabricating an issue before coding** for genuinely ad-hoc work. Let the ship skill create the issue at the end from the real diff and decisions.
 - **Skipping discovery on a bug.** Jumping straight to a fix without tracing the journey.
 - **Mixing conventions across projects.** In a multi-tech workspace, never carry one project's patterns into another. Always name the full Project from the matrix.
