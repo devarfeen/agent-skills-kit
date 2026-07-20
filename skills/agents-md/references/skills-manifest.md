@@ -67,4 +67,5 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | Laravel Boost | companion | | | A Laravel project has Boost installed and Laravel-specific MCP context helps. |
 | Figma MCP | companion | | | A task references Figma designs, components, frames, tokens, or design-to-code. |
 | MySQL/Postgres MCP | companion | | | Approved local or staging database inspection is needed. Default read-only. |
+| Linear MCP | companion | | | Finding, creating, updating, or closing tracker issues (specs, tickets, bugs). |
 | Sentry CLI | companion | | | A production error report needs `/sentry` investigation before `/diagnosing-bugs`. |
