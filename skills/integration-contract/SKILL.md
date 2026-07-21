@@ -25,7 +25,7 @@ Writes a spec's cross-repo seam to disk as a **contract** file and enforces it w
 - **Gate failures are surfaced, not shipped.** A failing smoke flow reopens the contract.
 - **Suggest, never auto-chain.** build does not auto-run gate; gate does not auto-run `/commit-push-*`. Recommend the next step and stop.
 - **Read-only in build.** Only the contract file is written — never product code, config, issues, or ADRs.
-- Sub-agents: local lanes only when the user allows them — never cloud agents; announce the lane count at dispatch and report each lane as it completes.
+- Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes.
 
 ## The contract artifact
 

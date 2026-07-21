@@ -20,7 +20,7 @@ Intake may be structured — `Projects Affected:` plus a `What:` block — or fr
 - **Keep scope thin.** Broad intake gets split; discover the first slice before expanding. Near `~120K` tokens with core unknowns unresolved, stop and recommend a scope split or handoff. The tell: drifting into product discovery, interview planning, opportunity trees, or experiment design without an explicit pivot.
 - **Stop after presenting the report.** Suggest the next skill; never invoke it or start implementation without a fresh request. Grillable unknowns stay as open decisions for `/feature-prompt` or `/grill-with-docs`; ungrillable ones ("needs to feel/see it") route to `/handoff` + `/prototype` (when installed; else state the uncertainty plainly). Scope-gating decisions still foggy — destination or open questions not yet sharp — suggest `/wayfinder`, not `/feature-prompt`; a PR-sized prompt cannot be written through fog.
 - Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field. Phases: parsed, discovered, validated, report.
-- Sub-agents: local lanes only when the user allows them — never cloud agents; announce the lane count at dispatch and report each lane as it completes. Summaries back, not transcripts; synthesis stays in the main session.
+- Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes. Summaries back, not transcripts; synthesis stays in the main session.
 
 ## Workflow
 

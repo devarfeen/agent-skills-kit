@@ -36,7 +36,7 @@ Carry this framing through every section of the gap map:
 - **Retrieval order.** `CONTEXT.md` + `specs/adr/` are binding (read before deciding) > the current request, reference/target code, and tests > native CLI memory.
 - **Decisions are artifacts.** The output is the durable gap map file, not a chat summary; chat reports only what was written and the phase update.
 - **Don't fabricate an issue before coding.** Issues come later, from `/to-tickets` after `/grill-with-docs`.
-- Sub-agents: local lanes only when the user allows them — never cloud agents; announce the lane count at dispatch and report each lane as it completes.
+- Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes.
 
 ## Process
 

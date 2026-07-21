@@ -41,10 +41,10 @@ chat stays responsive and uncluttered.
   Reviewer (read-only critique), Tester (runs tests / build / lint), and
   Tool-runner (isolated shell / MCP batches). The main session is the
   Orchestrator and keeps the only merge and final-judgment seat.
-- **Parallel once approved:** parallel and background work is opt-in — the
-  generated `AGENTS.md` defaults to serial until the user approves a plan;
-  then independent lanes run together and only conflict-prone edits and final
-  integration stay serialized.
+- **Parallel by default:** parallel and background work is unconditional — the
+  generated `AGENTS.md` dispatches independent lanes together without asking
+  for approval; only conflict-prone edits and final integration stay
+  serialized.
 - **Local background:** long lanes run in the background (Claude CLI
   `run_in_background`, Cursor `is_background` + `Await`, Codex worktrees,
   Copilot `Ctrl+X -> b`, opencode `task(background=true)`) and report back when

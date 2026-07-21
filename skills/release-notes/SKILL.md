@@ -95,7 +95,7 @@ or user context. Name the full PROJECT-CODE from the Project Matrix everywhere; 
 
 ### Agent use
 
-Sub-agents: local lanes only when the user allows them — never cloud agents; announce the lane count at dispatch and report each lane as it completes. Split lanes by
+Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes. Split lanes by
 repo, date range, or feature cluster; lanes return summaries — commit
 hashes, affected files, user-visible changes, likely grouping, uncertainty —
 never transcripts; the main session owns clustering, plain-language rewriting,

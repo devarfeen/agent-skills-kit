@@ -1,4 +1,4 @@
-<!-- agents-md marker · v11 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v12 · re-run /agents-md to regenerate -->
 # Agent Instructions
 
 [one concise workspace intro inferred from the .code-workspace name and folder scan]
@@ -68,9 +68,7 @@ Before editing, understand why the code exists — its callers and exports, the 
 
 The main session is sole orchestrator, merger, conflict resolver, and final judge.
 
-Parallel and background work is opt-in. Default to serial. Suggest a parallel or background plan and wait for approval; never spawn subagents or background lanes on your own.
-
-When the user approves parallelism:
+Parallel and background work is unconditional and on by default — never ask for approval before dispatching. As soon as independent lanes exist, split and dispatch them without waiting:
 
 - Run prerequisites first, then parallelize newly unblocked lanes. Serialize shared-file edits and integration.
 - Run long or noisy lanes locally — background or async. Await and integrate every lane.

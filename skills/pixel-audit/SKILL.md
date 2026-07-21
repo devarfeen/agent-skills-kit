@@ -97,7 +97,7 @@ A row is `verified` only when its fix clears every clause above; otherwise it st
 - Decisions are **artifacts** — inventory and defect list live on disk, not in chat.
 - Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
 - **Local-only.** Local creds, local browser, no cloud agents; the main agent owns synthesis and the gate.
-- Sub-agents: local lanes only when the user allows them — never cloud agents; announce the lane count at dispatch and report each lane as it completes. Lanes run only step 1 (Map the page); fixing and the gate stay with the main agent.
+- Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes. Lanes run only step 1 (Map the page); fixing and the gate stay with the main agent.
 - Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field. Phases: mapped → inventory captured → audited → fixing → verified.
 
 ## Output
