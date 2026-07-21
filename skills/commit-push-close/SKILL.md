@@ -14,23 +14,23 @@ Read [`references/ship-policy.md`](references/ship-policy.md) first. It holds th
 
 ## Issue-close comment format
 
-Posted as a comment on the issue right before closing. Optional sections are omitted when empty — the Notes line disappears when there are no follow-ups.
+Posted as a comment on the issue right before closing. PMs and other stakeholders read this directly, with no diff alongside it — write it in plain English: no code identifiers, file paths, commands, or jargon. Say what changed for the user or business, and what to check to confirm it. Optional sections are omitted when empty — the Notes line disappears when there are no follow-ups.
 
 ```
 Closed by <SHA> on `<branch>`.
 
-**Summary**
-<one or two sentences — what changed and why>
+**What changed**
+<one or two plain-English sentences — what a user or the business would notice, not what the code does>
 
-**How to test**
-1. <step>
-2. <step>
-3. <expected result>
+**How to confirm it's fixed**
+1. <step in everyday language — what to do>
+2. <step in everyday language — what to do>
+3. <what you should see, stated as a plain result>
 
-Notes: <follow-ups or known gaps; omit line if none>
+Notes: <follow-ups or known gaps, in plain English; omit line if none>
 ```
 
-Rules for **How to test** live in **How-to-test rules** (`references/ship-policy.md`).
+Draft **How to confirm it's fixed** from the same underlying test plan as **How-to-test rules** (`references/ship-policy.md`), but translate every step out of code — the action and outcome in everyday words, never a command, endpoint, or file. For a step with no user-facing surface, name the capability it protects (e.g. "repeat submissions no longer double-charge") instead of the test file.
 
 ## Workflow
 
@@ -44,7 +44,7 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
 
 4. **Draft the commit message** from the issue title and diff, per **Commit message format** in `references/ship-policy.md`. For ad hoc inline issues, the new issue title and commit subject must match (see **Naming anchor**).
 
-5. **Draft the issue-close comment** — summary + how-to-test from the diff (format above). If the test plan isn't obvious, ask the user before continuing.
+5. **Draft the issue-close comment** — plain-English **What changed** + **How to confirm it's fixed** from the diff (format above). If the underlying test plan isn't obvious, ask the user before continuing.
 
    Before presenting drafts, run the **Authorship policy** scrub and, if env files/keys changed, the **Env parity policy** sync pass — both in `references/ship-policy.md`.
 
@@ -64,7 +64,7 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
    - **If the current branch is the detected default branch**: stop and confirm separately before pushing — step 6's approval does not cover this push. If the user is away, leave the commit local and unpushed, skip the close (a close comment must reference a pushed commit), and surface both under Needs user in the report.
    - **Confirm the push landed** before the close — non-error exit and `git status -sb` shows the branch up-to-date with its remote. A rejected push (non-fast-forward, auth expiry) stops the close, since the close comment must reference a commit that is actually on `<branch>`.
 
-10. **Close the issue** — first, when the How-to-test plan contains a runnable test command, run it once and quote the passing tail in the close comment — a failing run stops the close: leave the issue open, report the failure (the commit is already pushed), and treat any fix as a new iteration through this skill; never close an issue whose own test plan fails. Then fill the drafted comment with the real values (short SHA from `git rev-parse --short HEAD`, current branch), write it to a temp file, then comment, close, and verify:
+10. **Close the issue** — first, when the underlying test plan contains a runnable test command, run it once — a failing run stops the close: leave the issue open, report the failure (the commit is already pushed), and treat any fix as a new iteration through this skill; never close an issue whose own test plan fails. On a pass, state the outcome in plain English in **How to confirm it's fixed** (e.g. "Automated checks confirm repeat submissions no longer double-charge") — never paste the raw command or its output into the comment. Then fill the drafted comment with the real values (short SHA from `git rev-parse --short HEAD`, current branch), write it to a temp file, then comment, close, and verify:
     ```bash
     gh issue comment <num> --body-file <temp-file>.md
     gh issue close <num> --reason completed
@@ -82,21 +82,22 @@ Close comment:
 ```
 Closed by 9f0e1a2 on `feat/418-idempotency`.
 
-**Summary**
-Checkout charges are now idempotent on `x-request-id`; replays return the original result instead of double-charging.
+**What changed**
+If a customer's checkout request gets sent twice by accident, we now only charge them once — the second attempt just returns the same result instead of creating a duplicate charge.
 
-**How to test**
-1. `pnpm test server/checkout/handler.test.ts` — ran green: `Tests 14 passed (14), Duration 1.2s`
-2. Hit `POST /checkout` twice with the same `x-request-id` — second call returns the first response, no second Stripe charge
-3. Hit twice with different IDs — two distinct charges as before
+**How to confirm it's fixed**
+1. Submit a checkout twice in a row with the same order.
+2. The second submission returns the same confirmation as the first — no extra charge is created.
+3. Submitting two different orders still charges each one separately, as before.
+   Automated checks confirm this behavior end to end.
 
-Notes: Stripe webhook path still unguarded — see follow-up #419.
+Notes: The Stripe webhook path isn't covered by this fix yet — see follow-up #419.
 ```
 
 ## Completion criteria
 
 - [ ] `gh issue view <num> --json state -q .state` returned `CLOSED`, and that state is quoted in the report
-- [ ] Close comment posted containing **Summary** + **How to test**; when the plan contains a runnable test command, its passing output tail is quoted in the comment
+- [ ] Close comment posted containing **What changed** + **How to confirm it's fixed**, both in plain English with no code identifiers, commands, or raw test output; when the underlying test plan has a runnable command, its pass/fail outcome is confirmed before closing but stated in plain English in the comment, never quoted verbatim
 - [ ] Push landed: non-error exit and `git status -sb` shows the branch up-to-date with its remote — or the report carries the deferral/rejection line plus `Needs user:`
 - [ ] `Issue:` line present in the commit body
 - [ ] Label state valid: `gh issue view <num> --json labels` shows one category label + a ready state label (read in step 3, or set at inline creation)

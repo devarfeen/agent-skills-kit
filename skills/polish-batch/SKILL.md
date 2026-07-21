@@ -19,7 +19,7 @@ Three modes run separately: **capture** logs every nit to a punch-list and chang
 - No Project Matrix (standalone single-repo install) → derive one code from the repo name (uppercase, hyphenated) and use it consistently.
 - **Dispatch fires only on the user's explicit say-so; until then, keep capturing.** Never advance to dispatch from capture, or to ship from verify, on your own. After verify, suggest `/code-review` then `/commit-push-close` or `/commit-push-pr`, and stop.
 - **Reopened rows stay.** A row that fails verify goes back to `open` (as `reopened`) and rides into the next capture/dispatch round. Nothing is dropped silently.
-- Sub-agents: local lanes only when the user allows them — never cloud agents; announce the lane count at dispatch and report each lane as it completes. Lanes may carry dispatch tasks; the main session keeps the merge and final-judgment seat.
+- Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes. Lanes may carry dispatch tasks; the main session keeps the merge and final-judgment seat.
 - Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.
 
 ## The punch-list artifact

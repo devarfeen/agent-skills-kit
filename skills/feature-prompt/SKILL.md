@@ -119,7 +119,7 @@ edited path before saving. Terms still needing review stay under
 
 ## Agent use
 
-Sub-agents: local lanes only when the user allows them — never cloud agents; announce the lane count at dispatch and report each lane as it completes. Lanes are for fast, independent context checks only — no worker agents, no code edits.
+Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes. Lanes are for fast, independent context checks only — no worker agents, no code edits.
 
 ## Final output
 

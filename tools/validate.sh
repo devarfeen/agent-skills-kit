@@ -381,7 +381,7 @@ echo "== 13. Canonical one-liners byte-exact where used =="
 CANON=$(cat <<'EOF'
 <artifacts-root>	Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`CONTEXT-MAP.md` at repo root), else the repo root.
 graphify-out/graph.json	If `graphify-out/graph.json` exists (project root, else workspace root), query it before raw search; older than ~7 days → suggest `graphify update .`; missing → skip graphify.
-lane count at dispatch	Sub-agents: local lanes only when the user allows them — never cloud agents; announce the lane count at dispatch and report each lane as it completes.
+lane count at dispatch	Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes.
 never mix one project	Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
 Stage / Found / Next / Needs user	Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.
 EOF

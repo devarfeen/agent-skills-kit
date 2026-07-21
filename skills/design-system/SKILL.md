@@ -22,7 +22,7 @@ Infer from the request and cheap repo evidence; interview only for gaps:
 - Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
 - Decisions are **artifacts** — every output lives on disk, not in chat.
 - Never hardcode locations — resolve paths from the target's stack conventions and setup decisions; record real paths in doc, reference, and skill.
-- Sub-agents: local lanes only when the user allows them — never cloud agents; announce the lane count at dispatch and report each lane as it completes. Lanes extract and survey only; the main agent owns synthesis.
+- Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes. Lanes extract and survey only; the main agent owns synthesis.
 - Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.
 - **Suggest, never auto-chain.** Recommend the next step and stop; never start feature work here.
 
