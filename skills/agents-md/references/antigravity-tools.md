@@ -19,15 +19,14 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 **Key Notes:**
 
 - `@` references files/context (e.g. `@src/main.go`), not agents.
-- Parallelism comes from the Agent Manager and `start_subagent`: the orchestrator decomposes a goal and spawns dynamic subagents that can share the parent's workspace or run in an isolated Git worktree (clean context window, same model).
-- Antigravity CLI reads `AGENTS.md` directly from the active workspace as a supported context file. This kit treats `AGENTS.md` as the canonical instruction file for Antigravity CLI and emits no Antigravity-specific shim.
-- **Memory:** No native memory file store in this kit's supported model. Use generated `AGENTS.md` and binding context files. Do not create repo memory files or add memory MCP servers for this kit. See [`memory-global-defaults.md`](memory-global-defaults.md).
+- Antigravity CLI reads `AGENTS.md` directly from the active workspace; it is the canonical instruction file, and this kit emits no Antigravity-specific shim.
+- **Memory:** no native memory file store; use generated `AGENTS.md` and binding context files. No repo memory files or memory MCP servers for this kit. See [`memory-global-defaults.md`](memory-global-defaults.md).
 - Multi-repo workspace policy: use workspace-root MCP config.
 - For exact config-file placement by tool, use [`tool-calling.md`](tool-calling.md).
 
 ## Agents: parallel, background & roles
 
-Parallelism is built into the **Agent Manager**: `start_subagent` spawns dynamic, dependency-aware subagents (parallel execution; specific concurrency limit is not publicly documented). Local background: `/schedule` runs cron-style tasks that survive app close, and Artifacts (plans, diffs, walkthroughs) are written to a folder you review on return. **Managed Agents API / remote managed execution** is cloud — do not use it.
+Parallelism is built into the **Agent Manager**: `start_subagent` spawns dynamic, dependency-aware subagents that share the parent's workspace or run in an isolated Git worktree (clean context window, same model; concurrency limit not publicly documented). Local background: `/schedule` runs cron-style tasks that survive app close; Artifacts (plans, diffs, walkthroughs) are written to a folder for review on return. **Managed Agents API / remote managed execution** is cloud — do not use it.
 
 | Role | Antigravity mechanism |
 | :--- | :--- |

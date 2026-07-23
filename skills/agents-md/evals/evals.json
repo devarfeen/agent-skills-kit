@@ -65,11 +65,6 @@
    "route": "/feature-discovery"
   },
   {
-   "q": "Orchestrate this PRD's issues in herdr",
-   "expect": "no-trigger",
-   "route": "/orchestrate-herdr"
-  },
-  {
    "q": "Create a knowledge graph of the workspace",
    "expect": "no-trigger",
    "route": "graphify"

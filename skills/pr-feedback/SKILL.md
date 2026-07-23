@@ -10,9 +10,9 @@ One iteration of working reviewer feedback on an open PR, ending in pushed fix c
 
 ## Inputs
 
-- **The PR** — a number or URL from the user, else detected from the current branch: `gh pr list --head "$(git branch --show-current)" --state open --json number,title,url`. No open PR found (or more than one) → stop and ask which PR this is; never guess and never create one — creating a PR is /commit-push-pr.
+- **The PR** — a number or URL from the user, else detected from the current branch: `gh pr list --head "$(git branch --show-current)" --state open --json number,title,url`. No open PR found (or more than one) → stop and ask which PR this is; never guess and never create one.
 - **The head branch checked out** — fixes land on the PR's head branch. If the checkout is elsewhere, switch to it; if the working tree holds unrelated uncommitted changes, stop and ask before touching anything.
-- **`gh` authenticated** — if `gh auth status` fails, stop and report; nothing in this skill works without it.
+- **`gh` authenticated** — if `gh auth status` fails, stop and report.
 
 ## Rules
 
@@ -45,7 +45,7 @@ gh api graphql -f query='query { repository(owner:"<owner>", name:"<repo>") {
 
 Re-query with `after: <endCursor>` until `hasNextPage` is false — same idea for any thread whose comments exceed the first 50.
 
-Also collect top-level review bodies and issue-style PR comments (`gh pr view <num> --json reviews,comments`) — reviewers often put the substantive ask there, not on a line. Skip threads already resolved.
+Also collect top-level review bodies and issue-style PR comments (`gh pr view <num> --json reviews,comments`) — reviewers often put the substantive ask there. Skip threads already resolved.
 
 ### 3. Classify into a numbered list
 
@@ -59,15 +59,15 @@ Emit the list in the Output template and stop.
 
 ### 4. Get the user's decisions
 
-Wait for the combined approval. The user may reclassify any item — a pushback they overrule becomes an accept; an accept they veto becomes a user-approved wontfix (reply drafted, no code change). Interviews: one question at a time, leading with the recommended answer so the user can accept it in a word. Record the final per-item disposition; it drives every later step.
+Wait for the combined approval. The user may reclassify: an overruled pushback becomes an accept; a vetoed accept becomes a user-approved wontfix (reply drafted, no code change). One question at a time, leading with the recommended answer so the user can accept it in a word. Record the final per-item disposition; it drives every later step.
 
 ### 5. Apply the accepted fixes
 
-Work through the accepted items on the head branch — the smallest change that answers each comment — and run the tests the touched code has: name the command, quote its passing tail, and open the PR's how-to-test plan with it. Failures that persist with the fixes stashed are pre-existing — record them in the final report (step 8) and continue; failures the fixes introduced stop the item. No tests cover the touched code → say so in the final report (step 8). An item that hits the scope-creep stop signal gets parked as needs-discussion; keep going on the rest.
+Work through the accepted items on the head branch — the smallest change that answers each comment — and run the tests the touched code has: name the command, quote its passing tail, and open the PR's how-to-test plan with it. Failures that persist with the fixes stashed are pre-existing — record them in the final report (step 8) and continue; failures the fixes introduced stop the item. No tests cover the touched code → say so in the final report. An item that hits the scope-creep stop signal gets parked as needs-discussion; keep going on the rest.
 
 ### 6. Ship through /commit-push-pr
 
-Invoke /commit-push-pr on the same branch. It detects the existing PR (`gh pr list --head`) and updates it instead of opening a duplicate — that is why shipping routes through it rather than pushing raw. Capture the commit SHA(s) it reports.
+Invoke /commit-push-pr on the same branch — it detects the existing PR (`gh pr list --head`) and updates it instead of opening a duplicate. Capture the commit SHA(s) it reports.
 
 ### 7. Answer the threads
 
@@ -81,7 +81,7 @@ Only now, and only for settled items:
 
 ### 8. Report
 
-One line — plus a second line carrying any step-5 record (pre-existing failures or a no-coverage note) — then the footer.
+Per Output: the final report line, a second line for any step-5 record, then the footer.
 
 ## Output
 

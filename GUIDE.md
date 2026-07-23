@@ -60,13 +60,6 @@ Per-runtime mechanics and the role-to-mechanism map live in
 [`skills/agents-md/references/tool-calling.md`](skills/agents-md/references/tool-calling.md)
 and each `*-tools.md`.
 
-**Inside herdr:** when you are running in [herdr](https://herdr.dev) (`HERDR_ENV=1`),
-`/orchestrate-herdr` is the native expression of this local-only policy. It keeps the
-current tab as a pure orchestrator and fans a spec (PRD) out to one local coding-CLI
-worker tab per open sub-issue — re-runnable by swapping just the **spec URL** and the
-**coding CLI**. No panes, no nested sub-agents, no cloud agents. See
-[`skills/orchestrate-herdr/SKILL.md`](skills/orchestrate-herdr/SKILL.md).
-
 Highest elevated permission presets live in the same tool-calling reference.
 Use them only when the user explicitly asks for highest/elevated/full/YOLO
 permission, preferably inside an isolated container, VM, dev container, or
@@ -332,7 +325,8 @@ Variations branch off this line:
 
 ## Issue Naming And Label Preflight (Hard Gate)
 
-Before creating, editing, or renaming any GitHub issue:
+Before creating, editing, or renaming any tracker issue (GitHub is the
+default; a workspace-named tracker overrides it — same title patterns):
 
 1. Read local workspace instructions (`AGENTS.md`; Claude CLI reads the `CLAUDE.md` shim).
 2. Select the exact issue title pattern (`Spec:`, `Ticket NNNN of …`, `Way:`, or the non-spec implementation form). Issues titled `PRD:` predate the spec rename and `Slice NNNN of …` predates the ticket rename — treat them as spec and ticket issues respectively; do not retitle either.

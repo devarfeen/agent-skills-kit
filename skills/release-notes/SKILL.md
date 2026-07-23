@@ -7,40 +7,34 @@ description: Generate clear, PM-friendly release notes, changelogs, and session 
 # release-notes
 
 Turn development activity into release notes a Project Manager can scan in 30
-seconds: every entry tells PMs, QA, and operations — not engineers — what
-changed, why, and what is better now. It only summarizes work that already
-happened — it never plans, files issues, or reviews code (those are
+seconds: every entry tells PMs, QA, and operations what changed, why, and
+what is better now. It only summarizes work that already
+happened — never plans, files issues, or reviews code (those are
 `/feature-prompt`, `/qa`, and `/code-review`).
 
 ## Writing rules
 
-The #1 priority is **clarity for non-technical readers**. Every sentence must
-pass: "Would a PM or QA person understand this without asking a developer?"
+Every sentence must pass: "Would a PM or QA person understand this without
+asking a developer?"
 
 1. **Plain, everyday words.** No jargon, corporate-speak, or engineering terms.
    - BAD: "Standardized how scanning is prepared before each RFID lookup"
    - GOOD: "The app now checks the scanner is ready before starting a scan"
 2. **Say what the user sees or does.** Name the screen, button, field, or page.
-   - BAD: "Concrete touchpoints called out in the workstream docs include the signin page"
-   - GOOD: "Affects the Login page, Sign Up page, and Reset Password page"
 3. **One idea per bullet, one short sentence each.** Never a paragraph. Max 2
    content bullets per Problem/Change/Impact section — the labeled
    `What changed where:` and `Simple logic explanation:` lines don't count;
-   needing more means too much detail; combine or simplify.
-4. **Feature names describe what changed, not how.**
-   - BAD: "Auth Hardening Workstreams Prepared" → GOOD: "Login and Password Improvements Planned"
+   needing more means too much detail.
+4. **Feature names describe what changed, not how** ("Login and Password
+   Improvements Planned", not "Auth Hardening Workstreams Prepared").
 5. **Problem = what the user experienced** (the symptom, not what the code
    lacked). **Impact = what is concretely better now.**
-   - BAD: "Without a written design, security-sensitive work is easier to implement inconsistently"
-   - GOOD: "Some login pages let you toggle password visibility, others didn't"
 6. **No filler or abstraction.** Remove "formally", "in order to", "it should
-   be noted that", "this ensures that". Prefer "All login screens now behave
-   the same way" over risk-reduction prose.
+   be noted that", "this ensures that", and risk-reduction prose.
 7. **Translate engineering into operational meaning.** Rewrite code-level
-   detail as its user-visible effect; keep code identifiers out of the
-   narrative unless the user asks for technical detail.
-   - "refactored useRfidScanner" → "the app now sets up the scanner the same way before every scan"
-   - "added test coverage" → "reduced regression risk by validating scanner setup behavior"
+   detail as its user-visible effect ("refactored useRfidScanner" → "the app
+   now sets up the scanner the same way before every scan"); keep code
+   identifiers out of the narrative unless the user asks for technical detail.
 8. **Banned words/phrases:** workstream, artifact, canonical, process drift,
    touchpoint, formally, standardized, operationally, implementation, ad hoc,
    scope (as jargon — the structural **Scope** section header is exempt),
@@ -48,8 +42,7 @@ pass: "Would a PM or QA person understand this without asking a developer?"
    the chance of", "without X, Y is easier to Z", "not explicitly visible in
    commit history", any bullet phrase over 15 words.
 9. **If logic changed, add one sentence a 5th grader could understand** inside
-   the Change section: `Simple logic explanation: <sentence>` (e.g. "Raised
-   scanner power to 30 and switched it on before every scan.").
+   the Change section: `Simple logic explanation: <sentence>`.
 10. **Write like telling a coworker what you did today** — not a formal document.
 
 Avoid vague verbs ("enhanced", "optimized", "improved") without saying what
@@ -59,9 +52,9 @@ workspace, git history, or context the user provided.
 
 ## Generation modes
 
-- **Date-based** (date or range; `Generate release notes for 11 March 2026`) — filter local git history by date, group by project, cluster commits.
-- **Session summary** (`Summarize what we changed this session`) — combine session-modified files, notes, and diffs into logical improvements.
-- **Feature summary** (`Write release notes for the RFID scanning improvements`) — the feature's commits explained as one Problem → Change → Impact story.
+- **Date-based** (a date or range) — filter local git history by date, group by project, cluster commits.
+- **Session summary** — combine session-modified files, notes, and diffs into logical improvements.
+- **Feature summary** — the feature's commits explained as one Problem → Change → Impact story.
 
 ## Git data collection
 
@@ -107,9 +100,8 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
 
 Never narrate commit-by-commit — cluster related commits into one PM-facing
 Problem → Change → Impact change. Commits sharing a product, feature or
-workflow, bug, file area, or one objective cluster together (including
-iterative and bugfix sequences); different products, workflows, features, or
-unrelated bugs stay separate. When uncertain, keep them separate.
+workflow, bug, file area, or one objective cluster together (iterative and
+bugfix sequences included); when uncertain, keep them separate.
 
 ## Output format
 
@@ -126,27 +118,24 @@ load when unsure how an entry should read.
 
 Filling rules:
 
-- Stakeholder Summary first, then one `---` rule, then Detailed Release Notes;
-  feature sections sit under their project heading, child sections inside
-  their feature.
-- **Stakeholder Summary** is the 30-second scan: `Date: DD Month YYYY` first
-  (omit for undated session summaries), each PROJECT-CODE as plain text on
-  its own line (no heading syntax), one bullet per feature combining
-  Summary + Change into a single sentence.
-- **Repeat the feature block** for multiple features under one project.
+- **Stakeholder Summary** is the 30-second scan: each PROJECT-CODE as plain
+  text on its own line (no heading syntax), one bullet per feature combining
+  Summary + Change into a single sentence; `Date:` line omitted for undated
+  session summaries.
+- **Repeat the feature block** for multiple features under one project;
+  feature sections sit under their project heading.
 - **Manual QA Steps**: 3–5 practical steps per feature, each
   `Action -> Expected Result`, covering the primary happy path and one edge
-  case, written so a manual tester needs no code knowledge — name the screen,
-  button, or field.
+  case, written so a manual tester needs no code knowledge.
 - **Include only projects with at least one confirmed change** in the selected
-  scope — no unchanged-project sections.
+  scope.
 - **User-visible detail** goes on the optional `What changed where:` line
   under **Change** — the setting, page/screen, element, or route, only when
   commits/diffs reveal it; otherwise omit the line (rule 8 bans disclaimer
   wording).
-- Commit hashes appear only under **Commits Included**, one per bullet; a
-  session summary with no commits yet writes `- (uncommitted session work)`
-  instead.
+- Commit hashes appear only under **Commits Included**, one per bullet (the
+  session skeleton's `(uncommitted session work)` fallback covers no-commit
+  sessions).
 
 ## File output
 
@@ -170,7 +159,7 @@ Filenames — `D-Month-YYYY`, no leading zero, Title Case English month:
 - Do not add `NNNN`, `-release-notes`, or a feature slug to the filename —
   release notes do not share the ADR/prompt `NNNN` sequence.
 
-Conflict handling: create `specs/release-notes/` lazily; overwrite a same-date
+Conflict handling: overwrite a same-date
 file only if it contains purely generated content from this skill; if it has
 hand edits, show the diff and ask (overwrite, append/update, or abort) — and
 if the user is away, write a ` (2)`-suffixed sibling file instead and say so;

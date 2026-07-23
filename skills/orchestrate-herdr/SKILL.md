@@ -6,6 +6,8 @@ description: "Orchestrate herdr worker tabs for a spec (PRD). Reads a spec/issue
 
 # Orchestrate herdr
 
+> **STATUS: STALE / DEPRECATED (2026-07-23).** Retained for reference only. This skill is removed from all workspace gradients, routing docs, and rules — do not invoke it for new work; its content may be outdated. If explicitly invoked, surface this notice and proceed only on the user's confirmation.
+
 Fan a spec's open sub-issues out to one herdr-managed worker tab each and drive each to a test-backed end state. You are the **orchestrator**: never implement, never close your own tab.
 
 ## Inputs
@@ -36,7 +38,7 @@ Fail fast before creating anything, naming what is missing:
 
 1. `HERDR_ENV=1` is set — you are inside herdr. Not set → stop.
 2. The herdr companion skill is installed (tab create/submit/read/monitor mechanics). Load it now.
-3. `CLI_NAME` resolves on PATH — check the bare binary, not the flagged command, which never resolves — and `gh` is authenticated (`gh auth status`).
+3. `CLI_NAME` resolves on PATH — the bare binary, per its definition above — and `gh` is authenticated (`gh auth status`).
 4. **Leftover tabs:** tabs named `[CLI_NAME] - GH #<n>` from a previous run of this spec already exist → ask whether to monitor those instead; re-running blindly creates a second tab per issue. User away → monitor the existing tabs and create tabs only for open sub-issues that have none.
 5. **Same-repo collision:** workers run simultaneously in one shared working folder. More than one open sub-issue touches the same repo → say so and get explicit confirmation, or agree with the user to run those issues serially. User away → do not fan out: report the collision and stop — shared-tree concurrency is never a safe unattended default.
 6. **Worker permission mode:** a fresh `CODING_CLI` session pauses at its own approval prompts (shell, `gh`, test commands) unless launched with an auto-accept/permission preset or the folder pre-approves them. Confirm the mode with the user before fan-out: use the flags they give in `CODING_CLI`, or warn that every worker will need manual approvals. Never pick an elevated or dangerous mode yourself — that is always the user's explicit call. User away → the flags already in `CODING_CLI` are the confirmed mode; none set → proceed and note in the phase update that every worker will pause at its own approval prompts.
@@ -47,7 +49,7 @@ Read `SPEC_URL`. Prefer `gh api repos/<owner>/<repo>/issues/<n>/sub_issues`; fal
 
 ### 3. Create worker tabs
 
-Save the current herdr workspace/session ID and working folder; every later step must confirm it acts in that workspace and folder. For each open sub-issue, create one worker tab there named `[CLI_NAME] - GH #<n>` — the bare binary, so a re-run whose launch flags differ still matches the leftover-tab check. Save its tab ID immediately.
+Save the current herdr workspace/session ID and working folder; every later step must confirm it acts in that workspace and folder. For each open sub-issue, create one worker tab there named `[CLI_NAME] - GH #<n>`. Save its tab ID immediately.
 
 ### 4. Launch workers
 

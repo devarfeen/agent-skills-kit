@@ -6,7 +6,7 @@ description: Strict per-page visual-conformance audit at the verify phase — ON
 
 # Pixel audit
 
-Audit **one page** against its source of truth, fix the mismatches, and prove each fix at the element level before claiming "verified". `/design-system` checks the whole component library once at project start via its preview page; this skill checks one product page during feature work — reference the project's library, never rebuild components here.
+Audit **one page** against its source of truth, fix the mismatches, and prove each fix at the element level before claiming "verified". `/design-system` checks the whole library once at project start via its preview; this skill checks one product page during feature work — reference the project's library, never rebuild components here.
 
 ## Inputs
 
@@ -67,7 +67,7 @@ Scope: <route + states audited>
 | 2 | Row actions, extra "Delete" | /assets · list | pages/assets/index | not in source | — | delete icon present | EXTRA | ref=…, screenshot | open |
 ```
 
-**Kind** is `MISSING` or `EXTRA`. **Evidence** is element-level per the verification gate — not "looks off". **Status** runs `open` → `fixed` → `verified`, or `reopened` when the gate fails.
+**Evidence** is element-level per the verification gate — not "looks off". **Status** runs `open` → `fixed` → `verified`, or `reopened` when the gate fails.
 
 ## Fixing
 
@@ -84,20 +84,18 @@ Scope: <route + states audited>
 
 - **State the env:** host, URL, container/service, browser/session.
 - **Cross the build pipeline:** rebuild/refresh after every template/CSS/class/component change, and **confirm the changed classes/styles/components actually exist in the SERVED assets** (not just the source files).
-- **Prove each fix with element-level evidence:** selector/ref, `getBoundingClientRect()`, the relevant computed styles, the DOM, and a zoomed/clipped element screenshot when alignment matters. Full-page screenshots are overview only. Capture with the agent-browser companion or the runtime's equivalent browser automation. If no browser automation is available, say so, list the pending checks as manual steps for the user, and do not mark any row `verified` on assumption.
+- **Prove each fix with element-level evidence:** selector/ref, `getBoundingClientRect()`, the relevant computed styles, the DOM, and a zoomed/clipped element screenshot when alignment matters (agent-browser or the runtime's equivalent; full-page shots are overview only). If no browser automation is available, say so, list the pending checks as manual steps for the user, and do not mark any row `verified` on assumption.
 - **These count as failure:** hidden, zero-size, collapsed, clipped, misaligned, wrong-size, or ignored-class elements.
 - **Falsify before declaring verified:** actively look for the ways the fix could be wrong (wrong breakpoint, stale asset, class not applied, element off-screen) and rule them out.
-- **Do not say "verified / done / fixed" unless ALL hold:** env stated · build pipeline crossed · served assets contain the change · browser has element proof · source captured full-size · expected-vs-actual compared · every in-scope state checked.
-
-A row is `verified` only when its fix clears every clause above; otherwise it stays `reopened`.
+- **Do not say "verified / done / fixed" unless ALL hold:** env stated · build pipeline crossed · served assets contain the change · browser has element proof · source captured full-size · expected-vs-actual compared · every in-scope state checked. A row is `verified` only when its fix clears every clause; otherwise it stays `reopened`.
 
 ## Rules
 
 - **Suggest, never auto-chain.** After the audit, suggest `/code-review` then `/commit-push-close` / `/commit-push-pr`, and stop.
 - Decisions are **artifacts** — inventory and defect list live on disk, not in chat.
 - Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
-- **Local-only.** Local creds, local browser, no cloud agents; the main agent owns synthesis and the gate.
-- Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes. Lanes run only step 1 (Map the page); fixing and the gate stay with the main agent.
+- **Local-only.** Local creds, local browser, no cloud agents.
+- Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes. Lanes run only step 1 (Map the page); fixing, synthesis, and the gate stay with the main agent.
 - Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field. Phases: mapped → inventory captured → audited → fixing → verified.
 
 ## Output

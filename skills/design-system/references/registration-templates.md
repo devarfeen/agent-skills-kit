@@ -2,9 +2,7 @@
 
 Fill-in skeletons for the three durable outputs `/design-system` registers. The
 SKILL.md body owns *when* and *why* each is written and the adopt-vs-seed logic;
-this file is only the shapes to fill. Resolve `<docs-root>` from the setup docs
-location (fallback `<artifacts-root>/specs/`); record real paths, never the
-placeholders.
+this file is only the shapes to fill. Record real paths, never the placeholders.
 
 ## 1. The design-system doc — `<docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md`
 
@@ -36,10 +34,7 @@ On any UI change: check this library first → reuse an existing component; if m
 
 ## 2. The AGENTS.md reference — short, binding, PROJECT-CODE-keyed
 
-Add only this terse reference into the binding `AGENTS.md`, integrated the way
-`/agents-md` structures that file. Update the subsection in place on `extend`;
-never duplicate it. Do **not** put the full design system in `AGENTS.md` — it
-points to the doc.
+The shape to insert; SKILL.md owns placement and the update-in-place rule.
 
 ```markdown
 ## Design System / UI Library
@@ -55,8 +50,7 @@ Design system: `<docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md
 
 ## 3. Fresh-seed project UI skill — frontmatter + shape
 
-Only for the fresh-seed path (no existing UI skill anywhere in the project); when
-one exists, adopt and extend it in place instead. Match the kit's skill format.
+Fresh-seed path only (SKILL.md owns adopt-vs-seed); match the kit's skill format.
 
 **Location.** Create it at `<project>/.agents/skills/<project-slug>-ui-coding/SKILL.md`
 — the generated AGENTS.md tells every runtime to read that canonical copy. When the

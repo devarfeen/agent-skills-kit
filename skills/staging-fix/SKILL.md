@@ -6,7 +6,7 @@ description: "Fix a staging bug without ever touching a server — work from evi
 
 # staging-fix
 
-Staging bugs are fixed locally and reach staging only through CI — this skill drives that path: evidence, local fix with a test, PR targeting `staging` with auto-merge, Actions deploys. The boundary against the ship skills: they target the default branch and end at review or close; this one exists because a remote environment is broken and the only permitted way to change it is a CI deploy.
+Staging bugs are fixed locally and reach staging only through CI — this skill drives that path: evidence, local fix with a test, PR targeting `staging` with auto-merge, Actions deploys. The boundary against the ship skills: they target the default branch; this one exists because a remote environment is broken and the only permitted way to change it is a CI deploy.
 
 ## Inputs
 
@@ -25,13 +25,14 @@ These boundaries are the skill's safety property. They are absolute — no step,
 - **A bad deploy is reverted the way it arrived.** If the merged fix makes staging worse, open a revert PR against `staging` through the same CI path and report it like the fix PR — never hotfix the server to undo a merge.
 - **One approval before any remote write.** Show the commit message and PR draft and wait for one combined user approval before pushing or calling `gh`. If the user is away, present the drafts and stop.
 - **Zero attribution.** No co-author, AI, or tool attribution in commits, PR titles, or PR bodies; strip any tool-injected footer before committing.
+- **Tracker link.** When the workspace requires ship iterations to link a tracker issue, include its identifier in the commit body and PR body per the workspace's rules — create the issue first if none exists.
 - Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.
 
 ## Workflow
 
 ### 1. Reproduce or evidence the issue
 
-If read-only staging inspection was explicitly approved this session, use it — logs, container/env state, and database `SELECT`s only, over the user-provided SSH access, and nothing that writes. Otherwise work entirely from what the user supplies: error reports, pasted logs, reproduction steps. If the evidence is too thin to locate the fault and no inspection approval exists, stop and ask for either more evidence or that approval — never SSH speculatively. Then reproduce the failure locally where the codebase allows it; a local reproduction is the strongest evidence and feeds step 2 directly.
+If read-only staging inspection was explicitly approved this session, use it within the Rules bounds — nothing that writes. Otherwise work entirely from what the user supplies: error reports, pasted logs, reproduction steps. If the evidence is too thin to locate the fault and no inspection approval exists, stop and ask for either more evidence or that approval — never SSH speculatively. Then reproduce the failure locally where the codebase allows it — the strongest evidence.
 
 ### 2. Fix locally with a test
 

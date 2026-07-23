@@ -55,8 +55,11 @@ preference:
 
 - **Description** — always in context, every turn. Keep it ~100 words of pure
   routing signal.
-- **SKILL.md body** — loaded on trigger. Keep it under ~500 lines; approaching
-  that, push detail into `references/` with clear pointers.
+- **SKILL.md body** — loaded on trigger. The house band is 1,000–1,300 words
+  after the frontmatter (`validate.sh` check 12 enforces a hard 1,500-word
+  ceiling); approaching it, push detail into `references/` with clear pointers.
+  The full skeleton, voice, and word-budget rules live in
+  `skills/writing-kit-skills/SKILL.md`.
 - **`references/` and `assets/`** — loaded only on demand. Effectively free
   until used; this is where depth belongs.
 
@@ -237,7 +240,8 @@ eval pass.
 | Added/removed/renamed a skill folder | `skills-manifest.md` row · README skills table · `GUIDE.md` tables if it sits on the gradient |
 | A skill's phase or gradient position | `skills-manifest.md` (single source for generated AGENTS.md tables) |
 | `ship-policy.md` in either ship skill | The other copy, byte-identical |
-| An issue-title species or its grammar (`Spec:`, `Ticket NNNN of …`, `Way:`, non-spec) | `agents-md-template.md` "GitHub Issue Titles" · both `ship-policy.md` copies (the title is the commit-subject anchor) · `GUIDE.md` issue-preflight gate · add a "predates this naming, do not retitle" clause for the old form |
+| An issue-title species or its grammar (`Spec:`, `Ticket NNNN of …`, `Way:`, non-spec) | `agents-md-template.md` "Issue Titles" (tracker-neutral) · both `ship-policy.md` copies (the title is the commit-subject anchor) · `GUIDE.md` issue-preflight gate · add a "predates this naming, do not retitle" clause for the old form |
+| Deprecating a skill (retained for reference) | Start its manifest `note` with `deprecated` — a `deprecated`-prefixed note excludes the row from generated gradient/companion tables · mark its README table row · add a STATUS banner at the top of its `SKILL.md` |
 | `agents-md` templates or generation rules (anything that changes what it emits — routine manifest row additions don't count) | Bump the version marker in `skills/agents-md/` (all three occurrences: the rule text in `SKILL.md` and the first line of each template asset) |
 | Companion list | `skills-manifest.md` companions table (GUIDE/BEST-PRACTICES link to it) |
 | Elevated-permission presets | `skills/agents-md/references/tool-calling.md` (model-facing source) and `GUIDE.md` (human-facing copy) |

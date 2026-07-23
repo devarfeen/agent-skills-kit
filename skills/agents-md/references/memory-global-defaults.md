@@ -6,7 +6,7 @@
 
 Copy-paste snippets for **user-level** config. Merge into existing files; do not overwrite unrelated keys.
 
-This kit no longer creates repo `MEMORY.md`, wiki, discovery, or default knowledge-graph memory. Use each supported CLI's native memory only when that runtime provides it. Optional graph/index companions may be used when installed and task-fit, but their artifacts are not binding memory. Keep generated `AGENTS.md` as the shared workspace instruction file, and keep `CONTEXT.md` / `specs/adr/` as binding project context when those files exist.
+This kit creates no repo `MEMORY.md`, wiki, discovery, or default knowledge-graph memory. Use each CLI's native memory only when it provides one; graph/index companion artifacts are never binding memory. Shared rules live in generated `AGENTS.md`, with `CONTEXT.md` / `specs/adr/` as binding project context when those files exist.
 
 ---
 
@@ -25,9 +25,7 @@ generate_memories = true
 disable_on_external_context = true
 ```
 
-- Native store: `~/.codex/memories/`.
-- Treat Codex memories as user-local recall. Do not sync them into repo files.
-- Keep team/project rules in generated `AGENTS.md`, `CONTEXT.md`, and ADRs.
+- Native store: `~/.codex/memories/` — user-local recall; never sync it into repo files.
 - EEA/UK/CH: native memories may be unavailable.
 
 ---
@@ -81,9 +79,7 @@ Optional global reminder in `~/.claude/CLAUDE.md`:
 
 **File:** `~/.cursor/cli-config.json` — no built-in memory toggle ([CLI config](https://cursor.com/docs/cli/reference/configuration)).
 
-- Cursor CLI has no documented native memory toggle in CLI config.
-- Cursor IDE may offer Settings → Rules → Generate Memories. Treat those as IDE-local recall.
-- Do not create repo MEMORY.md files or add MCP memory servers as default memory for this kit.
+- Cursor IDE may offer Settings → Rules → Generate Memories; treat those as IDE-local recall.
 
 ---
 
@@ -98,9 +94,7 @@ Optional global reminder in `~/.claude/CLAUDE.md`:
 }
 ```
 
-- Opencode has no native memory store in this kit's supported model.
-- Use `instructions` only to point at generated `AGENTS.md` and binding context files.
-- Do not include repo MEMORY.md paths.
+- No native memory store; use `instructions` only to point at generated `AGENTS.md` and binding context files — never repo MEMORY.md paths.
 
 ---
 
@@ -108,19 +102,19 @@ Optional global reminder in `~/.claude/CLAUDE.md`:
 
 **File:** `~/.gemini/antigravity-cli/settings.json` — no native memory file store.
 
-- Antigravity CLI has no native memory file store in this kit's supported model.
-- Use generated `AGENTS.md` plus binding context files.
-- Do not add repo MEMORY.md files or third-party memory MCP servers as default memory for this kit.
+- Use generated `AGENTS.md` plus binding context files; no repo memory files or third-party memory MCP servers.
 
 ---
 
 ## Quick reference
 
-| Runtime | Native memory handling | Shared project context |
-| :--- | :--- | :--- |
-| Codex CLI | Enable `[features] memories = true`; user-local store | `AGENTS.md`, `CONTEXT.md`, ADRs |
-| Claude CLI | `autoMemoryEnabled: true` when desired; user-local/project-native store | `AGENTS.md`, `CONTEXT.md`, ADRs |
-| GitHub Copilot CLI | GitHub settings + `/memory on` | `AGENTS.md`, `CONTEXT.md`, ADRs |
-| Cursor CLI | No documented native CLI memory toggle; IDE memories are local | `AGENTS.md`, `CONTEXT.md`, ADRs |
-| Opencode CLI | No native memory store; use `instructions` for context files only | `AGENTS.md`, `CONTEXT.md`, ADRs |
-| Antigravity CLI | No native memory file store in supported model | `AGENTS.md`, `CONTEXT.md`, ADRs |
+Shared project context in every runtime: `AGENTS.md`, `CONTEXT.md`, ADRs.
+
+| Runtime | Native memory handling |
+| :--- | :--- |
+| Codex CLI | Enable `[features] memories = true`; user-local store |
+| Claude CLI | `autoMemoryEnabled: true` when desired; user-local/project-native store |
+| GitHub Copilot CLI | GitHub settings + `/memory on` |
+| Cursor CLI | No documented native CLI memory toggle; IDE memories are local |
+| Opencode CLI | No native memory store; use `instructions` for context files only |
+| Antigravity CLI | No native memory file store in supported model |

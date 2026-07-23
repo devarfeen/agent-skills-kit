@@ -1,33 +1,29 @@
 # Tool Calling Reference
 
-How the six supported CLI runtimes invoke tools, and how this kit maps generic skill instructions to each runtime.
-
-Supported runtimes are Codex CLI, Claude CLI, Antigravity CLI, Cursor CLI,
-Opencode CLI, and GitHub Copilot CLI only. Compatibility filenames used by
-those tools do not imply support for any other runtime.
+How the six supported runtimes — Codex CLI, Claude CLI, Antigravity CLI, Cursor CLI, Opencode CLI, and GitHub Copilot CLI, no others — invoke tools, and how this kit maps generic skill instructions to each. Compatibility filenames do not imply support for any other runtime.
 
 > Last verified: 2026-07-06 against all six installed CLIs (codex-cli 0.142.5, claude 2.1.201, agy 1.0.16, cursor-agent 2026.07.01, opencode 1.17.13, copilot 1.0.68) — flag/command surface via `--help`; internals are docs-level and re-verified on touch.
 
 ## Agent Orchestration Model
 
-The main session is the **orchestrator**. It decomposes work into role-typed lanes, dispatches each lane to a local subagent (or a focused in-process tool pass when the runtime has no subagents), runs independent lanes in parallel, pushes long or noisy lanes to local background/async, and keeps the only seat for merge, conflict resolution, and final judgment. Subagents return summaries, not raw transcripts. This model is enforced by the `AGENTS.md` Non-Negotiable Rule **Local Orchestration**.
+The model itself is the `AGENTS.md` Non-Negotiable Rule **Local Orchestration** (main session orchestrates role-typed local lanes and keeps the only seat for merge and final judgment); this file maps it to each runtime's concrete mechanisms. A runtime with no subagents uses a focused in-process tool pass per lane.
 
 ### Local-only policy (no cloud agents)
 
-Use only **local** subagents and **local** background/async execution. Local worktree-isolated parallel agents are allowed. Never delegate to cloud or remote background-agent products, even when the runtime makes them one keystroke away:
+Use only **local** subagents and **local** background/async execution; local worktree-isolated parallel agents are allowed. Never delegate to cloud or remote background-agent products:
 
 | Runtime | Cloud/remote product to AVOID | Local equivalent to use instead |
 | :--- | :--- | :--- |
-| Codex CLI | Codex Web delegated tasks | `spawn_agent` subagents (on by default); local git worktrees |
-| Claude CLI | Routines (`/schedule`), agent teams (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`), background agents on claude.ai | `Agent` subagents; `run_in_background` Bash; `background: true` subagents; `isolation: worktree` |
-| Antigravity CLI | Managed Agents API / remote managed execution | Agent Manager local parallel instances via `start_subagent`; `/schedule` local background |
-| Cursor CLI | Cloud Agents (formerly "Background Agents"), `&`-prefixed cloud hand-off, cursor.com/agents | `Task` subagents; `is_background` subagents + `Await`; local worktree agents |
-| Opencode CLI | (no cloud agent in scope) | `task` subagents / child sessions; `task(background=true)` + `task_status` |
-| GitHub Copilot CLI | Cloud coding agent via `/delegate` (runs in GitHub Actions, opens PRs) | `task` tool + `/fleet` parallel subagents; `Ctrl+X → b` background task/shell |
+| Codex CLI | Codex Web delegated tasks | `spawn_agent` subagents; local git worktrees |
+| Claude CLI | Routines (`/schedule`), agent teams (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`), background agents on claude.ai | `Agent` subagents; `run_in_background` Bash; `isolation: worktree` |
+| Antigravity CLI | Managed Agents API / remote managed execution | `start_subagent` local instances; `/schedule` local background |
+| Cursor CLI | Cloud Agents (formerly "Background Agents"), `&`-prefixed cloud hand-off, cursor.com/agents | `Task` subagents; local worktree agents |
+| Opencode CLI | (no cloud agent in scope) | `task` subagents; `task(background=true)` |
+| GitHub Copilot CLI | Cloud coding agent via `/delegate` (runs in GitHub Actions, opens PRs) | `task` + `/fleet` subagents; `Ctrl+X → b` background |
 
 ### Canonical role lanes
 
-Standard lane roles used across this kit. Each runtime's `*-tools.md` maps these to that runtime's concrete mechanism. Where a runtime has no dedicated built-in for a role, use its general-purpose subagent with the listed tool profile.
+Standard lane roles across this kit; each runtime's `*-tools.md` maps them to that runtime's concrete mechanism. No dedicated built-in for a role → use the general-purpose subagent with the listed tool profile.
 
 | Role | Tool profile | Purpose |
 | :--- | :--- | :--- |
@@ -44,14 +40,12 @@ Standard lane roles used across this kit. Each runtime's `*-tools.md` maps these
 
 | Runtime | Parallel dispatch | Local background / async | Custom agent files |
 | :--- | :--- | :--- | :--- |
-| Codex CLI | `spawn_agent` / `spawn_agents_on_csv` (`agents.max_threads`, default 6; `max_depth` 1) — on by default | local git worktrees (Worktrees / Automations are Codex app features, not CLI) | `.codex/agents/<name>.toml` (or `~/.codex/agents/<name>.toml`) |
+| Codex CLI | `spawn_agent` / `spawn_agents_on_csv` (`agents.max_threads`, default 6; `max_depth` 1) — on by default | `wait_agent` / async subagent threads; local git worktrees | `.codex/agents/<name>.toml` (or `~/.codex/agents/<name>.toml`) |
 | Claude CLI | Multiple `Agent` calls in one turn | `run_in_background` Bash; `background: true` subagents; `isolation: worktree` | `.claude/agents/<name>.md` |
 | Antigravity CLI | `start_subagent` orchestrator-spawned dynamic subagents (Agent Manager); `browser_subagent` for browser tasks | `/schedule` local background; Artifacts for review | `.agents/agents.md` |
 | Cursor CLI | Multiple `Task` calls in one turn (practical cap ~4); local worktree agents (up to 8) | `is_background: true` subagent + `Await`; `bash` subagent isolates output | `.cursor/agents/<name>.md` |
 | Opencode CLI | Multiple `task` calls with `subagent_type` | `task(background=true)` + `task_status` | `.opencode/agents/<name>.md`, `~/.config/opencode/agents/<name>.md`, or inline `opencode.json` agents |
 | GitHub Copilot CLI | `task` tool + `/fleet` (orchestrated parallel subagents; built-ins `explore` / `task` / `general-purpose` / `code-review` / `research` / `rubber-duck`) | `Ctrl+X → b` promotes a task or shell to background | `.github/agents/<name>.md` or `.agent.md` (user-scope `~/.copilot/agents/`) |
-
-Per-runtime role-to-mechanism maps and corrections live in each `*-tools.md`.
 
 ### Highest elevated permission by runtime
 

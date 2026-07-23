@@ -192,8 +192,6 @@ Workspace-root level. Each step produces an artifact the next step consumes.
 
 > **The thread to notice:** prompt file → ADR → spec issue → ticket issues → tested code → QA doc. Each link is grabbable on its own, and the whole chain is auditable.
 
-> **Fanning the slices out (inside herdr):** once `/to-tickets` has produced the sub-issues, if you are running in [herdr](https://herdr.dev) you can run `/orchestrate-herdr` against the spec to spin up one local coding-CLI worker tab per open issue and monitor them for test-backed completion. It is a re-runnable orchestrator — swap only the spec URL and the coding CLI between runs — and stays local-only: no panes, no nested sub-agents, no cloud agents. The orchestrator tab never implements; it dispatches and watches.
-
 ---
 
 ## 5. Workflow C — Debug / Bug-Fix

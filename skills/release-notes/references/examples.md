@@ -2,7 +2,7 @@
 
 Some outputs below are excerpts; a real file always opens with the file-level
 Stakeholder Summary and carries every per-feature block (Summary through
-Commits Included) for each feature.
+Commits Included) for each feature. Session summaries follow `assets/session-summary-template.md`; entries read exactly like Example 1.
 
 ## Example 1: Date-Based Release Notes
 
@@ -74,51 +74,7 @@ WAREHOUSE-APP
 (Each additional feature under the same project heading repeats the full
 feature block — Summary through Commits Included.)
 
-## Example 2: Session Summary
-
-### User Request
-Summarize today's development session
-
-### Example Output
-
-# Stakeholder Summary
-
-WAREHOUSE-APP
-
-- All scanner screens now use the same setup process, so scanning works reliably everywhere
-
----
-
-# Detailed Release Notes
-
-## WAREHOUSE-APP
-
-### Consistent Scanner Setup Across All Screens
-
-**Summary**
-- Every scanner screen now prepares it the same way, so scanning works reliably.
-
-**Problem**
-- Some screens prepared the scanner differently, causing scans to sometimes fail on certain pages.
-
-**Change**
-- Scanner screens share one setup process and show a retry message when not ready.
-
-**Impact**
-- Scanning works the same way no matter which screen you're on.
-
-**Scope**
-- All scanner-enabled screens in WAREHOUSE-APP.
-
-**Manual QA Steps**
-1. Open any scanner screen and start a scan → Scanner should finish setup before scan begins.
-2. Try scanning on 3 different screens → All should behave the same way.
-3. Turn Bluetooth off and on, then scan → App should show a retry message and recover.
-
-**Commits Included**
-- (uncommitted session work)
-
-## Example 3: Bad vs Good (Writing Style Reference)
+## Example 2: Bad vs Good (Writing Style Reference)
 
 This example shows the same work described in bad (verbose/corporate) style vs good (clear/simple) style.
 
@@ -172,7 +128,7 @@ This example shows the same work described in bad (verbose/corporate) style vs g
 - No jargon: no "workstreams", "touchpoints", "ad hoc", "formally prepared"
 - A PM can read it in 10 seconds and know exactly what's happening
 
-## Example 4: Feature Summary
+## Example 3: Feature Summary
 
 ### User Request
 Write release notes for the RFID scanning improvements
@@ -200,57 +156,3 @@ Write release notes for the RFID scanning improvements
 
 **Scope**
 - Applies to RFID scanning flows covered by this feature.
-
-## Example 5: Omit Unchanged Projects
-
-### User Request
-Generate release notes for 12 March 2026 across all projects
-
-### Example Input
-- WAREHOUSE-APP commits found for 12 March 2026
-- WAREHOUSE-ADMIN commits found for 12 March 2026
-- No commits found for CUSTOMER-PORTAL on 12 March 2026
-
-### Example Output Rule
-- Include WAREHOUSE-APP and WAREHOUSE-ADMIN sections.
-- Do not include CUSTOMER-PORTAL because it has no confirmed changes.
-
-### Example Output
-# Stakeholder Summary
-
-Date: 12 March 2026
-
-WAREHOUSE-APP
-
-- Scanner startup is more consistent, so teams see fewer failed first scans
-
-WAREHOUSE-ADMIN
-
-- Intake warnings are clearer, so users can fix missing fields before submitting
-
----
-
-# Detailed Release Notes
-
-## WAREHOUSE-APP
-
-### RFID Scanner Reliability
-
-(Full feature block — Summary through Commits Included — as in Example 1.)
-
-## WAREHOUSE-ADMIN
-
-### Intake Validation Clarity
-
-(Full feature block — Summary through Commits Included — as in Example 1.)
-
-## Example 6: Output File Naming
-
-`<artifacts-root>` resolution and the `NNNN`/naming rules are canonical in SKILL.md "File Output"; this example shows only the resulting file paths.
-
-### User Request
-Write release notes for RFID Scanner Reliability for 12 March 2026
-
-### Expected Output File
-- Workspace mode: `<workspace-dir>/specs/release-notes/12-March-2026.md`
-- Single repo: `specs/release-notes/12-March-2026.md`

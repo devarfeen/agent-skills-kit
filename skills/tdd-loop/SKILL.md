@@ -11,16 +11,11 @@ where strict test-first doesn't fit.
 
 ## Where this loop sits
 
-Three layers, each optional above this one:
-
-- **Ticket level — `/implement`** (Matt Pocock). Drives one ticket,
-  calling this loop at each pre-agreed seam.
-- **Behavior level — this loop.** Red → green → widen → refactor, with the
-  completion evidence below. Without `/implement` installed, drive this loop
-  directly, once per ticket.
-- **Test quality — `/tdd`** (Matt Pocock). A reference: what a good
-  test is, where seams go, the anti-patterns. It is not a loop; never use it
-  alone in place of this procedure.
+`/implement` (Matt Pocock, optional) drives one ticket and calls this loop at
+each pre-agreed seam; without it, drive this loop directly, once per ticket.
+`/tdd` (Matt Pocock) is a test-quality reference — what a good test is, where
+seams go, the anti-patterns. It is not a loop; never use it alone in place of
+this procedure.
 
 ## Before the loop
 
@@ -30,8 +25,7 @@ Three layers, each optional above this one:
    (unclear scope) or `/diagnosing-bugs` (unclear cause) and stop.
 2. **Locate the seam.** Find the code that owns the behavior, its existing
    tests, and the project's focused-test command (one file or one test — e.g.
-   `pnpm vitest run path/to/file`, `pytest path::test_name`,
-   `php artisan test --filter=Name`; more ecosystems in
+   `pnpm vitest run path/to/file`; per-ecosystem commands in
    [`references/test-commands.md`](references/test-commands.md)). Read the
    neighboring tests first and match their style, fixtures, and naming. If the
    seam choice is genuinely contestable, ask the user; if the user is away,
@@ -48,8 +42,8 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
 
 Repeat per behavior, smallest slice first. When one session works a batch —
 several tickets or bug fixes — each slice runs only its focused and widened
-commands; the project's full check runs once, after the last slice (see the
-completion criterion) — a full run per slice adds no signal.
+commands; the project's full check runs once, after the last slice — a full
+run per slice adds no signal.
 
 1. **Red.** Write ONE failing test asserting the new behavior. Run the focused
    test and read the failure.
@@ -111,8 +105,7 @@ Done means you can show all of these:
 - [ ] Focused test passes and the widened scope passes (pre-existing failures
       verified as such and noted on the Scope run line); both commands named.
 - [ ] Before suggesting ship: the project's full check (whole suite or the CI
-      command) ran green once for the batch — after the last slice when the
-      session works several slices, tickets, or bug fixes, never per slice —
+      command) ran green once for the batch, per The loop —
       apart from failures verified as pre-existing and noted; or the summary
       states why the widened scope is the widest feasible run.
 - [ ] No assertion weakened, no failing test deleted to reach green (or the

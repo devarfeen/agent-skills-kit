@@ -48,7 +48,7 @@ A single markdown table:
 
 ### capture (default)
 
-1. Confirm `<SPEC-ID>` (ask once if unknown; no spec → date-keyed filename) and open or create the punch-list.
+1. Confirm `<SPEC-ID>` (ask once if unknown) and open or create the punch-list.
 2. For each nit: apply the cosmetic-scope rule — route-outs get no row. Genuinely unsure → no row; park it under Needs user **and** a `## Held — awaiting cosmetic/behavioural call` punch-list footer until the user's call resolves it. Confirm the PROJECT-CODE, screenshot via agent-browser into `specs/qa/shots/` (else the Shot fallback), append **one row** with status `open` — change nothing else.
 3. Emit the capture update with the open-row count.
 
@@ -57,7 +57,7 @@ A single markdown table:
 Runs only on the user's fresh, explicit dispatch instruction — capturing a nit, even the last open one, never triggers it; neither does an upfront "fix them all later" said while capturing.
 
 1. Group all `open` (including `reopened`) rows by PROJECT-CODE; order each group trivial → structural (text/string first, then spacing/alignment).
-2. Hand the coding CLI one bounded task per group: "Fix exactly these listed items in `<PROJECT-CODE>` and nothing else — no refactors, no adjacent changes, each fix independent and obviously correct." **Where** stays precise enough to find without hunting; pass the rows' **Where** and **Wrong → Right** verbatim, plus: any existing test asserting the old wrong value is updated as part of the row's fix, not as an adjacent change; report back per row the file(s) touched, one line each.
+2. Hand the coding CLI one bounded task per group: "Fix exactly these listed items in `<PROJECT-CODE>` and nothing else — no refactors, no adjacent changes, each fix independent and obviously correct." Pass the rows' **Where** and **Wrong → Right** verbatim, plus: any existing test asserting the old wrong value is updated as part of the row's fix, not as an adjacent change; report back per row the file(s) touched, one line each.
 3. Mark handed-off rows `dispatched` and emit the dispatch update. Do not verify or ship yet.
 
 ### verify
@@ -71,7 +71,7 @@ After the dispatched tasks report back.
 
 ## Cross-repo
 
-A spec's nits all live in its one punch-list — never per-repo files — while dispatch stays per PROJECT-CODE. Example: `SPEC-142` touching `ADMIN-WEB`, `API-SVC`, and `MOBILE-APP` → one `specs/qa/SPEC-142-punchlist.md`, three dispatch tasks.
+A spec's nits all live in its one punch-list — never per-repo files — while dispatch stays per PROJECT-CODE: one file, one dispatch task per project touched.
 
 ## Output
 

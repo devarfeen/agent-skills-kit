@@ -19,19 +19,17 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 
 **Key Notes:**
 
-- Background: promote a running task or shell with `Ctrl+X → b`; inspect backgrounded shells with `read_bash` / `list_bash` / `stop_bash` / `write_bash`.
 - Modes: `Shift+Tab` cycles **interactive → plan → autopilot** (`--mode` choices: `interactive`, `plan`, `autopilot`). Plan is a *mode*, not a subagent.
-- Skills are invoked explicitly (e.g. `/skill-name`); plugins bundle agents, skills, hooks, and MCP server configs for distribution.
-- Cloud handoff: `/delegate` ships a task to the remote Copilot coding agent (opens PRs). Kit policy: do not use.
+- Skills are invoked explicitly (e.g. `/skill-name`); plugins bundle agents, skills, hooks, and MCP server configs.
 - The GitHub MCP server ships built in; custom MCP servers add to it.
 - Multi-repo workspace policy: use workspace-root MCP config.
-- **Memory:** Enable in GitHub Copilot settings (account); CLI: `/memory on`, `/memory off`, `/memory show` (persists). `store_memory` stores recall in GitHub. Do not create or sync repo memory files. See [`memory-global-defaults.md`](memory-global-defaults.md).
+- **Memory:** enable in GitHub Copilot settings (account); CLI: `/memory on`, `/memory off`, `/memory show` (persists). `store_memory` stores recall in GitHub. Do not create or sync repo memory files. See [`memory-global-defaults.md`](memory-global-defaults.md).
 - Highest elevated permission launch: `copilot --allow-all` (alias `--yolo`). This is equivalent to `--allow-all-tools --allow-all-paths --allow-all-urls`; combine with `--autopilot` only when the user wants autonomous multi-step continuation.
 - For exact config-file placement by tool, use [`tool-calling.md`](tool-calling.md).
 
 ## Agents: parallel, background & roles
 
-Parallel: `/fleet` makes the main agent decompose a prompt into independent subtasks and run them as context-isolated subagents; the underlying primitive is the `task` tool (with `list_agents` / `read_agent` for inspection). Built-in agents the orchestrator delegates to: `explore`, `task`, `general-purpose`, `code-review`, `research`. Local background: `Ctrl+X → b` promotes a running task / shell to the background. **Cloud coding agent** (runs in GitHub Actions, opens PRs; reachable via `/delegate`) is remote — do not use it.
+Parallel: `/fleet` decomposes a prompt into independent subtasks run as context-isolated subagents; the underlying primitive is the `task` tool (with `list_agents` / `read_agent` for inspection). Local background: `Ctrl+X → b` promotes a running task / shell to the background; inspect backgrounded shells with `read_bash` / `list_bash` / `stop_bash` / `write_bash`. **Cloud coding agent** (runs in GitHub Actions, opens PRs; reachable via `/delegate`) is remote — do not use it.
 
 Custom agents: `.github/agents/<name>.md` or `.agent.md` (repo) or `~/.copilot/agents/<name>.md` (user). Frontmatter fields: `name` (optional), `description` (required), `tools`, `model`, `target` (`vscode` | `github-copilot`), `mcp-servers`, `disable-model-invocation`, `user-invocable`, `metadata`. The agent's prompt is the markdown body (max 30,000 chars), not a frontmatter field.
 
@@ -39,7 +37,7 @@ Custom agents: `.github/agents/<name>.md` or `.agent.md` (repo) or `~/.copilot/a
 | :--- | :--- |
 | Orchestrator | main session / `/fleet` lead |
 | Explorer | `explore` built-in agent |
-| Researcher | `research` built-in agent (or `explore` + `web_fetch`) |
+| Researcher | `research` built-in agent (or `explore` + `web-fetch`) |
 | Planner | Plan mode (`Shift+Tab`) — no `plan` subagent; orchestrator plans |
 | Implementer | write-enabled custom `.github/agents/<name>.md` |
 | Reviewer | `code-review` built-in agent |

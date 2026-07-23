@@ -22,7 +22,7 @@ proves nothing — if a query could never plausibly hit this skill, it is not te
 | 10 | Add the CLAUDE.md shim that forwards Claude to AGENTS.md in this workspace |
 | 11 | We added another repo to the code-workspace — refresh the workspace agent rules |
 
-## Should NOT trigger (10)
+## Should NOT trigger (9)
 
 | # | Query | Routes to |
 | :--- | :--- | :--- |
@@ -31,11 +31,10 @@ proves nothing — if a query could never plausibly hit this skill, it is not te
 | 3 | Seed the project ui-coding skill for ADMIN-WEB | `/design-system` |
 | 4 | Generate release notes for the workspace | `/release-notes` |
 | 5 | Trace how the workspace build pipeline works | `/feature-discovery` |
-| 6 | Orchestrate this PRD's issues in herdr | `/orchestrate-herdr` |
-| 7 | Create a knowledge graph of the workspace | `graphify` |
-| 8 | Sharpen the project's domain terminology | `domain-modeling` |
-| 9 | Create a new skill for our deploy process | `skill-creator` |
-| 10 | Add a binding AGENTS.md rule so UI changes reuse the component library | `/design-system` |
+| 6 | Create a knowledge graph of the workspace | `graphify` |
+| 7 | Sharpen the project's domain terminology | `domain-modeling` |
+| 8 | Create a new skill for our deploy process | `skill-creator` |
+| 9 | Add a binding AGENTS.md rule so UI changes reuse the component library | `/design-system` |
 
 ## Rule
 

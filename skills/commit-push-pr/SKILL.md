@@ -1,16 +1,18 @@
 ---
 name: commit-push-pr
 disable-model-invocation: true
-description: Ship one iteration of GitHub-issue work as a pull request — commit with a structured message, push the branch, and open a PR whose `Closes #N` auto-closes the issue on merge; creates the issue inline when none exists. Use when the user says "commit, push, and open a PR" or wants issue work wrapped up as a reviewable PR rather than a direct close (a direct close is /commit-push-close).
+description: Ship one iteration of issue work as a pull request — commit with a structured message, push the branch, and open a PR whose `Closes #N` auto-closes the issue on merge; creates the issue inline when none exists. Use when the user says "commit, push, and open a PR" or wants issue work wrapped up as a reviewable PR rather than a direct close (a direct close is /commit-push-close).
 ---
 
 # commit-push-pr
 
-Ship one GitHub-issue iteration as a reviewable pull request whose `Closes #N` line auto-closes the issue on merge. The boundary against `/commit-push-close`: that skill ends by closing the issue directly; this one ends in a PR awaiting review.
+Ship one issue iteration as a reviewable pull request whose `Closes #N` line auto-closes the issue on merge. The boundary against `/commit-push-close`: that skill closes the issue directly; this one ends in a PR awaiting review.
+
+Issue commands show the GitHub default; a workspace-named tracker overrides them per **Tracker** in `references/ship-policy.md`.
 
 ## Shared ship policy
 
-Read [`references/ship-policy.md`](references/ship-policy.md) first. It holds the rules both ship skills share and that this workflow depends on: **Read state**, **Label validation**, **Authorship policy**, **Env parity policy**, **Inline issue creation**, **Naming anchor**, **How-to-test rules**, **Commit message format** (with the HEREDOC form and commit examples), **Pre-commit safety**, and the **Response footer**. This `SKILL.md` only covers what is specific to opening a PR.
+Read [`references/ship-policy.md`](references/ship-policy.md) first — it holds every shared ship rule the steps below cite by bold section name, **Read state** through the **Response footer**. This `SKILL.md` only covers what is specific to opening a PR.
 
 ## PR title and body
 
@@ -36,30 +38,30 @@ Closes #<num>
 - <follow-ups or known gaps; omit section if none>
 ```
 
-Rules for **How to test** live in **How-to-test rules** (`references/ship-policy.md`).
+**How to test** follows **How-to-test rules** (`references/ship-policy.md`).
 
-The `Closes #N` line is mandatory and must be on its own line near the top of the body so GitHub auto-links and auto-closes the issue on merge. If linking multiple issues, list them as `Closes #1, closes #2` (each needs its own `closes` keyword).
+The `Closes #N` line is mandatory, on its own line near the top of the body so GitHub auto-links and auto-closes the issue on merge. Multiple issues: `Closes #1, closes #2` (each needs its own `closes` keyword).
 
 ## Workflow
 
 Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.
 
-1. **Read state** — run the **Read state** commands in `references/ship-policy.md` (parallel git reads, default-branch detection, `gh` availability check).
+1. **Read state** — run the **Read state** commands in `references/ship-policy.md`.
 
-2. **Resolve or create the issue** — branch name → recent commits → conversation context. If none, switch to **Inline issue creation** (`references/ship-policy.md`) for valid small ad hoc work — the issue is drafted now but created only after the combined approval in step 7; once created, fill its number into the commit `Issue:` line and the PR `Closes #<num>`.
+2. **Resolve or create the issue** — branch name → recent commits → conversation context. If none, switch to **Inline issue creation** (`references/ship-policy.md`) for valid small ad hoc work — drafted now, created only after step 7's combined approval; once created, fill its number into the commit `Issue:` line and the PR `Closes #<num>`.
 
-3. **Read issue labels** — for issues that already existed, run `gh issue view <num> --json state,labels,title,url` and validate against the **Label validation** table in `references/ship-policy.md`. If labels are missing/conflicting or the state is `needs-triage`, `needs-info`, or `wontfix`, stop and route back to `/triage`. If the issue is already `CLOSED`, stop and ask — reopen it for this iteration, or target a different issue (for genuinely new work, **Inline issue creation** applies); `Closes #N` stays mandatory, so never open a PR against an issue that will remain closed. For issues just created inline, skip this step — labels were set at creation.
+3. **Read issue labels** — for pre-existing issues, run `gh issue view <num> --json state,labels,title,url` and validate against the **Label validation** table in `references/ship-policy.md`. Labels missing/conflicting, or state `needs-triage`, `needs-info`, or `wontfix` → stop and route back to `/triage`. Already `CLOSED` → stop and ask: reopen it for this iteration, or target a different issue (genuinely new work → **Inline issue creation**); `Closes #N` stays mandatory, so never open a PR against an issue that will remain closed. Skip for issues just created inline — labels were set at creation.
 
-4. **Branch handling** — if the current branch is `main` or `master` (or the detected default branch):
+4. **Branch handling** — if the current branch is the detected default branch (`main`/`master`):
    - Stop before staging anything.
-   - Propose a feature branch name: `issue/<issue-num>-<slug>` where `<slug>` is a short kebab-case derivation of the issue title (≤ 5 words). For an inline-drafted issue there is no number yet (creation waits for step 7's approval) — propose `issue/<slug>`; the PR's `Closes #<num>` line does the linking, not the branch name.
+   - Propose `issue/<issue-num>-<slug>` (`<slug>`: short kebab-case from the issue title, ≤ 5 words). An inline-drafted issue has no number yet — propose `issue/<slug>`; the PR's `Closes #<num>` line does the linking, not the branch name.
    - Wait for the user to confirm the name (offer to edit). If the user is away, proceed with the proposed name — step 7's combined approval remains the hard gate.
-   - `git checkout -b <branch>` — uncommitted changes follow the checkout into the new branch.
+   - `git checkout -b <branch>` — uncommitted changes follow the checkout.
    Otherwise, continue on the current branch.
 
-5. **Draft the commit message** from the issue title and diff, per **Commit message format** in `references/ship-policy.md`. For ad hoc inline issues, the new issue title and commit subject must match (see **Naming anchor**).
+5. **Draft the commit message** from the issue title and diff, per **Commit message format** and **Naming anchor** in `references/ship-policy.md`.
 
-6. **Draft the PR title and body** — title mirrors the commit subject with no routing marker; body has `Closes #N`, summary, optional decisions, how-to-test, optional notes (format above). If the test plan isn't obvious, ask the user before continuing. If the how-to-test plan contains a test or validation command — one that passes or fails, not a long-running server — run it now and paste the passing tail into the drafted body, so the body the user approves in step 7 is the final body. A failing run stops here (fix or ask).
+6. **Draft the PR title and body** — format above; title mirrors the commit subject with no routing marker. If the test plan isn't obvious, ask the user before continuing. If the how-to-test plan contains a test or validation command — one that passes or fails, not a long-running server — run it now and paste the passing tail into the drafted body, so the body the user approves in step 7 is the final body. A failing run stops here (fix or ask).
 
    Before presenting drafts, run the **Authorship policy** scrub and, if env files/keys changed, the **Env parity policy** sync pass — both in `references/ship-policy.md`.
 
@@ -101,10 +103,10 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
     EOF
     )"
     ```
-    - If a PR already exists for this branch (`gh pr list --head <branch> --json number`), do not create a duplicate. Update the existing PR's title/body with `gh pr edit <num>` instead, and report that path back.
-    - **Read the PR back** after create or edit: `gh pr view <pr-num> --json title,body,baseRefName,headRefName,url` — the title matches the commit subject, `Closes #<num>` sits on its own line in the body, base is the default branch, head is the current branch. Fix any mismatch with `gh pr edit` and re-read before reporting.
+    - If a PR already exists for this branch (`gh pr list --head <branch> --json number`), do not create a duplicate — update it with `gh pr edit <num>` and report that path back.
+    - **Read the PR back** after create or edit: `gh pr view <pr-num> --json title,body,baseRefName,headRefName,url` — title matches the commit subject, `Closes #<num>` on its own line, base is the default branch, head is the current branch. Fix any mismatch with `gh pr edit` and re-read before reporting.
 
-12. **Report** — one line: `<SHA> pushed to <branch>; PR #<pr-num> opened (Closes #<issue-num>)`. Then append the **Response footer** from `references/ship-policy.md` (1-3 advisory suggestions).
+12. **Report** — one line: `<SHA> pushed to <branch>; PR #<pr-num> opened (Closes #<issue-num>)`. Then append the **Response footer** from `references/ship-policy.md`.
 
 ## Example
 
@@ -121,7 +123,7 @@ Checkout charges are now idempotent on `x-request-id`; replays return the origin
 
 ## Decisions
 - Stored keys in Redis (24h TTL) over Postgres — the read path is hot
-- Reused existing `x-request-id` header instead of introducing a new one
+- Reused existing `x-request-id` header instead of a new one
 
 ## How to test
 1. `pnpm test server/checkout/handler.test.ts` — passing tail quoted below:
@@ -142,4 +144,4 @@ Checkout charges are now idempotent on `x-request-id`; replays return the origin
 - [ ] When the test plan contains a pass/fail test or validation command, its passing output tail is quoted in the PR body
 - [ ] No co-author or AI/tool attribution text in the commit message, PR title/body, or issue content
 - [ ] Hooks ran (no `--no-verify`)
-- [ ] Report line printed and the `Suggested next skills (optional)` footer appended (1-3 advisory suggestions, no gating)
+- [ ] Report line printed and the `Suggested next skills (optional)` footer appended

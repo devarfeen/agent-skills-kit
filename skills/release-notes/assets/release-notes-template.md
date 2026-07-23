@@ -5,7 +5,7 @@ Date: <DD Month YYYY>
 <PROJECT-CODE-1>
 
 - <What changed + why it matters — combines Summary and Change into one sentence>
-- <What changed + why it matters — combines Summary and Change into one sentence>
+- <Next feature — same pattern>
 
 <PROJECT-CODE-2>
 
@@ -24,11 +24,9 @@ Date: <DD Month YYYY>
 
 **Problem**
 - <What the user or team experienced — describe the symptom, not the code>
-- <Max 2 bullets>
 
 **Change**
 - <What changed, in words a non-developer understands — name the screen, page, or button>
-- <Max 2 content bullets. One idea per bullet. No paragraphs.>
 - What changed where: <setting, page/screen, visible element, or route — only when the history names it>
 
 **Impact**

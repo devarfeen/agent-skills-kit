@@ -28,16 +28,13 @@ bar never changes.
   `getComputedStyle(el)` for the specific properties in the defect row
   (margin/padding/gap/font-size/line-height/color/border-radius/box-shadow).
   Record the numbers in the row's Evidence cell — "looks right" is not a value.
-- **Screenshots:** zoomed/clipped element screenshots when alignment matters;
-  full-page shots are overview only. Save under the audit's shots folder and
-  record the path.
+- **Screenshots:** save zoomed/clipped element shots under the audit's shots
+  folder and record the path; full-page shots are overview only.
 - **State coverage:** drive each in-scope state (hover, focus, disabled,
   empty/error/loading, each breakpoint) before its row can pass — a default-
   state check proves nothing about the others.
 
 ## Capture efficiently
-
-The evidence bar never drops; the call count does.
 
 - One authenticated session for the whole audit; never restart the browser or
   re-auth between rows.
