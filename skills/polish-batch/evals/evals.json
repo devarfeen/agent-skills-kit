@@ -1,108 +1,108 @@
 {
- "skill": "polish-batch",
- "kind": "trigger-eval",
- "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
- "queries": [
-  {
-   "q": "Punch-list this for PRD-142: the Billing header says \"Recieve invoices\"",
-   "expect": "trigger"
-  },
-  {
-   "q": "Capture this for later: the save button is misaligned on Settings",
-   "expect": "trigger"
-  },
-  {
-   "q": "Batch these nits",
-   "expect": "trigger"
-  },
-  {
-   "q": "Polish pass when QA is done — collect the small stuff first",
-   "expect": "trigger"
-  },
-  {
-   "q": "I'm doing manual QA — log these small fixes without fixing them yet",
-   "expect": "trigger"
-  },
-  {
-   "q": "Cosmetic cleanup: wrong copy on the login page, extra padding on the cards",
-   "expect": "trigger"
-  },
-  {
-   "q": "Add to the punch list: the toast says 'succes'",
-   "expect": "trigger"
-  },
-  {
-   "q": "Dispatch the open punch-list items",
-   "expect": "trigger"
-  },
-  {
-   "q": "Collect these copy tweaks and fix them all in one go later",
-   "expect": "trigger"
-  },
-  {
-   "q": "Polish the billing page to match the Figma",
-   "expect": "no-trigger",
-   "route": "/pixel-audit"
-  },
-  {
-   "q": "This page must match the design pixel-for-pixel",
-   "expect": "no-trigger",
-   "route": "/pixel-audit"
-  },
-  {
-   "q": "The save button doesn't actually save — log it",
-   "expect": "no-trigger",
-   "route": "/to-tickets"
-  },
-  {
-   "q": "Do a QA session and file issues as I report bugs",
-   "expect": "no-trigger",
-   "route": "qa"
-  },
-  {
-   "q": "Make this dashboard bolder and more delightful",
-   "expect": "no-trigger",
-   "route": "impeccable"
-  },
-  {
-   "q": "Set up the design system for ADMIN-WEB",
-   "expect": "no-trigger",
-   "route": "/design-system"
-  },
-  {
-   "q": "Review the diff before shipping",
-   "expect": "no-trigger",
-   "route": "/code-review"
-  },
-  {
-   "q": "The API returns the wrong total on checkout",
-   "expect": "no-trigger",
-   "route": "/diagnosing-bugs"
-  },
-  {
-   "q": "Ship the polish fixes as a PR",
-   "expect": "no-trigger",
-   "route": "/commit-push-pr"
-  },
-  {
-   "q": "Verify the dispatched punch-list rows against the running app",
-   "expect": "trigger"
-  },
-  {
-   "q": "No ticket for this — start a punch list for today's QA findings",
-   "expect": "trigger"
-  },
-  {
-   "q": "Fix this typo on the login page right now, don't batch it",
-   "expect": "no-trigger",
-   "route": "none"
+  "skill": "polish-batch",
+  "kind": "trigger-eval",
+  "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
+  "queries": [
+    {
+      "q": "Punch-list this for PRD-142: the Billing header says \"Recieve invoices\"",
+      "expect": "trigger"
+    },
+    {
+      "q": "Capture this for later: the save button is misaligned on Settings",
+      "expect": "trigger"
+    },
+    {
+      "q": "Batch these nits",
+      "expect": "trigger"
+    },
+    {
+      "q": "Polish pass when QA is done — collect the small stuff first",
+      "expect": "trigger"
+    },
+    {
+      "q": "I'm doing manual QA — log these small fixes without fixing them yet",
+      "expect": "trigger"
+    },
+    {
+      "q": "Cosmetic cleanup: wrong copy on the login page, extra padding on the cards",
+      "expect": "trigger"
+    },
+    {
+      "q": "Add to the punch list: the toast says 'succes'",
+      "expect": "trigger"
+    },
+    {
+      "q": "Dispatch the open punch-list items",
+      "expect": "trigger"
+    },
+    {
+      "q": "Collect these copy tweaks and fix them all in one go later",
+      "expect": "trigger"
+    },
+    {
+      "q": "Polish the billing page to match the Figma",
+      "expect": "no-trigger",
+      "route": "/pixel-audit"
+    },
+    {
+      "q": "This page must match the design pixel-for-pixel",
+      "expect": "no-trigger",
+      "route": "/pixel-audit"
+    },
+    {
+      "q": "The save button doesn't actually save — log it",
+      "expect": "no-trigger",
+      "route": "/to-tickets"
+    },
+    {
+      "q": "Do a QA session and file issues as I report bugs",
+      "expect": "no-trigger",
+      "route": "qa"
+    },
+    {
+      "q": "Make this dashboard bolder and more delightful",
+      "expect": "no-trigger",
+      "route": "impeccable"
+    },
+    {
+      "q": "Set up the design system for ADMIN-WEB",
+      "expect": "no-trigger",
+      "route": "/design-system"
+    },
+    {
+      "q": "Review the diff before shipping",
+      "expect": "no-trigger",
+      "route": "/code-review"
+    },
+    {
+      "q": "The API returns the wrong total on checkout",
+      "expect": "no-trigger",
+      "route": "/diagnosing-bugs"
+    },
+    {
+      "q": "Ship the polish fixes as a PR",
+      "expect": "no-trigger",
+      "route": "/commit-push-pr"
+    },
+    {
+      "q": "Verify the dispatched punch-list rows against the running app",
+      "expect": "trigger"
+    },
+    {
+      "q": "No ticket for this — start a punch list for today's QA findings",
+      "expect": "trigger"
+    },
+    {
+      "q": "Fix this typo on the login page right now, don't batch it",
+      "expect": "no-trigger",
+      "route": "none"
+    }
+  ],
+  "last_run": {
+    "date": "2026-08-06",
+    "method": "3 independent catalog-routing judges over the 326-query mixed set (all sixteen eval files interleaved, deterministic shuffle), majority vote per query; judges saw only the catalog — no repo access, no SKILL.md",
+    "result": "21/21 pass — unanimous pick agreement on every query",
+    "judge_model": "claude-fable-5 (3 independent catalog-only runs)",
+    "catalog": "tools/trigger-evals/build-catalog.sh (kit descriptions read live 2026-08-06, including the same-day /agents-md and /staging-fix boundary-sentence fixes after a 324/326 first pass) + catalog-externals.md snapshot dated 2026-08-06 (mattpocock/skills v1.2.0: adds grilling, grill-me, wizard, wait-what, to-questionnaire, writing-for-agents, improve-codebase-architecture, resolving-merge-conflicts, teach; removes qa)"
   }
- ],
- "last_run": {
-  "date": "2026-07-14",
-  "method": "3 independent catalog-routing judges over the 280-query mixed set (all thirteen eval files interleaved, deterministic shuffle seed 20260706), majority vote per query; judges saw only the catalog — no repo access, no SKILL.md",
-  "result": "21/21 pass — unanimous pick agreement on every query",
-  "judge_model": "claude-fable-5 (3 independent catalog-only runs)",
-  "catalog": "tools/trigger-evals/build-catalog.sh (kit descriptions read live 2026-07-14 — unchanged since the 2026-07-09 passing run; this re-run followed the graphify-rule SKILL.md body edits, which touched no description) + catalog-externals.md snapshot dated 2026-07-09"
- }
 }

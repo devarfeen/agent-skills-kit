@@ -161,10 +161,10 @@ skills from the wider agent-skills ecosystem.
   than emitting source notes into generated `AGENTS.md` files.
 - The workflow guide references companion skills from Matt Pocock's skills repo,
   including `ask-matt`, `setup-matt-pocock-skills`, `grill-with-docs`,
-  `to-spec`, `to-tickets`, `implement`, `code-review`, `wayfinder`,
+  `grilling`, `to-spec`, `to-tickets`, `implement`, `code-review`, `wayfinder`,
   `research`, `tdd`, `diagnosing-bugs`, `triage`, `domain-modeling`,
-  `codebase-design`, `improve-codebase-architecture`, `prototype`, and
-  `handoff`:
+  `codebase-design`, `improve-codebase-architecture`, `prototype`, `handoff`,
+  `wait-what`, `wizard`, and `to-questionnaire`:
   https://github.com/mattpocock/skills
 - `/skill-creator` is credited to Anthropic's public skills repository:
   https://github.com/anthropics/skills/tree/main/skills/skill-creator

@@ -1,108 +1,108 @@
 {
- "skill": "orchestrate-herdr",
- "kind": "trigger-eval",
- "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
- "queries": [
-  {
-   "q": "orchestrate-herdr for https://github.com/org/repo/issues/42 using codex",
-   "expect": "trigger"
-  },
-  {
-   "q": "Fan this PRD out to per-issue workers",
-   "expect": "trigger"
-  },
-  {
-   "q": "Spin up one worker tab per open sub-issue of PRD-142 using claude",
-   "expect": "trigger"
-  },
-  {
-   "q": "Orchestrate the PRD's sub-issues in herdr with codex workers",
-   "expect": "trigger"
-  },
-  {
-   "q": "Launch herdr workers for every open issue under this parent issue",
-   "expect": "trigger"
-  },
-  {
-   "q": "Run the PRD fan-out — one coding CLI tab per issue",
-   "expect": "trigger"
-  },
-  {
-   "q": "Dispatch these sub-issues to worker tabs and monitor for test-backed completion",
-   "expect": "trigger"
-  },
-  {
-   "q": "Use herdr to work all open slices of this PRD in parallel",
-   "expect": "trigger"
-  },
-  {
-   "q": "Kick off the orchestrator for PRD 89 with opencode",
-   "expect": "trigger"
-  },
-  {
-   "q": "Split this pane in herdr",
-   "expect": "no-trigger",
-   "route": "herdr"
-  },
-  {
-   "q": "Read the output of that herdr tab",
-   "expect": "no-trigger",
-   "route": "herdr"
-  },
-  {
-   "q": "Create a new tab and run npm test in it",
-   "expect": "no-trigger",
-   "route": "herdr"
-  },
-  {
-   "q": "What's the status of the worker tabs?",
-   "expect": "no-trigger",
-   "route": "herdr"
-  },
-  {
-   "q": "Slice the PRD into sub-issues first",
-   "expect": "no-trigger",
-   "route": "/to-tickets"
-  },
-  {
-   "q": "Work this single issue test-first",
-   "expect": "no-trigger",
-   "route": "/tdd-loop"
-  },
-  {
-   "q": "Review the worker's diff",
-   "expect": "no-trigger",
-   "route": "/code-review"
-  },
-  {
-   "q": "Generate release notes for what the workers shipped",
-   "expect": "no-trigger",
-   "route": "/release-notes"
-  },
-  {
-   "q": "Debug why one worker's tests keep failing",
-   "expect": "no-trigger",
-   "route": "/diagnosing-bugs"
-  },
-  {
-   "q": "HERDR_ENV=1 — give every open sub-issue of this parent issue its own codex tab",
-   "expect": "trigger"
-  },
-  {
-   "q": "Re-run the PRD orchestrator — some worker tabs from the last run are still open",
-   "expect": "trigger"
-  },
-  {
-   "q": "Watch this one worker tab and tell me when it finishes",
-   "expect": "no-trigger",
-   "route": "herdr"
+  "skill": "orchestrate-herdr",
+  "kind": "trigger-eval",
+  "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
+  "queries": [
+    {
+      "q": "orchestrate-herdr for https://github.com/org/repo/issues/42 using codex",
+      "expect": "trigger"
+    },
+    {
+      "q": "Fan this PRD out to per-issue workers",
+      "expect": "trigger"
+    },
+    {
+      "q": "Spin up one worker tab per open sub-issue of PRD-142 using claude",
+      "expect": "trigger"
+    },
+    {
+      "q": "Orchestrate the PRD's sub-issues in herdr with codex workers",
+      "expect": "trigger"
+    },
+    {
+      "q": "Launch herdr workers for every open issue under this parent issue",
+      "expect": "trigger"
+    },
+    {
+      "q": "Run the PRD fan-out — one coding CLI tab per issue",
+      "expect": "trigger"
+    },
+    {
+      "q": "Dispatch these sub-issues to worker tabs and monitor for test-backed completion",
+      "expect": "trigger"
+    },
+    {
+      "q": "Use herdr to work all open slices of this PRD in parallel",
+      "expect": "trigger"
+    },
+    {
+      "q": "Kick off the orchestrator for PRD 89 with opencode",
+      "expect": "trigger"
+    },
+    {
+      "q": "Split this pane in herdr",
+      "expect": "no-trigger",
+      "route": "herdr"
+    },
+    {
+      "q": "Read the output of that herdr tab",
+      "expect": "no-trigger",
+      "route": "herdr"
+    },
+    {
+      "q": "Create a new tab and run npm test in it",
+      "expect": "no-trigger",
+      "route": "herdr"
+    },
+    {
+      "q": "What's the status of the worker tabs?",
+      "expect": "no-trigger",
+      "route": "herdr"
+    },
+    {
+      "q": "Slice the PRD into sub-issues first",
+      "expect": "no-trigger",
+      "route": "/to-tickets"
+    },
+    {
+      "q": "Work this single issue test-first",
+      "expect": "no-trigger",
+      "route": "/tdd-loop"
+    },
+    {
+      "q": "Review the worker's diff",
+      "expect": "no-trigger",
+      "route": "/code-review"
+    },
+    {
+      "q": "Generate release notes for what the workers shipped",
+      "expect": "no-trigger",
+      "route": "/release-notes"
+    },
+    {
+      "q": "Debug why one worker's tests keep failing",
+      "expect": "no-trigger",
+      "route": "/diagnosing-bugs"
+    },
+    {
+      "q": "HERDR_ENV=1 — give every open sub-issue of this parent issue its own codex tab",
+      "expect": "trigger"
+    },
+    {
+      "q": "Re-run the PRD orchestrator — some worker tabs from the last run are still open",
+      "expect": "trigger"
+    },
+    {
+      "q": "Watch this one worker tab and tell me when it finishes",
+      "expect": "no-trigger",
+      "route": "herdr"
+    }
+  ],
+  "last_run": {
+    "date": "2026-08-06",
+    "method": "3 independent catalog-routing judges over the 326-query mixed set (all sixteen eval files interleaved, deterministic shuffle), majority vote per query; judges saw only the catalog — no repo access, no SKILL.md",
+    "result": "21/21 pass — unanimous pick agreement on every query",
+    "judge_model": "claude-fable-5 (3 independent catalog-only runs)",
+    "catalog": "tools/trigger-evals/build-catalog.sh (kit descriptions read live 2026-08-06, including the same-day /agents-md and /staging-fix boundary-sentence fixes after a 324/326 first pass) + catalog-externals.md snapshot dated 2026-08-06 (mattpocock/skills v1.2.0: adds grilling, grill-me, wizard, wait-what, to-questionnaire, writing-for-agents, improve-codebase-architecture, resolving-merge-conflicts, teach; removes qa)"
   }
- ],
- "last_run": {
-  "date": "2026-07-14",
-  "method": "3 independent catalog-routing judges over the 280-query mixed set (all thirteen eval files interleaved, deterministic shuffle seed 20260706), majority vote per query; judges saw only the catalog — no repo access, no SKILL.md",
-  "result": "21/21 pass — unanimous pick agreement on every query",
-  "judge_model": "claude-fable-5 (3 independent catalog-only runs)",
-  "catalog": "tools/trigger-evals/build-catalog.sh (kit descriptions read live 2026-07-14 — unchanged since the 2026-07-09 passing run; this re-run followed the graphify-rule SKILL.md body edits, which touched no description) + catalog-externals.md snapshot dated 2026-07-09"
- }
 }

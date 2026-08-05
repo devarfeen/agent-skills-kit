@@ -1,113 +1,113 @@
 {
- "skill": "integration-contract",
- "kind": "trigger-eval",
- "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
- "queries": [
-  {
-   "q": "Build the integration contract for PRD-142",
-   "expect": "trigger"
-  },
-  {
-   "q": "This PRD touches ADMIN-WEB and API-SVC — map the seam before we ship",
-   "expect": "trigger"
-  },
-  {
-   "q": "Make sure the API change won't break the web and mobile consumers of this PRD",
-   "expect": "trigger"
-  },
-  {
-   "q": "Write the producer/consumer contract for this multi-project PRD",
-   "expect": "trigger"
-  },
-  {
-   "q": "Run the smoke gate before we hand PRD-89 to the PM",
-   "expect": "trigger"
-  },
-  {
-   "q": "Which consumers hit the endpoints this PRD changes?",
-   "expect": "trigger"
-  },
-  {
-   "q": "The orders API adds a required field — check the cross-repo impact for the PRD",
-   "expect": "trigger"
-  },
-  {
-   "q": "Gate the multi-project release on the integration checklist",
-   "expect": "trigger"
-  },
-  {
-   "q": "Verify the seam holds between LEGACY-PORTAL and API-SVC for this PRD",
-   "expect": "trigger"
-  },
-  {
-   "q": "Trace how the invoice API is consumed",
-   "expect": "no-trigger",
-   "route": "/feature-discovery"
-  },
-  {
-   "q": "Slice this PRD into issues",
-   "expect": "no-trigger",
-   "route": "/to-tickets"
-  },
-  {
-   "q": "The web app breaks when the API deploys — find the root cause",
-   "expect": "no-trigger",
-   "route": "/diagnosing-bugs"
-  },
-  {
-   "q": "Write contract tests for the orders endpoint, test-first",
-   "expect": "no-trigger",
-   "route": "/tdd"
-  },
-  {
-   "q": "Smoke test the login page visuals against the design",
-   "expect": "no-trigger",
-   "route": "/pixel-audit"
-  },
-  {
-   "q": "Punch-list these QA nits",
-   "expect": "no-trigger",
-   "route": "/polish-batch"
-  },
-  {
-   "q": "Draft the PRD for this feature",
-   "expect": "no-trigger",
-   "route": "/to-spec"
-  },
-  {
-   "q": "Open a PR for the API change",
-   "expect": "no-trigger",
-   "route": "/commit-push-pr"
-  },
-  {
-   "q": "Port the orders feature to the mobile app",
-   "expect": "no-trigger",
-   "route": "/port-feature"
-  },
-  {
-   "q": "PRD-77 spans three repos — what breaks downstream when the API changes?",
-   "expect": "trigger"
-  },
-  {
-   "q": "The PRD says it's API-only, but confirm nothing else in the workspace calls the changed endpoint before we skip the contract",
-   "expect": "trigger"
-  },
-  {
-   "q": "Write end-to-end integration tests for the checkout flow",
-   "expect": "no-trigger",
-   "route": "/tdd"
-  },
-  {
-   "q": "Open the checkout in a browser, click through it, and screenshot each step",
-   "expect": "no-trigger",
-   "route": "agent-browser"
+  "skill": "integration-contract",
+  "kind": "trigger-eval",
+  "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
+  "queries": [
+    {
+      "q": "Build the integration contract for PRD-142",
+      "expect": "trigger"
+    },
+    {
+      "q": "This PRD touches ADMIN-WEB and API-SVC — map the seam before we ship",
+      "expect": "trigger"
+    },
+    {
+      "q": "Make sure the API change won't break the web and mobile consumers of this PRD",
+      "expect": "trigger"
+    },
+    {
+      "q": "Write the producer/consumer contract for this multi-project PRD",
+      "expect": "trigger"
+    },
+    {
+      "q": "Run the smoke gate before we hand PRD-89 to the PM",
+      "expect": "trigger"
+    },
+    {
+      "q": "Which consumers hit the endpoints this PRD changes?",
+      "expect": "trigger"
+    },
+    {
+      "q": "The orders API adds a required field — check the cross-repo impact for the PRD",
+      "expect": "trigger"
+    },
+    {
+      "q": "Gate the multi-project release on the integration checklist",
+      "expect": "trigger"
+    },
+    {
+      "q": "Verify the seam holds between LEGACY-PORTAL and API-SVC for this PRD",
+      "expect": "trigger"
+    },
+    {
+      "q": "Trace how the invoice API is consumed",
+      "expect": "no-trigger",
+      "route": "/feature-discovery"
+    },
+    {
+      "q": "Slice this PRD into issues",
+      "expect": "no-trigger",
+      "route": "/to-tickets"
+    },
+    {
+      "q": "The web app breaks when the API deploys — find the root cause",
+      "expect": "no-trigger",
+      "route": "/diagnosing-bugs"
+    },
+    {
+      "q": "Write contract tests for the orders endpoint, test-first",
+      "expect": "no-trigger",
+      "route": "/tdd"
+    },
+    {
+      "q": "Smoke test the login page visuals against the design",
+      "expect": "no-trigger",
+      "route": "/pixel-audit"
+    },
+    {
+      "q": "Punch-list these QA nits",
+      "expect": "no-trigger",
+      "route": "/polish-batch"
+    },
+    {
+      "q": "Draft the PRD for this feature",
+      "expect": "no-trigger",
+      "route": "/to-spec"
+    },
+    {
+      "q": "Open a PR for the API change",
+      "expect": "no-trigger",
+      "route": "/commit-push-pr"
+    },
+    {
+      "q": "Port the orders feature to the mobile app",
+      "expect": "no-trigger",
+      "route": "/port-feature"
+    },
+    {
+      "q": "PRD-77 spans three repos — what breaks downstream when the API changes?",
+      "expect": "trigger"
+    },
+    {
+      "q": "The PRD says it's API-only, but confirm nothing else in the workspace calls the changed endpoint before we skip the contract",
+      "expect": "trigger"
+    },
+    {
+      "q": "Write end-to-end integration tests for the checkout flow",
+      "expect": "no-trigger",
+      "route": "/tdd"
+    },
+    {
+      "q": "Open the checkout in a browser, click through it, and screenshot each step",
+      "expect": "no-trigger",
+      "route": "agent-browser"
+    }
+  ],
+  "last_run": {
+    "date": "2026-08-06",
+    "method": "3 independent catalog-routing judges over the 326-query mixed set (all sixteen eval files interleaved, deterministic shuffle), majority vote per query; judges saw only the catalog — no repo access, no SKILL.md",
+    "result": "22/22 pass — unanimous pick agreement on every query",
+    "judge_model": "claude-fable-5 (3 independent catalog-only runs)",
+    "catalog": "tools/trigger-evals/build-catalog.sh (kit descriptions read live 2026-08-06, including the same-day /agents-md and /staging-fix boundary-sentence fixes after a 324/326 first pass) + catalog-externals.md snapshot dated 2026-08-06 (mattpocock/skills v1.2.0: adds grilling, grill-me, wizard, wait-what, to-questionnaire, writing-for-agents, improve-codebase-architecture, resolving-merge-conflicts, teach; removes qa)"
   }
- ],
- "last_run": {
-  "date": "2026-07-14",
-  "method": "3 independent catalog-routing judges over the 280-query mixed set (all thirteen eval files interleaved, deterministic shuffle seed 20260706), majority vote per query; judges saw only the catalog — no repo access, no SKILL.md",
-  "result": "22/22 pass — unanimous pick agreement on every query",
-  "judge_model": "claude-fable-5 (3 independent catalog-only runs)",
-  "catalog": "tools/trigger-evals/build-catalog.sh (kit descriptions read live 2026-07-14 — unchanged since the 2026-07-09 passing run; this re-run followed the graphify-rule SKILL.md body edits, which touched no description) + catalog-externals.md snapshot dated 2026-07-09"
- }
 }

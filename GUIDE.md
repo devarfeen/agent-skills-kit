@@ -13,7 +13,7 @@ Combine skills from this kit and the wider ecosystem to move from idea to shippe
 ## Credits And Provenance
 
 - **Local Skills:** Authored by Arfeen Arif. Combines original logic with ecosystem companion skills.
-- **Matt Pocock:** Source for `/ask-matt`, `/grill-with-docs`, `/to-spec`, `/to-tickets`, `/implement`, `/code-review`, `/wayfinder`, `/research`, `/tdd`, `/diagnosing-bugs`, `/triage`, `/domain-modeling`, `/codebase-design`, `/improve-codebase-architecture`, `/prototype`, and `/handoff`.
+- **Matt Pocock:** Source for `/ask-matt`, `/grill-with-docs`, `/grilling`, `/to-spec`, `/to-tickets`, `/implement`, `/code-review`, `/wayfinder`, `/research`, `/tdd`, `/diagnosing-bugs`, `/triage`, `/domain-modeling`, `/codebase-design`, `/improve-codebase-architecture`, `/prototype`, `/handoff`, `/wait-what`, `/wizard`, and `/to-questionnaire`.
 - **Forrest Chang:** Seeding logic for `/agents-md` non-negotiable principles.
 - **Anthropic:** Source for `/skill-creator`.
 - **Vercel Labs:** Source for `/agent-browser`, `skills` CLI, and React/React Native best practices.
@@ -124,6 +124,9 @@ These are optional separate installs. Use them beside this kit when installed an
 | :--- | :--- |
 | Graphify | Querying a generated code/docs/media graph would save broad file reads. Check `graphify-out/graph.json` at the project root, else the workspace root; absent in both → skip it. Multi-project workspaces: AST `update` for code, full LLM `extract` for docs — see [Graphify in multi-project workspaces](#graphify-in-multi-project-workspaces). |
 | ask-matt | You want Matt's upstream router for choosing a user-invoked skill flow. |
+| wait-what | The agent's last chat message did not land — re-pitch it with brief context, ASD-STE100 Simplified Technical English, and the ubiquitous language from `CONTEXT.md`. |
+| wizard | A procedure hits steps only a human can perform (credentials, CI secrets, third-party dashboards, one-off migrations/cutovers) — generate an interactive bash walkthrough for them; never for steps the agent can do itself. |
+| to-questionnaire | A decision needs knowledge the user lacks — turn it into a Markdown questionnaire the one person who can answer fills in async or in a meeting. |
 | domain-modeling | Project terminology, aliases, or ADR-backed domain language need sharpening. |
 | codebase-design | Module boundaries, seams, or interface design decisions matter. |
 | Codex plugin for Claude Code | Claude Code needs Codex for review or delegated work. |
@@ -394,7 +397,7 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 | Port | `/port-feature` | Gap map written to `specs/port/`; reference behaviour vs target state mapped; a thin first slice named. |
 | Prompt | `/feature-prompt` | Implementation-ready prompt is reviewed by user. Fog test passed — destination and open decisions are sharp. |
 | Wayfinding | `/wayfinder` | Map charted with a named destination; or, when working it, exactly one ticket resolved, closed, and indexed on the map. Map exhausted → nothing left to decide → `/to-spec`. |
-| Grill | `/grill-with-docs` | `Recommended answer:` is explicit; ambiguities resolve against ADRs and domain language. |
+| Grill | `/grill-with-docs` | Questions arrive in numbered frontier rounds, each with a recommended answer; ambiguities resolve against ADRs and domain language; done only when the frontier is empty. |
 | Spec | `/to-spec` | Spec is clear; dependency order is known. |
 | Tickets | `/to-tickets` | Tickets are testable; prerequisites, blocking edges, and unblocked work are ordered. |
 | Existing issue triage | `/triage` | Existing issue state is clear, or an Agent Brief / needs-info / wontfix outcome is recorded. |

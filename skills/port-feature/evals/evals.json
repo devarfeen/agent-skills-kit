@@ -1,113 +1,113 @@
 {
- "skill": "port-feature",
- "kind": "trigger-eval",
- "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
- "queries": [
-  {
-   "q": "Port stock-transfer approvals from LEGACY-PORTAL to ADMIN-WEB",
-   "expect": "trigger"
-  },
-  {
-   "q": "Help me port the invoice screen into MOBILE-APP",
-   "expect": "trigger"
-  },
-  {
-   "q": "Bring the RFID scan flow from LEGACY-PORTAL over to MOBILE-APP",
-   "expect": "trigger"
-  },
-  {
-   "q": "We're rebuilding the legacy reports module in the new app — map what needs to move",
-   "expect": "trigger"
-  },
-  {
-   "q": "Recreate the old admin's user-management feature in ADMIN-WEB, matching its behaviour",
-   "expect": "trigger"
-  },
-  {
-   "q": "Migrate the quotation workflow from the CodeIgniter app to the Laravel app",
-   "expect": "trigger"
-  },
-  {
-   "q": "The legacy system has bulk import; we need the same in the new stack — plan the port",
-   "expect": "trigger"
-  },
-  {
-   "q": "Write the gap map for porting notifications from LEGACY-PORTAL",
-   "expect": "trigger"
-  },
-  {
-   "q": "What would it take to bring the old barcode screen into MOBILE-APP? Trace it and map the gaps",
-   "expect": "trigger"
-  },
-  {
-   "q": "How does the legacy quotation workflow work?",
-   "expect": "no-trigger",
-   "route": "/feature-discovery"
-  },
-  {
-   "q": "Write a feature prompt for CSV export in ADMIN-WEB",
-   "expect": "no-trigger",
-   "route": "/feature-prompt"
-  },
-  {
-   "q": "Copy this helper function from repo A into repo B",
-   "expect": "no-trigger",
-   "route": "none"
-  },
-  {
-   "q": "Grill me on the porting plan",
-   "expect": "no-trigger",
-   "route": "/grill-with-docs"
-  },
-  {
-   "q": "Implement the ported screen test-first",
-   "expect": "no-trigger",
-   "route": "/tdd-loop"
-  },
-  {
-   "q": "Pixel-audit the ported screen against the legacy screens",
-   "expect": "no-trigger",
-   "route": "/pixel-audit"
-  },
-  {
-   "q": "Set up the design system for the target app first",
-   "expect": "no-trigger",
-   "route": "/design-system"
-  },
-  {
-   "q": "Slice the port PRD into issues",
-   "expect": "no-trigger",
-   "route": "/to-tickets"
-  },
-  {
-   "q": "Migrate the database from MySQL 5.7 to MySQL 8",
-   "expect": "no-trigger",
-   "route": "none"
-  },
-  {
-   "q": "Map what it takes to move the legacy audit-log viewer into MOBILE-APP",
-   "expect": "trigger"
-  },
-  {
-   "q": "Rebuild the legacy exports feature over here — start with the gap map",
-   "expect": "trigger"
-  },
-  {
-   "q": "Upgrade this app from Laravel 9 to Laravel 11",
-   "expect": "no-trigger",
-   "route": "none"
-  },
-  {
-   "q": "How is the transfers feature different between LEGACY-PORTAL and ADMIN-WEB?",
-   "expect": "no-trigger",
-   "route": "/feature-discovery"
+  "skill": "port-feature",
+  "kind": "trigger-eval",
+  "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
+  "queries": [
+    {
+      "q": "Port stock-transfer approvals from LEGACY-PORTAL to ADMIN-WEB",
+      "expect": "trigger"
+    },
+    {
+      "q": "Help me port the invoice screen into MOBILE-APP",
+      "expect": "trigger"
+    },
+    {
+      "q": "Bring the RFID scan flow from LEGACY-PORTAL over to MOBILE-APP",
+      "expect": "trigger"
+    },
+    {
+      "q": "We're rebuilding the legacy reports module in the new app — map what needs to move",
+      "expect": "trigger"
+    },
+    {
+      "q": "Recreate the old admin's user-management feature in ADMIN-WEB, matching its behaviour",
+      "expect": "trigger"
+    },
+    {
+      "q": "Migrate the quotation workflow from the CodeIgniter app to the Laravel app",
+      "expect": "trigger"
+    },
+    {
+      "q": "The legacy system has bulk import; we need the same in the new stack — plan the port",
+      "expect": "trigger"
+    },
+    {
+      "q": "Write the gap map for porting notifications from LEGACY-PORTAL",
+      "expect": "trigger"
+    },
+    {
+      "q": "What would it take to bring the old barcode screen into MOBILE-APP? Trace it and map the gaps",
+      "expect": "trigger"
+    },
+    {
+      "q": "How does the legacy quotation workflow work?",
+      "expect": "no-trigger",
+      "route": "/feature-discovery"
+    },
+    {
+      "q": "Write a feature prompt for CSV export in ADMIN-WEB",
+      "expect": "no-trigger",
+      "route": "/feature-prompt"
+    },
+    {
+      "q": "Copy this helper function from repo A into repo B",
+      "expect": "no-trigger",
+      "route": "none"
+    },
+    {
+      "q": "Grill me on the porting plan",
+      "expect": "no-trigger",
+      "route": "/grill-with-docs"
+    },
+    {
+      "q": "Implement the ported screen test-first",
+      "expect": "no-trigger",
+      "route": "/tdd-loop"
+    },
+    {
+      "q": "Pixel-audit the ported screen against the legacy screens",
+      "expect": "no-trigger",
+      "route": "/pixel-audit"
+    },
+    {
+      "q": "Set up the design system for the target app first",
+      "expect": "no-trigger",
+      "route": "/design-system"
+    },
+    {
+      "q": "Slice the port PRD into issues",
+      "expect": "no-trigger",
+      "route": "/to-tickets"
+    },
+    {
+      "q": "Migrate the database from MySQL 5.7 to MySQL 8",
+      "expect": "no-trigger",
+      "route": "none"
+    },
+    {
+      "q": "Map what it takes to move the legacy audit-log viewer into MOBILE-APP",
+      "expect": "trigger"
+    },
+    {
+      "q": "Rebuild the legacy exports feature over here — start with the gap map",
+      "expect": "trigger"
+    },
+    {
+      "q": "Upgrade this app from Laravel 9 to Laravel 11",
+      "expect": "no-trigger",
+      "route": "none"
+    },
+    {
+      "q": "How is the transfers feature different between LEGACY-PORTAL and ADMIN-WEB?",
+      "expect": "no-trigger",
+      "route": "/feature-discovery"
+    }
+  ],
+  "last_run": {
+    "date": "2026-08-06",
+    "method": "3 independent catalog-routing judges over the 326-query mixed set (all sixteen eval files interleaved, deterministic shuffle), majority vote per query; judges saw only the catalog — no repo access, no SKILL.md",
+    "result": "22/22 pass — unanimous pick agreement on every query",
+    "judge_model": "claude-fable-5 (3 independent catalog-only runs)",
+    "catalog": "tools/trigger-evals/build-catalog.sh (kit descriptions read live 2026-08-06, including the same-day /agents-md and /staging-fix boundary-sentence fixes after a 324/326 first pass) + catalog-externals.md snapshot dated 2026-08-06 (mattpocock/skills v1.2.0: adds grilling, grill-me, wizard, wait-what, to-questionnaire, writing-for-agents, improve-codebase-architecture, resolving-merge-conflicts, teach; removes qa)"
   }
- ],
- "last_run": {
-  "date": "2026-07-14",
-  "method": "3 independent catalog-routing judges over the 280-query mixed set (all thirteen eval files interleaved, deterministic shuffle seed 20260706), majority vote per query; judges saw only the catalog — no repo access, no SKILL.md",
-  "result": "22/22 pass — unanimous pick agreement on every query",
-  "judge_model": "claude-fable-5 (3 independent catalog-only runs)",
-  "catalog": "tools/trigger-evals/build-catalog.sh (kit descriptions read live 2026-07-14 — unchanged since the 2026-07-09 passing run; this re-run followed the graphify-rule SKILL.md body edits, which touched no description) + catalog-externals.md snapshot dated 2026-07-09"
- }
 }

@@ -1,113 +1,113 @@
 {
- "skill": "feature-prompt",
- "kind": "trigger-eval",
- "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
- "queries": [
-  {
-   "q": "Help me create a feature prompt for stock transfer approvals",
-   "expect": "trigger"
-  },
-  {
-   "q": "I have a rough idea: let managers bulk-approve timesheets. Turn it into a dev prompt.",
-   "expect": "trigger"
-  },
-  {
-   "q": "Turn this request into something I can grill: CSV export on the orders page",
-   "expect": "trigger"
-  },
-  {
-   "q": "Prep this for grill-with-docs: offline mode for the scanner app",
-   "expect": "trigger"
-  },
-  {
-   "q": "Write up a small prompt for MOBILE-APP: remember the last-used warehouse",
-   "expect": "trigger"
-  },
-  {
-   "q": "I want to propose read-only auditor accounts — shape the request",
-   "expect": "trigger"
-  },
-  {
-   "q": "Shape this brain dump into a thin slice we can plan against",
-   "expect": "trigger"
-  },
-  {
-   "q": "Draft the feature prompt for adding webhooks to PAYMENTS-API",
-   "expect": "trigger"
-  },
-  {
-   "q": "The client wants dark mode. Make it a proper request for planning.",
-   "expect": "trigger"
-  },
-  {
-   "q": "How does stock transfer approval work today?",
-   "expect": "no-trigger",
-   "route": "/feature-discovery"
-  },
-  {
-   "q": "Write the PRD for ADR-0042",
-   "expect": "no-trigger",
-   "route": "/to-spec"
-  },
-  {
-   "q": "Slice this PRD into issues",
-   "expect": "no-trigger",
-   "route": "/to-tickets"
-  },
-  {
-   "q": "Grill me on this plan before we build it",
-   "expect": "no-trigger",
-   "route": "/grill-with-docs"
-  },
-  {
-   "q": "Just add the CSV export button now, it's tiny",
-   "expect": "no-trigger",
-   "route": "/tdd-loop"
-  },
-  {
-   "q": "Write release notes for the transfer feature",
-   "expect": "no-trigger",
-   "route": "/release-notes"
-  },
-  {
-   "q": "Pixel-audit the transfers page against the Figma",
-   "expect": "no-trigger",
-   "route": "/pixel-audit"
-  },
-  {
-   "q": "Port the invoice screen from LEGACY-PORTAL to ADMIN-WEB",
-   "expect": "no-trigger",
-   "route": "/port-feature"
-  },
-  {
-   "q": "File a bug: approvals fail for managers with two roles",
-   "expect": "no-trigger",
-   "route": "none"
-  },
-  {
-   "q": "Write me a grill-ready prompt for INVENTORY-SVC: low-stock email alerts",
-   "expect": "trigger"
-  },
-  {
-   "q": "Rough requirement from sales: customers want saved carts. Get it ready for planning.",
-   "expect": "trigger"
-  },
-  {
-   "q": "Sharpen the domain terms in CONTEXT.md for the billing module",
-   "expect": "no-trigger",
-   "route": "/grill-with-docs"
-  },
-  {
-   "q": "Turn ADR-0017 into a prompt for the implementation agent",
-   "expect": "no-trigger",
-   "route": "/to-spec"
+  "skill": "feature-prompt",
+  "kind": "trigger-eval",
+  "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
+  "queries": [
+    {
+      "q": "Help me create a feature prompt for stock transfer approvals",
+      "expect": "trigger"
+    },
+    {
+      "q": "I have a rough idea: let managers bulk-approve timesheets. Turn it into a dev prompt.",
+      "expect": "trigger"
+    },
+    {
+      "q": "Turn this request into something I can grill: CSV export on the orders page",
+      "expect": "trigger"
+    },
+    {
+      "q": "Prep this for grill-with-docs: offline mode for the scanner app",
+      "expect": "trigger"
+    },
+    {
+      "q": "Write up a small prompt for MOBILE-APP: remember the last-used warehouse",
+      "expect": "trigger"
+    },
+    {
+      "q": "I want to propose read-only auditor accounts — shape the request",
+      "expect": "trigger"
+    },
+    {
+      "q": "Shape this brain dump into a thin slice we can plan against",
+      "expect": "trigger"
+    },
+    {
+      "q": "Draft the feature prompt for adding webhooks to PAYMENTS-API",
+      "expect": "trigger"
+    },
+    {
+      "q": "The client wants dark mode. Make it a proper request for planning.",
+      "expect": "trigger"
+    },
+    {
+      "q": "How does stock transfer approval work today?",
+      "expect": "no-trigger",
+      "route": "/feature-discovery"
+    },
+    {
+      "q": "Write the PRD for ADR-0042",
+      "expect": "no-trigger",
+      "route": "/to-spec"
+    },
+    {
+      "q": "Slice this PRD into issues",
+      "expect": "no-trigger",
+      "route": "/to-tickets"
+    },
+    {
+      "q": "Grill me on this plan before we build it",
+      "expect": "no-trigger",
+      "route": "/grill-with-docs"
+    },
+    {
+      "q": "Just add the CSV export button now, it's tiny",
+      "expect": "no-trigger",
+      "route": "/tdd-loop"
+    },
+    {
+      "q": "Write release notes for the transfer feature",
+      "expect": "no-trigger",
+      "route": "/release-notes"
+    },
+    {
+      "q": "Pixel-audit the transfers page against the Figma",
+      "expect": "no-trigger",
+      "route": "/pixel-audit"
+    },
+    {
+      "q": "Port the invoice screen from LEGACY-PORTAL to ADMIN-WEB",
+      "expect": "no-trigger",
+      "route": "/port-feature"
+    },
+    {
+      "q": "File a bug: approvals fail for managers with two roles",
+      "expect": "no-trigger",
+      "route": "none"
+    },
+    {
+      "q": "Write me a grill-ready prompt for INVENTORY-SVC: low-stock email alerts",
+      "expect": "trigger"
+    },
+    {
+      "q": "Rough requirement from sales: customers want saved carts. Get it ready for planning.",
+      "expect": "trigger"
+    },
+    {
+      "q": "Sharpen the domain terms in CONTEXT.md for the billing module",
+      "expect": "no-trigger",
+      "route": "/grill-with-docs"
+    },
+    {
+      "q": "Turn ADR-0017 into a prompt for the implementation agent",
+      "expect": "no-trigger",
+      "route": "/to-spec"
+    }
+  ],
+  "last_run": {
+    "date": "2026-08-06",
+    "method": "3 independent catalog-routing judges over the 326-query mixed set (all sixteen eval files interleaved, deterministic shuffle), majority vote per query; judges saw only the catalog — no repo access, no SKILL.md",
+    "result": "22/22 pass — unanimous except 2/3 majority (never picking /feature-prompt) on: 'File a bug: approvals fail for managers with two roles'",
+    "judge_model": "claude-fable-5 (3 independent catalog-only runs)",
+    "catalog": "tools/trigger-evals/build-catalog.sh (kit descriptions read live 2026-08-06, including the same-day /agents-md and /staging-fix boundary-sentence fixes after a 324/326 first pass) + catalog-externals.md snapshot dated 2026-08-06 (mattpocock/skills v1.2.0: adds grilling, grill-me, wizard, wait-what, to-questionnaire, writing-for-agents, improve-codebase-architecture, resolving-merge-conflicts, teach; removes qa)"
   }
- ],
- "last_run": {
-  "date": "2026-07-14",
-  "method": "3 independent catalog-routing judges over the 280-query mixed set (all thirteen eval files interleaved, deterministic shuffle seed 20260706), majority vote per query; judges saw only the catalog — no repo access, no SKILL.md",
-  "result": "22/22 pass — unanimous pick agreement on every query",
-  "judge_model": "claude-fable-5 (3 independent catalog-only runs)",
-  "catalog": "tools/trigger-evals/build-catalog.sh (kit descriptions read live 2026-07-14 — unchanged since the 2026-07-09 passing run; this re-run followed the graphify-rule SKILL.md body edits, which touched no description) + catalog-externals.md snapshot dated 2026-07-09"
- }
 }

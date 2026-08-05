@@ -28,7 +28,7 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | `/port-feature` | kit | discover | reference → target gap map | |
 | `/research` | external | discover | delegable primary-source reading → cited doc | |
 | `/feature-prompt` | kit | sharpen | → prompt file | |
-| `/grill-with-docs` | external | plan | → ADR | |
+| `/grill-with-docs` | external | plan | numbered frontier rounds → ADR | |
 | `/to-spec` | external | plan | → spec (PRD) | |
 | `/wayfinder` | external | plan | fog, not size — decisions gate the scope; map them as tracker tickets, resolve one per session, exit to /to-spec | |
 | `/prototype` | external | plan | spike ungrillable "needs to feel/see it" questions, then back to /grill-with-docs | |
@@ -55,6 +55,9 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | skill | kind | phase | note | use-when |
 | ----- | ---- | ----- | ---- | -------- |
 | ask-matt | companion | | | You want Matt's upstream router for choosing a user-invoked skill flow. |
+| wait-what | companion | | | The agent's last chat message did not land — re-pitch it with brief context, ASD-STE100 Simplified Technical English, and the ubiquitous language from `CONTEXT.md`. |
+| wizard | companion | | | A procedure hits steps only a human can perform (credentials, CI secrets, third-party dashboards, one-off migrations/cutovers) — generate an interactive bash walkthrough for them; never for steps the agent can do itself. |
+| to-questionnaire | companion | | | A decision needs knowledge the user lacks — turn it into a Markdown questionnaire the one person who can answer fills in async or in a meeting. |
 | domain-modeling | companion | | | Project terminology, aliases, or ADR-backed domain language need sharpening. |
 | codebase-design | companion | | | Module boundaries, seams, or interface design decisions matter. |
 | Graphify | companion | | | Querying a generated code/docs/media graph would save broad file reads. Check `graphify-out/graph.json` at the project root, else the workspace root; absent in both → skip it. Graph older than ~7 days → recommend `graphify update .`. |

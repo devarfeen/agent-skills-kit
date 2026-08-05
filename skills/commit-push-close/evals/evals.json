@@ -1,108 +1,108 @@
 {
- "skill": "commit-push-close",
- "kind": "trigger-eval",
- "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
- "queries": [
-  {
-   "q": "Commit, push, and close the issue",
-   "expect": "trigger"
-  },
-  {
-   "q": "I'm done with #418, ship it",
-   "expect": "trigger"
-  },
-  {
-   "q": "Wrap up this issue in one step",
-   "expect": "trigger"
-  },
-  {
-   "q": "Ship this issue",
-   "expect": "trigger"
-  },
-  {
-   "q": "Commit this and close #204 with a how-to-test comment",
-   "expect": "trigger"
-  },
-  {
-   "q": "We're finished here — land it and close out the ticket",
-   "expect": "trigger"
-  },
-  {
-   "q": "Commit my changes, push, and mark the issue done",
-   "expect": "trigger"
-  },
-  {
-   "q": "Close out issue 87 with testing steps",
-   "expect": "trigger"
-  },
-  {
-   "q": "Done with the fix — push and close",
-   "expect": "trigger"
-  },
-  {
-   "q": "Ship this as a PR",
-   "expect": "no-trigger",
-   "route": "/commit-push-pr"
-  },
-  {
-   "q": "Open a pull request for this issue",
-   "expect": "no-trigger",
-   "route": "/commit-push-pr"
-  },
-  {
-   "q": "Commit, push, and open a PR",
-   "expect": "no-trigger",
-   "route": "/commit-push-pr"
-  },
-  {
-   "q": "Summarize what shipped this week for the PM",
-   "expect": "no-trigger",
-   "route": "/release-notes"
-  },
-  {
-   "q": "Write release notes for today",
-   "expect": "no-trigger",
-   "route": "/release-notes"
-  },
-  {
-   "q": "Fix this issue's labels",
-   "expect": "no-trigger",
-   "route": "/triage"
-  },
-  {
-   "q": "This issue needs more info from the reporter",
-   "expect": "no-trigger",
-   "route": "/triage"
-  },
-  {
-   "q": "Review my changes before I ship",
-   "expect": "no-trigger",
-   "route": "/code-review"
-  },
-  {
-   "q": "Create GitHub issues from this PRD",
-   "expect": "no-trigger",
-   "route": "/to-tickets"
-  },
-  {
-   "q": "Ship this small fix — there's no issue for it yet",
-   "expect": "trigger"
-  },
-  {
-   "q": "Run the tests, then close out the issue with proof they pass",
-   "expect": "trigger"
-  },
-  {
-   "q": "Close this stale issue as wontfix",
-   "expect": "no-trigger",
-   "route": "/triage"
+  "skill": "commit-push-close",
+  "kind": "trigger-eval",
+  "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
+  "queries": [
+    {
+      "q": "Commit, push, and close the issue",
+      "expect": "trigger"
+    },
+    {
+      "q": "I'm done with #418, ship it",
+      "expect": "trigger"
+    },
+    {
+      "q": "Wrap up this issue in one step",
+      "expect": "trigger"
+    },
+    {
+      "q": "Ship this issue",
+      "expect": "trigger"
+    },
+    {
+      "q": "Commit this and close #204 with a how-to-test comment",
+      "expect": "trigger"
+    },
+    {
+      "q": "We're finished here — land it and close out the ticket",
+      "expect": "trigger"
+    },
+    {
+      "q": "Commit my changes, push, and mark the issue done",
+      "expect": "trigger"
+    },
+    {
+      "q": "Close out issue 87 with testing steps",
+      "expect": "trigger"
+    },
+    {
+      "q": "Done with the fix — push and close",
+      "expect": "trigger"
+    },
+    {
+      "q": "Ship this as a PR",
+      "expect": "no-trigger",
+      "route": "/commit-push-pr"
+    },
+    {
+      "q": "Open a pull request for this issue",
+      "expect": "no-trigger",
+      "route": "/commit-push-pr"
+    },
+    {
+      "q": "Commit, push, and open a PR",
+      "expect": "no-trigger",
+      "route": "/commit-push-pr"
+    },
+    {
+      "q": "Summarize what shipped this week for the PM",
+      "expect": "no-trigger",
+      "route": "/release-notes"
+    },
+    {
+      "q": "Write release notes for today",
+      "expect": "no-trigger",
+      "route": "/release-notes"
+    },
+    {
+      "q": "Fix this issue's labels",
+      "expect": "no-trigger",
+      "route": "/triage"
+    },
+    {
+      "q": "This issue needs more info from the reporter",
+      "expect": "no-trigger",
+      "route": "/triage"
+    },
+    {
+      "q": "Review my changes before I ship",
+      "expect": "no-trigger",
+      "route": "/code-review"
+    },
+    {
+      "q": "Create GitHub issues from this PRD",
+      "expect": "no-trigger",
+      "route": "/to-tickets"
+    },
+    {
+      "q": "Ship this small fix — there's no issue for it yet",
+      "expect": "trigger"
+    },
+    {
+      "q": "Run the tests, then close out the issue with proof they pass",
+      "expect": "trigger"
+    },
+    {
+      "q": "Close this stale issue as wontfix",
+      "expect": "no-trigger",
+      "route": "/triage"
+    }
+  ],
+  "last_run": {
+    "date": "2026-08-06",
+    "method": "3 independent catalog-routing judges over the 326-query mixed set (all sixteen eval files interleaved, deterministic shuffle), majority vote per query; judges saw only the catalog — no repo access, no SKILL.md",
+    "result": "21/21 pass — unanimous pick agreement on every query",
+    "judge_model": "claude-fable-5 (3 independent catalog-only runs)",
+    "catalog": "tools/trigger-evals/build-catalog.sh (kit descriptions read live 2026-08-06, including the same-day /agents-md and /staging-fix boundary-sentence fixes after a 324/326 first pass) + catalog-externals.md snapshot dated 2026-08-06 (mattpocock/skills v1.2.0: adds grilling, grill-me, wizard, wait-what, to-questionnaire, writing-for-agents, improve-codebase-architecture, resolving-merge-conflicts, teach; removes qa)"
   }
- ],
- "last_run": {
-  "date": "2026-07-14",
-  "method": "3 independent catalog-routing judges over the 280-query mixed set (all thirteen eval files interleaved, deterministic shuffle seed 20260706), majority vote per query; judges saw only the catalog — no repo access, no SKILL.md",
-  "result": "21/21 pass — unanimous pick agreement on every query",
-  "judge_model": "claude-fable-5 (3 independent catalog-only runs)",
-  "catalog": "tools/trigger-evals/build-catalog.sh (kit descriptions read live 2026-07-14 — unchanged since the 2026-07-09 passing run; this re-run followed the graphify-rule SKILL.md body edits, which touched no description) + catalog-externals.md snapshot dated 2026-07-09"
- }
 }

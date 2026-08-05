@@ -1,4 +1,4 @@
-<!-- agents-md marker · v14 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v15 · re-run /agents-md to regenerate -->
 # Agent Instructions
 
 [one concise workspace intro inferred from the .code-workspace name and folder scan]
@@ -205,8 +205,9 @@ Chat only. Does not apply to code, docs, specs (PRDs), release notes, PR bodies,
 ### 1. Plain-Language Chat
 
 - Be concise and lead with the conclusion. Clarity beats compression — use a short complete sentence where clipping would confuse.
-- Use everyday words over heavy ones ("fix" over "implement a solution", "use" over "utilize"); no jargon unless it is an exact code, product, or domain name the user already uses.
-- Write for readers who may not read English fluently: short sentences, one idea each; split any sentence carrying more than three identifiers.
+- Talk in ASD-STE100 Simplified Technical English: active voice, present tense, short sentences, one idea per sentence, one meaning per word. Split any sentence that carries more than three identifiers.
+- Use the ubiquitous language from `CONTEXT.md` for domain terms — the exact names, not synonyms.
+- Use everyday words over heavy ones ("fix" over "implement a solution", "use" over "utilize"); no other jargon unless it is an exact code, product, or domain name the user already uses.
 - Keep exact code, DB, API, route, screen, and file names verbatim. Name the plain effect, failure, or real decision first ("the test data made both cases identical"), the identifiers after; explain each technical term once.
 - No unexplained shorthand and no arrow-only flows without plain words after them. Optional brevity skills are user-invoked only.
 
