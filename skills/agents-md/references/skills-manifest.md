@@ -57,6 +57,8 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | ask-matt | companion | | | You want Matt's upstream router for choosing a user-invoked skill flow. |
 | wait-what | companion | | | The agent's last chat message did not land — re-pitch it with brief context, ASD-STE100 Simplified Technical English, and the ubiquitous language from `CONTEXT.md`. |
 | unslop | companion | | | Free-prose output needs AI tells removed — chat narration, and PR/issue/doc prose the agent composes freely. Never applies to text a skill mandates verbatim: generated `AGENTS.md`/shims, output templates, section names, field labels, canonical lines. |
+| blast-radius | companion | | | A change's blast radius needs proving — what it could break beyond the diff, with the one safety fact run against real code rather than a writeup. User-invoked (`/blast-radius`); do not auto-fire. |
+| show-me-your-work | companion | | | Long-running or unattended work needs a reviewable decision trail — a TSV log of what, why, evidence, and result that a human can audit after stepping away. User-invoked (`/show-me-your-work`); do not auto-fire. |
 | wizard | companion | | | A procedure hits steps only a human can perform (credentials, CI secrets, third-party dashboards, one-off migrations/cutovers) — generate an interactive bash walkthrough for them; never for steps the agent can do itself. |
 | to-questionnaire | companion | | | A decision needs knowledge the user lacks — turn it into a Markdown questionnaire the one person who can answer fills in async or in a meeting. |
 | domain-modeling | companion | | | Project terminology, aliases, or ADR-backed domain language need sharpening. |

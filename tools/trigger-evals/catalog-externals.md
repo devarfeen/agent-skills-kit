@@ -1,6 +1,6 @@
 ## External and companion skills (snapshot)
 
-> Snapshot 2026-08-06, taken from mattpocock/skills v1.2.0 (engineering +
+> Snapshot 2026-08-19, taken from mattpocock/skills v1.2.0 (engineering +
 > productivity buckets, descriptions verbatim). These are separate installs a
 > normal kit workspace has; they compete for routing, so the catalog must
 > include them. Refresh this file (and the date) when an upstream description
@@ -39,6 +39,9 @@ Companions:
 - **agent-browser** — Browser automation CLI for AI agents: navigate pages, fill forms, click, screenshot, extract data, test web apps, QA/bug hunts, and Electron app automation.
 - **graphify** — Any question about a codebase, its architecture, file relationships, or project content — especially when a generated knowledge graph exists; query/path/explain over the graph.
 - **impeccable** — Design, redesign, critique, audit, polish, or otherwise improve a frontend interface: UX review, visual hierarchy, accessibility, typography, spacing, color, motion, and reusable design systems or tokens.
+- **unslop** — Cut AI tells from any writing. Must always apply.
+- **blast-radius** — Find what a change could break somewhere else before it ships, beyond the diff, and prove the one fact it's safe because of by running real code instead of writing it up. Use for 'blast radius of X', 'what could this break', or reviewing a small diff you don't trust.
+- **show-me-your-work** — Keep a reviewable decision trail for long-running or unattended work: a TSV log with one row per decision (what, why, evidence, result). Local by default; commit it when a reviewer needs the trail to trust the result. Use for /show-me-your-work, autonomous or multi-phase runs, or work a human reviews after stepping away.
 - **herdr** — Control herdr from inside it: manage workspaces and tabs, split panes, spawn agents, read output, and wait for state changes (HERDR_ENV=1).
 - **docker-expert** — Docker containerization: Dockerfiles, Compose, image optimization, security hardening, registries, and production deployment.
 - **skill-creator** — Create new skills, improve existing skills, and run skill evals.

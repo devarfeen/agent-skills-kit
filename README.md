@@ -181,9 +181,9 @@ skills from the wider agent-skills ecosystem.
   (https://github.com/teng-lin/notebooklm-py), herdr
   (https://github.com/ogulcancelik/herdr), docker-expert from
   antigravity-awesome-skills (https://github.com/sickn33/antigravity-awesome-skills),
-  Laravel Boost (https://github.com/laravel/boost), unslop from Cursor's
-  plugins repo (https://github.com/cursor/plugins/tree/main/pstack/skills/unslop),
-  and Figma MCP
+  Laravel Boost (https://github.com/laravel/boost), unslop, blast-radius, and
+  show-me-your-work from Cursor's plugins repo
+  (https://github.com/cursor/plugins), and Figma MCP
   (https://developers.figma.com/docs/figma-mcp-server/).
 - `/sentry` refers to Sentry's CLI for developers and agents:
   https://cli.sentry.dev/
