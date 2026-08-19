@@ -4,12 +4,12 @@ Date: <DD Month YYYY>
 
 <PROJECT-CODE-1>
 
-- <What changed + why it matters — combines Summary and Change into one sentence>
+- <Summary + Change combined into one sentence>
 - <Next feature — same pattern>
 
 <PROJECT-CODE-2>
 
-- <What changed + why it matters — combines Summary and Change into one sentence>
+- <Summary + Change combined into one sentence>
 
 ---
 
@@ -17,20 +17,20 @@ Date: <DD Month YYYY>
 
 ## <PROJECT-CODE>
 
-### <Plain-language name for the change — what the user sees, not how it was built>
+### <Plain-language change name — what the user sees>
 
 **Summary**
-- <One sentence: what is better now, written so a PM understands in 5 seconds>
+- <One sentence: what is better now>
 
 **Problem**
-- <What the user or team experienced — describe the symptom, not the code>
+- <The symptom the user or team experienced>
 
 **Change**
-- <What changed, in words a non-developer understands — name the screen, page, or button>
+- <What changed — name the screen, page, or button>
 - What changed where: <setting, page/screen, visible element, or route — only when the history names it>
 
 **Impact**
-- <What is better now — one short sentence>
+- <What is better now>
 
 **Scope**
 - <Which screen/app/user group is affected>

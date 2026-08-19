@@ -2,7 +2,7 @@
 
 <PROJECT-CODE>
 
-- <What changed + why it matters — combines Summary and Change into one sentence>
+- <Summary + Change combined into one sentence>
 
 ---
 

@@ -167,9 +167,8 @@ never overwrite hand edits unconfirmed. Never delete unrelated files.
 
 ## Completion criteria
 
-- [ ] The saved file contains zero rule-8 banned words in narrative text
-  (**Scope** header exempt), no bullet over 15 words, no Problem/Change/Impact
-  section over 2 content bullets.
+- [ ] The saved file passes Writing rules 3 and 8 — bullet and section caps,
+  zero banned words in narrative text (**Scope** header exempt).
 - [ ] Each file exists at `specs/release-notes/<D-Month-YYYY>.md` under the
   resolved root and re-opens matching the loaded skeleton's structure, with
   only changed projects present.

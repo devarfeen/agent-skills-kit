@@ -6,7 +6,7 @@ description: Batch the UI-polish tail at the verify phase — during manual QA, 
 
 # Polish batch
 
-Three modes run separately: **capture** logs every nit to a punch-list and changes nothing, **dispatch** hands open rows to the coding CLI one bounded task per PROJECT-CODE, **verify** re-checks served surfaces row by row — so manual QA stops turning into live per-nit steering.
+Three modes run separately — **capture**, **dispatch**, **verify** — so manual QA stops turning into live per-nit steering.
 
 ## Rules
 

@@ -120,4 +120,4 @@ Do not proceed past the suggestion.
 - [ ] Defect list exists at `<artifacts-root>/specs/pixel-audit/<TARGET-PROJECT-CODE>-<page-slug>-defects.md`, names its source of truth and scope, one row per defect
 - [ ] `<TARGET-PROJECT-CODE>-<page-slug>-inventory.md` and `shots/<TARGET-PROJECT-CODE>-<page-slug>/` exist beside it
 - [ ] Every row's Status is `verified`, `open`, or `reopened` — none left `fixed` — and each `verified` row's Evidence cell holds element-level proof
-- [ ] `Stage / Found / Next / Needs user` emitted and the reply ends at the suggestion footer
+- [ ] The reply ends at the `Suggested next skills (optional)` footer — nothing after it

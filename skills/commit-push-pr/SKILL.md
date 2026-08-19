@@ -6,7 +6,7 @@ description: Ship one iteration of issue work as a pull request — commit with 
 
 # commit-push-pr
 
-Ship one issue iteration as a reviewable pull request whose `Closes #N` line auto-closes the issue on merge. The boundary against `/commit-push-close`: that skill closes the issue directly; this one ends in a PR awaiting review.
+The boundary against `/commit-push-close`: that skill closes the issue directly; this one ends in a PR awaiting review, whose `Closes #N` line auto-closes the issue on merge.
 
 Issue commands show the GitHub default; a workspace-named tracker overrides them per **Tracker** in `references/ship-policy.md`.
 
@@ -38,7 +38,7 @@ Closes #<num>
 - <follow-ups or known gaps; omit section if none>
 ```
 
-**How to test** follows **How-to-test rules** (`references/ship-policy.md`).
+**How to test** follows **How-to-test rules**.
 
 The `Closes #N` line is mandatory, on its own line near the top of the body so GitHub auto-links and auto-closes the issue on merge. Multiple issues: `Closes #1, closes #2` (each needs its own `closes` keyword).
 
@@ -48,9 +48,9 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
 
 1. **Read state** — run the **Read state** commands in `references/ship-policy.md`.
 
-2. **Resolve or create the issue** — branch name → recent commits → conversation context. If none, switch to **Inline issue creation** (`references/ship-policy.md`) for valid small ad hoc work — drafted now, created only after step 7's combined approval; once created, fill its number into the commit `Issue:` line and the PR `Closes #<num>`.
+2. **Resolve or create the issue** — branch name → recent commits → conversation context. If none, switch to **Inline issue creation** for valid small ad hoc work — drafted now, created only after step 7's combined approval; once created, fill its number into the commit `Issue:` line and the PR `Closes #<num>`.
 
-3. **Read issue labels** — for pre-existing issues, run `gh issue view <num> --json state,labels,title,url` and validate against the **Label validation** table in `references/ship-policy.md`. Labels missing/conflicting, or state `needs-triage`, `needs-info`, or `wontfix` → stop and route back to `/triage`. Already `CLOSED` → stop and ask: reopen it for this iteration, or target a different issue (genuinely new work → **Inline issue creation**); `Closes #N` stays mandatory, so never open a PR against an issue that will remain closed. Skip for issues just created inline — labels were set at creation.
+3. **Read issue labels** — for pre-existing issues, run `gh issue view <num> --json state,labels,title,url` and validate against the **Label validation** table. Labels missing/conflicting, or state `needs-triage`, `needs-info`, or `wontfix` → stop and route back to `/triage`. Already `CLOSED` → stop and ask: reopen it for this iteration, or target a different issue (genuinely new work → **Inline issue creation**); `Closes #N` stays mandatory, so never open a PR against an issue that will remain closed. Skip for issues just created inline — labels were set at creation.
 
 4. **Branch handling** — if the current branch is the detected default branch (`main`/`master`):
    - Stop before staging anything.
@@ -59,11 +59,11 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
    - `git checkout -b <branch>` — uncommitted changes follow the checkout.
    Otherwise, continue on the current branch.
 
-5. **Draft the commit message** from the issue title and diff, per **Commit message format** and **Naming anchor** in `references/ship-policy.md`.
+5. **Draft the commit message** from the issue title and diff, per **Commit message format** and **Naming anchor**.
 
 6. **Draft the PR title and body** — format above; title mirrors the commit subject with no routing marker. If the test plan isn't obvious, ask the user before continuing. If the how-to-test plan contains a test or validation command — one that passes or fails, not a long-running server — run it now and paste the passing tail into the drafted body, so the body the user approves in step 7 is the final body. A failing run stops here (fix or ask).
 
-   Before presenting drafts, run the **Authorship policy** scrub and, if env files/keys changed, the **Env parity policy** sync pass — both in `references/ship-policy.md`.
+   Before presenting drafts, run the **Authorship policy** scrub and, if env files/keys changed, the **Env parity policy** sync pass.
 
 7. **Show the user the drafts** and wait for one combined approval. Do not stage, push, or call `gh pr create` before approval:
    - Existing issue: commit message + PR title + PR body.
@@ -71,9 +71,9 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
 
    This approval is a deliberate hard gate before any remote write. If the user is away, present the drafts and stop — never stage, push, or open a PR unapproved.
 
-8. **Pre-commit safety** — apply every check in **Pre-commit safety** (`references/ship-policy.md`) before staging.
+8. **Pre-commit safety** — apply every check in **Pre-commit safety** before staging.
 
-9. **Commit** using the quoted-HEREDOC form in **Commit message format** (`references/ship-policy.md`).
+9. **Commit** using the quoted-HEREDOC form in **Commit message format**.
 
 10. **Push** the current branch:
     - Tracks a remote → `git push`.
@@ -106,11 +106,11 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
     - If a PR already exists for this branch (`gh pr list --head <branch> --json number`), do not create a duplicate — update it with `gh pr edit <num>` and report that path back.
     - **Read the PR back** after create or edit: `gh pr view <pr-num> --json title,body,baseRefName,headRefName,url` — title matches the commit subject, `Closes #<num>` on its own line, base is the default branch, head is the current branch. Fix any mismatch with `gh pr edit` and re-read before reporting.
 
-12. **Report** — one line: `<SHA> pushed to <branch>; PR #<pr-num> opened (Closes #<issue-num>)`. Then append the **Response footer** from `references/ship-policy.md`.
+12. **Report** — one line: `<SHA> pushed to <branch>; PR #<pr-num> opened (Closes #<issue-num>)`. Then append the **Response footer**.
 
 ## Example
 
-The matching commit message lives in **Commit examples** (`references/ship-policy.md`, issue #418). Optional sections (**Decisions**, **Notes**) are simply omitted when empty.
+The matching commit message lives in **Commit examples** (issue #418). Optional sections (**Decisions**, **Notes**) are simply omitted when empty.
 
 PR title: `add idempotency keys to checkout flow`
 
