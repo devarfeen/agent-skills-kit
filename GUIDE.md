@@ -94,9 +94,9 @@ Two habits worth restating because nothing else enforces them:
 
 ## First-Time Setup
 
-1. **`/agents-md`**: Creates the workspace-root `AGENTS.md` (source of truth) and the `CLAUDE.md` redirect shim — the Project Matrix (each project keyed by its **PROJECT-CODE**: uppercase, hyphenated, emoji-stripped, e.g. `Payments API` → `PAYMENTS-API`), the Non-Negotiable Rules, Working With Skills, and a Context & Native Memory section with fill-after-setup placeholders. Generates no per-repo files.
+1. **`/agents-md`**: Creates the workspace-root `AGENTS.md` (source of truth) and the `CLAUDE.md` redirect shim — the Project Matrix (each project keyed by its **PROJECT-CODE**: uppercase, hyphenated, emoji-stripped, e.g. `Payments API` → `PAYMENTS-API`), the Non-negotiable rules, Working with skills, and a Context & native memory section with fill-after-setup placeholders. Generates no per-repo files.
 2. **`/setup-matt-pocock-skills`**: Configures the issue tracker, labels, and where `CONTEXT.md` and the artifacts tree live. Point the docs location at `specs/` — the kit's convention (kept off `docs/` so GitHub Pages' `/docs` publishing mode never collides with it).
-3. **Fill the placeholders**: replace the `AGENTS.md` Context & Native Memory placeholders with the real `CONTEXT.md` and `specs/adr/` paths from setup. Mechanical fill, not a rewrite.
+3. **Fill the placeholders**: replace the `AGENTS.md` Context & native memory placeholders with the real `CONTEXT.md` and `specs/adr/` paths from setup. Mechanical fill, not a rewrite.
 4. **`/design-system`** *(per project that has UI)*: turn that project's design system (a Figma file, a written spec, reference screens, or a guided-definition session) into named tokens + a UI library + a preview you eyeball to verify. It documents the system under `specs/design-system/`, adds a short binding reference to `AGENTS.md`, and adopts and extends an existing project UI skill — or seeds a project-local `<project-slug>-ui-coding` when none exists — so every later UI change consumes the library instead of inlining markup. Re-run `extend` as the design grows or to fold a shipped page's UI back in. Stack-adaptive; never auto-chains. Steps 1–3 are once per workspace; this is once per UI project.
 
 > **Older workspaces:** re-running `/agents-md` on a workspace whose artifacts still live under `docs/` offers a one-time, ask-first `docs/` → `specs/` migration — it renames the tree and updates the `AGENTS.md` paths, moving only the artifacts subfolders.
@@ -125,6 +125,7 @@ These are optional separate installs. Use them beside this kit when installed an
 | Graphify | Querying a generated code/docs/media graph would save broad file reads. Check `graphify-out/graph.json` at the project root, else the workspace root; absent in both → skip it. Multi-project workspaces: AST `update` for code, full LLM `extract` for docs — see [Graphify in multi-project workspaces](#graphify-in-multi-project-workspaces). |
 | ask-matt | You want Matt's upstream router for choosing a user-invoked skill flow. |
 | wait-what | The agent's last chat message did not land — re-pitch it with brief context, ASD-STE100 Simplified Technical English, and the ubiquitous language from `CONTEXT.md`. |
+| unslop | Free-prose output needs AI tells removed — chat narration, and PR/issue/doc prose the agent composes freely. Never applies to text a skill mandates verbatim: generated `AGENTS.md`/shims, output templates, section names, field labels, canonical lines. |
 | wizard | A procedure hits steps only a human can perform (credentials, CI secrets, third-party dashboards, one-off migrations/cutovers) — generate an interactive bash walkthrough for them; never for steps the agent can do itself. |
 | to-questionnaire | A decision needs knowledge the user lacks — turn it into a Markdown questionnaire the one person who can answer fills in async or in a meeting. |
 | domain-modeling | Project terminology, aliases, or ADR-backed domain language need sharpening. |
@@ -277,7 +278,7 @@ For a small workspace (well under 500 files), `/graphify .` from the workspace r
 
 | Situation | Start With | Why |
 | :--- | :--- | :--- |
-| New Workspace | `/agents-md` | Establish the Project Matrix, paths, and Non-Negotiable Rules. |
+| New Workspace | `/agents-md` | Establish the Project Matrix, paths, and Non-negotiable rules. |
 | Unsure Which Matt Skill Fits | `/ask-matt` | Route to a user-invoked upstream skill flow without auto-chaining. |
 | Unclear Behavior | `/feature-discovery` | Read-only audit before planning. |
 | Rough Idea, No Fog | `/feature-prompt` | Destination and decisions are already sharp; infer-first prompt drafting. |
@@ -390,7 +391,7 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 
 | Gate | Skill | Continue When |
 | :--- | :--- | :--- |
-| Workspace | `/agents-md` | The PROJECT-CODE matrix and Non-Negotiable Rules are active. |
+| Workspace | `/agents-md` | The PROJECT-CODE matrix and Non-negotiable rules are active. |
 | Design system | `/design-system` | Tokens + library built; preview renders and the user has eyeballed it; `AGENTS.md` reference + `<project-slug>-ui-coding` seeded or extended. |
 | Issue preflight | `Issue-writing skills` | Title pattern and both required labels are validated from local workspace instructions. |
 | Discovery | `/feature-discovery` | Evidence-backed report is returned in chat; discovery files are never written. |

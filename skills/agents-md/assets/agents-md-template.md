@@ -1,48 +1,48 @@
-<!-- agents-md marker · v15 · re-run /agents-md to regenerate -->
-# Agent Instructions
+<!-- agents-md marker · v16 · re-run /agents-md to regenerate -->
+# Agent instructions
 
-[one concise workspace intro inferred from the .code-workspace name and folder scan]
+[one concise, factual workspace intro inferred from the .code-workspace name and folder scan — no promotional adjectives]
 
 [PROJECT MATRIX — the `| Project | Path | Stack |` table per the Project Matrix Format rules in SKILL.md, one row per `.code-workspace` folder]
 
-## Non-Negotiable Rules
+## Non-negotiable rules
 
-### 1. Target a Project
+### 1. Target a project
 
 - Every task must target a project from the Project Matrix. If the prompt names none, stop and ask which one first.
 - "Meta workspace" means apply the task to every project in the matrix.
 - Use the PROJECT-CODE exactly as written everywhere — chat, docs, ADRs, prompts, issues, PRs, commits, comments, filenames — never altered, abbreviated, or re-cased.
 - In chat, identify projects by PROJECT-CODE, not folder/repo names, domains, or hostnames; mention paths only when the path itself matters.
 
-### 2. Launch From The Workspace Root
+### 2. Launch from the workspace root
 
 Run every agent from the workspace root — the folder holding the `.code-workspace` file and this `AGENTS.md` — never from inside a Project Matrix project.
 
 On start, check the working directory. At the workspace root, continue. Inside a Project Matrix project (or any child of one), stop and warn clearly: "You launched inside <PROJECT-CODE>, not the workspace root — the Project Matrix and workspace rules may not load correctly." Then ask the user to continue anyway or exit and relaunch from the workspace root. Do nothing else until they choose.
 
-### 3. Think Before Coding
+### 3. Think before coding
 
 State assumptions. Present real interpretations. Push back on weak plans. Stop and ask when unclear.
 
-### 4. Decision Options
+### 4. Decision options
 
 Do not make the user infer your recommendation. Label each option `Recommended`, `Currently implemented`, both, or neither — in the option title, not buried in the explanation. Offer up to three concrete options plus a final `Write your own`, never padding to three. Label exactly one option `Recommended`; if none is safe to recommend, say why before the list.
 
-### 5. Simplicity First
+### 5. Simplicity first
 
 Solve only the asked problem. No speculative features, no one-use abstractions. Remove complexity when a smaller fix works.
 
-### 6. Surgical Changes
+### 6. Surgical changes
 
 Touch only required lines. Match local style. Do not refactor unrelated code. Clean only dead code your change creates.
 
-### 7. Goal-Driven Execution
+### 7. Goal-driven execution
 
 Define success before edits. Turn bugs into reproductions, changes into checks. Verify before reporting done.
 
 Match check scope to change scope: verify each fix with its focused test or module-scope command. The project's full check (e.g. `composer test`) runs **once per batch** — after the last item, before shipping — never after every item.
 
-### 8. Systematic Debugging
+### 8. Systematic debugging
 
 Find the root cause; don't patch symptoms — symptom patches resurface later as flakier, harder bugs.
 
@@ -51,16 +51,16 @@ Find the root cause; don't patch symptoms — symptom patches resurface later as
 - No hacks, arbitrary waits/sleeps, or guess-and-check fixes.
 - After fixing, confirm the original reproduction now passes.
 
-### 9. Read Before Write
+### 9. Read before write
 
 Before editing, understand why the code exists — its callers and exports, the shared utilities it relies on, and its original intent.
 
-### 10. Local Orchestration
+### 10. Local orchestration
 
 The main session is the top-level orchestrator and sole final integrator. Parallelization, sub-agents, and worktrees are available by default — never ask approval before using them, and never wait for a magic word. Availability is not obligation:
 
 - **Assess, then dispatch.** Decomposition-check every task. Simple tasks (one deliverable, one dominant dependency chain, localized change) stay serial; read-only discovery lanes are always fine.
-- **Activate orchestration on observable complexity** — at least two of: ≥3 separable units with disjoint ownership, multi-repo scope, an independent investigation stream, ~2× serial wall-clock estimate, broad regression surface needing specialist lanes, multiple independent deliverables. De-escalate and pull work inline when ≤1 lane remains or the rest is tightly coupled.
+- **Activate orchestration on observable complexity** — at least two of: ≥3 separable units with disjoint ownership, multi-repo scope, an independent investigation stream, ~2× serial wall-clock estimate, many areas that could regress needing specialist lanes, multiple independent deliverables. De-escalate and pull work inline when ≤1 lane remains or the rest is tightly coupled.
 - **Spawn sub-agents selectively** — only for material speed, coverage, specialization, verification, or risk-isolation gains. Every delegation carries a bounded scope, ownership, read-or-write authorization, and a completion-report format. Prerequisites first; serialize shared-file edits and integration; run long or noisy lanes in local background/async and await every lane.
 - Never use cloud or remote agents: Cursor Cloud, Copilot cloud agent, Codex Cloud/web, Antigravity managed/remote, Claude Routines (`/schedule`), claude.ai background agents. Claude Code agent teams are local but also banned. Nested delegation is allowed one level deep only, and only by explicit grant recorded in the assignment.
 - Use local role lanes — Explorer, Researcher, Planner, Implementer, Reviewer, Tester, Tool-runner — read-only for discovery/review/planning, write for implementation, shell for tests. Subagents return summaries, not transcripts; final synthesis stays in main.
@@ -68,7 +68,7 @@ The main session is the top-level orchestrator and sole final integrator. Parall
 
 **Checkouts:** Work in the existing workspace checkouts. Do not clone repos or create new checkouts — worktrees under the project-local gitignored `.worktrees/` are the one exception. Worktrees are on-demand: read-only lanes never get one; writers get one only for concurrent isolated writes, just in time — never speculatively, never for blocked work — and removed after integration. Soft cap of 3 concurrent writers, exceeded only with the disjoint-ownership justification stated in the Rule 11 dispatch update (self-stated, not user approval); runtime worktree isolation falls under the same authority and criteria.
 
-### 11. Honest State & Reporting
+### 11. Honest state & reporting
 
 Enforced. No exceptions.
 
@@ -81,14 +81,14 @@ Enforced. No exceptions.
 
 **Why:** silent gaps and premature "done" are how broken work ships.
 
-### 12. Zero Attribution
+### 12. Zero attribution
 
 No co-author, AI, tool, or generator attribution.
 
 - Never add `Co-authored-by`, `Co-Authored-By`, `Generated by`, `AI-assisted`, `Made with`, or similar to commits, PR titles, PR bodies, issue comments, release notes, generated docs, or code comments.
 - Strip tool-added attribution before every commit, push, PR, issue comment/close, or publication.
 
-### 13. Shipping Is Owned By The Ship Skills
+### 13. Shipping is owned by the ship skills
 
 Nothing commits, pushes, opens a PR, or closes an issue outside the ship skills, and each ship skill stays inside its own scope:
 
@@ -101,7 +101,7 @@ Nothing commits, pushes, opens a PR, or closes an issue outside the ship skills,
 - Any other skill that instructs you to commit — `/implement` included — stops instead and hands off. Report what is ready to ship; do not stage, commit, or push it.
 - The ship skills own branch-off-main, the structured commit message, issue linking, the how-to-test evidence, and Rule 12 — a bare commit outside them bypasses all of it and lands before the ship policy gets a say.
 
-### 14. Efficient Browser Verification
+### 14. Efficient browser verification
 
 Hard rules for every browser mechanism in every runtime — agent-browser, a built-in browser subagent, a Playwright/CDP MCP. The browser is rarely the bottleneck; chatty per-call driving, oversized snapshots, and unstable waits are.
 
@@ -115,7 +115,7 @@ Hard rules for every browser mechanism in every runtime — agent-browser, a bui
 - One interaction flow plus one evidence check per behavior; cross-page persistence and data coverage belong in the project's test suite.
 - An ordinary route flow taking over ~5 seconds is a defect to diagnose (Rule 8), not a reason to add waits.
 
-## Working With Skills
+## Working with skills
 
 Skills are ad-hoc tools, not a pipeline: treat every installed skill as available, and pick the one that fits the step in front of you — no required order, no state machine.
 
@@ -127,7 +127,7 @@ Skills are ad-hoc tools, not a pipeline: treat every installed skill as availabl
 - When a target project has its own `AGENTS.md`, read it on demand for that project's specifics. This root file still binds.
 - After finishing a step, suggest a sensible next skill when one fits. Suggest only — never chain or auto-advance.
 
-### Companion Skills And MCPs
+### Companion skills and MCPs
 
 Optional separate installs — use them beside this kit when installed and task-fit; do not vendor them into this kit.
 
@@ -137,7 +137,7 @@ Optional separate installs — use them beside this kit when installed and task-
 - Never assume a companion is installed; if missing, say so and continue with the best local fallback.
 - Use MCPs only for the current task — no browsing unrelated external data. For database MCPs, use the narrowest approved connection, read-only unless the user approves a specific write.
 
-### Matt Skill Routing
+### Matt skill routing
 
 Use `/ask-matt` to choose a Matt skill flow — it routes, never executes; do not auto-run its suggestion.
 
@@ -147,9 +147,9 @@ Use `/ask-matt` to choose a Matt skill flow — it routes, never executes; do no
 - `/diagnosing-bugs` finds the root cause; ship the fix through `/tdd-loop` — the reproduction becomes the failing regression test, one red → green per bug, full check once at batch end (Rule 7).
 - `/triage` = raw incoming issues and external PRs only — never tickets from `/to-tickets`. `/research` = delegable primary-source reading → cited doc. `/improve-codebase-architecture` (when installed) → a chosen improvement feeds `/grill-with-docs`. `/handoff` forks context to a new session; `/compact` continues this one — only at intentional phase breaks.
 
-[RUNTIME TOOL-CALLING — emit the `### Runtime Tool-Calling` subsection here, per the Working with skills rules in SKILL.md]
+[RUNTIME TOOL-CALLING — emit the `### Runtime tool-calling` subsection here, per the Working with skills rules in SKILL.md]
 
-## Context & Native Memory
+## Context & native memory
 
 - **Binding:** `CONTEXT.md` (<!-- set during setup: path to CONTEXT.md -->) + ADRs (<!-- set during setup: path to specs/adr -->) — read before implementing. Then current task context (request, issue/spec, code, tests, command evidence), then the current CLI's native memory only when it provides one; never sync memory between CLIs.
 - `specs/` is an on-demand archive — retrieve only what the task names; never bulk-read it.
@@ -163,7 +163,7 @@ Use `/ask-matt` to choose a Matt skill flow — it routes, never executes; do no
 - The vision file(s) above are the project's north star: read the relevant one before planning-phase work — feature prompts, grilling, specs, tickets, wayfinding — and align plans with it.
 - The north star guides direction and tie-breaking; it never overrides binding sources. When a plan or request conflicts with it, surface the conflict — never resolve it silently in either direction.
 
-## Issue Titles
+## Issue titles
 
 These titles live in the workspace's issue tracker of record (default: GitHub Issues), findable from tracker search and the ADR filename. `<PROJECT-CODE>` is the Project Matrix code — uppercase, hyphenated, no spaces; use it exactly.
 
@@ -198,11 +198,13 @@ These titles live in the workspace's issue tracker of record (default: GitHub Is
 
 Wayfinder issues are planning artifacts, not delivery work: they carry only `/wayfinder`'s own labels (`wayfinder:map`, and `wayfinder:research` / `prototype` / `grilling` / `task`), are closed before `/to-spec` runs, and never get a category or state label. Their HITL/AFK classification is a ticket *type*, never a title marker — no issue title in any species may carry `HITL:`, `AFK:`, or `BLOCKER:`.
 
-## Output Style
+## Output style
 
 Chat only. Does not apply to code, docs, specs (PRDs), release notes, PR bodies, or prompts.
 
-### 1. Plain-Language Chat
+Style and rewriting skills (e.g. unslop) govern free prose only — chat, and doc/PR prose composed freely. Text a skill mandates verbatim — templates, markers, section names, structured field labels, issue-title formats — is emitted exactly as specified; style skills never rewrite it.
+
+### 1. Plain-language chat
 
 - Be concise and lead with the conclusion. Clarity beats compression — use a short complete sentence where clipping would confuse.
 - Talk in ASD-STE100 Simplified Technical English: active voice, present tense, short sentences, one idea per sentence, one meaning per word. Split any sentence that carries more than three identifiers.
@@ -211,7 +213,7 @@ Chat only. Does not apply to code, docs, specs (PRDs), release notes, PR bodies,
 - Keep exact code, DB, API, route, screen, and file names verbatim. Name the plain effect, failure, or real decision first ("the test data made both cases identical"), the identifiers after; explain each technical term once.
 - No unexplained shorthand and no arrow-only flows without plain words after them. Optional brevity skills are user-invoked only.
 
-### 2. Understanding Checks
+### 2. Understanding checks
 
 When the user asks you to repeat, confirm, or restate their understanding:
 

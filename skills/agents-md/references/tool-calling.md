@@ -6,7 +6,7 @@ How the six supported runtimes — Codex CLI, Claude CLI, Antigravity CLI, Curso
 
 ## Agent Orchestration Model
 
-The model itself is the `AGENTS.md` Non-Negotiable Rule **Local Orchestration** (main session orchestrates role-typed local lanes and keeps the only seat for merge and final judgment); this file maps it to each runtime's concrete mechanisms. A runtime with no subagents uses a focused in-process tool pass per lane.
+The model itself is the `AGENTS.md` Non-negotiable rule **Local orchestration** (main session orchestrates role-typed local lanes and keeps the only seat for merge and final judgment); this file maps it to each runtime's concrete mechanisms. A runtime with no subagents uses a focused in-process tool pass per lane.
 
 ### Local-only policy (no cloud agents)
 
