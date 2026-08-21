@@ -4,12 +4,15 @@ One prompt per worker, filled from that worker's assigned issue. Never send the 
 
 Fill `TRACKER` with the resolved tracker of record, `ISSUE` with the issue's native identifier (`42` on GitHub, `PRWL-101` on Linear), and `ISSUE_URL` with its link.
 
+`BRANCH` follows `ISOLATION`. In `worktree` and `branch` mode it is that issue's branch — Linear supplies `gitBranchName`, GitHub has no native name so use `<issue-number>-<slug>`. In `shared` mode there is no per-issue branch: drop the `BRANCH` line and the clause naming it, rather than sending an empty field.
+
 ```md
 TRACKER: [GitHub|Linear]
 ISSUE: [NATIVE_IDENTIFIER]
 ISSUE_URL: [ISSUE_URL]
+BRANCH: [BRANCH_NAME]
 
-Work only on this issue.
+Work only on this issue, committing only to BRANCH.
 
 Infer project/repo context from the assigned issue.
 
