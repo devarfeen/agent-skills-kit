@@ -47,9 +47,12 @@ Read `SPEC_REF` and list its open sub-issues per **Discover**. State the count f
 
 ### 3. Intake
 
-Settle `AGENT`, `CODING_CLI`, `ISOLATION`, and the leftover-tab decision in **one batched question set** per [`references/intake.md`](references/intake.md), which holds the runtime roster, the isolation matrix, and each question's away-fallback. Ask after Discover, never before — the isolation and leftover questions both need the issue list, and name the affected issues and repos in the questions themselves.
+Ask **one batched question set**, after Discover and never before — two of the four need the issue list. Name the affected issues and repos in the questions. Away-fallbacks and the full matrices: [`references/intake.md`](references/intake.md).
 
-Offer coding agents by product name. Never label an option with a bare binary, and never pick an elevated permission mode yourself.
+1. **Which coding agent.** Offer all six supported runtimes **by product name** — Codex CLI (`codex`), Claude CLI (`claude`), Antigravity CLI (`agy`), Cursor CLI (`cursor`), Opencode CLI (`opencode`), GitHub Copilot CLI (`copilot`); the parenthesised value is `AGENT_KIND`. Never label an option with a bare binary: Cursor launches as `agent`, which names no product the user would recognise and is not a valid `--kind`. Offer every runtime whose launch token is on PATH and say which are missing.
+2. **Which permission mode.** That runtime's elevated preset, quoted from `tool-calling.md` — never retyped from memory — or its bare launch token with the consequence stated. Never pick elevation yourself. The answer becomes `CODING_CLI`.
+3. **How work is isolated.** `worktree`, `branch`, or `shared`; `worktree` whenever two open sub-issues share a repo.
+4. **Leftover tabs and agents** from a previous run of this spec — monitor them, or create alongside.
 
 ### 4. Create worker tabs
 
