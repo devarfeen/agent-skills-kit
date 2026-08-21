@@ -38,7 +38,7 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | `/implement` | external | implement | optional ticket driver — calls /tdd-loop at each seam; stops after /code-review, never commits (Rule 13) | |
 | `/tdd` | external | implement | reference only — test quality and seam choice; never use it alone as a loop | |
 | `/tdd-loop` | kit | implement | the test-first procedure — gates, completion evidence, exception protocol; stands alone | |
-| `/orchestrate-herdr` | kit | implement | deprecated/stale — retained for reference only; excluded from gradients and routing | |
+| `/orchestrate-herdr` | kit | implement | inside herdr only — fan a spec (PRD) out to worker tabs | |
 | `/code-review` | external | verify | | |
 | `/diagnosing-bugs` | external | verify | | |
 | `/polish-batch` | kit | verify | cosmetic punch-list | |
