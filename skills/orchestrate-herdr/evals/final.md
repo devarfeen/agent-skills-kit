@@ -4,7 +4,7 @@
 
 ## Trigger eval
 
-Routing baseline: **stale — a sweep is owed.** The 2026-08-06 `last_run` records 21/21 over a 21-query set and an earlier description. Both changed since: the description now advertises Linear spec references, and the set grew to 27 with six Linear routing probes. Neither the recorded result nor `validate.sh` check 10 clears until the user re-runs the judges and restamps `last_run`.
+Routing baseline: **27/27, swept 2026-08-21** on the grown 27-query set (six Linear probes added) against the Linear-aware description — 3 independent catalog-only judges (claude-opus-5), unanimous except a 2/3 majority on the no-trigger query 'Create a Linear issue for this bug', which passed. `validate.sh` check 10 green; see `evals.json` `last_run`.
 
 ## Round-1 fix verification
 

@@ -39,9 +39,9 @@ proves nothing — if a query could never plausibly hit this skill, it is not te
 | 8 | Generate release notes for what the workers shipped | `/release-notes` |
 | 9 | Debug why one worker's tests keep failing | `/diagnosing-bugs` |
 | 10 | Watch this one worker tab and tell me when it finishes | `herdr` |
-| 11 | Create a Linear issue for this bug | Linear MCP |
+| 11 | Create a Linear issue for this bug | `none` (no tracker MCP in the routing catalog) |
 | 12 | Break PRWL-100 into ticket issues | `/to-tickets` |
-| 13 | Mark PRWL-101 ready-for-human with a comment | Linear MCP |
+| 13 | Mark PRWL-101 ready-for-human with a comment | `none` (no tracker MCP in the routing catalog) |
 
 ## Rule
 
