@@ -4,7 +4,7 @@
 
 ## Trigger eval
 
-Routing baseline: unchanged description; 2026-07-09 baseline stands (re-confirmed 21/21 unanimous on 2026-07-14, per `evals.json` `last_run`).
+Routing baseline: **stale — a sweep is owed.** The 2026-08-06 `last_run` records 21/21 over a 21-query set and an earlier description. Both changed since: the description now advertises Linear spec references, and the set grew to 27 with six Linear routing probes. Neither the recorded result nor `validate.sh` check 10 clears until the user re-runs the judges and restamps `last_run`.
 
 ## Round-1 fix verification
 

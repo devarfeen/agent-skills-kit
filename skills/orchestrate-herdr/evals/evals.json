@@ -93,9 +93,36 @@
       "expect": "trigger"
     },
     {
+      "q": "orchestrate-herdr for PRWL-100 using codex",
+      "expect": "trigger"
+    },
+    {
+      "q": "Fan PRWL-100's sub-issues out to one worker tab each",
+      "expect": "trigger"
+    },
+    {
+      "q": "Spin up a claude tab for every open child issue of ABC-123",
+      "expect": "trigger"
+    },
+    {
       "q": "Watch this one worker tab and tell me when it finishes",
       "expect": "no-trigger",
       "route": "herdr"
+    },
+    {
+      "q": "Create a Linear issue for this bug",
+      "expect": "no-trigger",
+      "route": "Linear MCP"
+    },
+    {
+      "q": "Break PRWL-100 into ticket issues",
+      "expect": "no-trigger",
+      "route": "/to-tickets"
+    },
+    {
+      "q": "Mark PRWL-101 ready-for-human with a comment",
+      "expect": "no-trigger",
+      "route": "Linear MCP"
     }
   ],
   "last_run": {
