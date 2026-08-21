@@ -67,7 +67,7 @@ Parallelize the slow parts across tabs:
 
 A worker is not launched until its tab ID and agent name are saved, its prompt is accepted, and its first response is visible.
 
-Fill each worker's prompt from the template in [`references/worker-prompt.md`](references/worker-prompt.md) — one issue per worker, never the full spec, never an identical bulk prompt.
+Fill each worker's prompt from the template in [`references/worker-prompt.md`](references/worker-prompt.md) — one issue per worker, never the full spec, never an identical bulk prompt. It tells each worker to run as many local sub-agent lanes as its CLI supports, and never a cloud agent.
 
 Workers with neither test-first skill installed still owe test evidence; say so in the prompts-submitted phase update.
 

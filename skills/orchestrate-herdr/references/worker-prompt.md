@@ -25,6 +25,12 @@ Read and write issue state only through TRACKER above.
 
 Avoid unrelated changes.
 
+Sub-agents: dispatch local lanes automatically for independent work — never
+cloud agents; announce the lane count at dispatch and report each lane as it
+completes. Run as many lanes at once as your CLI supports — that is the point,
+so do not serialize work that could go wide. Serialize only edits that would
+collide and the final integration pass.
+
 Zero attribution anywhere you write — commits, PR titles/bodies, issue
 comments, code comments: no `Co-authored-by:` trailers, "Generated with" /
 "Made with" footers, "AI-assisted" notes, or tool signature lines; strip any
@@ -37,6 +43,12 @@ End the report with two fields, one line each:
 Decisions: <choices made that the issue didn't dictate, or "none">
 Open items: <what a next session must resolve, or "none">
 ```
+
+The sub-agent paragraph opens with the kit's canonical lane one-liner, byte-exact — keep it that way; the "run as many lanes at once" sentence is this skill's addition on top. What "as many as your CLI supports" means is per-runtime and is not restated here: the Parallelism column of [`../../agents-md/references/tool-calling.md`](../../agents-md/references/tool-calling.md) is the source (Codex `agents.max_threads` defaults to 6; Cursor's practical `Task` cap is ~4 with up to 8 worktree agents; Copilot has `/fleet`).
+
+**Never cloud.** Every runtime in the roster ships a remote background-agent product — Codex Cloud, Cursor Cloud Agents, Copilot's cloud coding agent, Antigravity managed execution, Claude Routines — and a worker told to go maximally parallel is exactly the agent most tempted to reach for one. Local lanes only; the clause is not optional trimming.
+
+**Widening multiplies write contention.** Under `shared` isolation, N workers each fanning out to M lanes all write one checkout. Keep the sub-agent paragraph in `worktree` and `branch` mode; in `shared` mode, say in the phase update that workers are fanning out into a shared tree, or drop the widening sentence.
 
 `Report back` is a formatting instruction, not a channel: the worker has no handle on the orchestrator, so it prints its report into its own terminal and the orchestrator reads it back per **Read** in [`herdr-commands.md`](herdr-commands.md). The two closing fields exist because a labelled single line survives a terminal scrape and a free-form sign-off does not.
 
