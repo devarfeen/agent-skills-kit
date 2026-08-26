@@ -14,7 +14,7 @@ Use only **local** subagents and **local** background/async execution; local wor
 
 | Runtime | Cloud/remote product to AVOID | Local equivalent to use instead |
 | :--- | :--- | :--- |
-| Codex CLI | Codex Web delegated tasks | `spawn_agent` subagents; local git worktrees |
+| Codex CLI | Codex Web delegated tasks | `spawn_agent` subagents (no CLI worktree support — use plain `git worktree add`) |
 | Claude CLI | Routines (`/schedule`), agent teams (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`), background agents on claude.ai | `Agent` subagents; `run_in_background` Bash; `isolation: worktree` |
 | Antigravity CLI | Managed Agents API / remote managed execution | `start_subagent` local instances; `/schedule` local background |
 | Cursor CLI | Cloud Agents (formerly "Background Agents"), `&`-prefixed cloud hand-off, cursor.com/agents | `Task` subagents; local worktree agents |
@@ -40,12 +40,25 @@ Standard lane roles across this kit; each runtime's `*-tools.md` maps them to th
 
 | Runtime | Parallel dispatch | Local background / async | Custom agent files |
 | :--- | :--- | :--- | :--- |
-| Codex CLI | `spawn_agent` / `spawn_agents_on_csv` (`agents.max_threads`, default 6; `max_depth` 1) — on by default | `wait_agent` / async subagent threads; local git worktrees | `.codex/agents/<name>.toml` (or `~/.codex/agents/<name>.toml`) |
+| Codex CLI | `spawn_agent` / `spawn_agents_on_csv` (`agents.max_threads`, default 6; `max_depth` 1) — on by default | `wait_agent` / async subagent threads | `.codex/agents/<name>.toml` (or `~/.codex/agents/<name>.toml`) |
 | Claude CLI | Multiple `Agent` calls in one turn | `run_in_background` Bash; `background: true` subagents; `isolation: worktree` | `.claude/agents/<name>.md` |
 | Antigravity CLI | `start_subagent` orchestrator-spawned dynamic subagents (Agent Manager); `browser_subagent` for browser tasks | `/schedule` local background; Artifacts for review | `.agents/agents.md` |
 | Cursor CLI | Multiple `Task` calls in one turn (practical cap ~4); local worktree agents (up to 8) | `is_background: true` subagent + `Await`; `bash` subagent isolates output | `.cursor/agents/<name>.md` |
 | Opencode CLI | Multiple `task` calls with `subagent_type` | `task(background=true)` + `task_status` | `.opencode/agents/<name>.md`, `~/.config/opencode/agents/<name>.md`, or inline `opencode.json` agents |
 | GitHub Copilot CLI | `task` tool + `/fleet` (orchestrated parallel subagents; built-ins `explore` / `task` / `general-purpose` / `code-review` / `research` / `rubber-duck`) | `Ctrl+X → b` promotes a task or shell to background | `.github/agents/<name>.md` or `.agent.md` (user-scope `~/.copilot/agents/`) |
+
+### Git worktree isolation by runtime
+
+Verified against the installed CLI surface (`--help`, feature flags, shipped bundle) for Codex, Cursor, Copilot, and Opencode; against official docs for Antigravity. Plain `git worktree add` is the portable fallback everywhere — reach for a native surface only when it buys session-switching or setup scripts.
+
+| Runtime | Native surface | Location | Base ref |
+| :--- | :--- | :--- | :--- |
+| Claude CLI | `EnterWorktree` / `ExitWorktree` (switches session cwd; fires only when the user or `CLAUDE.md` says "worktree"); `isolation: worktree` on subagents | `.claude/worktrees/<name>` | `worktree.baseRef` — `fresh` (default) = `origin/<default-branch>`, `head` = local HEAD |
+| Cursor CLI | `-w, --worktree [name]`, `--worktree-base <branch>`, `--skip-worktree-setup`; setup scripts from `.cursor/worktrees.json` | `~/.cursor/worktrees/<reponame>/<name>` | current HEAD |
+| GitHub Copilot CLI | `-w, --worktree [name]` (hidden from `--help`) and `/worktree`; needs `/experimental on` or `--experimental`. Can move uncommitted changes in. Conflicts with `--resume` / `--continue` / `--cloud` | `<repo>/.worktrees/` — already the path the generated Rule 10 mandates | HEAD, or the default branch when the `WORKTREE_DEFAULT_BRANCH` flag is on; `worktreeBaseRef` config overrides |
+| Antigravity CLI | `start_subagent` (proto field `invoke_subagent`) with workspace mode `branch` (vs `inherit`, `share`); worktrees auto-cleaned when the subagent is killed | not documented | not documented |
+| Opencode CLI | TUI-only: "Create new worktree" in the new-session picker, plus a per-project worktree startup script. No CLI flag. The new tab layout does not support worktrees yet | not documented | not documented |
+| Codex CLI | **None.** No flag, subcommand, or feature flag — worktrees are a Codex *app* feature, not a CLI one | — | — |
 
 ### Highest elevated permission by runtime
 

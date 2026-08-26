@@ -1,4 +1,4 @@
-<!-- agents-md marker · v16 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v17 · re-run /agents-md to regenerate -->
 # Agent instructions
 
 [one concise, factual workspace intro inferred from the .code-workspace name and folder scan — no promotional adjectives]
@@ -67,6 +67,8 @@ The main session is the top-level orchestrator and sole final integrator. Parall
 - Keep parallel state visible per Rule 11 — lane count at dispatch, each completion or failure as it lands — for every parallel mechanism in every runtime, whatever this CLI calls it.
 
 **Checkouts:** Work in the existing workspace checkouts. Do not clone repos or create new checkouts — worktrees under the project-local gitignored `.worktrees/` are the one exception. Worktrees are on-demand: read-only lanes never get one; writers get one only for concurrent isolated writes, just in time — never speculatively, never for blocked work — and removed after integration. Soft cap of 3 concurrent writers, exceeded only with the disjoint-ownership justification stated in the Rule 11 dispatch update (self-stated, not user approval); runtime worktree isolation falls under the same authority and criteria.
+
+**User-asked isolation:** A user request to work in a worktree, on a branch, or "in isolation" overrides the on-demand rule above — set it up before the first edit, never after. When they name the form (`worktree` or `branch`), take them at their word. When they do not ("isolate this", "keep it separate", "leave my checkout alone"), ask once per Rule 4 — a worktree under `.worktrees/` (`Recommended`: their checkout stays untouched), a new branch in the current checkout, or stay in the current checkout — and edit nothing while the question is open. That question settles which form they meant; it is never an approval gate for the lanes above.
 
 ### 11. Honest state & reporting
 

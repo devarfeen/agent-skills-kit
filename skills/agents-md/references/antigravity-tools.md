@@ -26,7 +26,7 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 
 ## Agents: parallel, background & roles
 
-Parallelism is built into the **Agent Manager**: `start_subagent` spawns dynamic, dependency-aware subagents that share the parent's workspace or run in an isolated Git worktree (clean context window, same model; concurrency limit not publicly documented). Local background: `/schedule` runs cron-style tasks that survive app close; Artifacts (plans, diffs, walkthroughs) are written to a folder for review on return. **Managed Agents API / remote managed execution** is cloud — do not use it.
+Parallelism is built into the **Agent Manager**: `start_subagent` spawns dynamic, dependency-aware subagents whose workspace mode is `inherit` (parent's workspace), `branch` (isolated Git worktree, auto-cleaned on kill), or `share` (shared directory storage) (clean context window, same model; concurrency limit not publicly documented). Local background: `/schedule` runs cron-style tasks that survive app close; Artifacts (plans, diffs, walkthroughs) are written to a folder for review on return. **Managed Agents API / remote managed execution** is cloud — do not use it.
 
 | Role | Antigravity mechanism |
 | :--- | :--- |
