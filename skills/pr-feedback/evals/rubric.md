@@ -2,6 +2,8 @@
 
 Two independent axes. A skill can route perfectly and still waste the context it earns.
 
+Zero attribution: omit co-author, AI, and tool attribution from evaluation artifacts and publications.
+
 ## 1. Trigger eval (routing)
 
 Does the runtime load this skill, and not a sibling? Scored from [`evals.json`](evals.json) by the
@@ -9,7 +11,7 @@ harness in `tools/trigger-evals/`: build the catalog, build the queryset, run **
 judge agents** that route each query using only the catalog, then take a majority vote per query.
 
 - A `trigger` query passes when the majority picks `/pr-feedback`.
-- A `no-trigger` query passes when the majority picks anything else. Its `route` field is
+- A `no-trigger` query passes when a valid majority picks another catalog entry or `none`. Missing, malformed, or split votes do not pass. Its `route` field is
   diagnostic, not pass/fail.
 
 Pass bar: **18/18**. Anything less is a description defect, not a query defect.
@@ -23,7 +25,7 @@ Eleven categories, 1–5, scored by a reader who did not write the edits.
 
 | Score | Meaning |
 | :--- | :--- |
-| 5 | A frontier agent executes correctly first try. Nothing to add, nothing to cut. |
+| 5 | No defect found within the documented review scope, supported by stated checks; untested tasks remain unproven. |
 | 4 | Strong, but a reviewer can point at one concrete line. |
 | 3 | A real gap that would produce a wrong or incomplete run. |
 | 2 | Materially incomplete or misleading. |
@@ -33,8 +35,7 @@ Categories: purpose clarity · trigger clarity · scope control · instruction q
 engineering usefulness · agent usability · verification quality · TDD/testing compat ·
 maintainability · frontier readiness.
 
-**Trigger clarity is scored from the trigger eval above, not from prose.** To score it below 5, name
-the colliding sibling and the query that misroutes.
+**Trigger clarity is scored from routing evidence, not prose.** State the actual run date and whether it was rerun. Name any colliding sibling and misrouted query, or missing runtime evidence. Catalog routing does not prove a host implicitly loads a user-only skill.
 
 `N/A` is permitted only on TDD/testing compat, only when the skill has no testable surface, and only
 with a written justification. This skill applies code fixes and gates on their tests, so category 9

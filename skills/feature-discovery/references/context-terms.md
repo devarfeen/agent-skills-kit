@@ -6,6 +6,8 @@ edit both copies together). How to surface domain terms that code evidence
 suggests are missing from or stale in `CONTEXT.md`, and how to apply approved
 updates.
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in any output. Keep this rule explicit in any `CONTEXT.md` created or updated here.
+
 ## What qualifies as a candidate
 
 Candidate terms must be meaningful to product or domain experts: roles,

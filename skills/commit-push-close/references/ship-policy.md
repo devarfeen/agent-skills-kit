@@ -1,6 +1,6 @@
 # Shared Ship Policy
 
-Shared rules for `commit-push-close` and `commit-push-pr`. Both ship one issue iteration, differing only in the final step (direct close vs. PR with `Closes #N`). **Ship output** means the commit message plus the final artifact — the issue-close comment (`commit-push-close`) or the PR title and body (`commit-push-pr`).
+Shared rules for `commit-push-close` and `commit-push-pr`. Both ship one issue iteration. **Ship output** includes the commit message, issue content, PR title/body, and QA comments. Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
 > Duplicated in both skills' `references/` so each installs self-contained. Keep the two copies byte-identical when editing.
 
@@ -17,9 +17,13 @@ Run in parallel:
 - `git log -5 --oneline`
 - `git branch --show-current`
 - `git remote get-url origin`
-- Detect the default branch: `gh repo view --json defaultBranchRef -q .defaultBranchRef.name` (fallback: `main`). Use the detected name wherever a rule says `main`/`master`.
+- Detect the default branch: `gh repo view --json defaultBranchRef -q .defaultBranchRef.name`. If unavailable, inspect `refs/remotes/origin/HEAD`; if still unknown, ask before branch-dependent writes. Never guess `main`.
 
 If `gh` is missing or unauthenticated (`gh auth status`), stop and name the exact failed check.
+
+Read workspace environment restrictions before opening env files or choosing a push/PR target. Never access production or target its deployment branch when prohibited. Staging access and mutations require the workspace's stated approvals. A ship request does not override these restrictions.
+
+Resolve the exact push remote and destination branch from the upstream configuration. Confirm they match the intended repository and branch; if not, stop before pushing. Verify the remote branch SHA equals the local commit with `git ls-remote <remote> refs/heads/<branch>` after a successful push. Local status alone cannot prove which remote received it.
 
 ## Label validation
 
@@ -48,10 +52,10 @@ Applies to outputs from every supported coding-agent path: Codex CLI, Claude CLI
 
 When env keys change in any way (add/remove/rename/value-contract), enforce all of the following in the same iteration:
 
-- Keep key sets synchronized across the env files the repo actually has — `.env`, `.env.staging`, `.env.production` (never update only one, and never create env files the repo doesn't use).
+- Keep key contracts synchronized in permitted local configuration and tracked sample/example files. Check workspace restrictions before reading any environment file, including local copies named for production or staging.
 - Keep `.sample.env` or `.example.env` updated with the latest keys and safe placeholder values.
 - Update README/docs where env keys, setup steps, or env behavior are referenced.
-- If `.env.staging` / `.env.production` are gitignored in that repo, still update local filesystem copies and report them explicitly as local-only updates.
+- Do not open or modify restricted production/staging files or real secrets to satisfy parity. Record the key names and required owner action without values. If parity cannot be verified within the permitted scope, report that gap; never claim full parity or deployment readiness.
 
 ## Inline issue creation
 
@@ -71,15 +75,12 @@ When the workflow can't locate an issue for valid ad hoc work, create one before
    ```bash
    gh issue create \
      --title "<title>" \
-     --body "$(cat <<'EOF'
-   <body>
-   EOF
-   )" \
+     --body-file <issue-body-file>.md \
      --label "<category-label>" \
      --label "<state-label>"
    ```
 
-5. Capture the returned issue number and use it as `<num>` for the rest of the workflow; skip the "read state" call — labels were set at creation.
+5. Read back the created issue's number, title, body, and labels. Correct any mismatch before committing; use the real number as `<num>`.
 
 ## Naming anchor
 
@@ -92,13 +93,40 @@ Use the issue title as the naming anchor:
 
 ## How-to-test rules
 
-For the test plan in ship output:
+For every issue-close comment and PR QA comment, include this handoff. Keep the PR body's test plan consistent with it.
 
-- Concrete, runnable steps a reviewer can copy. Name the screen, command, endpoint, or button.
-- UI change: where to click, what to enter, what to see.
-- API/server change: the exact `curl` or request, expected status/payload.
-- Internal/refactor with no user-facing surface: verify via tests (`pnpm test path/to/file`, etc.) plus what should still work end-to-end.
-- 3–6 steps. If you can't write a real test plan from the diff, ask the user before shipping — do not invent one. If the user is away, stop with the drafts presented: a ship without a real test plan never proceeds unattended.
+```markdown
+## QA handoff
+Change: <actual commit SHA and branch; PR link when available>
+
+### What changed
+<observable behavior and reason>
+
+### Where changed
+- <screen/menu route, endpoint, or capability> — `<repo-relative path>`: <change>
+
+### Setup
+<permitted environment, how to run this revision, role/account, safe test data and prerequisites>
+
+### How to test
+1. <action or copyable command> — expect <observable result>.
+2. <regression or edge-case action> — expect <observable result>.
+
+### Verification
+<checks actually run, result and decisive output; manual steps not run are marked pending>
+
+### Gaps
+<known limits, unavailable checks, owner actions, cleanup; omit if none>
+```
+
+- Derive locations and commands from the final diff and repo configuration. Use exact paths; add commit-pinned file links when known. Never invent routes, credentials, test results, or line numbers. Name both the product location and the meaningful changed files, including affected projects in a multi-repo change.
+- Use plain English with exact technical names where QA needs them. UI steps name clicks, input, and visible results. API steps give method/path or a safe copyable request with expected status/payload. Internal/config/docs changes use the actual validation command and explain what it protects.
+- Use 3–6 steps for a typical change; use fewer for a trivial change and more when separate affected behaviors need coverage. Include at least one relevant regression or negative case, plus cleanup when tests create data.
+- Identify the tested revision and environment. A pushed commit is not evidence of a deployment. Use local or explicitly permitted test environments and synthetic data; missing access stays an owner prerequisite, never an instruction to access production.
+- Run applicable local pass/fail checks before commit/push and again if staged content or hooks change the tested content. Reuse evidence when content and environment are unchanged. Failures in the change's test plan or required checks stop shipping; an unavailable required check is a blocker. An unrelated baseline failure may remain recorded only when repo policy and existing user authorization permit it; never call that check passed. Manual QA outside required gates may remain explicitly pending.
+- If the diff and repo do not support a real plan, prepare the known parts and ask for the missing information before shipping. If the user is away, stop with the drafts; do not invent a plan.
+
+Post comments using a prepared file and `--body-file`. Read back the comment body and URL and compare all handoff sections with the final draft. Reuse an identical comment for the same SHA after a retry; after partial failure report what landed and resume only the missing action. Do not edit unrelated human comments.
 
 ## Commit message format
 
@@ -165,12 +193,15 @@ Notes:
 
 ## Pre-commit safety
 
-- Refuse to stage secret-pattern files by default: `.env`, `.env.*` (except `.env.example`), `*.pem`, `*.key`, `id_rsa*`, `credentials*.json`, `*secret*`. Exception: stage `.env` / `.env.staging` / `.env.production` only when they are intentionally tracked, non-secret, and explicitly user-approved.
+- Refuse to stage secret-pattern files by default: `.env`, `.env.*`, `*.pem`, `*.key`, `id_rsa*`, `credentials*.json`, `*secret*`. Sample/example files may be staged after confirming they contain safe placeholders. Other env files require explicit approval, intentionally tracked non-secret content, and permission under workspace restrictions.
 - Stage explicitly by path — never `git add -A` / `git add .`.
+- Inspect the complete index with `git diff --cached --name-status` and `git diff --cached` before committing. If unrelated changes are already staged, stop and resolve ownership without unstaging the user's work. Include intended untracked files in the review; `git diff HEAD` does not show them.
 - Verify the ship output carries no attribution text (**Authorship policy** patterns).
-- For env-key changes, verify every **Env parity policy** point held, including the local-only update and its reporting when staging/production env files are gitignored.
+- For env-key changes, report permitted updates and restricted owner actions under **Env parity policy**.
 - Honor hooks. Never `--no-verify`. If a hook fails, fix the underlying issue and create a NEW commit (do not amend).
 
 ## Response footer
+
+GitHub command flags checked against installed `gh` help on 2026-09-09. The [comment command](https://cli.github.com/manual/gh_pr_comment) supports body files; [closing-keyword behavior](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue) applies to default-branch PRs. Recheck current help when flags differ.
 
 End the final response with `Suggested next skills (optional)`: 1-3 advisory recommendations chosen from workflow context (for example `/release-notes`, `/handoff`, or `/triage`). Recommendation-only — never gating.

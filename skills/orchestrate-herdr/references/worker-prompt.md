@@ -16,7 +16,9 @@ Work only on this issue, committing only to BRANCH.
 
 Infer project/repo context from the assigned issue.
 
-Use the installed test-first skill: `/tdd` when present, otherwise `/tdd-loop`.
+Use `/tdd-loop` for the test-first procedure when installed and `/tdd` for
+test quality guidance. If neither is installed, reproduce the failure with a
+test and make it pass; still report the command and passing output.
 
 Do not work on the full spec. Do not redo spec orchestration. Do only the
 issue-level discovery this issue needs.
@@ -44,11 +46,11 @@ Decisions: <choices made that the issue didn't dictate, or "none">
 Open items: <what a next session must resolve, or "none">
 ```
 
-The sub-agent paragraph opens with the kit's canonical lane one-liner, byte-exact — keep it that way; the "run as many lanes at once" sentence is this skill's addition on top. What "as many as your CLI supports" means is per-runtime and is not restated here: the Parallelism column of [`../../agents-md/references/tool-calling.md`](../../agents-md/references/tool-calling.md) is the source (Codex `agents.max_threads` defaults to 6; Cursor's practical `Task` cap is ~4 with up to 8 worktree agents; Copilot has `/fleet`).
+The sub-agent paragraph opens with the kit's canonical lane one-liner. Check the worker runtime's available tools and configured concurrency limit; do not infer tool names or lane counts from another runtime. If local subagents are unavailable, perform the issue work in that worker without delegation.
 
 **Never cloud.** Every runtime in the roster ships a remote background-agent product — Codex Cloud, Cursor Cloud Agents, Copilot's cloud coding agent, Antigravity managed execution, Claude Routines — and a worker told to go maximally parallel is exactly the agent most tempted to reach for one. Local lanes only; the clause is not optional trimming.
 
-**Widening multiplies write contention.** Under `shared` isolation, N workers each fanning out to M lanes all write one checkout. Keep the sub-agent paragraph in `worktree` and `branch` mode; in `shared` mode, say in the phase update that workers are fanning out into a shared tree, or drop the widening sentence.
+**Widening multiplies write contention.** Under `shared` isolation, replace the widening sentences with: "Delegate read-only work only. Serialize all edits in the shared checkout." Keep the normal paragraph in `worktree` and serial `branch` mode.
 
 `Report back` is a formatting instruction, not a channel: the worker has no handle on the orchestrator, so it prints its report into its own terminal and the orchestrator reads it back per **Read** in [`herdr-commands.md`](herdr-commands.md). The two closing fields exist because a labelled single line survives a terminal scrape and a free-form sign-off does not.
 

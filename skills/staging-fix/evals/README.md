@@ -11,13 +11,16 @@ This skill owns its evals. Everything needed to judge `/staging-fix` is in this 
 
 ## Running the trigger eval
 
+Zero attribution: omit co-author, AI, and tool attribution from evaluation artifacts and publications.
+
 From the repo root:
 
 ```bash
-bash tools/trigger-evals/build-catalog.sh > /tmp/ev/catalog.md
-python3 tools/trigger-evals/build-queryset.py /tmp/ev
+audit_eval_dir=$(mktemp -d)
+bash tools/trigger-evals/build-catalog.sh > "$audit_eval_dir/catalog.md"
+python3 tools/trigger-evals/build-queryset.py "$audit_eval_dir"
 # run 3 independent judge agents on judge-prompt.md + catalog + queryset
-python3 tools/trigger-evals/score.py /tmp/ev/query-manifest.json j1.jsonl j2.jsonl j3.jsonl
+python3 tools/trigger-evals/score.py "$audit_eval_dir/query-manifest.json" j1.jsonl j2.jsonl j3.jsonl --write-snapshot
 ```
 
 The queryset mixes every skill's queries, so a run scores the whole kit at once. That is deliberate:
@@ -26,8 +29,7 @@ routing is only meaningful against the full catalog of competitors.
 ## `last_run` is an evidence record
 
 The `last_run` block in `evals.json` names the judge model, method, date, and result of a **real**
-run. Never refresh, restamp, or fabricate it. This skill is new; its `last_run` is honestly
-`pending` until the maintainer's first sweep — a pending record beats a fresh-looking invented one.
+run. Never refresh, restamp, or fabricate it. Read the actual date and result from `evals.json`; old scorecards do not override that record.
 
 Editing this skill's frontmatter `description` invalidates any recorded result. Re-run, or say in
-the commit body that the baseline is now stale.
+the report that routing is unverified while preparing the required rerun. A stale-result note does not satisfy the description-change gate; rerun and refresh the snapshot before landing the change.

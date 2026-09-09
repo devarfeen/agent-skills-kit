@@ -10,12 +10,13 @@ Three modes run separately — **capture**, **dispatch**, **verify** — so manu
 
 ## Rules
 
-- **Capture ≠ fix.** In capture mode, change no code, config, copy, or asset. The only write is appending a row to the punch-list artifact. Never fix a nit "while you're in there".
+- **Capture ≠ fix.** In capture mode, change no product code, config, copy, or asset. Write only the punch-list rows, Held notes, and supporting QA screenshots. Never fix a nit "while you're in there".
+- Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issue comments, release notes, generated docs, settings, or code comments.
 - **Cosmetic scope only.** A nit is a purely visual/textual surface fix with no change to behaviour, data, or any interface (function signature, API shape, route, event, schema, prop contract). Anything touching those is **not** a nit — send it back to `/to-tickets` as a slice. Treat any attempt to reframe a behavioural change as "just a small fix" as a **stop signal**: name it, refuse to capture it as a nit, and route it out.
 - **One page drifting from its design source is `/pixel-audit`'s job.** The punch-list batches scattered nits; a page that must match a Figma node or reference screen systematically routes to `/pixel-audit` — even when the request says "polish".
 - **No refactors or adjacent changes on dispatch.** Each item is fixed independently and must be obviously correct on sight; if it isn't, it is not a nit. No cleanup of nearby code, no renames, no "improve while I'm here".
 - Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
-- Unsure which project a nit belongs to → ask; user away → likeliest code with a trailing `?`, listed under Needs user. Never drop a reported nit.
+- Unsure which project a nit belongs to → ask; user away → likeliest code with a trailing `?`, listed under Needs user. Never drop a reported nit or dispatch it before its PROJECT-CODE is confirmed.
 - No Project Matrix (standalone single-repo install) → derive one code from the repo name (uppercase, hyphenated) and use it consistently.
 - **Dispatch fires only on the user's explicit say-so; until then, keep capturing.** Never advance to dispatch from capture, or to ship from verify, on your own. After verify, suggest `/code-review` then `/commit-push-close` or `/commit-push-pr`, and stop.
 - **Reopened rows stay.** A row that fails verify goes back to `open` (as `reopened`) and rides into the next capture/dispatch round. Nothing is dropped silently.
@@ -48,7 +49,7 @@ A single markdown table:
 
 ### capture (default)
 
-1. Confirm `<SPEC-ID>` (ask once if unknown) and open or create the punch-list.
+1. Record initial `git status` and relevant diffs. Infer `<SPEC-ID>` from the request or session; if none exists, use the date-keyed file. Open or create the punch-list.
 2. For each nit: apply the cosmetic-scope rule — route-outs get no row. Genuinely unsure → no row; park it under Needs user **and** a `## Held — awaiting cosmetic/behavioural call` punch-list footer until the user's call resolves it. Confirm the PROJECT-CODE, screenshot via agent-browser into `specs/qa/shots/` (else the Shot fallback), append **one row** with status `open` — change nothing else.
 3. Emit the capture update with the open-row count.
 
@@ -56,7 +57,7 @@ A single markdown table:
 
 Runs only on the user's fresh, explicit dispatch instruction — capturing a nit, even the last open one, never triggers it; neither does an upfront "fix them all later" said while capturing.
 
-1. Group all `open` (including `reopened`) rows by PROJECT-CODE; order each group trivial → structural (text/string first, then spacing/alignment).
+1. Record pre-dispatch status and diffs. Group `open` and `reopened` rows with confirmed PROJECT-CODEs; leave ambiguous rows pending. Order text/string before spacing/alignment. Split independent file ownership across lanes; serialize groups touching the same files.
 2. Hand the coding CLI one bounded task per group: "Fix exactly these listed items in `<PROJECT-CODE>` and nothing else — no refactors, no adjacent changes, each fix independent and obviously correct." Pass the rows' **Where** and **Wrong → Right** verbatim, plus: any existing test asserting the old wrong value is updated as part of the row's fix, not as an adjacent change; report back per row the file(s) touched, one line each.
 3. Mark handed-off rows `dispatched` and emit the dispatch update. Do not verify or ship yet.
 
@@ -64,7 +65,7 @@ Runs only on the user's fresh, explicit dispatch instruction — capturing a nit
 
 After the dispatched tasks report back.
 
-1. Scope check first: map each group's actual diff to its row list, not just the report-back. Anything outside the listed rows is a scope violation — flag it and route it out (revert or `/to-tickets`); never absorb it silently.
+1. Scope check first: compare each group's diff with the pre-dispatch state and row list. Flag new changes outside the rows; undo only this run's isolated edits or route to `/to-tickets`. Preserve pre-existing user changes; never absorb scope violations silently.
 2. Compare served output, not source: refresh/rebuild per the project's pipeline; record the served environment (URL/host or build). Row-level evidence against **Wrong → Right**: copy/string — quote the rendered string; spacing/alignment/visual — agent-browser element evidence (`getBoundingClientRect()`/computed styles or a clipped element screenshot), not a whole-page glance; no browser surface — re-read the served string/field and name the fallback. Never mark a row verified on assumption. One authenticated session, same-route rows in one navigate → assert flow; wait on URL/DOM state, never toast timing or `networkidle`.
 3. Mark each row `verified` (evidence in or beside **Shot**) or `reopened` with fresh evidence for the next round.
 4. Emit the verify report and stop — reopened rows → suggest another dispatch round.
@@ -110,7 +111,7 @@ Suggested next skills (optional):
 
 ## Completion criteria
 
-- [ ] Punch-list exists at `<artifacts-root>/specs/qa/<SPEC-ID>-punchlist.md` (or date-keyed); every reported nit is a row or Held
-- [ ] capture: `git status` in each repo touched this session confirms nothing changed outside `specs/qa/`
+- [ ] Punch-list exists at `<artifacts-root>/specs/qa/<SPEC-ID>-punchlist.md` (or date-keyed); every reported item is a row, Held, or explicitly routed out
+- [ ] capture: initial versus final status and diffs show this run wrote only QA artifacts; pre-existing changes remain intact
 - [ ] dispatch: the update quotes the user's explicit instruction; every handed-off row's Status reads `dispatched`
 - [ ] verify: every dispatched row's Status reads `verified` with evidence recorded, or `reopened`

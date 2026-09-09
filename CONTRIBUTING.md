@@ -94,9 +94,10 @@ Write for a frontier agentic model — capable, tool-using, able to plan. That m
   bold-lead bullets — a 2–5-word imperative that stands alone, then one or two
   plain sentences. State the default flat and give real exceptions their own
   named subsection, not an "unless" mid-sentence. Every prohibition ships its
-  replacement in the next sentence. Phrase gates as "No X, no Y". Give every
-  human-confirmation gate an away-fallback ("if the user is away, state your
-  choice and proceed") so autonomous runs don't deadlock.
+  replacement in the next sentence. Phrase gates as observable conditions.
+  Give optional preferences a stated default when the user is away. Required
+  approval, missing authority, and unresolved safety gates remain blocking;
+  continue only independent work.
 - **Don't restate the workspace non-negotiables.** Generated `AGENTS.md` already
   binds PROJECT-CODE usage, local-only orchestration, zero-attribution, and
   honest reporting. One reminder line is fine where it prevents real damage;

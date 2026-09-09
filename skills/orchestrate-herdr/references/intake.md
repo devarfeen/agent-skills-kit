@@ -1,6 +1,6 @@
 # Intake
 
-Three decisions, asked as **one batched question set** after Discover — never one prompt at a time, and never before the issue list exists, because two of the three need it. Follow the workspace `AGENTS.md` decision-options rule: label exactly one option `Recommended`, add a final `Write your own`, and never pad.
+Four decisions, asked as one batched question set after Discover. Reuse choices the user already supplied. Respect the question tool's option and question limits, splitting the batch when required; free-text replies remain available. Zero attribution: omit co-author, AI, and tool attribution from all output.
 
 ## 1. Which coding agent
 
@@ -15,7 +15,7 @@ Ask by **product name**. Never label an option with a bare binary — Cursor's b
 | Opencode CLI | `opencode` | `opencode` |
 | GitHub Copilot CLI | `copilot` | `copilot` |
 
-These six are the supported runtimes; no others. Offer every one whose launch token resolves on PATH, and say which of the six are missing rather than silently shortening the list. This question enumerates a fixed roster, so it may run past three options — that cap governs recommendations, not rosters.
+These six are the kit's supported runtimes. Name every one whose launch token resolves on PATH and which are missing. If the question tool cannot show the full roster, split the choices into supported batches or use a plain-text question; never exceed its schema limits.
 
 **`AGENT_KIND` comes from this table, never from `CODING_CLI`'s first token.** For Cursor the two differ, so deriving the kind from the command yields `agent`, which `herdr agent start --kind` rejects. Worker-tab labels use the runtime's launch token so they stay readable.
 
@@ -23,10 +23,10 @@ These six are the supported runtimes; no others. Offer every one whose launch to
 
 A fresh session pauses at its own approval prompts (shell, tracker, test commands) unless launched with an auto-accept preset or the folder pre-approves them. Offer, for the chosen runtime:
 
-- its **highest elevated preset**, quoted from the Runtime table in [`../../agents-md/references/tool-calling.md`](../../agents-md/references/tool-calling.md) — that file is the single source; never retype a preset from memory
+- its elevated interactive preset from the workspace's Runtime tool-calling table, verified against the installed CLI's `--help`; if the table is absent, derive the offered flags from that help and explain their effect
 - the **bare launch token**, with the consequence stated: every worker pauses at its own approvals
 
-Never pick an elevated mode yourself — that is always the user's explicit call. Elevation is safest inside worktree isolation; if the user takes an elevated preset with `shared` isolation, say so once before fan-out.
+Never pick an elevated mode yourself. Elevation requires the user's explicit choice. A worktree separates files, but does not sandbox commands, credentials, or network access; an external container or VM supplies that boundary. Do not pass non-interactive subcommands such as `opencode run` through `agent start`; verify flags on the interactive launch command.
 
 The answer becomes `CODING_CLI`: the launch token plus flags. Under `herdr agent start`, flags go after `--`, never inside `--kind`.
 
@@ -46,7 +46,7 @@ Name the affected issues and their repos in the question, then offer:
 
 Ask for a branch name pattern, defaulting to the tracker's own: Linear supplies `gitBranchName` per issue; GitHub has no native name, so use `<issue-number>-<slug>`.
 
-**User away →** `worktree` when more than one open sub-issue touches the same repo, otherwise `shared`. Never fan out unattended into `shared` with a same-repo collision; that is the one case that still stops and reports.
+**User away:** retain an already chosen mode. If the user has not chosen one, stop before creating workers. Never fan out unattended into `shared` with a same-repo collision.
 
 ## 4. Leftover tabs and agents
 
@@ -60,7 +60,7 @@ In `worktree` mode, herdr backs the checkout itself:
 
 ```bash
 herdr worktree create --workspace "$HERDR_WORKSPACE_ID" --cwd "$PWD" \
-  --branch <branch-name> --base <default-branch> --label "<tab label>"
+  --branch <branch-name> --base <default-branch> --label "<tab label>" --no-focus
 ```
 
-Read the resulting IDs from the JSON response — never predict them, and never hand-roll `git worktree add`. In `branch` and `shared` mode use **Create tab** instead, and never create a worktree the user did not choose.
+Read the resulting workspace, tab, pane, and checkout path from the JSON response. Worktree creation can create a linked workspace; save that worker's context separately from the caller's. Never predict IDs or hand-roll `git worktree add`. In `branch` and `shared` mode use **Create tab** instead, and never create a worktree the user did not choose.

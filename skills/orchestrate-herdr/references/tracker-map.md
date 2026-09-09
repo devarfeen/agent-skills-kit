@@ -1,5 +1,7 @@
 # Tracker map — GitHub and Linear
 
+Zero attribution: omit co-author, AI, and tool attribution from all output. Inspect the live Linear tool schema before using the calls below; tool availability is not permission to write tracker state.
+
 The workspace's `AGENTS.md` (or its rules files) names the issue tracker of record. Default: GitHub Issues. Resolve it once in pre-flight; every issue read and write in the run then goes through that tracker, using its identifier format and label vocabulary as the workspace docs map them. If a step has no workspace mapping, stop and ask — never fall back to `gh issue` against a tracker the workspace does not use.
 
 |  | GitHub | Linear |
@@ -21,8 +23,10 @@ Both trackers use the same `<PROJECT-CODE>` issue-title species and the same `re
 
 Open sub-issues of `SPEC_REF`.
 
-- **GitHub** — `gh api repos/<owner>/<repo>/issues/<n>/sub_issues --jq '.[] | select(.state=="open") | .number'`. Fall back to task-list checkboxes and "Tracked by" references in the spec body.
-- **Linear** — `list_issues` with `parentId: <SPEC_REF>`, requesting the `title`, `url`, `status`, and `statusType` fields. Open = `statusType` is neither `completed` nor `canceled`; `triage`, `backlog`, `unstarted`, and `started` all count as open. Read each result's identifier (`PRWL-101`) as `<n>`. Fall back to checkbox lists and issue links in the parent's description.
+- **GitHub** — `gh api --paginate repos/<owner>/<repo>/issues/<n>/sub_issues --jq '.[] | select(.state=="open") | .number'`. Fall back to task-list checkboxes and "Tracked by" references only when native sub-issues are unavailable, then fetch each linked issue and verify its state.
+- **Linear** — `list_issues` with `parentId: <SPEC_REF>`, requesting the `title`, `url`, `status`, and `statusType` fields. Follow every returned next-page cursor. Open = `statusType` is neither `completed` nor `canceled`; `triage`, `backlog`, `unstarted`, and `started` all count as open. Read each result's identifier (`PRWL-101`) as `<n>`. Fall back to checkbox lists and issue links only when the native relation is unavailable, verifying each linked issue's state.
+
+Deduplicate identifiers after pagination and verify fallback links belong to this parent before counting them.
 
 ## Read issue
 
@@ -36,11 +40,11 @@ The worker prompt needs each issue's identifier and URL; read the body only if t
 A worker blocked on a human decision gets its issue flipped to `ready-for-human` with a comment naming the decision. Never edit issue titles.
 
 - **GitHub** — `gh issue edit <n> --add-label ready-for-human --remove-label ready-for-agent`, then `gh issue comment <n> --body "<the decision the worker needs>"`.
-- **Linear** — `save_issue` with `id: <n>` and `labels:` set to the issue's current labels with `ready-for-agent` dropped and `ready-for-human` added; `labels` **replaces** the whole set, so read the current labels first or you will silently strip them. Then `save_comment` with `issueId: <n>` and the decision as `body`. Create no new label — the workspace's label vocabulary is fixed; no `ready-for-human` equivalent mapped → stop and ask.
+- **Linear** — `save_issue` with `id: <n>`, `removeLabels: ["ready-for-agent"]`, and `addLabels: ["ready-for-human"]` when the live schema supports them. Otherwise read current labels and replace only those two values; `labels` replaces the whole set. Then `save_comment` with `issueId: <n>` and the decision as `body`. Create no new label; no mapped `ready-for-human` equivalent means stop and ask.
 
 ## Verify
 
 Read-back for the completion criteria — quote what these return, never assert from memory.
 
-- **GitHub** — `gh issue view <n> --json state,title,labels`
-- **Linear** — `get_issue` with `id: <n>`; check its status, title, and labels, and that the decision comment is present.
+- **GitHub** — `gh issue view <n> --json state,title,labels,comments`
+- **Linear** — `get_issue` with `id: <n>` for status, title, and labels; use the live comment-list tool to verify the decision comment if issue details omit comments.

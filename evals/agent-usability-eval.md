@@ -4,6 +4,8 @@ Deep-dive sheet for category 7. The question: can an agent **trigger, execute,
 verify, and summarize** this skill without a human in the loop for anything the
 skill did not deliberately gate?
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issues, docs, or comments.
+
 ## The four stages
 
 **Trigger.** Covered by the skill's eval set. Not re-scored here.
@@ -29,8 +31,9 @@ consumed by a caller.
 ## Deadlock: the failure mode agents hit and humans don't
 
 A human gate — "confirm with the user before fan-out" — stops an autonomous run
-dead at 3am. Every human gate needs an **away-fallback** that says what happens
-when nobody answers.
+dead at 3am. State what happens when nobody answers: use a stated default for
+optional preferences, or stop dependent work when permission is required.
+User absence never supplies approval. Continue independent preparation when possible.
 
 A good fallback is not always "proceed". `orchestrate-herdr` gets this right in
 both directions: on leftover tabs, if the user is away, monitor the existing

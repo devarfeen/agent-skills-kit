@@ -13,6 +13,7 @@ Intake may be structured — `Projects Affected:` plus a `What:` block — or fr
 
 ## Rules
 
+- **Zero attribution.** Never add or leave co-author, AI, or tool attribution in any output.
 - **Read-only, chat-only.** Do not edit code, config, docs, native memory, ADRs, prompts, issues, or generated artifacts while discovering — `CONTEXT.md` and artifact edits wait for step 6 approval. Never create `docs/discovery/` files, and do not read legacy discovery files unless the user names one — they go stale. No `git fetch`, `git pull`, installs, migrations, or destructive commands.
 - **Code is the source of truth when evidence conflicts with prose docs, issues, or comments.** Cite evidence for every claim (Evidence style below); separate confirmed facts from inference; never invent rationale. The tell: a comment, issue, or native memory outranking the code it describes.
 - If `graphify-out/graph.json` exists (project root, else workspace root), query it before raw search; older than ~7 days → suggest `graphify update .`; missing → skip graphify. Scope with `graphify query`/`path`/`explain` before broad `rg` sweeps. Verify graph answers against current code and flag staleness — never run `graphify update .` yourself; discovery stays read-only. Do not hunt for a graph elsewhere or suggest installing it.
@@ -30,7 +31,7 @@ Map project codes to git roots and package boundaries via repo names, package me
 
 ### 2. Discover the topic
 
-Search exact terms from `What`, then likely aliases, routes, components, API paths, config keys, env vars, tables, filenames, and test names — across code, tests, docs, configs, migrations, jobs, and feature flags; `rg` first; prefer CLI over MCP for codebase evidence. Critical dependency internals with thin local evidence → optionally fetch targeted dependency source (`opensrc`, when installed), minimal scope, cited concretely. Git history only when code scanning does not explain the topic, and only the last 2 months — why or when behavior changed, never primary truth.
+Search exact terms from `What`, then likely aliases, routes, components, API paths, config keys, env vars, tables, filenames, and test names across code, tests, docs, configs, migrations, jobs, and feature flags; `rg` first; prefer CLI over MCP for codebase evidence. For unclear dependency internals, inspect already-available source or read official upstream source without writing locally. If a download or install is needed, report the gap and suggest it as follow-up. Use git history when current code cannot explain why or when behavior changed; start with the last 2 months and extend a targeted lookup when older evidence is needed.
 
 ### 3. Read issues bounded, or not at all
 
@@ -93,5 +94,5 @@ Use this structure exactly: ≤3 bullets per section; keep the whole report unde
 - [ ] Every factual claim in sections 1–8 carries a citation per Evidence style
 - [ ] `git status` shows no files created or modified by this discovery (approved step-6 `CONTEXT.md` updates excepted)
 - [ ] All nine sections in order — or `Quick trace` declared, with sections 1–3 and 8 and the rest N/A
-- [ ] Section 6 ends with the four-option approval ask, or the no-candidates line
+- [ ] When section 6 is included, it ends with the four-option approval ask or the no-candidates line
 - [ ] Session stopped after the report — no skill invoked, no implementation started

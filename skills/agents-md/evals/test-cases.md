@@ -1,7 +1,9 @@
 # Test cases — `/agents-md`
 
 The routing test set for this skill lives in [`evals.json`](evals.json); this file is its readable
-form. 11 should-trigger queries and 10 near-miss negatives.
+form. 11 should-trigger queries and 9 near-miss negatives.
+
+Zero attribution: omit co-author, AI, and tool attribution from evaluation artifacts and publications.
 
 Near-miss negatives name the sibling they *should* route to. An obviously-irrelevant negative
 proves nothing — if a query could never plausibly hit this skill, it is not testing the boundary.

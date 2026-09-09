@@ -25,8 +25,8 @@ asking a developer?"
    content bullets per Problem/Change/Impact section — the labeled
    `What changed where:` and `Simple logic explanation:` lines don't count;
    needing more means too much detail.
-4. **Feature names describe what changed, not how** ("Login and Password
-   Improvements Planned", not "Auth Hardening Workstreams Prepared").
+4. **Feature names describe completed work.** Use "Scanner readiness check"
+   for code, or "Login plan documented" for completed planning documents.
 5. **Problem = what the user experienced** (the symptom, not what the code
    lacked). **Impact = what is concretely better now.**
 6. **No filler or abstraction.** Remove "formally", "in order to", "it should
@@ -35,12 +35,10 @@ asking a developer?"
    detail as its user-visible effect ("refactored useRfidScanner" → "the app
    now sets up the scanner the same way before every scan"); keep code
    identifiers out of the narrative unless the user asks for technical detail.
-8. **Banned words/phrases:** workstream, artifact, canonical, process drift,
-   touchpoint, formally, standardized, operationally, implementation, ad hoc,
-   scope (as jargon — the structural **Scope** section header is exempt),
-   aligned, resolution, "it is suitable for", "this reduces
-   the chance of", "without X, Y is easier to Z", "not explicitly visible in
-   commit history", any bullet phrase over 15 words.
+8. **Keep narrative bullets within 15 words.** Replace abstract jargon with
+   concrete behavior. Preserve exact UI labels and technical names when needed
+   to identify what QA should test. Required QA prerequisites and ordered steps
+   may exceed the cap when shortening would make them ambiguous.
 9. **If logic changed, add one sentence a 5th grader could understand** inside
    the Change section: `Simple logic explanation: <sentence>`.
 10. **Write like telling a coworker what you did today** — not a formal document.
@@ -63,20 +61,19 @@ Read only what is already available locally.
 
 ### Multi-repo workspaces
 
-1. Find every git root in the workspace:
-   ```bash
-   find <workspace-root> -maxdepth 3 -name ".git" | sed 's/\/.git$//'
-   ```
-   No `-type d` — in worktrees and submodules `.git` is a file; filtering to
-   directories silently drops those projects.
+1. Resolve all in-scope repositories from workspace folders and the Project
+   Matrix. Confirm each with `git -C <path> rev-parse --show-toplevel`;
+   worktrees, submodules, and deeper repositories count too.
 2. Run the log in **each** repo, never only the workspace root:
    ```bash
    git log --all --after="YYYY-MM-DDT00:00:00" --before="YYYY-MM-DDT23:59:59" --oneline --no-merges
    ```
-   Before presenting a cluster, verify it reached the default branch
-   (`git branch --contains <hash>`); work that hasn't is labeled
-   "in progress on `<branch>`" in its Summary, never mixed silently into
-   shipped notes.
+   Confirm the intended integration branch from local configuration or user
+   context. Check each commit with `git merge-base --is-ancestor <hash> <ref>`:
+   exit 0 means merged locally, 1 means not merged, other exits mean unknown.
+   Label unmerged work "in progress on `<branch>`". Local ancestry alone
+   does not prove release or deployment; say "shipped" only with existing
+   release evidence or user confirmation. Otherwise state delivery is unconfirmed.
 3. If the user names a project and no commits are found, say so explicitly:
    "No commits found for <Project> on <date>. The local branch may not be up to
    date — try running `git pull` in that repo." Never silently omit a project.
@@ -126,13 +123,14 @@ Filling rules:
   feature sections sit under their project heading.
 - **Manual QA Steps**: 3–5 practical steps per feature, each
   `Action -> Expected Result`, covering the primary happy path and one edge
-  case, written so a manual tester needs no code knowledge.
+  case. Name local setup, role, and test data first; distinguish proposed checks
+  from tests already run. For docs/tooling-only changes, name the actual file
+  or command to inspect. Never invent a screen or an observed result.
 - **Include only projects with at least one confirmed change** in the selected
   scope.
 - **User-visible detail** goes on the optional `What changed where:` line
   under **Change** — the setting, page/screen, element, or route, only when
-  commits/diffs reveal it; otherwise omit the line (rule 8 bans disclaimer
-  wording).
+  commits/diffs reveal it; otherwise omit the line.
 - Commit hashes appear only under **Commits Included**, one per bullet (the
   session skeleton's `(uncommitted session work)` fallback covers no-commit
   sessions).
@@ -141,8 +139,8 @@ Filling rules:
 
 Save under `<artifacts-root>/specs/release-notes/`.
 
-Release notes are a generated document: keep all co-author, AI, and tool
-attribution out of both the saved file and the chat response.
+Zero attribution: never add or leave co-author, AI, or tool attribution in
+commits, PRs, issue comments, release notes, generated docs, settings, or code comments.
 
 Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`CONTEXT-MAP.md` at repo root), else the repo root.
 Multi-repo workspaces *without* a `.code-workspace` file get one file per
@@ -159,23 +157,18 @@ Filenames — `D-Month-YYYY`, no leading zero, Title Case English month:
 - Do not add `NNNN`, `-release-notes`, or a feature slug to the filename —
   release notes do not share the ADR/prompt `NNNN` sequence.
 
-Conflict handling: overwrite a same-date
-file only if it contains purely generated content from this skill; if it has
-hand edits, show the diff and ask (overwrite, append/update, or abort) — and
-if the user is away, write a ` (2)`-suffixed sibling file instead and say so;
-never overwrite hand edits unconfirmed. Never delete unrelated files.
+Conflict handling: preserve existing content. Apply an authorized update
+without dropping unrelated entries; if replacement needs an unresolved user
+decision, write the next unused ` (2)`-style sibling and state its path.
+Never overwrite hand edits unconfirmed or delete unrelated files.
 
 ## Completion criteria
 
-- [ ] The saved file passes Writing rules 3 and 8 — bullet and section caps,
-  zero banned words in narrative text (**Scope** header exempt).
-- [ ] Each file exists at `specs/release-notes/<D-Month-YYYY>.md` under the
-  resolved root and re-opens matching the loaded skeleton's structure, with
+- [ ] The saved file meets the narrative bullet and section caps; QA steps retain necessary setup and sequencing.
+- [ ] Each file exists at its resolved date, date-range, or unused numbered-sibling path and re-opens matching the loaded skeleton's structure, with
   only changed projects present.
-- [ ] Every cluster presented as shipped passed `git branch --contains` or
-  carries its "in progress on `<branch>`" label.
+- [ ] Each cluster has a supported delivery status; "shipped" cites release evidence, and unmerged work is labeled in progress.
 - [ ] At least one bullet names an affected workflow or team.
-- [ ] Every Manual QA step is `Action -> Expected Result` naming a screen,
-  button, or field; every Impact bullet states a behavior change.
+- [ ] Every Manual QA step is `Action -> Expected Result` naming a real UI location, file, or command; Impact distinguishes completed work from expected benefits.
 - [ ] The reply states each saved file path and ends with
   `Suggested next skills (optional)` — 1–3 advisory suggestions, never gating.

@@ -28,12 +28,13 @@ Carry this through every gap-map section:
 
 ## Rules
 
+- **Zero attribution.** Never add or leave co-author, AI, or tool attribution in any output; include this rule in the gap map.
 - **Suggest, never auto-chain.** End by suggesting `/grill-with-docs` on the gap map, then stop. Do not run planning, do not open issues, do not implement.
 - **Never implement here.** No product code, config, or migration edits; the only write is the gap map file.
 - Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
 - **Narrow retrieval only.** Trace the reference and survey the target with targeted, evidence-backed search (`rg`/`git grep` for the exact route/path/symbol/state), `/feature-discovery`-style. **Never** bulk-read a repo or its `specs/` tree to "find everything".
 - If `graphify-out/graph.json` exists (project root, else workspace root), query it before raw search; older than ~7 days → suggest `graphify update .`; missing → skip graphify. Verify graph answers against current code.
-- **Retrieval order.** `CONTEXT.md` + `specs/adr/` are binding (read before deciding) > the current request, reference/target code, and tests > native CLI memory.
+- **Read context before deciding.** `CONTEXT.md` and relevant ADRs describe recorded decisions; current code and tests show implemented behavior. Follow the current user's explicit decisions, record conflicts with older context, and treat native CLI memory as a lead to verify.
 - **Decisions are artifacts.** The output is the durable gap map file, not a chat summary; chat reports only what was written and the phase update.
 - **Don't fabricate an issue before coding.** Issues come later, from `/to-tickets` after `/grill-with-docs`.
 - Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes.
@@ -47,7 +48,7 @@ Carry this through every gap-map section:
 Trace the real behaviour, workflow, navigation, permissions, states, and data effects, `/feature-discovery`-style. Done when every claim carries a concrete ref (`file:symbol`, route, migration, test).
 
 ### 3. Survey the target's current state
-What exists today, what's partial or wrong versus the reference, and which design-system components and existing patterns are reusable. If the feature has UI, open the target's component preview (e.g. `/ui/preview/all`) to inventory available DS components before deciding what to build.
+What exists today, what's partial or wrong versus the reference, and which design-system components and existing patterns are reusable. If the feature has UI, locate and inspect the target's component preview in an authorized local environment. If no preview exists or is available, inventory component source and record that limitation; do not invent a preview route.
 
 ### 4. Dispatch bounded lanes (optional)
 Split non-overlapping discovery — e.g. one lane on the reference trace, one on the target survey. No two lanes discover the same thing; the main agent owns synthesis, uncertainty calls, and the artifact.
@@ -61,6 +62,10 @@ Write **one** gap map per ported feature:
 ```
 
 Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`CONTEXT-MAP.md` at repo root), else the repo root. `<feature-slug>` is kebab-case from the feature name, max ~4 words, ASCII. The gap map is an on-demand slug file — it does not consume the `NNNN` prompt/ADR sequence.
+
+Read an existing gap map before updating it. Preserve user edits and recorded decisions; if new findings contradict them, show the conflict and wait for direction before replacing that text. If the user is away, retain it and append the conflict under Open questions.
+
+Confirm an existing map names the same REFERENCE/TARGET pair. For a different pair, preserve that map and use `<feature-slug>-<REFERENCE-CODE>-<TARGET-CODE>-gapmap.md`; use this resolved path in the output and completion check.
 
 Nine sections, in order, **≤3 bullets each** — link or cite evidence (`file:line`, route, migration, test), never paste it:
 
@@ -120,6 +125,6 @@ Suggested next skills (optional):
 
 ## Completion criteria
 
-- [ ] The gap map exists at the resolved `<artifacts-root>/specs/port/<feature-slug>-gapmap.md` with all nine section headings present and non-empty
+- [ ] The gap map exists at the resolved path, including PROJECT-CODEs when needed to avoid a different pair's file, with all nine section headings present and non-empty
 - [ ] `git status` shows no files created or modified by this run outside the gap map file — nothing implemented
 - [ ] The final `Stage / Found / Next / Needs user` update was emitted, ending at the `/grill-with-docs` suggestion

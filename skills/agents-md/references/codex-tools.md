@@ -1,5 +1,7 @@
 Tool-calling index: [`tool-calling.md`](tool-calling.md).
 
+Zero attribution: omit co-author, AI, and tool attribution from all output. The live tool schema wins over cached names below; tool names and availability vary by host.
+
 > Last verified: 2026-07-06 against installed codex-cli 0.142.5 — flag/command surface via `--help`; internal tool names, config schemas, and chat slash commands are docs-level and re-verified on touch (see CONTRIBUTING sync map).
 
 | Skill Reference | Codex Equivalent |
@@ -23,14 +25,14 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 
 ## Agents: parallel, background & roles
 
-The orchestrator dispatches workers via the mapping-table tools above. Limits live under `[agents]`: `max_threads` (default 6), `max_depth` (default 1 — workers cannot spawn workers), `job_max_runtime_seconds` (fallback 1800). Switch between live threads with `/agent`. **Worktrees** and **Automations** are Codex *app* features, not CLI features. **Codex Web** runs tasks remotely — kit policy is local-only, so do not use it.
+The orchestrator uses the available spawn and coordination tools. Under `[agents]`, use `max_concurrent_threads_per_session`; `max_threads` remains a legacy alias. When unset, the runtime chooses capacity. Check actual nesting limits and permissions instead of assuming six workers or depth one. Switch between live threads with `/agent`. Codex Web tasks are remote and excluded by kit policy. Verified 2026-09-09 against [official subagent configuration](https://learn.chatgpt.com/docs/agent-configuration/subagents) and installed codex-cli 0.153.4.
 
 Built-in roles: `default`, `worker`, `explorer`. Custom roles live in standalone `.codex/agents/<name>.toml` or `~/.codex/agents/<name>.toml` files. Required fields: `name`, `description`, `developer_instructions`. Optional: `model`, `model_reasoning_effort`, `sandbox_mode`, `mcp_servers`, `skills.config`, `nickname_candidates`.
 
 | Role | Codex mechanism |
 | :--- | :--- |
 | Orchestrator | root Codex session |
-| Explorer | `explorer` built-in role (read-only sandbox) |
+| Explorer | `explorer` built-in role for read-heavy work; explicitly configure a read-only sandbox when required |
 | Researcher | `worker` or custom role + MCP / web |
 | Planner | Plan mode (`update_plan`) |
 | Implementer | `worker` role |

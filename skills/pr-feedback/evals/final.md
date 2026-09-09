@@ -1,64 +1,40 @@
-# Quality scorecard — `/pr-feedback`
+# Quality scorecard: /pr-feedback
 
-**Scored:** 2026-07-17 · **Reader:** fresh rescorer (round 4) · **Rubric:** `evals/skill-quality-rubric.md`
+Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
-## Trigger eval
+Date: 2026-09-09. Method: independent document review and three simulated execution cases; the reviewer did not write the skill changes. Rubric: [skill-quality-rubric.md](../../../evals/skill-quality-rubric.md).
 
-Routing baseline: maintainer sweep pending for the 2026-07-16/17 description batch. Read the 18
-`evals.json` queries against the 16-description catalog: every should-trigger phrasing appears in
-or is directly implied by the description, and both nearest siblings are explicitly negated
-("Reviewing a PR yourself routes to /code-review; opening a new PR routes to /commit-push-pr").
-No colliding sibling and no misrouting query could be named.
+## Scope and routing evidence
 
-## Round-3 fix verification
+Read the revised body, settings mirror, routing record and author API/CLI evidence. Simulated a forked paginated review, ambiguous-PR refusal and approved pushback without code changes.
 
-- Defect (step-5 record had no field in the one-line final report): fixed. Step 8
-  (`SKILL.md:84`) now reads "One line — plus a second line carrying any step-5 record
-  (pre-existing failures or a no-coverage note) — then the footer.", and the Output
-  final-report line (`SKILL.md:100`) mirrors it ("a second line carries any step-5 record").
-  Step 5's mandate and the report shape no longer conflict.
+The recorded trigger run is 18/18 on 2026-08-21 in [evals.json](evals.json). It was not rerun for this body-only audit. Description provenance still matches the recorded snapshot. A historical catalog-only score neither proves a current independent routing run nor proves implicit invocation of a user-only skill. No last_run metadata was restamped.
 
-## Quality
+## Scores
 
-| Category | Score | Note (only if below 5) |
+| Category | Score / 5 | Evidence or remaining gap |
 | :--- | :---: | :--- |
-| Purpose clarity | 5 | |
-| Trigger clarity | 5 | |
-| Scope control | 5 | |
-| Instruction quality | 5 | |
-| Brevity | 5 | |
-| Engineering usefulness | 5 | |
-| Agent usability | 5 | |
-| Verification quality | 5 | |
-| TDD / testing compat | 5 | |
-| Maintainability | 5 | |
-| Frontier readiness | 5 | |
-| **Average** | **5.00** | |
+| Purpose clarity | 5 | No defect found in the reviewed text and stated simulation scope. |
+| Trigger clarity | 4 | Historical 2026-08-21 catalog result only; no current host invocation trial. |
+| Scope control | 5 | No defect found in the reviewed text and stated simulation scope. |
+| Instruction quality | 5 | No defect found in the reviewed text and stated simulation scope. |
+| Brevity | 5 | No defect found in the reviewed text and stated simulation scope. |
+| Engineering usefulness | 5 | No defect found in the reviewed text and stated simulation scope. |
+| Agent usability | 4 | Nested GraphQL pagination and pushing to a fork head were not exercised against an authenticated GitHub PR. |
+| Verification quality | 4 | Reply ordering and ancestry checks were simulated; no actual reply/resolve/read-back cycle was executed. |
+| TDD / testing compatibility | 5 | No defect found in the reviewed text and stated simulation scope. |
+| Maintainability | 5 | No defect found in the reviewed text and stated simulation scope. |
+| Frontier readiness | 5 | No defect found in the reviewed text and stated simulation scope. |
+| Average | 4.73 | All eleven categories included. |
 
-`N/A` is permitted only on TDD / testing compat, and only with a justification
-sentence here:
+## Behavioral checks
 
-> _(unused — the skill applies code fixes and gates on their tests; category 9 is scored)_
+[behavioral-results.md](behavioral-results.md) records all fixtures, ordered actions and simulated outputs. Result: 3/3 simulated cases passed. No live success is implied.
 
-## Defects
+The author added independent thread/comment pagination, actual head-remote identity and ancestry checks, baseline preservation, and the no-code-change shipping branch. Combined approval and reviewer-owned unresolved pushback remain explicit.
 
-One row per defect. A defect with no anchor and no exact edit is an opinion —
-delete it.
+## Remaining limits
 
-| `file:line` | Category | Problem | Exact fix | Gate |
-| :--- | :--- | :--- | :--- | :--- |
-| — | — | none | — | — |
+No GitHub data read, reply, thread resolution, push or PR mutation occurred. The author inspected CLI/docs schemas; those checks do not replace an authenticated fixture run. The same-PR ship handoff still applies that skill's base/fork policy.
 
-**Gates** mean the fix cannot land as an ordinary edit:
-
-- `dup-pair` — the text is duplicated by design (`ship-policy.md`,
-  `context-terms.md`). Edit every copy together or `tools/validate.sh` check 2
-  fails.
-- `description-locked` — the fix would change frontmatter `description`, which
-  invalidates the trigger-eval baseline. Needs a maintainer eval re-run.
-
-## Verdict
-
-- [x] Averages 5.00 — nothing left to point at
-- [ ] Below 5.00 — the blocking defects are listed above, each with an owner
-      and a gate
+Repository validation checks structure and provenance; it does not enforce these natural-language instructions at runtime. A 5 means no defect found within this review scope, not guaranteed execution on an untested task.

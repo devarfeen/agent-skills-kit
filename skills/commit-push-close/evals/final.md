@@ -1,52 +1,36 @@
-# Quality scorecard — `/commit-push-close`
+# Quality scorecard: /commit-push-close
 
-**Scored:** 2026-07-17 · **Reader:** fresh rescorer (round 2) · **Rubric:** `evals/skill-quality-rubric.md`
+Zero attribution: omit co-author, AI, and tool attribution from docs, comments, commits, and publications. Evaluation method metadata is evidence, not a signature.
 
-## Trigger eval
+Date: 2026-09-09. Method: independent document review and simulated execution. The reviewer did not author this skill's revisions. Rubric: root `evals/skill-quality-rubric.md`.
 
-Routing baseline: maintainer sweep pending for the 2026-07-16/17 description batch
+## Routing evidence
 
-## Round-1 fix verification
+The unchanged description's recorded run is 2026-08-21, 21/21 pass with three catalog-only judges. It was not rerun in this review. The record is historical evidence and remains untouched. Catalog selection does not prove implicit host invocation; this skill is user-invoked.
 
-- Defect 1 (ordering-dependent test gate): fixed. Step 10 (`SKILL.md:67`) now reads "when the How-to-test plan contains a runnable test command" and completion criterion 2 (`SKILL.md:99`) reads "when the plan contains a runnable test command" — the "opens with" ordering dependency is gone at both anchors.
-- Defect 2 (no phase updates): fixed. `SKILL.md:37` carries the canonical one-liner byte-exact directly under `## Workflow` ("Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field."); `tools/validate.sh` check 13 passes.
+## Behavior evaluation
 
-## Quality
+Two simulations cover a successful UI QA handoff and failed validation with restricted env files and unrelated staged work. All 9 fixture assertions pass on the revised instructions. Baseline gaps include prohibited paths/commands in the close comment, missing comment read-back, and a validation gate after push.
 
-| Category | Score | Note (only if below 5) |
-| :--- | :---: | :--- |
-| Purpose clarity | 5 | |
-| Trigger clarity | 5 | |
-| Scope control | 5 | |
-| Instruction quality | 5 | |
-| Brevity | 5 | |
-| Engineering usefulness | 5 | |
-| Agent usability | 5 | |
-| Verification quality | 5 | |
-| TDD / testing compat | 5 | |
-| Maintainability | 5 | |
-| Frontier readiness | 5 | |
-| **Average** | **5.00** | |
+Result: 9/9 assertions across 2 simulations. Concrete drafts, ordered actions, baseline comparison, and limitations are in [audit-behavior-results.md](audit-behavior-results.md). No real GitHub or environment mutation was performed.
 
-## Defects
+## Scores
 
-One row per defect. A defect with no anchor and no exact edit is an opinion —
-delete it.
+| Category | Score / 5 | Evidence or limitation |
+| --- | --- | --- |
+| Purpose clarity | 5 |  |
+| Trigger clarity | 4 | Recorded catalog routing only; no fresh host-level invocation test. |
+| Scope control | 5 |  |
+| Instruction quality | 5 |  |
+| Brevity | 5 |  |
+| Engineering usefulness | 5 |  |
+| Agent usability | 4 | No authenticated end-to-end shipping run; fork, pagination, and failure combinations remain untested. |
+| Verification quality | 4 | The stated behavior cases are simulations, not live publication or independent repeated-run evidence. |
+| TDD / testing compatibility | 5 |  |
+| Maintainability | 5 |  |
+| Frontier readiness | 5 |  |
+| Average | 4.73 | All eleven categories scored. |
 
-| `file:line` | Category | Problem | Exact fix | Gate |
-| :--- | :--- | :--- | :--- | :--- |
-| — | — | none | — | — |
+## Review disposition
 
-**Gates** mean the fix cannot land as an ordinary edit:
-
-- `dup-pair` — the text is duplicated by design (`ship-policy.md`,
-  `context-terms.md`). Edit every copy together or `tools/validate.sh` check 2
-  fails.
-- `description-locked` — the fix would change frontmatter `description`, which
-  invalidates the trigger-eval baseline. Needs a maintainer eval re-run.
-
-## Verdict
-
-- [x] Averages 5.00 — nothing left to point at
-- [ ] Below 5.00 — the blocking defects are listed above, each with an owner
-      and a gate
+The review caught baseline-failure handling that conflicted with pr-feedback. The shared rule now separates required/change-specific failures from unrelated baseline failures permitted by repository policy and existing authorization. No further blocking text defect was found within this review's scope. Full runtime reliability remains unproven; the score reflects the documented evidence and gaps rather than promising first-try execution.

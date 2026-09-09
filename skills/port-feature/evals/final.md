@@ -1,57 +1,40 @@
-# Quality scorecard — `/port-feature`
+# Quality scorecard: /port-feature
 
-**Scored:** 2026-07-17 · **Reader:** fresh rescorer (round 2) · **Rubric:** `evals/skill-quality-rubric.md`
+Date: 2026-09-09. Method: independent document review and isolated simulated execution against the revised body and references. The reviewer did not write the skill changes. Scored using [the root rubric](../../../evals/skill-quality-rubric.md). Simulations exercise instruction decisions; they do not establish live runtime reliability.
 
-## Trigger eval
+Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
-Routing baseline: unchanged description; 2026-07-09 baseline stands (22/22 unanimous, re-confirmed 2026-07-14 per `evals.json` `last_run`).
+## Routing evidence
 
-## Round-1 fix verification
+`evals.json` records **22/22 pass on 2026-08-21**, by three catalog-only judges with majority voting. This historical run was **not rerun** during this review; its description and `last_run` were not restamped. The user-only skill's historical routing result is preserved; host invocation was not exercised.
 
-| Round-1 defect | Anchor | Verified |
-| :--- | :--- | :--- |
-| Trailing "Never cloud agents." duplicating the canonical sub-agents one-liner | `SKILL.md:39` | Fixed verbatim in commit `671a1e5` — the bullet now ends at "…report each lane as it completes." with the canonical one-liner byte-exact (validate.sh check 13 green) |
-| Unscoped git-status completion criterion, unsatisfiable in a pre-dirty tree | `SKILL.md:125` | Fixed verbatim — now reads "`git status` shows no files created or modified by this run outside the gap map file — nothing implemented", the scoped form the kit already uses |
+## Scores
 
-## Quality
+| Category | Score / 5 |
+| --- | ---: |
+| Purpose clarity | 5 |
+| Trigger clarity | 4 |
+| Scope control | 5 |
+| Instruction quality | 5 |
+| Brevity | 5 |
+| Engineering usefulness | 5 |
+| Agent usability | 5 |
+| Verification quality | 4 |
+| TDD / testing compatibility | N/A |
+| Maintainability | 5 |
+| Frontier readiness | 5 |
+| Average | **4.80** |
 
-| Category | Score | Note (only if below 5) |
-| :--- | :---: | :--- |
-| Purpose clarity | 5 | |
-| Trigger clarity | 5 | |
-| Scope control | 5 | |
-| Instruction quality | 5 | |
-| Brevity | 5 | |
-| Engineering usefulness | 5 | |
-| Agent usability | 5 | |
-| Verification quality | 5 | |
-| TDD / testing compat | 5 | |
-| Maintainability | 5 | |
-| Frontier readiness | 5 | |
-| **Average** | **5.00** | |
+Trigger clarity is 4 because the catalog does not demonstrate host invocation. Verification quality is 4 because gap-map preservation, project-pair filename handling, and preview limitations were simulated; actual repository/file/preview behavior was not exercised.
 
-TDD / testing compat is numeric, not `N/A`: the skill plans work that will be
-tested — gap-map section 5 ("Tests needed") carries the acceptance categories a
-later test can assert against, with "cover every category its template bullet
-lists" as the fill rule (`SKILL.md:85`, `SKILL.md:104`).
+TDD/testing compatibility is N/A: the skill lists tests needed for a future port but neither implements code nor gates completion on test results.
 
-## Category notes (what was checked)
+## Findings and observed decisions
 
-- **Purpose:** identity opener with the single-pass boundary ("a single pass, not a loop and not a pipeline", `SKILL.md:9`).
-- **Scope:** suggest-never-auto-chain, never-implement with the one permitted write named (`SKILL.md:31-32`), narrow-retrieval prohibition paired with its replacement (`SKILL.md:34`), no-fabricated-issue rule (`SKILL.md:38`).
-- **Agent usability:** input resolution order with a Needs-user stop naming the missing input (`SKILL.md:19`); artifact path with the canonical `<artifacts-root>` resolution and slug rule (`SKILL.md:59-63`); exact final phase-update template (`SKILL.md:111-119`); absences of binding rules route to Open questions rather than blocking (`SKILL.md:27`, `SKILL.md:44`).
-- **Verification:** all three completion criteria observable — artifact on disk with nine non-empty sections, run-scoped `git status`, final update emitted ending at the suggestion.
-- **Maintainability:** canonical one-liners byte-exact (check 13 green); `agents/openai.yaml` parity present; `references/gapmap-example.md` carries the granularity bar with no placeholder scaffolding (check 14 green). Body 1,306 words, under the ceiling.
+The reviewer found a cross-project filename collision at the original artifact path. The editor added pair checking and the qualified fallback at SKILL.md:68, and the completion criterion follows the resolved path. Three authored simulations plus a separate collision simulation passed after rereading that fix.
 
-## Defects
-
-One row per defect. A defect with no anchor and no exact edit is an opinion —
-delete it.
-
-None — both round-1 defects were fixed verbatim at their anchors, and a fresh full-file read found no new anchored defect.
+See [behavioral results](behavioral-results.md) for fixtures, produced actions/output, individual pass/fail results, and limits. A pass means the simulated response followed the inspected rules; it does not claim files were written, tests ran, services were accessed, or the host loaded the skill.
 
 ## Verdict
 
-- [x] Averages 5.00 — nothing left to point at
-- [ ] Below 5.00 — the blocking defects are listed above, each with an owner
-      and a gate
+The reviewed branches are ready for live workflow evaluation. No unresolved instruction defect remains from this independent pass. Scores are bounded by the stated document/simulation evidence and should not be read as measured production reliability.

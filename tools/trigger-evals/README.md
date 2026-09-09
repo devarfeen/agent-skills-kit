@@ -1,5 +1,7 @@
 # Trigger evals — harness
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
+
 A skill's frontmatter description is its router; this harness tests it like
 one. It reproduces the procedure CONTRIBUTING's "Trigger evals" section
 describes, with the catalog, judge prompt, and scoring checked in so any
@@ -18,7 +20,9 @@ maintainer can re-run the baseline comparably.
   deterministically-shuffled numbered list; writes `queryset.md` (for judges)
   and `query-manifest.json` (for scoring) to a working directory.
 - `score.py` — takes the manifest plus 3 judge output files (JSON lines) and
-  prints per-skill pass/fail with majority votes.
+  prints per-skill pass/fail with majority votes. Reads `catalog.md` beside the
+  manifest, or the file supplied with `--catalog`.
+- `test_score.py` — regression tests for invalid ballots and snapshot provenance.
 
 ## Procedure
 
@@ -32,7 +36,9 @@ maintainer can re-run the baseline comparably.
 5. **Pass rule** (majority vote per query): an `expect: trigger` query passes
    when the majority picks that skill; an `expect: no-trigger` query passes
    when the majority picks anything else — its `route` field is diagnostic,
-   not pass/fail.
+   not pass/fail. Three different picks fail for either query kind. Missing,
+   duplicate, extra, or unknown picks invalidate the run; so does reusing one
+   judge file in multiple argument positions.
 6. Record `date`, `method`, `result`, `model`, and the catalog provenance in
    each eval file's `last_run`.
 7. Refresh the description snapshot: re-run step 4 with `--write-snapshot`. It
@@ -41,6 +47,16 @@ maintainer can re-run the baseline comparably.
    bless the very text that failed. `tools/validate.sh` check 10 compares live
    descriptions against it, so a description edited after a passing run is
    caught instead of quietly invalidating the recorded result.
+
+The snapshot hashes the supplied catalog, manifest, and judge files. It derives
+description hashes from that catalog and refuses to write if live descriptions
+have changed since it was built or the manifest differs from the full live
+query set, including expected outcomes and diagnostic routes. Keep these
+input files with the run evidence. Hashes identify the files used; they do not
+prove that judges were independent or saw the supplied catalog.
+
+Run the harness regression tests with
+`python3 -m unittest discover -s tools/trigger-evals -p 'test_*.py'`.
 
 ## Acting on failures
 

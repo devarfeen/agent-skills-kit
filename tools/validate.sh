@@ -2,7 +2,9 @@
 # Validate the agent-skills-kit repo invariants.
 #
 # Run from anywhere: bash tools/validate.sh
-# Exits non-zero on any failure. No dependencies beyond coreutils + grep.
+# Exits non-zero on any failure. Requires git, coreutils, grep, and Python 3.
+# PyYAML enables strict frontmatter parsing; without it, report heuristic coverage.
+# Zero attribution: never add co-author, AI, or tool attribution to outputs.
 #
 # What it enforces (see CONTRIBUTING.md for the why):
 #   1. Every skills/<dir>/ has a SKILL.md with `name:` + `description:` frontmatter;
@@ -42,6 +44,11 @@ FAIL=0
 
 fail() { printf 'FAIL: %s\n' "$*"; FAIL=1; }
 note() { printf '  ok: %s\n' "$*"; }
+
+if ! command -v python3 >/dev/null 2>&1; then
+  fail "Python 3 is required for eval, provenance, and frontmatter checks"
+  exit 1
+fi
 
 echo "== 1. SKILL.md frontmatter =="
 for dir in skills/*/; do
@@ -126,7 +133,11 @@ PYEOF
       [[ -n "$line" ]] && fail "frontmatter YAML — $line"
     done <<< "$yaml_out"
   else
-    note "frontmatter parses as strict YAML"
+    if python3 -c 'import yaml' >/dev/null 2>&1; then
+      note "frontmatter parses as strict YAML"
+    else
+      note "frontmatter passes quote/colon heuristic only; PyYAML unavailable, strict YAML not checked"
+    fi
   fi
 fi
 

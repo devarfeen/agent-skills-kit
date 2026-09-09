@@ -4,6 +4,8 @@ How to satisfy each verification-gate clause with concrete tool calls. Adapt
 names to the runtime's browser tool when it isn't agent-browser; the evidence
 bar never changes.
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issue comments, release notes, generated docs, settings, or code comments.
+
 ## Expected values (the source of truth)
 
 - **Figma MCP:** read node metadata/variables for exact position, size,
@@ -36,31 +38,32 @@ bar never changes.
 
 ## Capture efficiently
 
-- One authenticated session for the whole audit; never restart the browser or
-  re-auth between rows.
+- Reuse one authenticated session across rows. Restart only that session when
+  recovery requires it, and re-authenticate if its credentials expired.
 - Batch each row into one flow — navigate → interact → eval assertion — not
   separate open/wait/snapshot/click/console calls.
 - Snapshot once per page to harvest refs, then drive rows with stable
   `data-test`/CSS selectors; re-snapshot only after a re-render invalidates a
   ref (Livewire and similar).
-- Wait on URL or DOM state, never toast timing or `networkidle`. An ordinary
-  route flow over ~5 seconds is a defect to diagnose, not a wait to lengthen.
-- Short explicit timeouts (3–8 s) on every command; one command at a time per
-  session — an orphaned wait blocks it. If a reused session fails a ~2 s health
-  check, close and reopen that session only, never all sessions.
+- Wait on URL or DOM state, never toast timing or `networkidle`. Use bounded
+  timeouts based on the project's measured startup and interaction times;
+  record unexpected delays before retrying. Run one command at a time per session.
 
 ## If the browser wedges
 
-Commands hang, or errors claim an existing connection: `agent-browser close
---all`, clear stale browser profile locks, relaunch, and re-verify the
-session renders the target page before resuming — evidence from an
-unverified session is void. Two failed recoveries → stop and show the user
-the exact error and what the screen shows.
+Commands hang, or errors claim an existing connection: inspect the installed
+tool's help for session-scoped recovery. Close and reopen only the audit's
+session; never close all sessions or remove another browser's profile locks.
+If session ownership cannot be established, stop recovery and report the blocker.
+Re-verify that the recovered session renders the target page before resuming.
+Two failed recoveries require stopping with the exact error and last observed state.
 
 ## Falsify before "verified"
 
 Rule out, and say you ruled out: stale served assets (cache-bust or hash
 check), wrong breakpoint (viewport stated), class present but overridden
 (computed style, not class list), element hidden/zero-size/clipped
-(rect + `visibility`/`overflow`), font not loaded (computed `font-family`
-resolution).
+(rect + `visibility`/`overflow`). For fonts, wait for font loading and inspect
+the actually rendered font with browser diagnostics. A computed `font-family`
+list only names candidates; it does not prove which font rendered. If actual
+font inspection is unavailable, leave font-dependent checks pending.

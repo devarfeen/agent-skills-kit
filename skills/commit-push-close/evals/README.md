@@ -12,9 +12,12 @@ This skill owns its evals. Everything needed to judge `/commit-push-close` is in
 
 ## Running the trigger eval
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issues, docs, or comments.
+
 From the repo root:
 
 ```bash
+mkdir -p /tmp/ev
 bash tools/trigger-evals/build-catalog.sh > /tmp/ev/catalog.md
 python3 tools/trigger-evals/build-queryset.py /tmp/ev
 # run 3 independent judge agents on judge-prompt.md + catalog + queryset
@@ -31,5 +34,6 @@ run. Never refresh, restamp, or fabricate it. A stale-but-honest record beats a 
 invented one — and a stale record is exactly how the kit once carried a 280/280 claim while actually
 scoring 277/280, after a description changed and nobody re-ran.
 
-Editing this skill's frontmatter `description` invalidates the recorded result. Re-run, or say in
-the commit body that the baseline is now stale.
+Editing this skill's frontmatter `description` invalidates the recorded result. Complete a real
+trigger sweep and refresh provenance with `score.py --write-snapshot` before landing. A stale-baseline
+note does not satisfy validator check 10.

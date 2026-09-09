@@ -2,8 +2,12 @@
 
 A fully worked instance of the contract artifact — the skeleton and section rules live in `SKILL.md`. Match this concreteness; placeholders never ship.
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
+
 ```markdown
 # Integration Contract — SPEC-142
+
+Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
 Touched PROJECT-CODEs: API-SVC (producer), ADMIN-WEB, MOBILE-APP
 
@@ -13,6 +17,7 @@ Touched PROJECT-CODEs: API-SVC (producer), ADMIN-WEB, MOBILE-APP
 |-|-|-|-|
 | API-SVC | http://localhost:8080 | `docker compose up --build api` | a `partially_shipped` order |
 | ADMIN-WEB | http://localhost:5173 | `pnpm dev` serves source live | user with checkout permission |
+| MOBILE-APP | local emulator, API at http://localhost:8080 | documented local app build | same order and authorized test account |
 
 ## 2. Producer surface changed
 
@@ -35,8 +40,9 @@ Touched PROJECT-CODEs: API-SVC (producer), ADMIN-WEB, MOBILE-APP
 |-|-|-|-|-|-|
 | 1 | ADMIN-WEB checkout → submit order → confirmation shows order number | ADMIN-WEB, API-SVC | agent-browser | | pending |
 | 2 | `POST /v2/orders` with no session token → denied (401/403), no order row created | API-SVC | curl | | pending |
+| 3 | Open a partially shipped order in MOBILE-APP; its status is visible without an unknown-status error | MOBILE-APP, API-SVC | manual: open order detail and inspect status | | pending |
 
 ## Gate log
 
-- 2026-08-12 · pre-ship · 3 pass / 1 fail (#2) · env: API-SVC rebuilt, `partially_shipped` in served response
+- No gate run yet. All 3 flows are pending; environment and served change are unverified.
 ```

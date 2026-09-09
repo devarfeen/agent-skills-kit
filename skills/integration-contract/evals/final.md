@@ -1,54 +1,40 @@
-# Quality scorecard — `/integration-contract`
+# Quality scorecard: /integration-contract
 
-**Scored:** 2026-07-17 · **Reader:** fresh rescorer (round 2) · **Rubric:** `evals/skill-quality-rubric.md`
+Date: 2026-09-09. Method: independent document review and isolated simulated execution against the revised body and references. The reviewer did not write the skill changes. Scored using [the root rubric](../../../evals/skill-quality-rubric.md). Simulations exercise instruction decisions; they do not establish live runtime reliability.
 
-## Trigger eval
+Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
-Routing baseline: unchanged description; 2026-07-09 baseline stands (22/22, re-confirmed unanimous 2026-07-14 after body-only edits). The pending 2026-07-16/17 maintainer sweep covers other skills' descriptions only; none of the new/edited descriptions collides with this skill's trigger queries.
+## Routing evidence
 
-## Round-1 fix verification
+`evals.json` records **22/22 pass on 2026-08-21**, by three catalog-only judges with majority voting. This historical run was **not rerun** during this review; its description and `last_run` were not restamped. The user-only skill retains its recorded catalog result; actual host invocation was not exercised.
 
-- `SKILL.md:108-110` — the build-update template now carries `[or: …]` single-project branches on all three affected lines: `Stage: … [or: single project — no contract needed (matrix swept; no external call-sites)]`, `Found: … [or: matrix swept for <K> changed surfaces; no external call-sites]`, `Next: … [or: proceed per-slice — no integration gate needed]`. The branch text is consistent with build step 2 and with completion criterion 1's quoted phrase `single project — no contract needed`. Fixed as specified; no new defect introduced.
+## Scores
 
-| Category | Score | Note (only if below 5) |
-| :--- | :---: | :--- |
-| Purpose clarity | 5 | |
-| Trigger clarity | 5 | |
-| Scope control | 5 | |
-| Instruction quality | 5 | |
-| Brevity | 5 | |
-| Engineering usefulness | 5 | |
-| Agent usability | 5 | |
-| Verification quality | 5 | |
-| TDD / testing compat | 5 | |
-| Maintainability | 5 | |
-| Frontier readiness | 5 | |
-| **Average** | **5.00** | |
+| Category | Score / 5 |
+| --- | ---: |
+| Purpose clarity | 5 |
+| Trigger clarity | 4 |
+| Scope control | 5 |
+| Instruction quality | 5 |
+| Brevity | 5 |
+| Engineering usefulness | 5 |
+| Agent usability | 5 |
+| Verification quality | 4 |
+| TDD / testing compatibility | 4 |
+| Maintainability | 5 |
+| Frontier readiness | 5 |
+| Average | **4.73** |
 
-`N/A` is permitted only on TDD / testing compat, and only with a justification
-sentence here:
+Trigger clarity is 4 because semantic routing is not host invocation evidence. Verification quality and TDD/testing compatibility are 4 because no live cross-repo smoke flow, environment/build check, or failed-to-passing integration repair was run. These are explicit coverage limits, not observed product failures.
 
-> _(unused — the skill plans work that will be tested: its Section 4 flows carry driver-named, assertable acceptance criteria, and the gate demands per-flow Evidence with `pending`-not-`pass` discipline.)_
+Testing is applicable because gate mode relies on executed smoke checks and can block spec-level shipping.
 
-## Defects
+## Findings and observed decisions
 
-One row per defect. A defect with no anchor and no exact edit is an opinion —
-delete it.
+All three authored simulations passed: nominal single-project scope with an external consumer, missing staging authority, and unavailable consumer/driver evidence. No additional body defect was found in the reviewed branches.
 
-| `file:line` | Category | Problem | Exact fix | Gate |
-| :--- | :--- | :--- | :--- | :--- |
-| — | — | none | — | — |
-
-**Gates** mean the fix cannot land as an ordinary edit:
-
-- `dup-pair` — the text is duplicated by design (`ship-policy.md`,
-  `context-terms.md`). Edit every copy together or `tools/validate.sh` check 2
-  fails.
-- `description-locked` — the fix would change frontmatter `description`, which
-  invalidates the trigger-eval baseline. Needs a maintainer eval re-run.
+See [behavioral results](behavioral-results.md) for fixtures, produced actions/output, individual pass/fail results, and limits. A pass means the simulated response followed the inspected rules; it does not claim files were written, tests ran, services were accessed, or the host loaded the skill.
 
 ## Verdict
 
-- [x] Averages 5.00 — nothing left to point at
-- [ ] Below 5.00 — the blocking defects are listed above, each with an owner
-      and a gate
+The reviewed branches are ready for live workflow evaluation. No unresolved instruction defect remains from this independent pass. Scores are bounded by the stated document/simulation evidence and should not be read as measured production reliability.

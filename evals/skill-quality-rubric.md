@@ -3,6 +3,8 @@
 Eleven categories, scored 1–5. Operationalizes the review rubric in
 [`CONTRIBUTING.md`](../CONTRIBUTING.md) into something you can average and rank.
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issues, docs, or comments. Evaluation metadata records evidence, not credit or signature footers.
+
 ## Anchors
 
 Use the same five anchors in every category. They are about **consequences**,
@@ -10,15 +12,16 @@ not polish.
 
 | Score | Meaning |
 | :--- | :--- |
-| **5** | A frontier agent executes correctly on the first try. Nothing to add, nothing to cut. |
+| **5** | No defect found within the documented review scope, supported by the stated checks. This is not proof of reliability on untested tasks. |
 | **4** | Strong, but a careful reviewer names one concrete defect. |
 | **3** | Usable, but a real gap that would produce a wrong or incomplete run. |
 | **2** | Materially incomplete or actively misleading. |
 | **1** | Absent or harmful. |
 
-A 4 is not a compliment. It means someone can point at a line and say "this
-one." If you cannot point at the line, it is a 5. If you can point at three, it
-is a 3.
+Score consequences, not defect count. Missing evidence is uncertainty, not a
+reason to award 5. Name each lower score's concrete defect or coverage gap.
+Mark results as document review, simulated execution, or live execution so a
+reader can distinguish instruction quality from observed runtime behavior.
 
 ## Categories
 
@@ -26,8 +29,10 @@ is a 3.
    job it does. An identity sentence ("TDD is one failing test turned green at a
    time"), not an instruction.
 2. **Trigger clarity** — a runtime picks this skill and *not* a sibling.
-   **Scored against the trigger-eval set, not against prose.** To score below 5,
-   name the colliding sibling and the query that misroutes.
+   **Scored against the trigger-eval set, not against prose.** State the recorded
+   run date and whether it was rerun. A catalog-only routing sweep does not
+   establish that a host loads a user-only skill implicitly. Name any colliding
+   sibling and misrouted query, or the missing runtime evidence.
 3. **Scope control** — states what it refuses to do, where it stops, and that it
    suggests rather than auto-chains. Refusal lines are the safety property; they
    are never "boilerplate".
@@ -40,8 +45,8 @@ is a 3.
    safety, refactoring safety, security, observability, release discipline,
    definition of done.
 7. **Agent usability** — an agent can trigger, execute, verify, and summarize it.
-   Named commands, explicit artifact paths, phase updates, away-fallbacks on
-   human gates so autonomous runs don't deadlock. See
+   Named commands, explicit artifact paths, phase updates, defaults for optional
+   preferences and explicit stops for required approval. See
    [`agent-usability-eval.md`](agent-usability-eval.md).
 8. **Verification quality** — completion is **observable evidence** ("quote the
    failing run", "name the command you ran"), never self-assessment ("make sure

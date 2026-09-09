@@ -1,5 +1,7 @@
 # Examples
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issue comments, release notes, generated docs, settings, or code comments.
+
 Some outputs below are excerpts; a real file always opens with the file-level
 Stakeholder Summary and carries every per-feature block (Summary through
 Commits Included) for each feature. Session summaries follow `assets/session-summary-template.md`; entries read exactly like Example 1.
@@ -19,6 +21,10 @@ Generate release notes for 11 March 2026
 - feat: verification warnings for QR/RFID data mismatches
 - fix: Android app startup crash
 - fix: photo selection crash on Android
+
+Additional evidence for this example: the diff shows a Ready status and retries
+on Stock Lookup; the user confirms these commits were released. Commit subjects
+alone would not establish either fact. The listed checks have not been run.
 
 ### Example Output
 
@@ -59,9 +65,12 @@ WAREHOUSE-APP
 - Stock Lookup screen in WAREHOUSE-APP.
 
 **Manual QA Steps**
-1. Open Stock Lookup and start a scan → "Ready" status should appear before the scan begins.
-2. Start a scan right after opening the app → Scan should wait for the scanner, not fail.
-3. Unplug the scanner briefly, then try again → App should retry and recover on its own.
+Setup: local test build, warehouse tester account, test asset, and test scanner.
+Status: proposed checks, not executed.
+
+1. Open Stock Lookup and start a scan -> "Ready" appears before scanning begins.
+2. Scan immediately after opening the app -> The app waits for scanner readiness.
+3. Disconnect and reconnect the test scanner -> The next scan retries and recovers.
 
 **Commits Included**
 - abc1234
@@ -104,21 +113,21 @@ This example shows the same work described in bad (verbose/corporate) style vs g
 ### Good Output (Generate like this)
 
 ```
-### Login and Password Improvements Planned
+### Login and password plan documented
 
 **Summary**
-- Planned fixes for how usernames and passwords work across Admin and Portal apps.
+- Documented proposed username and password fixes for Admin and Portal apps.
 
 **Problem**
 - "John" and "john" were treated as different accounts.
 - Some password fields had a show/hide toggle, others didn't.
 
 **Change**
-- Planned: lowercase usernames everywhere, show/hide on all password fields, stronger password rules.
-- Covers: Login, Sign Up, Reset Password, Invite, and User Management pages in both apps.
+- Wrote a plan for lowercase usernames, password visibility, and stronger password rules.
+- Named the login, signup, reset, invite, and user-management pages needing changes.
 
 **Impact**
-- Once built, all login pages will work the same way across both apps.
+- Reviewers can check the proposed behavior before coding starts; app behavior is unchanged.
 ```
 
 ### What makes the good version better

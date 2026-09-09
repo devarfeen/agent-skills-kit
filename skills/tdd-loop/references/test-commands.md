@@ -5,6 +5,8 @@ the runner from the manifest and lockfile, not from a folder's name; when
 unsure, read how CI runs tests (`.github/workflows/`, `Makefile`, composer/npm
 scripts) — that is the project's own answer.
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
+
 ## JS / TS
 
 - **Vitest:** `pnpm vitest run path/to/file.test.ts` · one test: add `-t "name"` · widen: `pnpm vitest run src/module/`
@@ -12,7 +14,16 @@ scripts) — that is the project's own answer.
 - **Node test runner:** `node --test path/to/file.test.js`
 - **Playwright:** `pnpm playwright test path/spec.ts -g "name"` — E2E; prefer a unit seam for the loop and keep E2E for widen/verify.
 
-Substitute `npm run` / `yarn` per the lockfile.
+Use the project's installed package manager. For an installed binary, use
+`pnpm exec vitest run path/to/file.test.ts`, `npm exec --no -- vitest run path/to/file.test.ts`,
+or `yarn run vitest run path/to/file.test.ts`. `npm run <script> -- <args>`
+requires that script in `package.json`; it is not a substitute for running a
+binary. Check that the runner is installed first; do not download a missing
+runner to guess the test command.
+
+Package-manager syntax checked 2026-09-09 against [pnpm exec](https://pnpm.io/cli/exec),
+[npm exec](https://docs.npmjs.com/cli/v11/commands/npm-exec/),
+and [yarn run](https://yarnpkg.com/cli/run).
 
 ## PHP
 

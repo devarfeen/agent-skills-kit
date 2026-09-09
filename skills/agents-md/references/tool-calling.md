@@ -2,6 +2,8 @@
 
 How the six supported runtimes — Codex CLI, Claude CLI, Antigravity CLI, Cursor CLI, Opencode CLI, and GitHub Copilot CLI, no others — invoke tools, and how this kit maps generic skill instructions to each. Compatibility filenames do not imply support for any other runtime.
 
+Zero attribution: omit co-author, AI, and tool attribution from all output. Use the current runtime's exposed tool schema when a mapping differs; these tables describe capabilities, not a guarantee that a tool is enabled in every session. Read-only role prompts are behavioral instructions; enforce access limits with runtime permissions when a hard boundary is needed.
+
 > Last verified: 2026-07-06 against all six installed CLIs (codex-cli 0.142.5, claude 2.1.201, agy 1.0.16, cursor-agent 2026.07.01, opencode 1.17.13, copilot 1.0.68) — flag/command surface via `--help`; internals are docs-level and re-verified on touch.
 
 ## Agent Orchestration Model
@@ -15,7 +17,7 @@ Use only **local** subagents and **local** background/async execution; local wor
 | Runtime | Cloud/remote product to AVOID | Local equivalent to use instead |
 | :--- | :--- | :--- |
 | Codex CLI | Codex Web delegated tasks | `spawn_agent` subagents (no CLI worktree support — use plain `git worktree add`) |
-| Claude CLI | Routines (`/schedule`), agent teams (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`), background agents on claude.ai | `Agent` subagents; `run_in_background` Bash; `isolation: worktree` |
+| Claude CLI | Routines (`/schedule`), background agents on claude.ai; local agent teams are separately excluded by kit policy | `Agent` subagents; `run_in_background` Bash; `isolation: worktree` |
 | Antigravity CLI | Managed Agents API / remote managed execution | `start_subagent` local instances; `/schedule` local background |
 | Cursor CLI | Cloud Agents (formerly "Background Agents"), `&`-prefixed cloud hand-off, cursor.com/agents | `Task` subagents; local worktree agents |
 | Opencode CLI | (no cloud agent in scope) | `task` subagents; `task(background=true)` |
@@ -40,7 +42,7 @@ Standard lane roles across this kit; each runtime's `*-tools.md` maps them to th
 
 | Runtime | Parallel dispatch | Local background / async | Custom agent files |
 | :--- | :--- | :--- | :--- |
-| Codex CLI | `spawn_agent` / `spawn_agents_on_csv` (`agents.max_threads`, default 6; `max_depth` 1) — on by default | `wait_agent` / async subagent threads | `.codex/agents/<name>.toml` (or `~/.codex/agents/<name>.toml`) |
+| Codex CLI | Available spawn tools; `agents.max_concurrent_threads_per_session` controls capacity (`agents.max_threads` is a legacy alias) | Available wait / follow-up tools for local threads | `.codex/agents/<name>.toml` (or `~/.codex/agents/<name>.toml`) |
 | Claude CLI | Multiple `Agent` calls in one turn | `run_in_background` Bash; `background: true` subagents; `isolation: worktree` | `.claude/agents/<name>.md` |
 | Antigravity CLI | `start_subagent` orchestrator-spawned dynamic subagents (Agent Manager); `browser_subagent` for browser tasks | `/schedule` local background; Artifacts for review | `.agents/agents.md` |
 | Cursor CLI | Multiple `Task` calls in one turn (practical cap ~4); local worktree agents (up to 8) | `is_background: true` subagent + `Await`; `bash` subagent isolates output | `.cursor/agents/<name>.md` |
@@ -70,7 +72,7 @@ Use these only when the user explicitly asks for highest/elevated/full/YOLO perm
 | Claude CLI | `claude --dangerously-skip-permissions` (equivalent to `--permission-mode bypassPermissions`) | Skips the permission layer; protected paths are allowed except hard circuit breakers. |
 | Antigravity CLI | `agy --dangerously-skip-permissions`; do not pair with `--sandbox` for full elevation | Auto-approves tool permission requests without terminal sandbox restrictions. |
 | Cursor CLI | `agent --yolo --sandbox=disabled --approve-mcps` (`--yolo` is `--force`) | Force-allows commands unless explicitly denied, disables sandboxing, and approves MCP servers. |
-| Opencode CLI | `opencode run --auto` (v1.17 renamed the old `--dangerously-skip-permissions`); for agent config set needed permission keys to `allow` / wildcard `{"*":"allow"}` | Auto-approves non-denied permissions; per-agent `allow` grants tools without prompts. |
+| Opencode CLI | `opencode --auto` for interactive sessions; `opencode run --auto` for non-interactive runs; verify installed help | Auto-approves permissions that are not explicitly denied. |
 | GitHub Copilot CLI | `copilot --allow-all` (alias `--yolo`) | Allows all available tools, all paths, and all URLs without approval. |
 
 ## All runtimes (index)
@@ -98,8 +100,10 @@ Native CLI memory defaults: [`memory-global-defaults.md`](memory-global-defaults
 Keep MCP configuration at workspace root for supported coding tools:
 
 - Codex CLI: `<workspace-root>/.codex/config.toml`
-- Claude CLI: `<workspace-root>/.claude/settings.local.json`
+- Claude CLI: `<workspace-root>/.mcp.json` for project-scoped servers; `.claude/settings.local.json` holds local settings, not server definitions
 - Antigravity CLI: `<workspace-root>/.agents/mcp_config.json`
 - Cursor CLI: `<workspace-root>/.cursor/mcp.json` (plus optional `~/.cursor/mcp.json` fallback)
 - Opencode CLI: workspace-root `opencode.json` / MCP config where used
 - GitHub Copilot CLI: `<workspace-root>/.mcp.json` or `<workspace-root>/.github/mcp.json` (user fallback: `~/.copilot/mcp-config.json`)
+
+Corrections verified 2026-09-09: [Codex subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents), [Claude MCP scopes](https://code.claude.com/docs/en/mcp), [Claude agent teams](https://code.claude.com/docs/en/agent-teams), and installed `opencode --help` / `opencode run --help` 1.18.30. Other table rows retain the earlier verification scope above.

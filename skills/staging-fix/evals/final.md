@@ -1,64 +1,40 @@
-# Quality scorecard — `/staging-fix`
+# Quality scorecard: /staging-fix
 
-**Scored:** 2026-07-17 · **Reader:** fresh rescorer (round 4) · **Rubric:** `evals/skill-quality-rubric.md`
+Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
-## Trigger eval
+Date: 2026-09-09. Method: independent document review and three simulated execution cases; the reviewer did not write the skill changes. Rubric: [skill-quality-rubric.md](../../../evals/skill-quality-rubric.md).
 
-Routing baseline: maintainer sweep pending for the 2026-07-16/17 description batch (new skill —
-no recorded run yet). Read the 15 `evals.json` queries against the 16-description catalog: every
-should-trigger names staging plus a fix intent, which only this description claims; the negatives
-are covered by the description's explicit negative-routing clauses (/commit-push-pr,
-/commit-push-close, /diagnosing-bugs) or lack the fix intent entirely. No colliding sibling found.
+## Scope and routing evidence
 
-## Round-3 fix verification
+Read the revised body, settings mirror, routing record and author runtime-command evidence. Simulated local fix with immediate merge, production refusal, and ambiguous deployment routing.
 
-- Defect (hardcoded `--base staging` despite Inputs treating the branch name as a confirmed
-  variable): fixed. The ship command (`SKILL.md:46`) now reads `--base <staging-branch>`, the
-  read-back (`SKILL.md:50`) confirms "the base is the confirmed staging branch", and the
-  completion criterion (`SKILL.md:62`) checks "the confirmed staging branch as base". The name
-  confirmed in Inputs now threads through command, read-back, and criterion.
+The recorded trigger run is 15/15 on 2026-08-21 in [evals.json](evals.json). It was not rerun for this body-only audit. Description provenance still matches the recorded snapshot. A historical catalog-only score neither proves a current independent routing run nor proves implicit invocation of a user-only skill. No last_run metadata was restamped.
 
-## Quality
+## Scores
 
-| Category | Score | Note (only if below 5) |
+| Category | Score / 5 | Evidence or remaining gap |
 | :--- | :---: | :--- |
-| Purpose clarity | 5 | |
-| Trigger clarity | 5 | |
-| Scope control | 5 | |
-| Instruction quality | 5 | |
-| Brevity | 5 | |
-| Engineering usefulness | 5 | |
-| Agent usability | 5 | |
-| Verification quality | 5 | |
-| TDD / testing compat | 5 | |
-| Maintainability | 5 | |
-| Frontier readiness | 5 | |
-| **Average** | **5.00** | |
+| Purpose clarity | 5 | No defect found in the reviewed text and stated simulation scope. |
+| Trigger clarity | 4 | Historical 2026-08-21 catalog result only; no current host invocation trial. |
+| Scope control | 5 | No defect found in the reviewed text and stated simulation scope. |
+| Instruction quality | 5 | No defect found in the reviewed text and stated simulation scope. |
+| Brevity | 5 | No defect found in the reviewed text and stated simulation scope. |
+| Engineering usefulness | 5 | No defect found in the reviewed text and stated simulation scope. |
+| Agent usability | 4 | Immediate merge, protected-branch and merge-queue behavior were not exercised against an authenticated repository. |
+| Verification quality | 4 | Local-to-staging execution is simulated; no real merge or deployment run proves the full sequence. |
+| TDD / testing compatibility | 5 | No defect found in the reviewed text and stated simulation scope. |
+| Maintainability | 5 | No defect found in the reviewed text and stated simulation scope. |
+| Frontier readiness | 5 | No defect found in the reviewed text and stated simulation scope. |
+| Average | 4.73 | All eleven categories included. |
 
-`N/A` is permitted only on TDD / testing compat, and only with a justification
-sentence here:
+## Behavioral checks
 
-> _(unused — the skill produces a code fix with a test; category 9 is scored)_
+[behavioral-results.md](behavioral-results.md) records all fixtures, ordered actions and simulated outputs. Result: 3/3 simulated cases passed. No live success is implied.
 
-## Defects
+The author added origin/local delivery compliance, explicit stage/commit, exact base/head read-back, pinned merge identity, deployment-evidence wording, preservation of unrelated changes, and approved missing-issue creation.
 
-One row per defect. A defect with no anchor and no exact edit is an opinion —
-delete it.
+## Remaining limits
 
-| `file:line` | Category | Problem | Exact fix | Gate |
-| :--- | :--- | :--- | :--- | :--- |
-| — | — | none | — | — |
+No SSH, staging/production access, remote write, PR merge or deployment occurred. The simulated passing regression and merged SHA are supplied fixtures. Live repository permissions and CI routing must be checked in the actual workflow.
 
-**Gates** mean the fix cannot land as an ordinary edit:
-
-- `dup-pair` — the text is duplicated by design (`ship-policy.md`,
-  `context-terms.md`). Edit every copy together or `tools/validate.sh` check 2
-  fails.
-- `description-locked` — the fix would change frontmatter `description`, which
-  invalidates the trigger-eval baseline. Needs a maintainer eval re-run.
-
-## Verdict
-
-- [x] Averages 5.00 — nothing left to point at
-- [ ] Below 5.00 — the blocking defects are listed above, each with an owner
-      and a gate
+Repository validation checks structure and provenance; it does not enforce these natural-language instructions at runtime. A 5 means no defect found within this review scope, not guaranteed execution on an untested task.

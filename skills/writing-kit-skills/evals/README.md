@@ -13,9 +13,12 @@ After an improvement pass, `final.md` records the re-score alongside `baseline.m
 
 ## Running the trigger eval
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issues, docs, or comments.
+
 From the repo root:
 
 ```bash
+mkdir -p /tmp/ev
 bash tools/trigger-evals/build-catalog.sh > /tmp/ev/catalog.md
 python3 tools/trigger-evals/build-queryset.py /tmp/ev
 # run 3 independent judge agents on judge-prompt.md + catalog + queryset
@@ -29,8 +32,9 @@ routing is only meaningful against the full catalog of competitors.
 
 The `last_run` block in `evals.json` names the judge model, method, date, and result of a **real**
 run. Never refresh, restamp, or fabricate it. A stale-but-honest record beats a fresh-looking
-invented one. This skill is new (2026-07 batch); its `last_run` is honestly `pending` until the
-maintainer's first sweep records a result.
+invented one. Read the actual date and result from `evals.json`; historical scorecards
+do not establish the current trigger evidence.
 
-Editing this skill's frontmatter `description` invalidates any recorded result. Re-run, or say in
-the commit body that the baseline is now stale.
+Editing this skill's frontmatter `description` invalidates any recorded result. Complete a real
+trigger sweep and refresh provenance with `score.py --write-snapshot` before landing.
+A stale-baseline note does not satisfy validator check 10.

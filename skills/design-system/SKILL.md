@@ -19,6 +19,7 @@ Infer from the request and cheap repo evidence; interview only for gaps:
 
 ## Rules
 
+- Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issue comments, release notes, generated docs, settings, or code comments. Include this rule in each generated or updated instruction file.
 - Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
 - Decisions are **artifacts** — every output lives on disk, not in chat.
 - Never hardcode locations — resolve paths from the target's stack conventions and setup decisions; record real paths in doc, reference, and skill.
@@ -37,10 +38,10 @@ Emit in the target's idiom, never one hardcoded framework: framework web (Larave
 Full first run; an existing design-system doc or library → switch to `extend`. In order:
 
 1. **Extract** tokens and the base component list with states from the source.
-2. **Tokens** — colours, typography, spacing, radii, shadows as named tokens in the stack's native mechanism (CSS variables, Tailwind `theme`, RN theme object, …), never hardcoded per use.
+2. **Tokens** — colours, typography, spacing, radii, shadows as named tokens in the project's existing mechanism, checked against its installed framework version; never hardcoded per use.
 3. **UI library** — build the base components (buttons, inputs, selects, toggles, cards, alerts, badges, …) from the tokens, faithful to the source.
 4. **Preview page** — one page/route/screen rendering every component in its states (default/hover/focus/disabled/active; empty/loading/error where relevant; responsive) — the verification gate, in two halves:
-   - **Agent half — evidence first.** Build/serve the target, load the preview, and check every extracted component appears with no error output. An agent-browser screenshot is the evidence floor; a served-HTML fetch substitutes only for server-rendered output — on client-rendered stacks (React Native, React SPA) the served HTML is an empty root, so a screenshot or rendered DOM/tree snapshot is required. Quote the evidence: URL/file, status, screenshot path, and the rendered component list (DOM query, tree snapshot, or served-HTML match) checked off against the extracted inventory — a bare aggregate count is not evidence.
+   - **Agent half — evidence first.** Build/serve the target, load the preview, and check every extracted component appears with no error output. A rendered screenshot is the evidence floor; served HTML substitutes only for server-rendered web output. Client-only web and native stacks require a screenshot or rendered DOM/tree snapshot from the local browser or simulator. Quote the evidence: URL/file, status, screenshot path or stated fallback, and the rendered component list checked off against the extracted inventory. A bare aggregate count is not evidence.
    - **Human half — the gate.** Show the user how to open the preview and ask them to eyeball it. If the user is away, state the preview location and the agent-half evidence, record the eyeball as pending in the phase update, and continue to the suggestions — never claim the design system verified until they have looked.
    Where a snapshot harness exists, add a minimal render/snapshot test per base component.
 5. **Register** — write the doc, the AGENTS.md reference, and the project UI skill (below).

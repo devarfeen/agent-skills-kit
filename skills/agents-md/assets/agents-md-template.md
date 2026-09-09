@@ -1,4 +1,4 @@
-<!-- agents-md marker · v17 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v18 · re-run /agents-md to regenerate -->
 # Agent instructions
 
 [one concise, factual workspace intro inferred from the .code-workspace name and folder scan — no promotional adjectives]
@@ -72,14 +72,12 @@ The main session is the top-level orchestrator and sole final integrator. Parall
 
 ### 11. Honest state & reporting
 
-Enforced. No exceptions.
-
 - Before any significant step, anchor state: `[verified]` (proven true), `[current]` (in progress), `[todo]` (not started).
 - At phase changes, send a short visible update: `Stage`, `Found`, `Next`, `Needs user` — not buried in narration, raw tool output, or pre-tool chatter. After discovery or broad file reads, give it before planning, edits, tests, commits, PRs, or issue updates.
 - Continue within a phase when the next action follows from the request; make phase transitions explicit. Stop only when user input, approval, or a scope decision is needed.
 - Never report work done while any part is skipped, stubbed, or unverified. Surface constraints, risks, and assumptions up front.
 - While any subagent, background task, or job is active — under any name, in any runtime — every visible update states `N running / M done / K blocked` and what each running lane is doing. Work running silently in the background is a reporting violation, exactly like claiming unverified work is done.
-- After a successful task, end with `Recommended next step:` and the single best follow-up, plus a one-line why. When more paths matter, add `Other good options:` with up to three labeled choices (Rule 4), plus `Write your own`. Suggest only — never chain or auto-advance.
+- After a successful task, use the active skill's required closing format. If none exists, end with `Recommended next step:` and one useful follow-up with its reason. Suggestions never authorize a new workflow; a handoff explicitly included in the user's requested workflow may proceed within that authority.
 
 **Why:** silent gaps and premature "done" are how broken work ships.
 
@@ -94,7 +92,7 @@ No co-author, AI, tool, or generator attribution.
 
 Nothing commits, pushes, opens a PR, or closes an issue outside the ship skills, and each ship skill stays inside its own scope:
 
-- `/commit-push-pr` — commit, push, and open a PR targeting the default branch.
+- `/commit-push-pr` — commit, push, and create or update a PR within that skill's allowed base-branch policy.
 - `/commit-push-close` — commit, push the current branch, and close the issue (a direct default-branch push only after its separate confirm).
 - `/pr-feedback` — fixes on an existing PR branch; it ships through `/commit-push-pr` on that same branch, never a raw push.
 - `/staging-fix` — commit, push, and open a PR targeting the staging branch only, with auto-merge; never the default branch.
@@ -107,7 +105,7 @@ Nothing commits, pushes, opens a PR, or closes an issue outside the ship skills,
 
 Hard rules for every browser mechanism in every runtime — agent-browser, a built-in browser subagent, a Playwright/CDP MCP. The browser is rarely the bottleneck; chatty per-call driving, oversized snapshots, and unstable waits are.
 
-- Keep one authenticated session for the whole task; never restart the browser or re-login mid-task. Persist auth by session name/profile so a daemon restart doesn't force re-login.
+- Reuse one authenticated session for the task. If it fails, recover only that session as described below; never disturb another worker's session.
 - Drive each route as one batched flow — open → interact → deterministic assertion — never separate calls for open, wait, snapshot, click, errors, console. Prefer the project's flow runner or JSON flow mode when one exists.
 - Short explicit timeouts: 3–8 s on every browser command, one outer timeout per flow — never inherit a long default. Clean up spawned wait processes on exit: an orphaned wait blocks the whole session.
 - One command at a time per session, never overlapping. Health-check a reused session first (~2 s URL read); on failure, close and reopen **that session only** — never close all sessions, which destroys other agents' auth and state.
@@ -115,7 +113,7 @@ Hard rules for every browser mechanism in every runtime — agent-browser, a bui
 - Prefer stable selectors (`data-test`, CSS) over framework-generated element refs that re-renders invalidate (Livewire, React, …); re-snapshot only after a re-render breaks a ref.
 - Assert stable state — URL, DOM/component state, or a database row — never toast timing or `networkidle`. Use compact JS eval assertions; snapshot only the specific element when its selector is unknown — full-page snapshots are overview only.
 - One interaction flow plus one evidence check per behavior; cross-page persistence and data coverage belong in the project's test suite.
-- An ordinary route flow taking over ~5 seconds is a defect to diagnose (Rule 8), not a reason to add waits.
+- If a route exceeds the test environment's documented latency budget, record its timing and investigate. A fixed five-second threshold cannot distinguish a regression from expected build or network latency.
 
 ## Working with skills
 
@@ -127,7 +125,7 @@ Skills are ad-hoc tools, not a pipeline: treat every installed skill as availabl
 
 - Skills live in each repo's `.agents/skills/` and in the kit — prefer the project-local one; never assume a skill exists, use what is installed.
 - When a target project has its own `AGENTS.md`, read it on demand for that project's specifics. This root file still binds.
-- After finishing a step, suggest a sensible next skill when one fits. Suggest only — never chain or auto-advance.
+- After finishing the authorized workflow, suggest a next skill when one fits and stop. An explicitly authorized handoff within that workflow follows Rule 11.
 
 ### Companion skills and MCPs
 
@@ -153,7 +151,7 @@ Use `/ask-matt` to choose a Matt skill flow — it routes, never executes; do no
 
 ## Context & native memory
 
-- **Binding:** `CONTEXT.md` (<!-- set during setup: path to CONTEXT.md -->) + ADRs (<!-- set during setup: path to specs/adr -->) — read before implementing. Then current task context (request, issue/spec, code, tests, command evidence), then the current CLI's native memory only when it provides one; never sync memory between CLIs.
+- Read `CONTEXT.md` (<!-- set during setup: path to CONTEXT.md -->) and ADRs (<!-- set during setup: path to specs/adr -->) before implementing, alongside the current request and relevant code, tests, and command evidence. These documents guide project decisions but never override higher-priority instructions or the user's current scope. Native CLI memory is advisory; never sync memory between CLIs.
 - `specs/` is an on-demand archive — retrieve only what the task names; never bulk-read it.
 - No repo `MEMORY.md`, wikis, discovery files, knowledge-graph files, or memory MCPs as default memory — shared context lives in `AGENTS.md`, `CONTEXT.md`, and ADRs; graph/index companions are helpers, not binding memory.
 - `/grill-with-docs`: ask once, up front, whether archived context exists; capture pastes verbatim in the ADR **as a blockquote** with provenance (`Source: "<doc title>" · pasted <date>`); offer revealed names as `CONTEXT.md` aliases; pasted history is advisory — flag ADR contradictions, never silently drop them.

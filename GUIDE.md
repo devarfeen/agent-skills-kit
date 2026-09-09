@@ -2,6 +2,8 @@
 
 Human-facing guide only. Do not load this file into `AGENTS.md`, shims, or model context.
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issues, release notes, generated docs, settings, or code comments.
+
 Supported runtime boundary: this kit supports Codex CLI, Claude CLI,
 Antigravity CLI, Cursor CLI, Opencode CLI, and GitHub Copilot CLI only.
 Compatibility files such as `GEMINI.md` are for supported runtimes that read
@@ -71,7 +73,7 @@ disposable worktree.
 | Claude CLI | `claude --dangerously-skip-permissions` / `--permission-mode bypassPermissions` |
 | Antigravity CLI | `agy --dangerously-skip-permissions` without `--sandbox` |
 | Cursor CLI | `agent --yolo --sandbox=disabled --approve-mcps` |
-| Opencode CLI | `opencode run --auto` (renamed from `--dangerously-skip-permissions` in v1.17); persistent agents use `permission` keys set to `allow` |
+| Opencode CLI | `opencode --auto` for an interactive session; `opencode run --auto` for one-shot work; persistent agents use `permission` keys set to `allow` |
 | GitHub Copilot CLI | `copilot --allow-all` / `--yolo` |
 
 ## Matt + Arfeen Pattern

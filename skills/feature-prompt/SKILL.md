@@ -43,6 +43,8 @@ sections are always present.
 
 ## Rules
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in any output. Include this rule in the prompt's `Known limits`.
+
 ### Intake and inference
 
 - Start from free-form intake. Infer first; ask only when `What is needed` is
@@ -79,8 +81,8 @@ sections are always present.
   facts the code already shows.
 - Dependency internals central and unclear → suggest fetching targeted source
   (e.g. `opensrc`) as a follow-up context step before deep grilling.
-- Keep domain words intact. Do not invent glossary definitions;
-  `grill-with-docs` owns that.
+- Keep domain words intact. Ground candidate definitions in evidence and use
+  the approval flow below; unresolved definitions belong to `grill-with-docs`.
 
 ### Questions and output discipline
 
@@ -123,7 +125,8 @@ Sub-agents: dispatch local lanes automatically for independent work — never cl
    away → save as drafted and note at the top that it is unconfirmed.
 3. If candidate context terms were found, run the shared approval flow.
 4. Verify the pre-save checklist and save to the path below, then re-open the
-   saved file and confirm sections and path match the approved draft before
+   saved file and confirm sections and path match the approved draft, or the
+   explicitly unconfirmed draft when the user is away, before
    reporting.
 5. Add only:
 
@@ -162,7 +165,7 @@ Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else
 - A prior same-slug prompt counts as **hand-edited** when git shows commits or
   working-tree changes to it that this session didn't make; if git can't tell
   (untracked file), assume hand-edited.
-- Unchanged prior same-slug prompt → overwrite in place. Hand-edited → show
+- A same-slug prompt created in this session and unchanged since → update in place. Hand-edited → show
   the diff and ask: overwrite, new numbered revision, or abort. If the user is
   away, write a new numbered revision — never overwrite hand edits unconfirmed.
 
@@ -175,7 +178,7 @@ drop-in usable as input to `grill-with-docs`.
 
 - [ ] Only the six allowed section headers appear, in contract order
 - [ ] `Project:` names the full Project Matrix code verbatim (when one exists)
-- [ ] `NNNN` unique across `specs/adr/` and `specs/prompts/`; slug ≤ 4 words,
+- [ ] For a new file, `NNNN` unique across `specs/adr/` and `specs/prompts/`; an in-place update retains its own number; slug ≤ 4 words,
       kebab-case ASCII, `-prompt` suffix
 - [ ] Split intake: deferred slices recorded under `Known limits`
 - [ ] File body is the prompt only — drop-in, no preface

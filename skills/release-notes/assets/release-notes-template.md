@@ -1,3 +1,5 @@
+<!-- Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issue comments, release notes, generated docs, settings, or code comments. -->
+
 # Stakeholder Summary
 
 Date: <DD Month YYYY>
@@ -36,6 +38,9 @@ Date: <DD Month YYYY>
 - <Which screen/app/user group is affected>
 
 **Manual QA Steps**
+Setup: <local environment/build, role, and test data; unresolved prerequisites if any>
+Status: <proposed checks; record executed results separately when available>
+
 1. <Do X -> Y should happen>
 2. <Do X -> Y should happen>
 3. <Do X -> Y should happen>

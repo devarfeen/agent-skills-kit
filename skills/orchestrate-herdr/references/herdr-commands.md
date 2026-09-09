@@ -1,5 +1,7 @@
 # herdr commands
 
+Zero attribution: omit co-author, AI, and tool attribution from all output.
+
 The installed binary is the authority for syntax: print a command group's help by running the group with no subcommand — `herdr agent`, `herdr tab`. Never run bare `herdr`, which launches or attaches the TUI, and never probe a *mutating* nested command by omitting its arguments — `herdr workspace create` is valid with defaults and will execute. Control commands return JSON; read IDs and states from the response, never predict them. Server errors are JSON on stderr with exit 1; syntax errors exit 2.
 
 ## Companion
@@ -10,7 +12,7 @@ The herdr skill ships inside the binary. Already in context → skip. Otherwise 
 herdr --skill
 ```
 
-This cannot fail once `HERDR_ENV=1` holds, so it is a load step, not a gate.
+If loading fails, stop and report the error. `HERDR_ENV=1` identifies the intended environment; it does not prove the binary or server works.
 
 ## Context
 
@@ -45,28 +47,30 @@ herdr tab create --workspace "$HERDR_WORKSPACE_ID" --cwd "$PWD" \
 ## Start agent
 
 ```bash
-herdr agent start <agent-name> --kind <CLI_NAME> --pane <root-pane-id> \
+herdr agent start <agent-name> --kind <AGENT_KIND> --pane <root-pane-id> \
   --timeout 120000 -- <CODING_CLI flags...>
 ```
 
-`--kind` is a closed enum of supported agents — run `herdr agent start --help` for the current list. `CLI_NAME` not in it → `agent start` cannot drive that CLI; stop and tell the user, naming the supported kinds. Native launch flags go **after `--`**, never as part of `--kind`.
+`--kind` is a closed enum of supported agents. Run `herdr agent start --help` for the current list and check `AGENT_KIND` against it. Cursor's kind is `cursor` although its launch token is `agent`. An absent kind stops that launch. Native launch flags go **after `--`**, never as part of `--kind`.
 
 The command returns only once herdr has detected the agent in that pane and it is ready for input, so no readiness polling is needed. Startup defaults to a 30-second wait (max 300000ms). An agent blocked during startup returns `agent_not_ready` immediately but keeps the name usable for `agent read` — wait for idle before prompting.
 
 ## Submit
 
 ```bash
-herdr agent prompt <agent-name> "<worker prompt>" --wait --timeout 600000
+herdr agent prompt <agent-name> "<worker prompt>" --wait --timeout 60000
 ```
 
 `agent prompt` honors bracketed-paste and sends the text plus Enter — the prompt is never a launch argument. It **refuses an agent already sitting at an approval or question dialog**, returning `agent_blocked` before sending any input; that is the mechanical guarantee behind "never paste into a blocked or dead shell". On that error, read the pane and surface the dialog under Needs user — never answer it yourself.
 
 `--wait` alone waits for the first settled `idle`, `done`, or `blocked`; do not restate those with `--until`. A submission from a non-working state that produces no observed state change within 5000ms returns `agent_prompt_stalled`.
 
+A timeout or stalled response does not prove non-delivery. Inspect `agent get` and `agent read` before retrying; never submit the same issue twice blindly. Submit prompts concurrently across independent workers, then continue monitoring accepted submissions after a timeout.
+
 ## Watch
 
 ```bash
-herdr agent wait <agent-name> --until blocked --timeout 120000
+herdr agent wait <agent-name> --timeout 60000
 herdr agent get <agent-name>
 ```
 
@@ -77,9 +81,11 @@ Lifecycle states, and what each means for Monitor:
 | `working` | turn in progress | leave it |
 | `idle` / `done` | ready for input; the turn finished | read the tab for the report |
 | `blocked` | herdr recognized an approval or question UI | surface under Needs user — never relaunch, never answer |
-| `unknown` | an agent is present but unclassified | **does not prove completion** — fall back to the output-silence heuristic |
+| `unknown` | an agent is present but unclassified | inspect current state and output; silence alone proves neither completion nor blockage |
 
 `--until` is only for a state-specific wait; bare `agent wait` uses the same settled-state defaults as `prompt --wait`.
+
+Wait concurrently across running workers. A timeout permits a status update and another wait; it does not make a healthy long test blocked.
 
 ## Read
 

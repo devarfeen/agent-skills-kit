@@ -2,6 +2,8 @@
 
 How this kit judges its own skills. Three layers, three different questions.
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issues, docs, or comments. Preserve factual evaluation provenance without signature footers.
+
 | Layer | Question | Lives in | Who runs it |
 | :--- | :--- | :--- | :--- |
 | **Trigger evals** | Does the runtime load the right skill? | `skills/<name>/evals/evals.json` | Maintainer, by hand |
@@ -25,11 +27,13 @@ These are not style preferences. Violating them destroys evidence.
 - **`last_run` in `evals.json` is an evidence record, not a status field.**
   It names the judge model, method, date, and result of a real run. Never
   refresh, restamp, or fabricate it. A stale-but-honest record beats a
-  fresh-looking invented one. The maintainer runs trigger evals; agents do not.
+  fresh-looking invented one. The maintainer runs trigger evals or explicitly
+  delegates the run. Record only completed runs.
 - **The frontmatter `description` is the router, and it is under test.**
   Editing one invalidates the recorded baseline. Improve skill *bodies* and
   `references/` freely; touch a description only when a trigger eval actually
-  fails, and then re-run — or say in the commit body that the baseline is stale.
+  fails, and then re-run before landing. A note that the baseline is stale does
+  not satisfy validator check 10.
   This has bitten the kit once already: a description changed after a passing
   run, nobody re-ran, and the `last_run` blocks carried a 280/280 claim while
   the kit actually scored 277/280.

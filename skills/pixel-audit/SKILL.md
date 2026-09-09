@@ -74,7 +74,7 @@ Scope: <route + states audited>
 - **One node/page/state at a time.** Do not batch unrelated fixes.
 - **A MISSING defect that needs behaviour, data, or interface work is a slice, not a style fix.** Record the row, route it to `/to-tickets`, and do not build it here (the boundary `/polish-batch` draws).
 - **Reuse the project UI library's components.** No one-off UI unless justified and documented (per the `*-ui-coding` reuse-vs-new rule).
-- **If a shared component must change, change it in the library + its preview + the project `*-ui-coding` skill (via `/design-system` extend) — never patch it page-local.** Confirm with the user first — other pages consume it, and this page's frame may be the outlier, not the component. If the user is away, leave the row `open` under Needs user and continue; never rewrite a shared component unattended.
+- **If a shared component must change, suggest `/design-system` extend for the library, preview, and project `*-ui-coding` skill; never patch it page-local or auto-chain.** Confirm with the user first. Other pages consume it, and this page's frame may be the outlier. Until separately authorized, leave the row `open` under Needs user and continue; never rewrite a shared component unattended.
 - **Stay strictly inside SCOPE.** Cosmetic nits on other pages or flows are captured with `/polish-batch`, never fixed here.
 - **Report, don't decide, on EXTRA:** any icon/button/field/action present in the app but absent from the source is surfaced for a user decision, not silently kept, removed, or restyled.
 
@@ -82,15 +82,16 @@ Scope: <route + states audited>
 
 "Verified/done/fixed" is a claim you must earn per fix.
 
-- **State the env:** host, URL, container/service, browser/session.
-- **Cross the build pipeline:** rebuild/refresh after every template/CSS/class/component change, and **confirm the changed classes/styles/components actually exist in the SERVED assets** (not just the source files).
-- **Prove each fix with element-level evidence:** selector/ref, `getBoundingClientRect()`, the relevant computed styles, the DOM, and a zoomed/clipped element screenshot when alignment matters (agent-browser or the runtime's equivalent; full-page shots are overview only). If no browser automation is available, say so, list the pending checks as manual steps for the user, and do not mark any row `verified` on assumption.
+- **State the env:** host/URL and browser/session, or local app build and simulator/device.
+- **Cross the build pipeline:** rebuild/refresh after each change and confirm the changed classes/styles/components exist in the assets the page or app actually loaded, not just source files.
+- **Prove each fix with element-level evidence:** selector/ref, `getBoundingClientRect()`, relevant computed styles, DOM, and a clipped screenshot when alignment matters. Native apps require equivalent inspector geometry, resolved styles, rendered tree, and screenshots from the local simulator. Full-page shots are overview only. If the required automation is unavailable, list pending manual checks and do not mark any row `verified` on assumption.
 - **These count as failure:** hidden, zero-size, collapsed, clipped, misaligned, wrong-size, or ignored-class elements.
 - **Falsify before declaring verified:** actively look for the ways the fix could be wrong (wrong breakpoint, stale asset, class not applied, element off-screen) and rule them out.
-- **Do not say "verified / done / fixed" unless ALL hold:** env stated · build pipeline crossed · served assets contain the change · browser has element proof · source captured full-size · expected-vs-actual compared · every in-scope state checked. A row is `verified` only when its fix clears every clause; otherwise it stays `reopened`.
+- **Do not say "verified / done / fixed" unless ALL hold:** env stated · build pipeline crossed · loaded assets contain the change · element proof captured · source captured full-size · expected-vs-actual compared · every in-scope state checked. Unattempted rows stay `open`; changed rows failing the gate become `reopened`.
 
 ## Rules
 
+- Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issue comments, release notes, generated docs, settings, or code comments.
 - **Suggest, never auto-chain.** After the audit, suggest `/code-review` then `/commit-push-close` / `/commit-push-pr`, and stop.
 - Decisions are **artifacts** — inventory and defect list live on disk, not in chat.
 - Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.

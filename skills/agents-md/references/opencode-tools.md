@@ -1,5 +1,7 @@
 Tool-calling index: [`tool-calling.md`](tool-calling.md).
 
+Zero attribution: omit co-author, AI, and tool attribution from all output.
+
 > Last verified: 2026-07-06 against installed opencode 1.17.13 — flag/command surface via `--help`; internal tool names, config schemas, and chat slash commands are docs-level and re-verified on touch (see CONTRIBUTING sync map).
 
 | Skill Reference | Opencode Equivalent |
@@ -24,7 +26,7 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 - `websearch` requires the opencode provider or `OPENCODE_ENABLE_EXA`.
 - Skills resolve from `.opencode/skills/`, `~/.config/opencode/skills/`, plus compat dirs `.claude/skills/`, `.agents/skills/`, `~/.claude/skills/`, `~/.agents/skills/`.
 - Multi-repo workspace policy: use workspace-root MCP config.
-- Highest elevated permission launch: `opencode run --auto "prompt"` (auto-approves permissions not explicitly denied; v1.17 renamed the old `--dangerously-skip-permissions`, now gone from `--help`). For persistent custom agents, set the needed `permission` keys to `allow`; wildcard `{"*":"allow"}` is the full form.
+- Elevated launch: `opencode --auto` keeps an interactive session; `opencode run --auto "prompt"` is a non-interactive run. Installed 1.18.30 help confirms both on 2026-09-09. They auto-approve permissions that are not explicitly denied. For persistent agents, configure the required `permission` keys per the [permission docs](https://opencode.ai/docs/permissions/); do not assume launch flags accepted by `run` also work on the interactive command without checking help.
 - For exact config-file placement by tool, use [`tool-calling.md`](tool-calling.md).
 
 ## Agents: parallel, background & roles

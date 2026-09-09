@@ -4,6 +4,8 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 
 Authoritative tool reference: https://code.claude.com/docs/en/tools-reference
 
+Zero attribution: omit co-author, AI, and tool attribution from all output.
+
 | Skill Reference | Claude CLI Equivalent |
 | :--- | :--- |
 | `Read` (file reading) | `Read` |
@@ -22,7 +24,7 @@ Authoritative tool reference: https://code.claude.com/docs/en/tools-reference
 
 - Tool names are the exact strings used in permission rules (`permissions.allow`/`deny`), subagent `tools` lists, and hook matchers. Permission patterns also accept file globs and domain filters: `Read(~/secrets/**)`, `Edit(/src/**)`, `Agent(Explore)`, `WebFetch(domain:example.com)`.
 - Task tracking uses `TaskCreate` / `TaskGet` / `TaskList` / `TaskUpdate` / `TaskStop`. `TodoWrite` is disabled by default; set `CLAUDE_CODE_ENABLE_TASKS=0` to re-enable it.
-- Skills support `allowed-tools` frontmatter to restrict which tools a skill may use.
+- `allowed-tools` pre-approves listed tools during the invoking turn; it does not restrict which tools are callable. Use permission deny rules or supported `disallowed-tools` to restrict access. Verified 2026-09-09 against [skill permissions](https://code.claude.com/docs/en/skills#pre-approve-tools-for-a-skill).
 - Claude CLI reads `CLAUDE.md`, not `AGENTS.md`, as its canonical workspace file; keep `AGENTS.md` canonical and write a `CLAUDE.md` shim importing only it (`@AGENTS.md`) — the pattern the `agents-md` skill emits.
 - **Memory:** auto memory is on by default (`autoMemoryEnabled` in settings; `/memory` to toggle); native project memory is user-local. Do not create, import, symlink, or sync repo memory files. See [`memory-global-defaults.md`](memory-global-defaults.md).
 - Other built-in tools available for permission / hook matchers: `AskUserQuestion`, `EnterPlanMode` / `ExitPlanMode`, `EnterWorktree` / `ExitWorktree`, `LSP`, `Monitor`, `NotebookEdit`, `PowerShell` (Windows default; opt-in elsewhere via `CLAUDE_CODE_USE_POWERSHELL_TOOL=1`), `ToolSearch`, `WaitForMcpServers`, `ScheduleWakeup`, `PushNotification`, `RemoteTrigger`, `SendMessage`, `ShareOnboardingGuide`, `TeamCreate` / `TeamDelete` (gated by `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`), `CronCreate` / `CronList` / `CronDelete`, `ListMcpResourcesTool` / `ReadMcpResourceTool`.
@@ -33,7 +35,7 @@ Authoritative tool reference: https://code.claude.com/docs/en/tools-reference
 
 ## Agents: parallel, background & roles
 
-Parallel: issue multiple `Agent` calls in one turn (each runs in its own context window and returns one summary). The subagent selector parameter is `agent_type`. Local background: `run_in_background: true` on `Bash`; mark a subagent `background: true` in `.claude/agents/<name>.md` (background subagents auto-deny permission prompts) or press Ctrl+B; add `isolation: worktree` for file isolation. List/stop background **Bash** tasks with `/tasks` (also via `TaskList` / `TaskStop`); manage background **subagents** via `/agents` (Running tab). Subagents cannot spawn subagents. Fork the current conversation via the `Agent` tool's fork mode (a forked Agent inherits the parent conversation and always runs in background). Cloud features (Routines via `/schedule` / `RemoteTrigger`, agent teams behind `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`, background agents on claude.ai) are out of scope here — kit policy is local-only.
+Parallel: issue multiple available `Agent` calls for independent work, using the selector in the live tool schema. Local background: `run_in_background: true` on `Bash`; a supported `background: true` subagent or Ctrl+B; `isolation: worktree` separates files. Inspect task controls in the installed runtime before managing them. Cloud Routines and background agents on claude.ai are out of scope. [Agent teams](https://code.claude.com/docs/en/agent-teams) run locally, but the kit separately excludes them. Verified 2026-09-09; do not infer a hard tool boundary from a role's name.
 
 | Role | Claude CLI mechanism |
 | :--- | :--- |

@@ -8,6 +8,8 @@ description: "House style for authoring and editing skills in this kit — the s
 
 A kit skill exists to make an agent take the same process every run. Every rule here serves that predictability at the lowest token cost that still binds weaker CLIs — this kit installs standalone into many runtimes, so redundancy is spent deliberately, never by accident.
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issues, docs, settings, or comments. State this rule explicitly in every generated or updated agent-facing Markdown/settings file.
+
 ## The skeleton
 
 Every SKILL.md follows this order, skipping sections it genuinely doesn't need:
@@ -22,7 +24,7 @@ Every SKILL.md follows this order, skipping sections it genuinely doesn't need:
 
 ## Word budget
 
-A SKILL.md runs **1,000–1,300 words**; 1,500 (body only, after the closing `---`) is the validator-enforced ceiling. Over budget → move mechanics and long examples to `references/`; never hit budget by thinning refusal or safety language.
+A SKILL.md typically needs **1,000–1,300 words**; shorter is fine when the workflow is complete. The body ceiling is 1,500 words, enforced by the validator. Move excess mechanics and examples to `references/`; preserve refusal and safety language.
 
 ## Voice and language
 
@@ -53,16 +55,20 @@ Every surface where the agent emits text carries an explicit bound:
 - Phase updates: one line per field.
 - Interviews: one question at a time, leading with the recommended answer so the user can accept it in a word.
 
+Caps never omit affected behaviors, evidence, or unresolved blockers. Put longer required detail in a linked artifact.
+
 ## The auto-clarity valve
 
 Compression never touches: refusal boundaries and scope gates (AGENTS.md rule 7 — they are the safety property), irreversible-action confirmations, and multi-step sequences where terseness would blur order or dependencies. Write those in full prose.
 
+Distinguish a preference from permission. Optional choices may have a stated away-default. Required approval and missing access remain blocking; finish independent preparation and report what is needed. Honor explicit authorization already given in the session when it covers the same action and scope.
+
 ## Frontmatter and gates
 
 - `description:` is the router. Model-invoked skills get identity + one trigger per genuinely distinct branch — synonym stacks are duplication; collapse them. Keep negative-routing clauses ("X routes to /other instead") and legacy aliases (the "(PRD)" spec alias) — they are branches, not synonyms.
-- Any `description:` edit or new skill invalidates the eval-provenance snapshot (validate.sh check 10) and requires a user-run trigger-eval sweep plus `score.py --write-snapshot` before it can land. Batch description work; never restamp `last_run` by hand.
+- Any `description:` edit or new skill invalidates the eval-provenance snapshot (validate.sh check 10) and requires a completed trigger-eval sweep plus `score.py --write-snapshot` before it can land. The maintainer may run or explicitly delegate it. Batch description work; never invent or manually restamp `last_run`.
 - `disable-model-invocation: true` ⇔ `agents/openai.yaml` with `allow_implicit_invocation: false` (cross-runtime parity, validator-enforced).
-- Keep any description containing `: ` double-quoted (strict-YAML parse, check 1).
+- Keep descriptions containing `: ` double-quoted. Check 1 uses strict YAML when PyYAML is available and a stated quote/colon heuristic otherwise; heuristic success is not a strict parse.
 
 ## Failure modes to hunt
 
@@ -70,7 +76,7 @@ Compression never touches: refusal boundaries and scope gates (AGENTS.md rule 7 
 
 ## Completion criteria
 
-- [ ] `bash tools/validate.sh` passes (or fails only on check 10 when the edit is a batched description/new-skill change awaiting the user's eval sweep)
+- [ ] `bash tools/validate.sh` passes before landing; a check-10 failure is an unfinished local draft awaiting a real trigger sweep
 - [ ] Word count within budget: `awk 'NR==1&&/^---$/{f=1;next} f==1&&/^---$/{f=2;next} f==2&&NF{c+=NF} END{print c+0}' skills/<name>/SKILL.md` ≤ 1,500
 - [ ] Every refusal/stop line present in the previous version is present (or strengthened) in the new one — verified by diff, not recollection
 - [ ] Frontmatter untouched unless this is an approved description batch
