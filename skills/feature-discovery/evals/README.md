@@ -11,6 +11,16 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 | [`rubric.md`](rubric.md) | How to score: routing pass bar + the eleven quality categories |
 | [`baseline.md`](baseline.md) | Scores before the improvement pass |
 | [`final.md`](final.md) | Scores after, and any blocker |
+| [`audit-behavior-cases.md`](audit-behavior-cases.md) | Execution fixtures and observable acceptance checks |
+| [`behavioral-results.md`](behavioral-results.md) | Historical and current behavioral evidence, with simulation limits |
+
+## Running behavioral regressions
+
+After body or shared context-policy changes, follow
+[audit-behavior-cases.md](audit-behavior-cases.md). Give evaluators fixture inputs
+without the expected answers, then score their returned actions and reports.
+Report untested cases as untested; simulations do not establish live workflow
+reliability. This does not replace the separate trigger eval below.
 
 ## Running the trigger eval
 

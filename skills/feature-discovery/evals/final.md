@@ -2,6 +2,11 @@
 
 Date: 2026-09-09. Method: independent document review and isolated simulated execution against the revised body and references. The reviewer did not write the skill changes. Scored using [the root rubric](../../../evals/skill-quality-rubric.md). Simulations exercise instruction decisions; they do not establish live runtime reliability.
 
+This scorecard predates the purpose-focused changes approved on 2026-09-10.
+The updated behavioral evidence is in
+[behavioral-results.md](behavioral-results.md#purpose-focused-regression);
+the historical quality scores below were not rerun or restamped.
+
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
 ## Routing evidence

@@ -11,7 +11,7 @@ Columns:
   install, off the gradient).
 - `phase` — for `kit`/`external`: a gradient phase (`discover`, `sharpen`, `plan`,
   `slice`, `implement`, `verify`, `ship`) or `startup`. Blank for companions.
-- `note` — optional short suffix shown after the skill in the gradient cell (e.g. `→ ADR`). A note beginning `deprecated` excludes the row from generated tables.
+- `note` — optional short suffix shown after the skill in the gradient cell (e.g. `→ ADR`). A note beginning `deprecated` or `kit-internal` excludes the row from all generated catalogs and startup notes. Keep the row for kit coverage; exclusion does not remove the skill from this repo.
 - `use-when` — for `companion`: the trigger text. Blank for kit/external skills.
 
 Every folder under this repo's `skills/` must have a `kit` row here
@@ -35,7 +35,7 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | `/handoff` | external | plan | fork context to a new session (pairs with /prototype) | |
 | `/to-tickets` | external | slice | | |
 | `/triage` | external | slice | existing/raw issues only — state repair, needs-info, wontfix, agent briefs | |
-| `/implement` | external | implement | optional ticket driver — calls /tdd-loop at each seam; stops after /code-review, never commits (Rule 13) | |
+| `/implement` | external | implement | optional ticket driver — calls /tdd-loop at each seam; stops after /code-review, never commits (Shipping is owned by the ship skills) | |
 | `/tdd` | external | implement | reference only — test quality and seam choice; never use it alone as a loop | |
 | `/tdd-loop` | kit | implement | the test-first procedure — gates, completion evidence, exception protocol; stands alone | |
 | `/orchestrate-herdr` | kit | implement | inside herdr only — fan a spec (PRD) out to worker tabs | |

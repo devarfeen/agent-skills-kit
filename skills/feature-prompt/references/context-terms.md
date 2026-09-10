@@ -16,13 +16,22 @@ or project-specific names. Skip generic programming terms, helper names,
 low-level class names, and package names unless they carry domain meaning.
 Prefer a small, high-confidence list over a glossary dump.
 
+## Implemented versus intended
+
+Code establishes implemented behavior, not whether an approved business rule
+changed. When code and current approved intent disagree, retain the intended
+rule and record the implementation discrepancy with separate citations.
+Recommend clarification or review, not a replacement that legitimizes a
+possible bug. Call context stale only when evidence establishes that its
+recorded meaning was superseded.
+
 ## Presenting candidates
 
 For each candidate capture: **Term** — suggested action (add, clarify, rename,
-deprecate, or ask user); a one-sentence description grounded in observed code
-behaviour; **Evidence** refs; **Why it matters** for future planning. When
-existing context may be stale, quote the current wording next to the code
-evidence that contradicts it. Then ask:
+deprecate, or ask user); a short description distinguishing implementation from
+recorded intent when needed; **Evidence** refs; **Why it matters** for future
+planning. For a discrepancy, quote current wording beside the code evidence
+and any approved requirement. Then ask:
 
 ```markdown
 Candidate CONTEXT.md terms:
@@ -43,8 +52,9 @@ exist, say so in one line — do not pad the section.
 2. Apply only approved additions, clarifications, renames, or deprecations.
 3. Keep descriptions short and evidence-backed; never add implementation-only
    symbols as domain language.
-4. Use the user's wording when they edit yours — unless it conflicts with code
-   evidence; explain the mismatch before editing.
+4. Use the user's approved wording. If it presents intended behavior as an
+   implemented fact contrary to evidence, explain the distinction and agree
+   accurate wording before editing; do not change policy to match the code.
 5. Report exactly which terms changed and which file was edited.
 
 If no relevant `CONTEXT.md` exists, still report candidates and recommend

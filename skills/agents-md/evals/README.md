@@ -9,6 +9,16 @@ This skill owns its evals. Everything needed to judge `/agents-md` is in this fo
 | [`rubric.md`](rubric.md) | How to score: routing pass bar + the eleven quality categories |
 | [`baseline.md`](baseline.md) | Scores before the improvement pass |
 | [`final.md`](final.md) | Scores after, and any blocker |
+| [`behavioral-cases.md`](behavioral-cases.md) | Generator and emitted-rule fixtures with observable acceptance checks |
+| [`behavioral-results.md`](behavioral-results.md) | Versioned behavioral evidence, with simulated and live results distinguished |
+
+## Running behavioral regressions
+
+After generation or template-rule changes, use the procedure in
+[behavioral-cases.md](behavioral-cases.md). Give evaluators only fixture inputs
+and current instructions, then score their decisions against the acceptance
+checks. Record actual results; adding a case is not a passing run. These cases
+do not replace the separate trigger eval below.
 
 ## Running the trigger eval
 

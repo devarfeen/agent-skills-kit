@@ -46,21 +46,23 @@ Sample:
 
 ## Emitted skeleton
 
-Emit [`assets/agents-md-template.md`](assets/agents-md-template.md) byte-for-byte, filling only the bracketed slots (intro line, Project Matrix, skills tables + startup note, `### Runtime tool-calling` tables, and the `### North star` list when emitted). Three rules bind the verbatim parts:
+Emit [`assets/agents-md-template.md`](assets/agents-md-template.md) byte-for-byte, filling only the bracketed slots (intro line, Project Matrix, skills tables + startup note, `### Runtime tool-calling` tables, and the `#### North star` list when emitted), except customizations retained under Versioning and regeneration. Three rules bind the default skeleton:
 
 - Emit `### Matt skill routing` only when Matt Pocock's skills are installed (`/ask-matt`, `/grill-with-docs`, or `/to-spec` resolves); otherwise delete the subsection — dead routing rules cost every session tokens.
-- Emit `### North star` only when the scan found a vision file, listing each with its scope; never fabricate one or restate its content — the subsection points at the file. None found → delete it.
+- Emit `#### North star` only when the scan found a vision file, listing each with its scope; never fabricate one or restate its content — the subsection points at the file. None found → delete it.
 - Keep `Issue titles` exactly as concise as the skeleton has it — routing/label procedure lives in the issue skills, never here — and leave the two Context & native memory placeholders unfilled.
 
 ## Working with skills
 
 Generate the gradient and companion tables from `references/skills-manifest.md` — the single source; adding or moving a skill edits the manifest, never this file. Column semantics live in its header; `kit` and `external` skills render alike.
 
-Fill the `[RUNTIME TOOL-CALLING …]` slot from `references/tool-calling.md`, opening a per-runtime `*-tools.md` only when a cell is missing or unclear. Emit three compact tables — skill invocation, parallel/background mechanism (drop the `Custom agent files` column), and highest elevated launch preset per runtime — inlined; never link the reference files (they do not ship) or restate the Local orchestration rule. The elevated table must say those presets are used only when the user explicitly asks for highest/elevated/full/YOLO permission and prefers an isolated container, VM, dev container, or disposable worktree.
+Apply the manifest's note exclusions before emitting any catalog or startup note.
+
+Fill the `[RUNTIME TOOL-CALLING …]` slot from `references/tool-calling.md`, opening a per-runtime `*-tools.md` only when a cell is missing or unclear. Emit three compact tables — skill invocation, parallel/background mechanism (drop the `Custom agent files` column), and highest elevated launch preset per runtime — inlined; never link the reference files (they do not ship) or restate the Local orchestration rule. Precede the elevated table with an in-document link to `#skill-tool-use`; the template's Skill & tool use rule owns the permission boundary, so do not repeat it beside the table.
 
 ## Versioning and regeneration
 
-The skill version is `v18`. Both generated files carry the marker `<!-- agents-md marker · v18 · re-run /agents-md to regenerate -->` as their first line (the first line of each template asset in `assets/`). Bump it here and in both template assets together whenever these rules change. Recognize pre-`v6` attribution-bearing comments as legacy markers for migration only; replace them with the current marker in approved regeneration.
+The skill version is `v23`. Both generated files carry the marker `<!-- agents-md marker · v23 · re-run /agents-md to regenerate -->` as their first line (the first line of each template asset in `assets/`). Bump it here and in both template assets together whenever these rules change. Recognize pre-`v6` attribution-bearing comments as legacy markers for migration only; replace them with the current marker in approved regeneration.
 
 On run, check for an existing workspace-root `AGENTS.md`:
 
@@ -68,6 +70,7 @@ On run, check for an existing workspace-root `AGENTS.md`:
 - **Marker present** — before overwriting, show a short diff (changed lines only) and confirm. If the user does not respond, stop without writing and say so.
 - **No marker (hand-authored)** — do not rewrite it; show what generation would add or change, merge only user-approved sections, and let the existing file win everywhere else.
 - **Preserve user edits** — carry over every user-filled placeholder value (especially the `CONTEXT.md` and `specs/adr` paths) and per-project on-demand reads.
+- **Reconcile customized rules** — when an exact template for the existing marker is available locally, compare against it to distinguish user edits inside generated rule bodies from template updates. Without that baseline, treat differences as potential customizations, not obsolete defaults. Show customizations and proposed resolutions explicitly in the pre-write diff; retain them unless the user approves changing them. An unresolved conflict or no response means stop without writing.
 - **Preserve foreign sections** — carry over verbatim any section another skill added (e.g. `## Design System / UI Library` from /design-system); regeneration replaces only sections this skill generates.
 - Regenerate the `CLAUDE.md` shim only if it is missing or its marker is stale.
 
@@ -81,8 +84,10 @@ Chat carries the pre-write diff, the migration move list and report, and the clo
 
 ## Completion criteria
 
-- [ ] `AGENTS.md` sections appear in template order; `### Matt skill routing` present only when Matt's skills resolve, `### North star` only when a vision file was found
-- [ ] Regeneration: foreign sections and user-filled values survive in the shown diff — or the run stopped without writing
+- [ ] `AGENTS.md` sections appear in template order; `### Matt skill routing` present only when Matt's skills resolve, `#### North star` only when a vision file was found
+- [ ] Named rule links resolve; omitting optional sections preserves all numbered rules and Runtime tool-calling
+- [ ] Regeneration: foreign sections, user-filled values, and rule-body customizations survive; any customized-rule replacement has explicit approval — or the run stopped without writing
+- [ ] Generated catalogs and startup notes contain no manifest-excluded entries
 
 - [ ] Project Matrix row count equals the `folders` count; every Stack cell traces to a manifest actually read
 - [ ] Both generated files open with the current version marker; Context & native memory placeholders intact or carried over filled
