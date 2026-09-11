@@ -3,6 +3,8 @@
 Single source for the `## Working with skills` tables generated into `AGENTS.md`.
 Do not hardcode skill rows in `SKILL.md` — edit this file to add or move a skill.
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
+
 Columns:
 
 - `skill` — invocation (e.g. `/tdd`) or companion name.
@@ -63,7 +65,7 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | to-questionnaire | companion | | | A decision needs knowledge the user lacks — turn it into a Markdown questionnaire the one person who can answer fills in async or in a meeting. |
 | domain-modeling | companion | | | Project terminology, aliases, or ADR-backed domain language need sharpening. |
 | codebase-design | companion | | | Module boundaries, seams, or interface design decisions matter. |
-| Graphify | companion | | | Querying a generated code/docs/media graph would save broad file reads. Check `graphify-out/graph.json` at the project root, else the workspace root; absent in both → skip it. Graph older than ~7 days → recommend `graphify update .`. |
+| Graphify | companion | | | Querying a generated code/docs/media graph would save broad file reads. Follow the workspace Graphify rule for graph location, query scope, and refresh. |
 | Codex plugin for Claude Code | companion | | | Claude Code needs Codex for review or delegated work. |
 | Impeccable | companion | | | Frontend design quality, visual polish, or browser-backed UI checks matter. |
 | notebooklm-py | companion | | | The user asks to work with NotebookLM sources or artifacts. |

@@ -6,7 +6,7 @@ description: "Generate or refresh the workspace-root AGENTS.md and its CLAUDE.md
 
 # AGENTS.md generator
 
-Turns one `.code-workspace` file plus a small scan of its folders — nothing else — into the workspace-root `AGENTS.md` and its `CLAUDE.md` redirect shim.
+Generates the workspace-root `AGENTS.md` and `CLAUDE.md` redirect shim from a `.code-workspace` scan, with optional Compose-backed runtime blocks in existing project instructions.
 
 ## Inputs
 
@@ -15,9 +15,15 @@ Turns one `.code-workspace` file plus a small scan of its folders — nothing el
 
 ## Rules
 
-- `AGENTS.md` is the single source of truth for Codex CLI, Claude CLI, Antigravity CLI, Cursor CLI, Opencode CLI, and GitHub Copilot CLI; all operating instructions — context, memory policy, issue routing, skill use — live there.
+- Workspace-root `AGENTS.md` is the single source of truth for Codex CLI, Claude CLI, Antigravity CLI, Cursor CLI, Opencode CLI, and GitHub Copilot CLI; shared operating instructions — context, memory policy, issue routing, skill use — live there.
 - `CLAUDE.md` is only a redirect shim for Claude CLI: emit [`assets/claude-md-template.md`](assets/claude-md-template.md) byte-for-byte, nothing more, and never read other context from it.
-- Generate exactly one of each, at the workspace root — never per-project or per-repo `AGENTS.md`. The generated `AGENTS.md` is spartan and direct.
+- Create exactly one root pair. Project synchronization edits existing `AGENTS.md` files only; never create project instruction files. The generated root `AGENTS.md` is spartan and direct.
+
+## Modes
+
+Default: generate or refresh the root pair, and synchronize existing project runtime blocks when `.devcontainer/compose.yml` exists. Read [Project runtime synchronization](references/project-runtime.md) for matching, migration, and approved edits.
+
+A request naming only project-runtime synchronization selects **runtime-only**: follow that reference and existing stack detection; skip root generation, docs migration, and setup suggestions. Never create or edit workspace-root `AGENTS.md` or `CLAUDE.md` in this mode. Root-generation rules and completion checks below apply only in the default mode.
 
 ## Workspace scan
 
@@ -62,7 +68,7 @@ Fill the `[RUNTIME TOOL-CALLING …]` slot from `references/tool-calling.md`, op
 
 ## Versioning and regeneration
 
-The skill version is `v23`. Both generated files carry the marker `<!-- agents-md marker · v23 · re-run /agents-md to regenerate -->` as their first line (the first line of each template asset in `assets/`). Bump it here and in both template assets together whenever these rules change. Recognize pre-`v6` attribution-bearing comments as legacy markers for migration only; replace them with the current marker in approved regeneration.
+The skill version is `v26`. Both generated root files carry the marker `<!-- agents-md marker · v26 · re-run /agents-md to regenerate -->` as their first line (the first line of each template asset in `assets/`). Bump it here and in both template assets together whenever these rules change. Recognize pre-`v6` attribution-bearing comments as legacy markers for migration only; replace them with the current marker in approved regeneration.
 
 On run, check for an existing workspace-root `AGENTS.md`:
 
@@ -84,6 +90,7 @@ Chat carries the pre-write diff, the migration move list and report, and the clo
 
 ## Completion criteria
 
+- [ ] Requested project synchronization satisfies the matching, approval, and preservation checks in its reference
 - [ ] `AGENTS.md` sections appear in template order; `### Matt skill routing` present only when Matt's skills resolve, `#### North star` only when a vision file was found
 - [ ] Named rule links resolve; omitting optional sections preserves all numbered rules and Runtime tool-calling
 - [ ] Regeneration: foreign sections, user-filled values, and rule-body customizations survive; any customized-rule replacement has explicit approval — or the run stopped without writing

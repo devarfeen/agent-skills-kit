@@ -4,7 +4,7 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 
 Date: 2026-09-09. Method: independent document review and three simulated execution cases; the reviewer did not write the skill changes. Rubric: [skill-quality-rubric.md](../../../evals/skill-quality-rubric.md).
 
-This scorecard records the historical v18 review. The current v23 regression
+This scorecard records the historical v18 review. The v23 regression
 run is in [behavioral-results.md](behavioral-results.md#v23-regression-run);
 the quality scores below were not rerun or restamped for that update.
 

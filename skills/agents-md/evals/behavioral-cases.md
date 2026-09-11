@@ -1,8 +1,8 @@
 # Behavioral regression cases — `/agents-md`
 
 Maintainer-only cases for the generator and the behavior its template prescribes.
-Do not load this file during workspace generation. Zero attribution applies to
-all evaluation output.
+Do not load this file during workspace generation. Zero attribution: never add
+co-author, AI, tool, or generator attribution to evaluation output.
 
 ## Procedure
 
@@ -173,3 +173,146 @@ unfilled context placeholders, and an exact shim. Omit optional North star and
 Matt routing without losing numbered rules or runtime tables. Follow-up
 skills are suggestions only. The missing-workspace and duplicate-code variants
 stop before writing; the latter asks for unique codes.
+
+## R01 — One unambiguous local service
+
+**Fixture:** The selected `.code-workspace` lists CATALOG at `apps/catalog`.
+Its app manifest is in `apps/catalog/application`; `apps/catalog/AGENTS.md`
+exists without runtime markers or a local-runtime section. The workspace has
+`.devcontainer/compose.yml`. From the workspace root, the resolved local model
+has one matching service, `web`, with `container_name: catalog-local`, a bind
+from the detected app root to `/srv/catalog`, and explicit
+`working_dir: /srv/catalog/tasks`. Other services mount unrelated directories.
+The proposed project-file diff is approved.
+
+**Acceptance:** Resolve the model with the exact prescribed command from the
+workspace root. Normalize project, app, and bind-source paths with `realpath`.
+Append `## Local Runtime` and the exact managed block to the existing project
+file. Facts are `web`, `catalog-local`, and `/srv/catalog`; the source comment
+is exact. Do not substitute the working directory for the mount target or
+create an instruction file inside `application/`.
+
+## R02 — Workspace symlinks
+
+**Fixture:** The workspace lists SEARCH at `links/search`. That folder is a
+symlink to a sibling checkout, `repos/search`; its app manifest is in `app/`.
+Compose's YAML bind source is `../links/search/app`, relative to the file in
+`.devcontainer/`. The resolved model supplies the absolute form of that source.
+The sole matching service is `indexer`, its container is `search-local`, and
+its target is `/opt/search`. Resolving the project path, app path, and mount
+source with `realpath` reaches the same physical checkout and application root.
+The existing project `AGENTS.md` contains `## Local Runtime`; the diff is approved.
+
+**Acceptance:** Match normalized filesystem identities despite the workspace
+symlink. Do not compare raw YAML paths or rebase their `../` against the
+workspace root. Update the existing file in the resolved project folder once,
+with `indexer`, `search-local`, and `/opt/search`.
+
+## R03 — No matching bind source
+
+**Fixture:** REPORTS has a detected app root `reports/app` and an existing
+project `AGENTS.md` with an old managed block. The effective Compose model has
+one service binding `reports` to `/srv/reports`, one binding `reports/app/cache`
+to `/cache`, and one using a named volume at `/srv/app`. None binds the exact
+application root. Project and source paths all resolve.
+
+**Acceptance:** None qualifies. Report no matching service and leave the
+existing file, including the old block, unchanged. Do not infer a match from
+an ancestor mount, child mount, named volume target, or service name.
+
+## R04 — Ambiguous matches
+
+**Fixture:** Two services, `web` and `worker`, each bind the same normalized
+application root to `/srv/app`. The project's existing `AGENTS.md` names `web`
+as its local service. Both container names are resolved. Independently consider
+a model with only `web`, but two matching binds to `/srv/app` and `/opt/app`.
+
+**Acceptance:** Skip the project in both variants, reporting respectively the
+two service candidates or two mount targets. Existing prose, service order,
+and matching container names do not break the tie. Preserve every file byte.
+
+## R05 — No explicit container name
+
+**Fixture:** A project matches exactly one service, `api`, whose bind target is
+`/workspace/api`. The resolved service has neither `container_name` nor
+`working_dir`. The project file exists, with an empty `## Local Runtime`
+section. The user approves the proposed synchronization.
+
+**Acceptance:** Emit `api` for both Compose service and Container name. Emit
+`/workspace/api` as Application path inside container. Do not synthesize a
+Compose project/service/index name, inspect a running container, or claim a
+working directory from the mount alone.
+
+## R06 — First synchronization migrates only equivalent facts
+
+**Fixture:** CATALOG matches `web`, `catalog-local`, and `/srv/catalog`, with
+explicit `working_dir: /srv/catalog/tasks`. Its existing project file is:
+
+```markdown
+# CATALOG instructions
+
+Zero attribution: never add co-author, AI, or tool attribution to output.
+
+## Local App
+
+- Service: `web`.
+- Container: `catalog-local`.
+- App path: `/srv/catalog`.
+- Port: `8080`.
+- Run `make seed` before fixtures.
+- Service `web` uses port `8080`.
+- Working directory: `/srv/catalog/tasks`.
+- Old container note: `catalog-previous`.
+
+### Troubleshooting
+
+- Container: `catalog-local`.
+
+## Deployment
+
+- Container: `catalog-remote`.
+```
+
+The user has not answered the pre-write diff, then approves a diff with the
+managed block inserted under Local App and equivalent standalone facts removed.
+
+**Acceptance:** Before approval, write nothing. After approval, remove only
+the three standalone service, container, and app-path lines in Local App and
+insert the exact block there. Preserve the heading, policy, port, command,
+mixed-content line, working directory, old-container note, nested section,
+deployment section, and their lines. Report the differing container note.
+Case or hyphen changes to the Local App heading do not alter this outcome.
+
+## R07 — Later synchronization changes only marked content
+
+**Fixture:** An existing project file has one ordered runtime marker pair
+around three old facts, under a custom `## Developer notes` heading. Immediately
+outside the markers are handwritten service/container facts, a launch command,
+and a port note. The resolved model has a new sole matching service `backend`,
+container `catalog-next`, and target `/opt/catalog`. The diff is approved.
+Then repeat synchronization with the same inputs. Separately consider a file
+with a missing end marker, reversed markers, or two complete pairs.
+
+**Acceptance:** Replace only the interior with the source comment and three
+resolved facts. Preserve both marker lines and every byte outside them,
+including the handwritten duplicates and custom heading. The repeat is a
+no-op. Each malformed or duplicate-marker variant skips and reports without
+modifying the file.
+
+## R08 — Runtime-only leaves the root pair unchanged
+
+**Fixture:** The user asks only to synchronize project-runtime blocks. The
+workspace's root `AGENTS.md` and `CLAUDE.md` have stale version markers and
+custom content. Its `.code-workspace` lists `.` plus CATALOG at `catalog` and
+WORKER at `worker`. All three have definite app roots and unique matching
+Compose services. CATALOG has an existing project file; WORKER has none.
+Legacy artifacts remain under `docs/adr/`. The root app's instruction-file
+path resolves to the workspace-root `AGENTS.md`. The CATALOG diff is approved.
+Also consider both root files absent, or local Compose absent or failing to
+resolve, as independent variants.
+
+**Acceptance:** Update only CATALOG's existing file. Skip and report the root
+alias and missing WORKER file. Existing root files remain byte-identical;
+absent root files remain absent. Do not create project files, migrate docs,
+refresh root markers, or suggest setup skills. Missing or failed Compose
+resolution leaves all runtime targets unchanged and reports the reason.

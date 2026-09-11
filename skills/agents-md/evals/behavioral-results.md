@@ -2,6 +2,51 @@
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
+## v26 project-runtime regression run
+
+Date: 2026-09-11. Method: two independent read-only fixture evaluations of the
+current skill and project-runtime reference. One covered R01–R05; the other
+covered R06–R08 and root-mode regressions G01, G02, and G04. Evaluators received
+only fixture inputs and source instructions, without acceptance checks, prior
+results, or edit history. Decisions below are modeled outcomes, not executed
+document edits. No installed instructions or real workspace files changed.
+
+| Case | Observed modeled decision | Result |
+| :--- | :--- | :--- |
+| R01 | Uses the exact root-level Compose command and normalized app-root bind; appends the block with service, explicit container name, and mount target, keeping the distinct working directory out of the block. | PASS |
+| R02 | Normalizes workspace symlink, physical project/app roots, and resolved source; matches the same checkout and updates its existing project file once. | PASS |
+| R03 | Rejects ancestor, child, and named-volume matches; reports no service and preserves the old block unchanged. | PASS |
+| R04 | Reports both service candidates or both mount targets and skips instead of using prose or service order to choose. | PASS |
+| R05 | Uses the service key for an absent container name and makes no working-directory claim from the mount. | PASS |
+| R06 | Waits for the shown diff's approval, removes only the three equivalent standalone facts, and preserves the policy, mixed content, commands, working directory, historical note, nested section, and deployment facts. | PASS |
+| R07 | Replaces only the marker interior; retains outside bytes and duplicates, treats a repeat as a no-op, and skips malformed or duplicate markers. | PASS |
+| R08 | Updates only the existing non-root project file; skips root aliases and missing project files, preserves root files or their absence, and performs no docs migration or setup suggestions. Missing/failed Compose produces no writes. | PASS |
+| G01 | Preserves approved rule customizations, filled paths, per-project reads, and foreign sections through a normal root refresh. | PASS |
+| G02 | Treats unknown-baseline differences as potential customizations and leaves files untouched while the decision is unresolved. | PASS |
+| G04 | Generates the v26 root pair with the established optional-section rules when Compose is absent; missing-workspace and colliding-code variants stop before writing. | PASS |
+
+Result: 11/11 modeled cases passed. Review identified two underspecified first-run
+details: insertion position and whether approval already settles retention of a
+conflicting handwritten fact. The reference now places the block after the
+heading's existing blank lines and recognizes approval of the displayed retention
+choice. Historical results and routing `last_run` metadata remain unchanged.
+
+Live fixture checks ran `docker compose -f .devcontainer/compose.yml config
+--format json` from an isolated fixture workspace inside this source repository,
+then applied `realpath` to actual directories, a workspace symlink, and resolved
+bind sources. Assertions passed for interpolation, exact app-root matching,
+symlink equivalence, missing container-name fallback, rejection of ancestor/child
+and named-volume matches, and two-service ambiguity. The resolved model retained
+the distinction between bind target and explicit `working_dir`. No containers
+were started. The temporary fixture was removed after the checks.
+
+Byte comparisons confirmed both root template assets changed only at their
+version marker for this update. Root skeleton, catalog, customization, approval,
+migration, and output instructions retain their earlier text; runtime-only mode
+explicitly bypasses those root operations. These checks validate instruction
+consistency and real Compose/path inputs, not live document-edit reliability
+across all CLI hosts.
+
 ## v23 regression run
 
 Date: 2026-09-10. Method: two independent read-only simulated execution passes,

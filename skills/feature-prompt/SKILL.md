@@ -51,7 +51,7 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
   unclear or project/context cannot be inferred safely.
 - Use repo evidence when cheap: Project Matrix, cwd, `CONTEXT.md`,
   `CONTEXT-MAP.md`, and ADR names. Do not run a broad code scan by default.
-- If `graphify-out/graph.json` exists (project root, else workspace root), query it before raw search; older than ~7 days → suggest `graphify update .`; missing → skip graphify.
+- Use `graphify-out/graph.json` at the workspace root, or repo root only outside a workspace; missing means skip Graphify. Query before raw search and verify hits against current source. Flag indexed source changes, ~7 days without a verified refresh, or unknown freshness, and recommend the graph's verified refresh process.
 
 ### Scope and slicing
 

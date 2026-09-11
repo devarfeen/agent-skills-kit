@@ -1,4 +1,4 @@
-<!-- agents-md marker · v23 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v26 · re-run /agents-md to regenerate -->
 # Agent instructions
 
 [one concise, factual workspace intro inferred from the .code-workspace name and folder scan — no promotional adjectives]
@@ -96,6 +96,13 @@ Before editing, understand why the code exists — its callers and exports, the 
 - No repo `MEMORY.md`, wikis, discovery files, knowledge-graph files, or memory MCPs as default memory — shared context lives in `AGENTS.md`, `CONTEXT.md`, and ADRs; graph/index companions are helpers, not binding memory.
 - `/grill-with-docs`: ask once, up front, whether archived context exists; capture pastes verbatim in the ADR **as a blockquote** with provenance (`Source: "<doc title>" · pasted <date>`); offer revealed names as `CONTEXT.md` aliases; pasted history is advisory — flag ADR contradictions, never silently drop them.
 
+#### Graphify
+
+- The primary graph is `graphify-out/graph.json` at the workspace root, merged across Project Matrix projects. Optional `graphify-out/projects/<PROJECT-CODE>/` outputs are browse copies. If the primary graph is missing, skip Graphify; do not substitute a browse copy or repo-local graph.
+- Query the primary graph before broad source search. Resolve its path from the workspace root even when a worker runs inside a project checkout. Use `repo` tags and `PROJECT-CODE::…` node IDs to scope results, retaining relevant cross-project edges. Verify hits against current source.
+- Check available indexed revisions or change metadata for stale inputs; changed indexed sources make the graph stale regardless of its age. More than ~7 days without a verified refresh warrants a warning; a recent file timestamp alone does not prove freshness. If no evidence establishes freshness, report it as unverified.
+- After a batch changes indexed sources, the main agent refreshes the merged graph once after integration and the final edit, within existing task authority. Use the workspace's verified refresh process and verify it retains repo tags, namespaced IDs, cross-project edges, and unaffected projects. Read-only tasks report staleness and recommend that process. If it is unavailable, unauthorized, or fails, report the graph as stale and continue from current source.
+
 #### North star
 
 [NORTH STAR — emit this subsection only when the scan found a `VISION.md` / `vision.md`, per the SKILL.md rules; otherwise delete it. List each found file: `<path>` — workspace, or the PROJECT-CODE it belongs to.]
@@ -118,6 +125,13 @@ Do not make the user infer your recommendation. Label each option `Recommended`,
 <a id="goal-driven-execution"></a>
 
 Define success before edits. Turn bugs into reproductions, changes into checks. Verify before reporting done.
+
+Before the first implementation edit, the main agent must complete this preflight:
+
+- For an issue-backed task, read the tracker state and labels. Surface any existing triage or workflow gate before implementation or shipping work begins.
+- Lock the acceptance boundary for terms such as "all", "available", "visible", and "current". Check pagination, lazy loading, authorization, and hidden records when they can change that boundary. Put the decisive edge case into the first focused test.
+- Resolve the exact checkout, working directory, runtime or container, required environment variables, and canonical verification commands from applicable project instructions and executable scripts before running those commands. Reuse verified command forms, including paths and environment settings, throughout the task.
+- Inspect the aggregate full-check command before using it. Run checks it covers separately only for a needed intermediate result or when later edits invalidate the earlier result.
 
 Match check scope to change scope: verify each fix with its focused test or module-scope command. Run the project's full check (e.g. `composer test`) once per completed batch, after integration and the last edit, before shipping — not after every item.
 
