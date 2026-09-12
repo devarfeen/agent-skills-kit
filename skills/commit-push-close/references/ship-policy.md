@@ -14,7 +14,7 @@ Resolve the task checkout before running **Read state**. When task work lives in
 
 If setup added `/.worktree/` to the owning repo's `.gitignore`, ensure the task branch carries that same narrow rule and include it in the reviewed diff. Preserve unrelated source `.gitignore` changes; never copy or stage the source checkout wholesale. Report any source-only setup edit still pending.
 
-Keep each project's commit and remote tied to its own repository. Existing draft approvals and each skill's direct-close versus PR behavior still apply. Neither shipping skill merges or removes the worktree; preserve it until a separately authorized integration or cleanup workflow can prove the output is retained.
+Keep each project's commit and remote tied to its own repository. Existing draft approvals and each skill's direct-close versus PR behavior still apply. Neither shipping skill merges or removes the worktree. User-requested worktrees remain until cleanup is authorized, integration is verified, needed tracked/untracked/ignored files are preserved, and no worker or process still needs the checkout. A pushed branch or closed issue alone is not integration proof. Keep the ignore rule and report any pending source-only setup edit; remote branch deletion is outside shipping.
 
 ## Read state
 

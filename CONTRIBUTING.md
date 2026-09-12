@@ -48,6 +48,28 @@ close", "punch list", "pixel-audit"), the scope boundary ("cosmetic scope only",
 "multi-project specs only"), and what the skill refuses to do ("never implements,
 never auto-chains"). Look at `skills/polish-batch/SKILL.md` for a strong example.
 
+### Kit companions and task handoffs
+
+A helper shipped here still uses `kind: kit` in the manifest. Give it
+`phase: companion` and a `use-when` trigger to put it in the generated companion
+table without adding a workflow phase. External companions remain separate
+installs. `/using-git-worktrees` is the example: automatic discovery stays
+enabled, and an explicit worktree request invokes it before the task skill.
+
+Keep handoffs narrow. Worktree setup returns its verified checkout to the
+already-requested task; it never authorizes a new implementation or shipping
+workflow. Third-party interlocks live in the `agents-md` template, not in
+rewritten copies of Matt's installed skills. General routing must also work
+when the optional Matt subsection is omitted.
+
+Worktree documentation uses `<project-repo>/.worktree/<task-name>` and the
+`/.worktree/` entry in that repo's `.gitignore`. Explain the source ignore edit
+and its task-branch copy without promising an entirely untouched source tree.
+Shipping uses the verified task checkout; merge and cleanup are separate.
+Keep the human example in `GUIDE.md`, concise usage in `README.md`, and the
+reasoning and failure patterns in `BEST-PRACTICES.md`. Do not load those guides
+into generated instructions.
+
 ### Token budget (three-tier loading)
 
 Runtimes load skills in tiers, so budget is a hard constraint, not a style
@@ -133,7 +155,7 @@ Write for a frontier agentic model — capable, tool-using, able to plan. That m
      above cwd;
   2. the per-context root in a multi-context repo (`CONTEXT-MAP.md` at root);
   3. the single repo root.
-- **Suggest, never auto-chain** — finish by recommending the next skill, then stop.
+- **Suggest, never auto-chain** — finish the requested workflow, recommend a next skill, then stop. A setup helper may return to its already-authorized caller; it does not authorize a new workflow.
 - **Local-only** — local subagents and local background only; no cloud agents.
 - **Decisions are artifacts** — durable output goes to disk or the tracker, with
   the path stated; discovery reports are the chat-only exception.
@@ -238,13 +260,14 @@ eval pass.
 
 | You changed | Also update |
 | :--- | :--- |
-| Added/removed/renamed a skill folder | `skills-manifest.md` row · README skills table · `GUIDE.md` tables if it sits on the gradient |
+| Added/removed/renamed a skill folder | `skills-manifest.md` row · README skills table · `GUIDE.md` usage/tables for its gradient or companion role |
 | A skill's phase or gradient position | `skills-manifest.md` (single source for generated AGENTS.md tables) |
 | `ship-policy.md` in either ship skill | The other copy, byte-identical |
 | An issue-title species or its grammar (`Spec:`, `Ticket NNNN of …`, `Way:`, non-spec) | `agents-md-template.md` "Issue titles" (tracker-neutral) · both `ship-policy.md` copies (the title is the commit-subject anchor) · `GUIDE.md` issue-preflight gate · add a "predates this naming, do not retitle" clause for the old form |
 | Deprecating a skill (retained for reference) | Start its manifest `note` with `deprecated` — a `deprecated`-prefixed note excludes the row from generated gradient/companion tables · mark its README table row · add a STATUS banner at the top of its `SKILL.md` |
 | `agents-md` templates or generation rules (anything that changes what it emits — routine manifest row additions don't count) | Bump the version marker in `skills/agents-md/` (all three occurrences: the rule text in `SKILL.md` and the first line of each template asset) |
-| Companion list | `skills-manifest.md` companions table (GUIDE/BEST-PRACTICES link to it) |
+| Companion list | `skills-manifest.md` companions table · `GUIDE.md` human copy · relevant README/BEST-PRACTICES pointers |
+| Worktree placement, handoff, or cleanup boundary | `using-git-worktrees/SKILL.md` · `agents-md` template/routing · both ship-policy copies · README/GUIDE/BEST-PRACTICES usage |
 | Elevated-permission presets | `skills/agents-md/references/tool-calling.md` (model-facing source) and `GUIDE.md` (human-facing copy) |
 | Any runtime fact in `tool-calling.md`, a `*-tools.md`, `memory-global-defaults.md`, or `skills/tdd-loop/references/test-commands.md` | Re-verify the claim against that tool's current official docs in the same PR — CLI flags, tool names, and test-runner syntax age fast; don't propagate a stale fact into more files |
 | Any runtime fact in `skills/orchestrate-herdr/references/` — `herdr-commands.md` CLI syntax and lifecycle states, `tracker-map.md` `gh` and Linear MCP calls | Re-verify against the *installed* surface in the same PR, not prose docs: `herdr <group> --help` plus `herdr --skill` for herdr (its binary is the stated authority for its own syntax), the live tool schema for Linear MCP, `gh <cmd> --help` for GitHub. A flag, subcommand, or enum value absent from `--help` is phantom tooling — the defect class `writing-kit-skills` names |

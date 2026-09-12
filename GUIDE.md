@@ -103,6 +103,13 @@ Two habits worth restating because nothing else enforces them:
 
 > **Older workspaces:** re-running `/agents-md` on a workspace whose artifacts still live under `docs/` offers a one-time, ask-first `docs/` → `specs/` migration — it renames the tree and updates the `AGENTS.md` paths, moving only the artifacts subfolders.
 
+For worktree tasks, install `using-git-worktrees` from this kit using the
+[README command](README.md#working-in-a-worktree). Refresh existing generated
+instructions with `/agents-md` and review its proposed diff to pick up the
+worktree routing. Matt's skills stay separate installs; generated workspace
+instructions supply their worktree handoff. Installing this companion does not
+create a worktree until you request one.
+
 Enable native CLI memory globally when desired: [`skills/agents-md/references/memory-global-defaults.md`](skills/agents-md/references/memory-global-defaults.md).
 
 ### Supported Coding Tools Matrix (single source of truth)
@@ -279,11 +286,109 @@ For a small workspace (well under 500 files), `/graphify .` from the workspace r
 - **Weekly or before `/integration-contract`:** full LLM `graphify extract` loop + re-merge.
 - Discovery skills may suggest an update but stay read-only — you run the refresh.
 
+## Working In A Worktree
+
+Ask **“Implement ticket 42 in SHOP in a worktree.”** The model invokes
+`/using-git-worktrees` before the task skill, including Matt's `/implement`,
+`/diagnosing-bugs`, `/prototype`, or `/code-review`. Setup returns to the task
+you already requested without asking for the same permission again. For setup
+only, invoke `/using-git-worktrees`; it prepares the checkout and stops there.
+
+“Create a branch in the current checkout” stays a branch operation. If you
+only say “isolate this,” the agent asks which form you mean before editing.
+Worktree setup does not itself authorize shipping, merging, or cleanup.
+
+### Example: fix checkout in SHOP
+
+Suppose SHOP's repository is `/projects/shop`. The task runs in:
+
+```text
+/projects/shop/                         original checkout
+  .gitignore                           contains /.worktree/
+  .worktree/
+    fix-checkout/                      task checkout, branch fix-checkout
+```
+
+1. **Prepare.** Inspect the source branch, existing changes, and worktrees.
+   Reuse a suitable worktree belonging to this task, or create one at the path
+   above. Honor the requested base; without another convention, record the
+   current source `HEAD` as the new branch's base. Uncommitted source edits
+   remain in the source checkout and are not copied into the task.
+2. **Ignore.** Add `/.worktree/` to the owning repo's `.gitignore` and verify
+   the destination is ignored before creation or reuse. Preserve unrelated
+   ignore rules. Add the same narrow entry in the task checkout if missing,
+   so it can ship on the task branch. Setup does not commit either edit.
+3. **Check and work.** Verify the destination, branch, and revision; perform
+   project setup and baseline checks there. Then run the requested task in
+   that checkout. A failed setup blocks task edits. A failing baseline needs
+   a decision to proceed unless you already authorized those specific failures.
+
+In a generated multi-project workspace, keep the main session at the workspace
+root and give task commands or assigned workers the verified worktree path
+and applicable instructions. Check that containers and test runners actually
+use that path. An existing worktree is not a reason to create a nested one.
+
+If API and WEB both need changes, use `<api-repo>/.worktree/<task-name>` and
+`<web-repo>/.worktree/<task-name>`. Each repo owns its branch, ignore entry,
+checks, and shipping operation; there is no shared workspace-level worktree.
+
+### Ship from the same worktree
+
+After the fix passes its checks, choose the shipping result you want:
+
+| Skill | Result | What remains |
+| :--- | :--- | :--- |
+| `/commit-push-pr` | Commit and push `fix-checkout`; open or update its PR against the permitted base | Review and merge. A default-branch PR with `Closes #42` closes the issue on merge. |
+| `/commit-push-close` | Commit and push `fix-checkout`; post QA instructions and close issue 42 directly | The branch can still be unmerged. Confirm direct closure versus a PR when it is not the default branch. |
+
+For this task branch, prefer `/commit-push-pr`. Both skills retain their
+existing draft-approval and verification gates. They run inside the task
+worktree, include the scoped ignore rule in the reviewed diff, and preserve
+unrelated source edits. Neither moves the fix back to the original checkout,
+merges it, or removes the worktree. Any source-only setup edit is reported.
+
+### Clean up after integration
+
+Once the PR is merged and the integrated fix is verified, ask:
+
+> The PR is merged. Check that everything is preserved, then clean up its
+> worktree and local branch.
+
+Before removal, confirm no task-owned process or worker still uses the
+checkout. Inspect tracked changes and useful untracked **and ignored** files;
+save anything needed outside the worktree. Check that all task work is retained
+in the integration target. A pushed branch or closed issue alone is not enough.
+
+From outside the worktree, remove the checkout through Git. For this example:
+
+```bash
+git -C /projects/shop worktree remove .worktree/fix-checkout
+```
+
+Only after removal succeeds, delete the local task branch when safe:
+
+```bash
+git -C /projects/shop branch -d fix-checkout
+```
+
+If Git refuses either action, inspect and resolve the reason; do not force
+deletion. Squash merges can leave branch ancestry checks unable to recognize
+the integration, so verify the merged result instead of assuming the branch
+can be discarded. Keep `/.worktree/` in `.gitignore` for future tasks, and
+preserve any unrelated source changes. Remote branch deletion is a separate
+choice, not part of these commands.
+
+The setup and shipping skills do not perform this cleanup. User-requested
+worktrees remain available until cleanup is authorized. Temporary worker
+worktrees can be removed within an already-authorized integration workflow,
+subject to the same preservation checks.
+
 ## Choosing A Starting Point
 
 | Situation | Start With | Why |
 | :--- | :--- | :--- |
 | New Workspace | `/agents-md` | Establish the Project Matrix, paths, and Non-negotiable rules. |
+| Work Requested In A Worktree | `/using-git-worktrees`, then the requested task | Establish the project-local checkout before task edits; return to the authorized workflow. |
 | Unsure Which Matt Skill Fits | `/ask-matt` | Route to a user-invoked upstream skill flow without auto-chaining. |
 | Unclear Behavior | `/feature-discovery` | Read-only audit before planning. |
 | Rough Idea, No Fog | `/feature-prompt` | Destination and decisions are already sharp; infer-first prompt drafting. |
@@ -327,6 +432,8 @@ For a small workspace (well under 500 files), `/graphify .` from the workspace r
 **The fog test** decides the fork. Ask: can you state the destination in one line *and* name every open decision as a sharp question, right now? If yes, `/feature-prompt`. If not, that's fog — `/wayfinder` charts the decisions as tracker tickets and resolves them one per session until nothing is left to decide. Fog, not size, is the test: a large mechanical refactor has no fog and belongs in `/to-tickets` as expand–contract, while a two-file change gated on one unresolved architectural decision *is* fog. Greenfield work, with no code to discover, enters at `/wayfinder` directly.
 
 Variations branch off this line:
+
+- **Worktree requests** run `/using-git-worktrees` before the selected task skill. This applies to planning or implementation work when you explicitly request a worktree; it adds no default phase to the progression. See [Working in a worktree](#working-in-a-worktree).
 
 - **Implementing** a ticket runs `/implement` when installed — it drives `/tdd-loop` at each pre-agreed seam, with `/tdd` supplying test quality and seam choice. Without `/implement`, drive `/tdd-loop` directly. `/implement` stops after `/code-review`; it never commits.
 - **Porting** a feature from a reference implementation starts with `/port-feature` (in place of `/feature-discovery` → `/feature-prompt`), which writes a gap map and hands to `/grill-with-docs`.
@@ -379,7 +486,7 @@ Generated `AGENTS.md` encodes how agents retrieve context:
 - **Native memory only.** Do not create repo memory files, wiki files, discovery files, or default knowledge-graph memory. Optional graph/index companions may be used when installed and task-fit, but their artifacts are not binding memory. Do not sync memory between CLIs.
 - **Archived context on grill.** When you trigger `/grill-with-docs`, the agent asks up front whether you have archived context (prior discussions, original intent) for the feature. Paste it — captured verbatim into the ADR with provenance — or continue without. Old/current names it reveals are offered as `CONTEXT.md` aliases.
 
-Skills are ad-hoc, not a pipeline. Work follows a gradient — discover → sharpen → plan → slice → implement → verify → ship — and after each step the agent **suggests** a next skill but never auto-chains.
+Skills are ad-hoc, not a pipeline. Work follows a gradient — discover → sharpen → plan → slice → implement → verify → ship — and after the requested workflow the agent **suggests** a next skill but never auto-chains a new workflow. Worktree setup may return to the task already included in your request; that handoff needs no second permission prompt.
 
 ## Planned Vs Ad Hoc Issue Flow
 
@@ -397,6 +504,7 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 | Gate | Skill | Continue When |
 | :--- | :--- | :--- |
 | Workspace | `/agents-md` | The PROJECT-CODE matrix and Non-negotiable rules are active. |
+| Requested worktree | `/using-git-worktrees` | The project’s `.worktree/<task-name>` is verified and ignored; baseline passes or the reported failures have an authorized exception. |
 | Design system | `/design-system` | Tokens + library built; preview renders and the user has eyeballed it; `AGENTS.md` reference + `<project-slug>-ui-coding` seeded or extended. |
 | Issue preflight | `Issue-writing skills` | Title pattern and both required labels are validated from local workspace instructions. |
 | Discovery | `/feature-discovery` | Evidence-backed report is returned in chat; discovery files are never written. |
@@ -414,6 +522,7 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 | Staging fixed via CI | `/staging-fix` | Local fix with test; PR to the confirmed staging branch auto-merged; no server touched. |
 | Cross-repo seam | `/integration-contract` | Multi-project spec's producer/consumer contract built and smoke gate green (single-project auto-skips). |
 | Ship | `/commit-push-*` | Branch pushed and issue/PR linked with test proof. |
+| Worktree cleanup | Authorized cleanup or integration workflow | Integration is verified, needed files are preserved, and no worker/process needs the checkout; pushing or closing an issue alone does not qualify. |
 | Release | `/release-notes` | PM-friendly summary saved to `specs/release-notes/`. |
 
 ## Recovery Loops
@@ -425,6 +534,8 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 - **High-Fidelity Uncertainty (feel/UI/interaction):** `/handoff` -> `/prototype` -> back to `/grill-with-docs`.
 - **Context Budget Pressure:** Treat `~120K` as a caution threshold during planning-heavy sessions; split scope or handoff before quality drops.
 - **Broken Tests:** Stay in `/tdd-loop` or pivot to `/diagnosing-bugs`.
+- **Worktree Setup Blocked:** Preserve the source checkout and pause dependent task edits; resolve the failed setup rather than silently working in place.
+- **Worktree Cleanup Refused:** Preserve the checkout and branch; inspect unfinished work, branch ownership, or integration evidence before retrying. Never force removal to finish a checklist.
 - **Large Tickets:** Back to `/to-tickets` for smaller slices.
 - **UI Drifts From Design:** `/pixel-audit` the page against its source of truth; clear the element-level gate before shipping.
 - **Cosmetic Nits Pile Up:** `/polish-batch` — capture them, then dispatch in one pass per PROJECT-CODE.

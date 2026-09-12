@@ -19,7 +19,7 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 
 - **Preserve existing work.** Inspect staged, unstaged, and untracked changes in both the source and any reused checkout. Leave unrelated changes in place. Uncommitted source changes do not appear in a new worktree; if the task needs them, resolve a scoped transfer with the user before proceeding. Never stash, reset, overwrite, or copy the whole checkout as a shortcut.
 - **Keep isolation binding.** A permission error, occupied branch, or failed setup is a blocked worktree step. Report it and pause dependent edits; never fall back to writing in the original checkout without the user's explicit change of scope.
-- **Keep shipping separate.** Setup never stages or commits, even to record an ignore rule. It does not merge, push, delete branches, or remove worktrees. Leave the worktree available to the caller; later shipping and cleanup follow their own authorized workflow.
+- **Keep shipping separate.** Setup never stages or commits, even to record an ignore rule. It does not merge, push, delete branches, or remove worktrees. Leave the worktree available to the caller; later shipping and cleanup follow their own authorized workflow. For user-requested cleanup, verify integration and preserve needed tracked, untracked, and ignored files first; a push or issue closure alone is not integration proof. Cleanup is outside this setup skill.
 - **Keep context attached.** Capture applicable workspace and project instructions before switching. A worktree may live outside their filesystem scope; pass those instructions and the verified checkout to any already-authorized local worker. Creating a worktree does not authorize delegation.
 
 ## Workflow
