@@ -1,4 +1,4 @@
-<!-- agents-md marker · v26 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v27 · re-run /agents-md to regenerate -->
 # Agent instructions
 
 [one concise, factual workspace intro inferred from the .code-workspace name and folder scan — no promotional adjectives]
@@ -77,7 +77,7 @@ Skills are ad-hoc tools, not a pipeline: treat every installed skill as availabl
 - **Live tools:** the current session's exposed tools, schemas, and permissions take precedence over runtime tables. A listed capability may be unavailable. Use an available fallback within the same authorization; otherwise report the blocked step. Never invent a tool call or broaden permissions to match a table.
 - Skills live in each repo's `.agents/skills/` and in the kit — prefer the project-local one; never assume a skill exists, use what is installed.
 - After finishing the authorized workflow, suggest a next skill when one fits and stop. Suggestions never authorize a new workflow; a handoff explicitly included in the user's requested workflow may proceed within that authority.
-- Companions are optional separate installs — use them beside this kit when installed and task-fit; do not vendor them into this kit.
+- Companions are optional helpers — the catalog identifies kit-provided skills; external companions remain separate installs and are never vendored.
 - Companions are helpers, not authority — repo code, tests, ADRs, `CONTEXT.md`, and user instructions still win.
 - Never assume a companion is installed; if missing, say so and continue with the best local fallback.
 - Use MCPs only for the current task — no browsing unrelated external data. For database MCPs, use the narrowest approved connection, read-only unless the user approves a specific write.
@@ -152,9 +152,9 @@ One useful independent task is enough to delegate. Every worker must make a conc
 - **Verify returned work.** Workers return summaries, changed files, verification evidence with the tested checkout and state, and unresolved problems — not transcripts. Await each lane's completion or confirmed stop and inspect returned changes, including comment coverage, before integration. The main session owns combined-state verification per [Goal-driven execution](#goal-driven-execution) and final synthesis.
 - Keep parallel state visible per [Honest state & reporting](#honest-state-reporting) — lane count at dispatch, each completion or failure as it lands — for every parallel mechanism in every runtime, whatever this CLI calls it.
 
-**Checkouts:** Work in the existing workspace checkouts. Do not clone repos or create new checkouts — worktrees under the project-local gitignored `.worktrees/` are the one exception. Worktrees are on-demand: read-only lanes never get one; writers get one only for concurrent isolated writes, just in time — never speculatively, never for blocked work. Remove task-created worktrees after integration, subject to the cleanup safeguards above. Create qualifying worktrees without separate approval; runtime worktree isolation follows the same criteria.
+**Checkouts:** Work in the existing workspace checkouts. Do not clone repos or create new checkouts — worktrees under each project’s own repository at `.worktree/<task-name>` are the one exception. Add `/.worktree/` to that repository’s `.gitignore` and verify the destination is ignored before creation. Multi-project work uses one worktree per affected repo, never a shared workspace-level container. Worktrees are on-demand: read-only lanes never get one; writers get one only for concurrent isolated writes, just in time — never speculatively, never for blocked work. Remove task-created worktrees after integration, subject to the cleanup safeguards above. Create qualifying worktrees without separate approval; runtime worktree isolation follows the same criteria.
 
-**User-asked isolation:** A user request to work in a worktree, on a branch, or "in isolation" overrides the on-demand rule above — set it up before the first edit, never after. When they name the form (`worktree` or `branch`), take them at their word. When they do not ("isolate this", "keep it separate", "leave my checkout alone"), ask once per [Decision options](#decision-options) — a worktree under `.worktrees/` (`Recommended`: their checkout stays untouched), a new branch in the current checkout, or stay in the current checkout — and edit nothing while the question is open. That question settles which form they meant; it is never an approval gate for the lanes above.
+**User-asked isolation:** A user request to work in a worktree, on a branch, or "in isolation" overrides the on-demand rule above — set it up before the first edit, never after. When they name the form (`worktree` or `branch`), take them at their word. For a worktree, invoke `/using-git-worktrees` when installed before task edits, including before a third-party task skill. If missing, use the available local worktree mechanism, verify the selected checkout and baseline, and preserve the source changes. A failed setup blocks task edits; never silently work in the original checkout. Branch-only requests do not invoke the worktree skill. When they do not ("isolate this", "keep it separate", "leave my checkout alone"), ask once per [Decision options](#decision-options) — a worktree under that project repo’s `.worktree/` (`Recommended`: task edits stay separate; setup may add the ignore rule), a new branch in the current checkout, or stay in the current checkout — and edit nothing while the question is open. That question settles which form they meant; it is never an approval gate for the lanes above.
 
 ### 12. Systematic debugging
 
@@ -227,7 +227,7 @@ Nothing commits, pushes, opens a PR, or closes an issue outside the ship skills,
 
 ### Companion skills and MCPs
 
-[COMPANION TABLE — columns `Companion | Use when`. Apply the manifest's note exclusions first. One row per eligible entry with `kind: companion`: its name and use-when text, in manifest order.]
+[COMPANION TABLE — columns `Companion | Use when`. Apply the manifest's note exclusions first. One row per eligible entry with `kind: companion` or `phase: companion`: its name and use-when text, in manifest order.]
 
 ### Matt skill routing
 
@@ -235,6 +235,7 @@ Use `/ask-matt` to choose a Matt skill flow — it routes, never executes; do no
 
 - Idea flow: `/grill-with-docs` → if runnable uncertainty, `/handoff` + `/prototype` + `/handoff` → for multi-session work, `/to-spec` then `/to-tickets`.
 - **The fog test.** Can you state the destination in one line *and* name every open decision as a sharp question, right now? Yes → `/feature-prompt`. No → fog → `/wayfinder` (decisions become tracker tickets, one resolved per session). Fog, not size: a large mechanical refactor has no fog (→ `/to-tickets` expand–contract); a two-file change gated on one unresolved decision is fog. Greenfield enters here too. Both arms rejoin at `/to-spec`; a map is exhausted when nothing is left to decide.
+- When a user requests work in a worktree, apply [User-asked isolation](#11-local-orchestration) before `/implement`, `/diagnosing-bugs`, `/prototype`, `/code-review`, or another Matt skill does task work. Pass the verified checkout and applicable instructions into that skill; setup returns to the already-authorized task and does not authorize a new workflow. Keep these interlocks here; do not rewrite installed third-party skills.
 - Fresh session per ticket. `/implement` (when installed) drives `/tdd-loop` at each seam, with `/tdd` supplying test quality and seam choice; without it, drive `/tdd-loop` directly. `/tdd` is reference only — never a loop. `/implement` stops after `/code-review` and never commits ([Shipping is owned by the ship skills](#shipping-is-owned-by-the-ship-skills)).
 - `/diagnosing-bugs` finds the root cause; ship the fix through `/tdd-loop` — the reproduction becomes the failing regression test, one red → green per bug, full check once at batch end ([Goal-driven execution](#goal-driven-execution)).
 - `/triage` = raw incoming issues and external PRs only — never tickets from `/to-tickets`. `/research` = delegable primary-source reading → cited doc. `/improve-codebase-architecture` (when installed) → a chosen improvement feeds `/grill-with-docs`. `/handoff` forks context to a new session; `/compact` continues this one — only at intentional phase breaks.

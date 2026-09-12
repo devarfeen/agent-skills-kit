@@ -204,7 +204,7 @@ When the two disagree, this file wins — it is what CI enforces.
    written down (see the "The tell:" lines in `feature-discovery`'s Rules).
 9. **Trigger near-misses considered** — for a new skill, write down 3 requests
    that *should* trigger it and 3 adjacent requests that should trigger a
-   sibling skill instead (e.g. cosmetic nit → `/polish-batch`, pixel mismatch →
+sibling skill instead (e.g. cosmetic nit → `/polish-batch`, pixel mismatch →
    `/pixel-audit`). If the boundary can't be stated, the description isn't done.
 
 ## Trigger evals

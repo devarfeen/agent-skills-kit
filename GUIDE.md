@@ -120,10 +120,11 @@ Use local-only policy when needed by adding generated files to local git exclude
 
 ## Companion Skills And MCPs
 
-These are optional separate installs. Use them beside this kit when installed and task-fit. Do not vendor them into this repo.
+These are optional helpers. The kit provides `using-git-worktrees`; the other entries are separate installs used when installed and task-fit. Do not vendor external companions into this repo.
 
 | Companion | Use when |
 | :--- | :--- |
+| using-git-worktrees | Ask for work in a worktree: setup uses that project repo’s gitignored `.worktree/<task-name>` before the requested local or third-party task skill and passes it the verified checkout. Branch-only requests stay branch operations. |
 | Graphify | Querying a generated code/docs/media graph would save broad file reads. Check `graphify-out/graph.json` at the project root, else the workspace root; absent in both → skip it. Multi-project workspaces: AST `update` for code, full LLM `extract` for docs — see [Graphify in multi-project workspaces](#graphify-in-multi-project-workspaces). |
 | ask-matt | You want Matt's upstream router for choosing a user-invoked skill flow. |
 | wait-what | The agent's last chat message did not land — re-pitch it with brief context, ASD-STE100 Simplified Technical English, and the ubiquitous language from `CONTEXT.md`. |

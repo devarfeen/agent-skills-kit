@@ -51,12 +51,36 @@ The `skills` CLI fetches the named subfolder from this repo and installs it
 into your agent's local skills directory. After install, invoke a skill with
 `/skill-name` — most kit skills mark themselves for explicit invocation
 (`disable-model-invocation: true`), so the slash command is the reliable path;
-only `feature-discovery` and `tdd-loop` also trigger automatically when a
-request matches their description.
+`feature-discovery`, `tdd-loop`, and `using-git-worktrees` also trigger
+automatically when a request matches their description.
 
 Skills avoid changing your git state unless their own instructions say
 otherwise; skills that inspect history only read commits already available on
 your machine (never `git fetch` / `git pull`).
+
+### Working in a worktree
+
+Install the companion with:
+
+```bash
+npx skills install https://github.com/devarfeen/agent-skills-kit --skill using-git-worktrees
+```
+
+Then ask: **“Fix checkout in SHOP in a worktree.”** You can also invoke
+`/using-git-worktrees` directly for setup only. The companion creates or reuses
+`<shop-repo>/.worktree/<task-name>`, adds `/.worktree/` to the repo's `.gitignore`,
+and checks the checkout before returning to the requested task. Each affected
+project gets its own worktree. A request for a branch alone does not trigger it.
+
+Use `/commit-push-pr` to ship the worktree branch for review. It commits,
+pushes, and opens a PR; merging is a later step. `/commit-push-close` closes
+the issue directly after pushing and does **not** merge the branch. Keep the
+worktree until its work is integrated and verified, then request cleanup.
+
+For existing generated workspaces, re-run `/agents-md` and review its proposed
+update to add worktree routing, including the interlocks with Matt's skills.
+See the [worktree walkthrough](GUIDE.md#working-in-a-worktree) for setup,
+shipping, and cleanup examples.
 
 **Cursor CLI:** Install with `npx skills install` (skills land in
 `~/.cursor/skills/` or `.cursor/skills/`). Invoke a skill with `/skill-name`
@@ -67,8 +91,8 @@ sessions or `agent -p "..."` for scripts and CI.
 
 Skills sit on a workflow gradient — discover → sharpen → plan → slice →
 implement → verify → ship — plus two startup skills that run once per
-workspace/project. Full behavior, modes, and rules live in each skill's
-`SKILL.md`; this table is the index.
+workspace/project and an on-demand worktree companion. Full behavior, modes,
+and rules live in each skill's `SKILL.md`; this table is the index.
 
 | Skill | Phase | What it does | Example prompt |
 | :--- | :--- | :--- | :--- |
@@ -87,6 +111,7 @@ workspace/project. Full behavior, modes, and rules live in each skill's
 | [`pr-feedback`](skills/pr-feedback/SKILL.md) | ship | Works reviewer feedback on an open PR — classifies every thread, fixes what the user accepts, replies citing the fixing commits | `Address the review comments on PR #87` |
 | [`staging-fix`](skills/staging-fix/SKILL.md) | ship | Fixes a staging bug locally with a test and ships it as an auto-merge PR to `staging` — servers are never touched | `Staging is broken: checkout 500s since this morning` |
 | [`release-notes`](skills/release-notes/SKILL.md) | ship | Turns git history, the current session, or a feature into PM-friendly release notes with QA steps | `Generate release notes for 11 March 2026` |
+| [`using-git-worktrees`](skills/using-git-worktrees/SKILL.md) | companion | Sets up or reuses a worktree in each project repo’s gitignored `.worktree/` before requested task work, verifies the checkout and baseline, and returns to the calling workflow | `Implement #418 in a worktree` |
 | [`writing-kit-skills`](skills/writing-kit-skills/SKILL.md) | — | Kit-internal house style for authoring and editing this repo's skills: skeleton, word budget, canonical one-liners, output caps, eval gates | `Rewrite this SKILL.md to house style` |
 
 The gradient's plan/slice/implement/verify core (`/grill-with-docs`,
@@ -97,9 +122,14 @@ installs this kit is designed to interlock with. Run
 `/setup-matt-pocock-skills` once per workspace (see the First-Time Setup
 sequence in [GUIDE.md](GUIDE.md)) before using them.
 
-Two of those interlocks are worth stating plainly, because both upstream skills
-are **optional** and neither replaces a kit skill:
+These interlocks use optional upstream skills alongside the kit:
 
+- **Worktrees** are request-driven. Ask to do work in a worktree and
+  `/using-git-worktrees` runs before the task skill, using that project repo’s
+  `.worktree/<task-name>` and adding `/.worktree/` to its `.gitignore`.
+  Generated `AGENTS.md` routes Matt’s implementation, debugging, prototype, and review skills through
+  that setup and passes them the verified checkout. Third-party installations
+  stay untouched.
 - **Implementing** stacks three layers. `/implement` is an optional *ticket
   driver*; the kit's `tdd-loop` is the test-first *procedure* it calls at each
   seam (gates, completion evidence, exception protocol); Matt's `/tdd` is the
@@ -119,7 +149,8 @@ release notes — including the issue-title/label hard gate, workflow gates, and
 recovery loops. See [BEST-PRACTICES.md](BEST-PRACTICES.md) for the mental
 model: the gradient, context discipline, and anti-patterns.
 
-Companion skills and MCPs (Graphify, agent-browser, Figma MCP, herdr,
+The kit ships `using-git-worktrees` as a companion. External companion skills
+and MCPs (Graphify, agent-browser, Figma MCP, herdr,
 docker-expert, Laravel Boost, database MCPs, …) are separate installs used
 beside this kit when installed and task-fit — helpers, not a required
 pipeline. The list lives in
@@ -166,6 +197,10 @@ skills from the wider agent-skills ecosystem.
   `codebase-design`, `improve-codebase-architecture`, `prototype`, `handoff`,
   `wait-what`, `wizard`, and `to-questionnaire`:
   https://github.com/mattpocock/skills
+- The worktree companion follows the setup approach in
+  [using-git-worktrees](https://github.com/obra/superpowers/blob/main/skills/using-git-worktrees/SKILL.md).
+  Its local rules preserve requested isolation on failure, leave commits to the
+  ship skills, and return the verified checkout to the authorized task.
 - `/skill-creator` is credited to Anthropic's public skills repository:
   https://github.com/anthropics/skills/tree/main/skills/skill-creator
 - `/agent-browser`, the `skills` CLI, `find-skills`, and Vercel React/React

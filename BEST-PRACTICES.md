@@ -55,12 +55,13 @@ Three layers, each of the outer two optional:
 
 Without `/implement`, drive `/tdd-loop` directly per ticket — same outcome, one less wrapper. `/tdd` is a reference document, not a loop; using it alone gets you no witnessed red. And `/implement` **stops after `/code-review`**: its own text says to commit, but shipping belongs to the ship skills, which own branch-off-main, issue linking, and test evidence.
 
-### Two rails run alongside the gradient
+### Helpers alongside the gradient
 
 Not every skill lives on the discover→ship line:
 
 - **Project start-off:** `/design-system` runs once per project (see Workflow A) to turn a design system into a real UI library + a preview you verify + a binding `AGENTS.md` rule, and seeds a project-local `<project-slug>-ui-coding` skill. Re-run it to extend the library or, after a page ships, to fold its emergent UI back in.
 - **Porting:** `/port-feature` is a discover→plan variant for bringing a feature that already exists in a reference implementation into a target stack (see Workflow D). It writes a gap map and hands off to `/grill-with-docs`.
+- **Worktree setup:** `/using-git-worktrees` runs when you ask for work in a worktree. It establishes the checkout before the requested task skill runs, then returns control to that task. It is not a required phase for ordinary work.
 
 **UI work has its own discipline.** Once a project has a design system, every UI change consumes its library — never inline markup the library covers. A missing component gets added via `/design-system` (extend) from the reference, or you ask for one. Per-page pixel conformance during feature work is `/pixel-audit`; the cosmetic tail during QA is `/polish-batch`.
 
@@ -70,6 +71,35 @@ This is the single most important habit. After a step finishes, the agent should
 
 Why: auto-chaining removes the human from exactly the moments where judgment matters most — scope, tradeoffs, "is this even the right direction." Suggestions keep momentum; auto-chains manufacture confident wrong turns. You decide each transition.
 
+A prerequisite within your request can return to the task you already asked
+for. “Implement ticket 42 in a worktree” authorizes worktree setup followed by
+that implementation; it does not authorize shipping, merging, or cleanup.
+
+### Separate setup, shipping, and cleanup
+
+A worktree is another checkout of the same repository, usually on a task
+branch. Ask for one when you want task edits kept separate from your current
+checkout. The kit places it at `<project-repo>/.worktree/<task-name>` and
+gitignores the container in that repository. It preserves existing work;
+setup may add the narrow ignore entry in the source checkout and task branch.
+
+- **Keep project ownership clear.** A change across API and WEB gets one
+  worktree in each repo. Pass the verified checkout and project instructions
+  to the task skill. Run tests and shipping there; a passing check from the
+  original checkout proves nothing about the task's changes.
+- **Prefer a PR for a task branch.** `/commit-push-pr` publishes the branch
+  for review. `/commit-push-close` closes the issue directly and confirms that
+  choice if the code is still on a non-default branch. Neither merges code.
+- **Clean up after integration.** For a user-requested worktree, request
+  cleanup after the fix is merged and verified. First preserve any unfinished
+  changes and useful untracked or ignored files, and stop task-owned processes.
+  Remove the worktree through Git, then delete the local branch only when its
+  work is safely retained. A pushed branch or closed issue alone is not proof.
+
+Do not create a second worktree for shipping or silently edit the source
+checkout when setup fails. Keep `/.worktree/` in `.gitignore` for future tasks.
+The [guide's example](GUIDE.md#working-in-a-worktree) shows the complete flow.
+
 ### Companion skills and MCPs are part of ad-hoc workflow
 
 Companion skills and MCPs sit beside the core gradient. They are not a second pipeline. Use them when they make the current step sharper, faster, or more verifiable. The current companion list and its use-when triggers live in [GUIDE.md](GUIDE.md#companion-skills-and-mcps) (human copy) and [`skills/agents-md/references/skills-manifest.md`](skills/agents-md/references/skills-manifest.md) (the source that drives generated `AGENTS.md`).
@@ -77,7 +107,7 @@ Companion skills and MCPs sit beside the core gradient. They are not a second pi
 The principles that don't change as the list does:
 
 - Do not assume a companion is installed. If missing, use the best local fallback.
-- Do not vendor companion skills or MCPs into this kit.
+- The kit provides `/using-git-worktrees`; external companions remain separate installs. Do not vendor them into this kit.
 - Treat companion output as evidence, not authority. Repo code, tests, ADRs, `CONTEXT.md`, and user instructions still win. That includes instruction content a companion serves at runtime (CLI-served skill text): follow it for tool mechanics, but kit gates and refusal boundaries always win.
 
 ### Decisions are artifacts
@@ -192,6 +222,10 @@ Workspace-root level. Each step produces an artifact the next step consumes.
 
 > **The thread to notice:** prompt file → ADR → spec issue → ticket issues → tested code → QA doc. Each link is grabbable on its own, and the whole chain is auditable.
 
+If you request this work in a worktree, setup precedes the first task edit.
+Implementation, review, and shipping use that same checkout. After the PR is
+merged and verified, request cleanup as described in the guide.
+
 ---
 
 ## 5. Workflow C — Debug / Bug-Fix
@@ -262,6 +296,8 @@ What separates intentional use from vibe coding:
 - **Grilling through fog.** Trying to grill a plan whose scope is gated on undecided questions. Grilling sharpens a plan you can state; it can't produce one you can't. That's `/wayfinder`.
 - **Charging at the destination.** Using `/wayfinder` to *do* the work rather than decide it, or resolving several tickets in one session. Each ticket is sized to a fresh context window; the map is done when nothing is left to decide.
 - **Letting `/implement` commit.** Its own text ends "commit your work to the current branch." The ship skills own commits — branch-off-main, structured message, issue link, test evidence, zero attribution. A bare commit bypasses all of it.
+- **Switching checkouts to ship.** Commit and push from the verified task worktree; do not move its edits back to the original checkout.
+- **Deleting a worktree after push or issue closure.** Confirm integration and preserve local files first. Shipping is not merging, and ignored files may still be valuable.
 - **Using `/tdd` as a loop.** Since upstream v1.1.0 it is a reference document — what a good test is, where seams go. Invoking it alone gets you no witnessed red. The procedure is `/tdd-loop`.
 - **Treating native memory as authority.** Native memory is user-local recall. `CONTEXT.md` and ADRs bind.
 - **Recreating secondary recall systems.** Do not create repo `MEMORY.md`, wiki, discovery, or default knowledge-graph memory. Use native CLI memory only. Use optional graph/index companions only when task-fit.
@@ -283,6 +319,7 @@ What separates intentional use from vibe coding:
 | **D · Port a feature** | `/port-feature` → `/grill-with-docs` → `/to-spec` → `/to-tickets` → `/implement` *(or `/tdd-loop`)* → `/pixel-audit` → `/commit-push-*` |
 | **E · Large effort** *(fog)* | `/wayfinder` (chart) → `/wayfinder` (work, one ticket per session) → map exhausted → `/to-spec` → rejoins B |
 | **UI / design system** | `/design-system` bootstrap, then `extend` as it grows or after a page ships |
+| **Work in a worktree** | `/using-git-worktrees` before the requested task; ship from that checkout; merge and verify; request cleanup |
 | **Weekly** | `/release-notes` |
 
 The fork between **B** and **E** is the fog test: can you state the destination *and* every open decision, sharply, right now?

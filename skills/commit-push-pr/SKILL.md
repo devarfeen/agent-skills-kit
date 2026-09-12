@@ -49,7 +49,7 @@ For a default-branch PR, `Closes #N` is mandatory near the top. Multiple issues 
 
 Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.
 
-1. **Read state** — run **Read state** in the shared policy. Resolve the PR base from explicit user/workspace instructions, then an existing PR, then the detected default. Stop on conflicts or a prohibited production target; never default into a forbidden branch.
+1. **Read state** — resolve the task checkout through **Worktree handoff**, then run **Read state** in the shared policy. Resolve the PR base from explicit user/workspace instructions, then an existing PR, then the detected default. Stop on conflicts or a prohibited production target; never default into a forbidden branch.
 
 2. **Resolve or create the issue** — branch name → recent commits → conversation context. If none, use **Inline issue creation** for valid small ad hoc work. Create only after step 7 approval, then insert the actual number into the commit and PR issue reference.
 

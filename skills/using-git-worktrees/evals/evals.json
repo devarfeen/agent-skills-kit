@@ -1,0 +1,104 @@
+{
+  "skill": "using-git-worktrees",
+  "kind": "trigger-eval",
+  "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog \u2014 no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
+  "queries": [
+    {
+      "q": "Implement #418 in a worktree.",
+      "expect": "trigger"
+    },
+    {
+      "q": "Fix the checkout bug in a new git worktree before touching any files.",
+      "expect": "trigger"
+    },
+    {
+      "q": "Use /using-git-worktrees to prepare a checkout for this task.",
+      "expect": "trigger"
+    },
+    {
+      "q": "Do the CSV export change in a worktree under the project repo\u2019s .worktree/export-task.",
+      "expect": "trigger"
+    },
+    {
+      "q": "We are already in the task worktree; verify it and continue the ticket there.",
+      "expect": "trigger"
+    },
+    {
+      "q": "Use the existing worktree for feature/invoices to do this change.",
+      "expect": "trigger"
+    },
+    {
+      "q": "Prototype drag-to-reorder in a worktree.",
+      "expect": "trigger"
+    },
+    {
+      "q": "Review the billing branch in a separate worktree.",
+      "expect": "trigger"
+    },
+    {
+      "q": "Do this task in a git work tree and leave my current checkout alone.",
+      "expect": "trigger"
+    },
+    {
+      "q": "Run /implement for ticket 42 in a worktree based on release/2.x.",
+      "expect": "trigger"
+    },
+    {
+      "q": "Create a new branch for this fix in the current checkout.",
+      "expect": "no-trigger",
+      "route": "none"
+    },
+    {
+      "q": "Explain how git worktrees differ from branches.",
+      "expect": "no-trigger",
+      "route": "none"
+    },
+    {
+      "q": "Remove the old worktree after the merge.",
+      "expect": "no-trigger",
+      "route": "none"
+    },
+    {
+      "q": "Implement ticket 42 in the current checkout.",
+      "expect": "no-trigger",
+      "route": "/implement"
+    },
+    {
+      "q": "Fix the duplicate-order bug test-first.",
+      "expect": "no-trigger",
+      "route": "/tdd-loop"
+    },
+    {
+      "q": "Trace how the worktree setup feature works in this codebase.",
+      "expect": "no-trigger",
+      "route": "/feature-discovery"
+    },
+    {
+      "q": "Review the changes since main.",
+      "expect": "no-trigger",
+      "route": "/code-review"
+    },
+    {
+      "q": "Prototype drag-to-reorder so we can see how it feels.",
+      "expect": "no-trigger",
+      "route": "/prototype"
+    },
+    {
+      "q": "The checkout handler throws a 500; diagnose the root cause.",
+      "expect": "no-trigger",
+      "route": "/diagnosing-bugs"
+    },
+    {
+      "q": "Commit, push, and open a PR for issue 418.",
+      "expect": "no-trigger",
+      "route": "/commit-push-pr"
+    }
+  ],
+  "last_run": {
+    "date": "2026-09-12",
+    "method": "3 independent catalog-only judges over the full 352-query mixed set, majority vote; no repository or expected-outcome access",
+    "result": "20/20 pass; 20/20 unanimous. Full catalog 348/352; snapshot refresh refused due to four failures in unchanged skills.",
+    "judge_model": "inherited session model (3 independent local subagents; no model override)",
+    "catalog": "Live kit descriptions + tools/trigger-evals/catalog-externals.md; run inputs and ballots at /tmp/worktree-skill-evals.6UXMam"
+  }
+}

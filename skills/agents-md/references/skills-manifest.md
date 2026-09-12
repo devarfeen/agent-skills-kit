@@ -12,9 +12,9 @@ Columns:
   separate install — e.g. Matt Pocock's skills), or `companion` (optional separate
   install, off the gradient).
 - `phase` — for `kit`/`external`: a gradient phase (`discover`, `sharpen`, `plan`,
-  `slice`, `implement`, `verify`, `ship`) or `startup`. Blank for companions.
+  `slice`, `implement`, `verify`, `ship`) or `startup`; `companion` places a kit skill off the gradient. Blank for external companions.
 - `note` — optional short suffix shown after the skill in the gradient cell (e.g. `→ ADR`). A note beginning `deprecated` or `kit-internal` excludes the row from all generated catalogs and startup notes. Keep the row for kit coverage; exclusion does not remove the skill from this repo.
-- `use-when` — for `companion`: the trigger text. Blank for kit/external skills.
+- `use-when` — for companion entries (kind or phase): the trigger text. Blank for gradient/startup skills.
 
 Every folder under this repo's `skills/` must have a `kit` row here
 (`tools/validate.sh` enforces this).
@@ -56,6 +56,7 @@ Every folder under this repo's `skills/` must have a `kit` row here
 
 | skill | kind | phase | note | use-when |
 | ----- | ---- | ----- | ---- | -------- |
+| `/using-git-worktrees` | kit | companion | | The user asks to work in a worktree — invoke before task edits or the task skill; reuse or create the checkout under that project repo’s gitignored `.worktree/`, verify its baseline, then return to the authorized task. Branch-only requests do not qualify. |
 | ask-matt | companion | | | You want Matt's upstream router for choosing a user-invoked skill flow. |
 | wait-what | companion | | | The agent's last chat message did not land — re-pitch it with brief context, ASD-STE100 Simplified Technical English, and the ubiquitous language from `CONTEXT.md`. |
 | unslop | companion | | | Free-prose output needs AI tells removed — chat narration, and PR/issue/doc prose the agent composes freely. Never applies to text a skill mandates verbatim: generated `AGENTS.md`/shims, output templates, section names, field labels, canonical lines. |

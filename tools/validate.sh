@@ -277,6 +277,10 @@ while IFS='|' read -r _ col_skill col_kind col_phase _; do
     kit|external)
       case "$phase" in
         startup|discover|sharpen|plan|slice|implement|verify|ship) ;;
+        companion)
+          # Kit helpers belong in the companion catalog without pretending to be external.
+          [[ "$kind" == "kit" ]] || { fail "manifest companion phase requires kind kit: $name"; PHASE_OK=0; }
+          ;;
         *) fail "manifest row \`/$name\` (kind $kind) has invalid phase '$phase'"; PHASE_OK=0 ;;
       esac
       ;;

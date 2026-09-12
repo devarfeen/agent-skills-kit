@@ -60,7 +60,7 @@ Emit [`assets/agents-md-template.md`](assets/agents-md-template.md) byte-for-byt
 
 ## Working with skills
 
-Generate the gradient and companion tables from `references/skills-manifest.md` — the single source; adding or moving a skill edits the manifest, never this file. Column semantics live in its header; `kit` and `external` skills render alike.
+Generate the gradient and companion tables from `references/skills-manifest.md` — the single source; adding or moving a skill edits the manifest, never this file. Kit entries with `phase: companion` render only in the companion table.
 
 Apply the manifest's note exclusions before emitting any catalog or startup note.
 
@@ -68,7 +68,7 @@ Fill the `[RUNTIME TOOL-CALLING …]` slot from `references/tool-calling.md`, op
 
 ## Versioning and regeneration
 
-The skill version is `v26`. Both generated root files carry the marker `<!-- agents-md marker · v26 · re-run /agents-md to regenerate -->` as their first line (the first line of each template asset in `assets/`). Bump it here and in both template assets together whenever these rules change. Recognize pre-`v6` attribution-bearing comments as legacy markers for migration only; replace them with the current marker in approved regeneration.
+The skill version is `v27`. Both generated root files carry the marker `<!-- agents-md marker · v27 · re-run /agents-md to regenerate -->` as their first line (the first line of each template asset in `assets/`). Bump it here and in both template assets together whenever these rules change. Recognize pre-`v6` attribution-bearing comments as legacy markers for migration only; replace them with the current marker in approved regeneration.
 
 On run, check for an existing workspace-root `AGENTS.md`:
 
@@ -94,7 +94,8 @@ Chat carries the pre-write diff, the migration move list and report, and the clo
 - [ ] `AGENTS.md` sections appear in template order; `### Matt skill routing` present only when Matt's skills resolve, `#### North star` only when a vision file was found
 - [ ] Named rule links resolve; omitting optional sections preserves all numbered rules and Runtime tool-calling
 - [ ] Regeneration: foreign sections, user-filled values, and rule-body customizations survive; any customized-rule replacement has explicit approval — or the run stopped without writing
-- [ ] Generated catalogs and startup notes contain no manifest-excluded entries
+- [ ] Generated catalogs and startup notes contain no manifest-excluded entries; kit companions appear only in the companion table
+- [ ] Worktree routing survives Matt routing omission; when emitted, Matt routing passes the verified checkout to the task skill
 
 - [ ] Project Matrix row count equals the `folders` count; every Stack cell traces to a manifest actually read
 - [ ] Both generated files open with the current version marker; Context & native memory placeholders intact or carried over filled

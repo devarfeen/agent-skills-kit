@@ -8,6 +8,14 @@ Shared rules for `commit-push-close` and `commit-push-pr`. Both ship one issue i
 
 The workspace's `AGENTS.md` (or its rules files) names the issue tracker of record. Default: GitHub Issues — the `gh issue` commands, `#N` identifiers, and label names throughout are that default. When the workspace names a different tracker (for example Linear via its MCP), keep every step of this policy but perform issue reads and writes through that tracker, using its identifier format, closing keywords, and label vocabulary as the workspace docs map them. If a step has no workspace mapping, stop and ask — never fall back to `gh issue` against a tracker the workspace does not use.
 
+## Worktree handoff
+
+Resolve the task checkout before running **Read state**. When task work lives in a worktree, run state reads, checks, staging, commits, and pushes from that verified checkout; confirm its path with `git worktree list --porcelain` and its branch before shipping. Do not switch to the primary checkout or create another worktree for shipping. Resolve detached HEAD to an authorized named branch before a branch push; never reset an occupied branch.
+
+If setup added `/.worktree/` to the owning repo's `.gitignore`, ensure the task branch carries that same narrow rule and include it in the reviewed diff. Preserve unrelated source `.gitignore` changes; never copy or stage the source checkout wholesale. Report any source-only setup edit still pending.
+
+Keep each project's commit and remote tied to its own repository. Existing draft approvals and each skill's direct-close versus PR behavior still apply. Neither shipping skill merges or removes the worktree; preserve it until a separately authorized integration or cleanup workflow can prove the output is retained.
+
 ## Read state
 
 Run in parallel:

@@ -29,7 +29,7 @@ Use "Implemented in" because comment posting and issue closure are separate oper
 
 Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.
 
-1. **Read state** — run the **Read state** commands in `references/ship-policy.md`. If the current branch is not the detected default, the code this close refers to may sit unmerged — say so and confirm direct close vs routing to `/commit-push-pr`; likewise when the repo requires PRs. If the user is away, continue drafting and surface this choice with the step-6 drafts — that combined approval remains the hard gate.
+1. **Read state** — resolve the task checkout through **Worktree handoff**, then run the **Read state** commands in `references/ship-policy.md`. If the current branch is not the detected default, the code this close refers to may sit unmerged — say so and confirm direct close vs routing to `/commit-push-pr`; likewise when the repo requires PRs. If the user is away, continue drafting and surface this choice with the step-6 drafts — that combined approval remains the hard gate.
 
 2. **Resolve or create the issue** — check, in order: branch name (e.g. `feat/123-...`, `agent/PROJ-456-...`), recent commits, conversation context. If none, switch to **Inline issue creation** for valid small ad hoc work — drafted now, created only after step 6's combined approval; once created, fill its number into the commit `Issue:` line and step 10's `<num>`.
 
