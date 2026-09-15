@@ -131,7 +131,7 @@ These are optional helpers. The kit provides `using-git-worktrees`; the other en
 
 | Companion | Use when |
 | :--- | :--- |
-| using-git-worktrees | Ask for work in a worktree: setup uses that project repo’s gitignored `.worktree/<task-name>` before the requested local or third-party task skill and passes it the verified checkout. Branch-only requests stay branch operations. |
+| using-git-worktrees | Ask for work in a worktree: setup uses that project repo’s gitignored `.worktrees/<task-name>` before the requested local or third-party task skill and passes it the verified checkout. Branch-only requests stay branch operations. |
 | Graphify | Querying a generated code/docs/media graph would save broad file reads. Check `graphify-out/graph.json` at the project root, else the workspace root; absent in both → skip it. Multi-project workspaces: AST `update` for code, full LLM `extract` for docs — see [Graphify in multi-project workspaces](#graphify-in-multi-project-workspaces). |
 | ask-matt | You want Matt's upstream router for choosing a user-invoked skill flow. |
 | wait-what | The agent's last chat message did not land — re-pitch it with brief context, ASD-STE100 Simplified Technical English, and the ubiquitous language from `CONTEXT.md`. |
@@ -304,8 +304,8 @@ Suppose SHOP's repository is `/projects/shop`. The task runs in:
 
 ```text
 /projects/shop/                         original checkout
-  .gitignore                           contains /.worktree/
-  .worktree/
+  .gitignore                           contains /.worktrees/
+  .worktrees/
     fix-checkout/                      task checkout, branch fix-checkout
 ```
 
@@ -314,7 +314,7 @@ Suppose SHOP's repository is `/projects/shop`. The task runs in:
    above. Honor the requested base; without another convention, record the
    current source `HEAD` as the new branch's base. Uncommitted source edits
    remain in the source checkout and are not copied into the task.
-2. **Ignore.** Add `/.worktree/` to the owning repo's `.gitignore` and verify
+2. **Ignore.** Add `/.worktrees/` to the owning repo's `.gitignore` and verify
    the destination is ignored before creation or reuse. Preserve unrelated
    ignore rules. Add the same narrow entry in the task checkout if missing,
    so it can ship on the task branch. Setup does not commit either edit.
@@ -328,8 +328,8 @@ root and give task commands or assigned workers the verified worktree path
 and applicable instructions. Check that containers and test runners actually
 use that path. An existing worktree is not a reason to create a nested one.
 
-If API and WEB both need changes, use `<api-repo>/.worktree/<task-name>` and
-`<web-repo>/.worktree/<task-name>`. Each repo owns its branch, ignore entry,
+If API and WEB both need changes, use `<api-repo>/.worktrees/<task-name>` and
+`<web-repo>/.worktrees/<task-name>`. Each repo owns its branch, ignore entry,
 checks, and shipping operation; there is no shared workspace-level worktree.
 
 ### Ship from the same worktree
@@ -362,7 +362,7 @@ in the integration target. A pushed branch or closed issue alone is not enough.
 From outside the worktree, remove the checkout through Git. For this example:
 
 ```bash
-git -C /projects/shop worktree remove .worktree/fix-checkout
+git -C /projects/shop worktree remove .worktrees/fix-checkout
 ```
 
 Only after removal succeeds, delete the local task branch when safe:
@@ -374,7 +374,7 @@ git -C /projects/shop branch -d fix-checkout
 If Git refuses either action, inspect and resolve the reason; do not force
 deletion. Squash merges can leave branch ancestry checks unable to recognize
 the integration, so verify the merged result instead of assuming the branch
-can be discarded. Keep `/.worktree/` in `.gitignore` for future tasks, and
+can be discarded. Keep `/.worktrees/` in `.gitignore` for future tasks, and
 preserve any unrelated source changes. Remote branch deletion is a separate
 choice, not part of these commands.
 
@@ -504,7 +504,7 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 | Gate | Skill | Continue When |
 | :--- | :--- | :--- |
 | Workspace | `/agents-md` | The PROJECT-CODE matrix and Non-negotiable rules are active. |
-| Requested worktree | `/using-git-worktrees` | The project’s `.worktree/<task-name>` is verified and ignored; baseline passes or the reported failures have an authorized exception. |
+| Requested worktree | `/using-git-worktrees` | The project’s `.worktrees/<task-name>` is verified and ignored; baseline passes or the reported failures have an authorized exception. |
 | Design system | `/design-system` | Tokens + library built; preview renders and the user has eyeballed it; `AGENTS.md` reference + `<project-slug>-ui-coding` seeded or extended. |
 | Issue preflight | `Issue-writing skills` | Title pattern and both required labels are validated from local workspace instructions. |
 | Discovery | `/feature-discovery` | Evidence-backed report is returned in chat; discovery files are never written. |

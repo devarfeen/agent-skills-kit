@@ -4,8 +4,8 @@ Maintainer-only fixtures. Zero attribution: never add co-author, AI, or tool att
 
 | Case | Fixture | Required behavior |
 | --- | --- | --- |
-| Two repos | API has staged and unstaged edits; WEB is clean; neither ignores .worktree; native tool fixes placement elsewhere | Separate `<repo>/.worktree/<task>` per repo; preserve source edits; use Git fallback; verify distinct bases and destination checks before the task skill |
-| Reuse | Assigned local worker is already in the matching `.worktree/tax` checkout | Verify ownership, ignore rule and baseline; reuse without another checkout or permission prompt |
+| Two repos | API has staged and unstaged edits; WEB is clean; neither ignores .worktrees; native tool fixes placement elsewhere | Separate `<repo>/.worktrees/<task>` per repo; preserve source edits; use Git fallback; verify distinct bases and destination checks before the task skill |
+| Reuse | Assigned local worker is already in the matching `.worktrees/tax` checkout | Verify ownership, ignore rule and baseline; reuse without another checkout or permission prompt |
 | Permission failure | Destination creation is denied; source is writable | Pause dependent edits; report denial; no source fallback or permission bypass |
 | Branch boundary | User asks for a branch in place; alternatively asks for unspecified isolation | Branch-only does not invoke worktree setup; ambiguous form is resolved before edits |
 | Baseline failure | Baseline exits nonzero, with and without an existing exception for these failures | Preserve failure evidence; ask only when the exception is absent; never claim passing |

@@ -56,7 +56,7 @@ Every folder under this repo's `skills/` must have a `kit` row here
 
 | skill | kind | phase | note | use-when |
 | ----- | ---- | ----- | ---- | -------- |
-| `/using-git-worktrees` | kit | companion | | The user asks to work in a worktree — invoke before task edits or the task skill; reuse or create the checkout under that project repo’s gitignored `.worktree/`, verify its baseline, then return to the authorized task. Branch-only requests do not qualify. |
+| `/using-git-worktrees` | kit | companion | | The user asks to work in a worktree — invoke before task edits or the task skill; reuse or create the checkout under that project repo’s gitignored `.worktrees/`, verify its baseline, then return to the authorized task. Branch-only requests do not qualify. |
 | ask-matt | companion | | | You want Matt's upstream router for choosing a user-invoked skill flow. |
 | wait-what | companion | | | The agent's last chat message did not land — re-pitch it with brief context, ASD-STE100 Simplified Technical English, and the ubiquitous language from `CONTEXT.md`. |
 | unslop | companion | | | Free-prose output needs AI tells removed — chat narration, and PR/issue/doc prose the agent composes freely. Never applies to text a skill mandates verbatim: generated `AGENTS.md`/shims, output templates, section names, field labels, canonical lines. |

@@ -79,7 +79,7 @@ that implementation; it does not authorize shipping, merging, or cleanup.
 
 A worktree is another checkout of the same repository, usually on a task
 branch. Ask for one when you want task edits kept separate from your current
-checkout. The kit places it at `<project-repo>/.worktree/<task-name>` and
+checkout. The kit places it at `<project-repo>/.worktrees/<task-name>` and
 gitignores the container in that repository. It preserves existing work;
 setup may add the narrow ignore entry in the source checkout and task branch.
 
@@ -97,7 +97,7 @@ setup may add the narrow ignore entry in the source checkout and task branch.
   work is safely retained. A pushed branch or closed issue alone is not proof.
 
 Do not create a second worktree for shipping or silently edit the source
-checkout when setup fails. Keep `/.worktree/` in `.gitignore` for future tasks.
+checkout when setup fails. Keep `/.worktrees/` in `.gitignore` for future tasks.
 The [guide's example](GUIDE.md#working-in-a-worktree) shows the complete flow.
 
 ### Companion skills and MCPs are part of ad-hoc workflow

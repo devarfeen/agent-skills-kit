@@ -16,7 +16,7 @@
       "expect": "trigger"
     },
     {
-      "q": "Do the CSV export change in a worktree under the project repo\u2019s .worktree/export-task.",
+      "q": "Do the CSV export change in a worktree under the project repo\u2019s .worktrees/export-task.",
       "expect": "trigger"
     },
     {

@@ -68,7 +68,7 @@ npx skills install https://github.com/devarfeen/agent-skills-kit --skill using-g
 
 Then ask: **“Fix checkout in SHOP in a worktree.”** You can also invoke
 `/using-git-worktrees` directly for setup only. The companion creates or reuses
-`<shop-repo>/.worktree/<task-name>`, adds `/.worktree/` to the repo's `.gitignore`,
+`<shop-repo>/.worktrees/<task-name>`, adds `/.worktrees/` to the repo's `.gitignore`,
 and checks the checkout before returning to the requested task. Each affected
 project gets its own worktree. A request for a branch alone does not trigger it.
 
@@ -111,7 +111,7 @@ and rules live in each skill's `SKILL.md`; this table is the index.
 | [`pr-feedback`](skills/pr-feedback/SKILL.md) | ship | Works reviewer feedback on an open PR — classifies every thread, fixes what the user accepts, replies citing the fixing commits | `Address the review comments on PR #87` |
 | [`staging-fix`](skills/staging-fix/SKILL.md) | ship | Fixes a staging bug locally with a test and ships it as an auto-merge PR to `staging` — servers are never touched | `Staging is broken: checkout 500s since this morning` |
 | [`release-notes`](skills/release-notes/SKILL.md) | ship | Turns git history, the current session, or a feature into PM-friendly release notes with QA steps | `Generate release notes for 11 March 2026` |
-| [`using-git-worktrees`](skills/using-git-worktrees/SKILL.md) | companion | Sets up or reuses a worktree in each project repo’s gitignored `.worktree/` before requested task work, verifies the checkout and baseline, and returns to the calling workflow | `Implement #418 in a worktree` |
+| [`using-git-worktrees`](skills/using-git-worktrees/SKILL.md) | companion | Sets up or reuses a worktree in each project repo’s gitignored `.worktrees/` before requested task work, verifies the checkout and baseline, and returns to the calling workflow | `Implement #418 in a worktree` |
 | [`writing-kit-skills`](skills/writing-kit-skills/SKILL.md) | — | Kit-internal house style for authoring and editing this repo's skills: skeleton, word budget, canonical one-liners, output caps, eval gates | `Rewrite this SKILL.md to house style` |
 
 The gradient's plan/slice/implement/verify core (`/grill-with-docs`,
@@ -126,7 +126,7 @@ These interlocks use optional upstream skills alongside the kit:
 
 - **Worktrees** are request-driven. Ask to do work in a worktree and
   `/using-git-worktrees` runs before the task skill, using that project repo’s
-  `.worktree/<task-name>` and adding `/.worktree/` to its `.gitignore`.
+  `.worktrees/<task-name>` and adding `/.worktrees/` to its `.gitignore`.
   Generated `AGENTS.md` routes Matt’s implementation, debugging, prototype, and review skills through
   that setup and passes them the verified checkout. Third-party installations
   stay untouched.

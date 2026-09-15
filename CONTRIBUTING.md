@@ -62,8 +62,8 @@ workflow. Third-party interlocks live in the `agents-md` template, not in
 rewritten copies of Matt's installed skills. General routing must also work
 when the optional Matt subsection is omitted.
 
-Worktree documentation uses `<project-repo>/.worktree/<task-name>` and the
-`/.worktree/` entry in that repo's `.gitignore`. Explain the source ignore edit
+Worktree documentation uses `<project-repo>/.worktrees/<task-name>` and the
+`/.worktrees/` entry in that repo's `.gitignore`. Explain the source ignore edit
 and its task-branch copy without promising an entirely untouched source tree.
 Shipping uses the verified task checkout; merge and cleanup are separate.
 Keep the human example in `GUIDE.md`, concise usage in `README.md`, and the
