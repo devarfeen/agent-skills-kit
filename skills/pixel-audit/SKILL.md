@@ -1,7 +1,7 @@
 ---
 name: pixel-audit
 disable-model-invocation: true
-description: Strict per-page visual-conformance audit at the verify phase — ONE page/route against a source of truth (Figma MCP nodes, or reference screens when no Figma exists). Captures a full-size pixel inventory, writes a MISSING-vs-EXTRA defect list, fixes node-by-node reusing the project's UI library (never inlining), and refuses to say "verified" until a hard element-level gate passes — served assets confirmed, getBoundingClientRect/computed-style proof, every in-scope state checked. Use when a page must match its design pixel-for-pixel during feature work. Stays inside the given SCOPE; never auto-chains; distinct from /design-system's startup preview check.
+description: Strict per-page visual-conformance audit at the verify phase — ONE page/route against a source of truth (Figma MCP nodes, or reference screens when no Figma exists). Captures a full-size pixel inventory, writes a MISSING-vs-EXTRA defect list, fixes node-by-node reusing the project's UI library (never inlining), and refuses to say "verified" until a hard element-level gate passes — served assets confirmed, getBoundingClientRect/computed-style proof, every in-scope state checked. Use when the user asks to audit a target page against legacy or reference screens, including when no Figma exists; it audits visual conformance, not feature porting. Stays inside the given SCOPE; never auto-chains; distinct from /design-system's startup preview check.
 ---
 
 # Pixel audit

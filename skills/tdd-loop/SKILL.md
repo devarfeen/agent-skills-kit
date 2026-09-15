@@ -1,6 +1,6 @@
 ---
 name: tdd-loop
-description: Enforceable test-first loop for features and bug fixes. Use when the user says "TDD", "red-green", or "test-first" — building a feature, fixing a bug with a reproducing test, or implementing a slice, ticket, or issue test-first — and when TDD must be adapted for a spike, legacy code without tests, an urgent hotfix, infra/config work, or an exploratory refactor (the exception protocol). A bare "implement this ticket" with no test-first ask belongs to /implement; adding test-first routes here. When Matt Pocock's /implement drives a ticket it calls this loop at each seam, and /tdd supplies test quality and seam choice.
+description: Enforceable test-first execution loop for features and bug fixes — red, green, refactor, with completion evidence. Use when the user says "TDD", "red-green", or "test-first" — building a feature, fixing a bug with a reproducing test, or implementing a slice, ticket, or issue test-first — and when the loop must adapt for a characterization test in untested legacy code, a safe exploratory refactor, or an urgent hotfix that must be fixed now with tests added right after under the exception protocol. A bare "implement this ticket" with no test-first ask belongs to /implement; adding test-first routes here. /tdd supplies test-quality advice and seam choice; this skill executes the loop.
 ---
 
 # TDD loop

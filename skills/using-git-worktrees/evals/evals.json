@@ -95,10 +95,10 @@
     }
   ],
   "last_run": {
-    "date": "2026-09-12",
-    "method": "3 independent catalog-only judges over the full 352-query mixed set, majority vote; no repository or expected-outcome access",
-    "result": "20/20 pass; 20/20 unanimous. Full catalog 348/352; snapshot refresh refused due to four failures in unchanged skills.",
-    "judge_model": "inherited session model (3 independent local subagents; no model override)",
-    "catalog": "Live kit descriptions + tools/trigger-evals/catalog-externals.md; run inputs and ballots at /tmp/worktree-skill-evals.6UXMam"
+    "date": "2026-09-15",
+    "method": "3 independent fresh catalog-only Codex judges over the full 352-query mixed set, deterministic shuffle; judges saw only the catalog and query list, with no repository access.",
+    "result": "352/352 pass — majority vote passed every query.",
+    "judge_model": "Codex CLI inherited session model (3 independent ephemeral read-only runs)",
+    "catalog": "tools/trigger-evals/build-catalog.sh (live kit descriptions 2026-09-15) + tools/trigger-evals/catalog-externals.md snapshot dated 2026-08-19"
   }
 }

@@ -1,22 +1,30 @@
 {
  "_comment": "sha256 of each skill's frontmatter description as it stood at the commit recorded in that skill's evals.json last_run. tools/validate.sh check 10 fails when a live description no longer matches -- meaning the recorded eval result is stale and the evals must be re-run. Regenerate with score.py --write-snapshot after a passing run.",
- "recorded_at_commit": "working tree at the time of the run",
+ "recorded_at_commit": "working tree matching the catalog supplied to this run",
+ "catalog_sha256": "fc64102f7c5f4c5f429b0e70016b9200cf629444611fabf92c597a8462296b99",
+ "manifest_sha256": "3c2211f1bcf1e152bb02ef10d9faac583df26059ad7ba99145e8078b43ad4427",
+ "judge_sha256": [
+  "97f6a4cd84eeb309eff999ef9443573405aaaa0ff67c6b53869bbfad8be0e971",
+  "08013a37c6710b4593d529f643b475de0792d5dc6012496360d8ddbd32b2ee34",
+  "786e220675b483147c7c83d8f2825f8bc8c69aaaf94821d25bc69883c7c9bf38"
+ ],
  "descriptions_sha256": {
-  "agents-md": "343d27158cc769d276001b6c9038b30fa254193dd117525d77345be5457a6897",
-  "commit-push-close": "f2a6659f3e7e5109c2e2ef230f3105348635cd1fc6feb361b5d88118e8dbb201",
-  "commit-push-pr": "94cb6cc080b4c29fd50ffbd5b59a0eb6471ef466af7269eb5a46e6b8886b83a7",
+  "agents-md": "cb6b7978841e455affe427b6bcc6663f4c3d4746a971268299dbf3e3eb9f74f7",
+  "commit-push-close": "b4b584673381a3f3b37149755386c90182eef61e9cb94d979c2f7f1e6036389a",
+  "commit-push-pr": "87e45c50d03b2c18f60883bb78a97fa391eaaf46d419055762d399be0f005222",
   "design-system": "e203ceb7061259f0d126f1fb683c840c79d822870043e82c29388627ff0da2ae",
   "feature-discovery": "bcb37a95f48b3652455a746a155009e9edc86f219b88879b2ea37dd2de5678a3",
-  "feature-prompt": "3b5eabb682494f83ef0f42af99962549d587faaac8139115bf7d17f481058228",
+  "feature-prompt": "261e48dedfcd7d1ecc33f699d1fbb83a5385a6f5acec2197a60e5b10ea0f615b",
   "integration-contract": "1f551e4c9020a6125143e27e8ac72d7bf954c143d4682fa206f83ba40ec31995",
   "orchestrate-herdr": "273656e39056530f90676eaed7a8a1de38e8a191e5fe0bf3f7b14bf99ad938c4",
-  "pixel-audit": "e427663267d8dfa91c278308cf54792149d69f03f8dd0cdb0fa853beb00d4bc0",
-  "polish-batch": "178c6311516a7654858472aa0e0718b31c12d6b2077d86ba296ac21292bcca6f",
-  "port-feature": "f7bb293124f8d748525f338b2f1b551a192dd4b80581efad2423a79cac088945",
+  "pixel-audit": "cb9ca035623e4190ba8b2ee0cf9b79e1f09b43eb2776780ab19c1eb31f0f81db",
+  "polish-batch": "711486d597a13f9f7eae20a45905813d5402fa398c35cc832dc651187f82ed32",
+  "port-feature": "f131c0357d4a9a3234a6b698cae456e21cfa5319332d350fdabf99db6eefc58d",
   "pr-feedback": "3480aa81d9a4165f2f8080376f97b0f15364f54636c7fb839df25cc43c1fb7d0",
-  "release-notes": "ea044ab700cf6f7dd92cf6f2fe2be35b090a836df8ef77b6ac1d5c480fe70d4e",
+  "release-notes": "fa1ca3c2cb5cd7c23d8d922e3c8a80f88066ae7fd3d9c3f16c3d1bc14028cc96",
   "staging-fix": "cf82058aac247a9460920012d2d7c219f6e0fff518fd6c9e33db4989cc7fb641",
-  "tdd-loop": "4379ed267962a5533fe31cb7f44fd7924154dffcd27dce2116709d4b154a6061",
-  "writing-kit-skills": "333681e342e52be656f6ee4ff1ccc190d3172eb780376c10c1b2d4e8949c4e2c"
+  "tdd-loop": "19b65a7667fd95f1f927ebd81935b8f6fdb0ab07526b84933ddf61cbbd3c83c3",
+  "using-git-worktrees": "690d0d7c9a5689564e993ad20675eabf9dee5f83982f9c0f6c36975ee95787af",
+  "writing-kit-skills": "50cb25e9d76213bb0ee42f3055cffee75066567b8da98c7ff8eb260b6da8d00d"
  }
 }
