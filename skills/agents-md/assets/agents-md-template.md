@@ -1,4 +1,4 @@
-<!-- agents-md marker · v29 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v30 · re-run /agents-md to regenerate -->
 # Agent instructions
 
 [one concise, factual workspace intro inferred from the .code-workspace name and folder scan — no promotional adjectives]
@@ -133,9 +133,9 @@ Before the first implementation edit, the main agent must complete this prefligh
 - Resolve the exact checkout, working directory, runtime or container, required environment variables, and canonical verification commands from applicable project instructions and executable scripts before running those commands. Reuse verified command forms, including paths and environment settings, throughout the task.
 - Inspect the aggregate full-check command before using it. Run checks it covers separately only for a needed intermediate result or when later edits invalidate the earlier result.
 
-Match check scope to change scope: verify each fix with its focused test or module-scope command. Run the project's full check (e.g. `composer test`) once per completed batch, after integration and the last edit, before shipping — not after every item.
+Match check scope to change scope: verify each fix with its focused test or module-scope command. Run the project's required full check once per completed batch, after integration and the last edit, before shipping. Exception: `composer test` is on demand only. Run it only when the user explicitly requests it, including when invoked through an equivalent Composer alias or wrapper. Otherwise, report it as skipped because it was not requested; it is not a completion or shipping gate.
 
-Final verification covers the combined changes in the integration checkout; worker-local passes do not replace it. Report the checkout, tested revision or working-tree state, command, and result. Later edits invalidate affected results: rerun the affected checks, including the full check when its verified state changes. Once per batch prevents duplicate per-item runs, not necessary rechecks after fixes.
+Final verification covers the combined changes in the integration checkout; worker-local passes do not replace it. Report the checkout, tested revision or working-tree state, command, and result. Later edits invalidate affected results: rerun the affected checks, including any required full check when its verified state changes, subject to the on-demand rule above. Once per batch prevents duplicate per-item runs, not necessary rechecks after fixes.
 
 ### 11. Local orchestration
 
@@ -239,7 +239,7 @@ Use `/ask-matt` to choose a Matt skill flow — it routes, never executes; do no
 - **The fog test.** Can you state the destination in one line *and* name every open decision as a sharp question, right now? Yes → `/feature-prompt`. No → fog → `/wayfinder` (decisions become tracker tickets, one resolved per session). Fog, not size: a large mechanical refactor has no fog (→ `/to-tickets` expand–contract); a two-file change gated on one unresolved decision is fog. Greenfield enters here too. Both arms rejoin at `/to-spec`; a map is exhausted when nothing is left to decide.
 - When a user requests work in a worktree, apply [User-asked isolation](#11-local-orchestration) before `/implement`, `/diagnosing-bugs`, `/prototype`, `/code-review`, or another Matt skill does task work. Pass the verified checkout and applicable instructions into that skill; setup returns to the already-authorized task and does not authorize a new workflow. Keep these interlocks here; do not rewrite installed third-party skills.
 - Fresh session per ticket. `/implement` (when installed) drives `/tdd-loop` at each seam, with `/tdd` supplying test quality and seam choice; without it, drive `/tdd-loop` directly. `/tdd` is reference only — never a loop. `/implement` stops after `/code-review` and never commits ([Shipping is owned by the ship skills](#shipping-is-owned-by-the-ship-skills)).
-- `/diagnosing-bugs` finds the root cause; ship the fix through `/tdd-loop` — the reproduction becomes the failing regression test, one red → green per bug, full check once at batch end ([Goal-driven execution](#goal-driven-execution)).
+- `/diagnosing-bugs` finds the root cause; ship the fix through `/tdd-loop` — the reproduction becomes the failing regression test, one red → green per bug, required full check once at batch end, subject to the on-demand rule in [Goal-driven execution](#goal-driven-execution).
 - `/triage` = raw incoming issues and external PRs only — never tickets from `/to-tickets`. `/research` = delegable primary-source reading → cited doc. `/improve-codebase-architecture` (when installed) → a chosen improvement feeds `/grill-with-docs`. `/handoff` forks context to a new session; `/compact` continues this one — only at intentional phase breaks.
 
 [RUNTIME TOOL-CALLING — emit the `### Runtime tool-calling` subsection here, per the Working with skills rules in SKILL.md]

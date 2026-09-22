@@ -101,6 +101,18 @@ Use the issue title as the naming anchor:
 
 ## How-to-test rules
 
+### Optional Composer test run
+
+If the project defines a Composer `test` script, ask once before committing: "Run `composer test` before this commit, or skip it?" Include the choice with the existing combined draft approval. Honor an explicit run/skip choice already given for this shipping iteration without asking again. A general shipping approval alone does not request the test run.
+
+- **Run:** Execute it in the verified task checkout before committing, or reuse a passing result for unchanged content and environment. Record the command and result in the QA handoff; a failed or unavailable requested run stops shipping.
+- **Skip:** Record `composer test skipped at user request` in the QA handoff and continue with the other required checks. This optional check does not block shipping when declined.
+- **Unanswered:** Continue preparing drafts, but wait for the choice before committing. Never treat silence as a request to run it.
+
+The same choice applies to equivalent Composer aliases and wrappers. If the project has no Composer `test` script, omit this question.
+
+### QA handoff
+
 For every issue-close comment and PR QA comment, include this handoff. Keep the PR body's test plan consistent with it.
 
 ```markdown
