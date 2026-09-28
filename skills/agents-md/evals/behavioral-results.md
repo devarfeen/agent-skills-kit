@@ -2,6 +2,19 @@
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
+## v37 note — check layers and browser scope
+
+Date: 2026-09-29. Rule 10 gains a check-layer choice (lowest layer that can
+disprove the claim) and limits browser checks to UI and client-side claims;
+persistence, authorization, tenant isolation, mail, and queues need automated
+tests. Reports name the layers run and not run (Rules 3 and 10); read-only
+tasks say `Verification: not applicable`. Rule 16 drops "a database row" from
+browser assertions (it contradicted the test-suite line below it), keeps the
+session name across shells and follow-up turns, and retries a failed flow in
+the same session before any restart. Rule 11 cleanup names browser sessions;
+Matt routing says "fresh agent session per ticket". Text-only change; no
+behavioral case covers these lines.
+
 ## v36 note — agent-browser session and batch discipline
 
 Date: 2026-09-29. Rule 16 gains: one session name for the whole task; a call
