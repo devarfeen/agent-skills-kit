@@ -2,6 +2,21 @@
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
+## v35 note — agent-browser lines restored to Rule 16
+
+Date: 2026-09-29. Rule 16 keeps its v31 timeout wording and regains the three
+v33 agent-browser additions: `batch --bail` as the flow mode,
+`AGENT_BROWSER_DEFAULT_TIMEOUT` with condition waits and a ban on
+`wait --timeout N`, and launch options on a session's first command. The v32
+hang-guard wording stays out. Evidence: `wait --timeout N` measured at about
+30 s and a failure regardless of N on agent-browser 0.27.1; the default-timeout
+variable measured capping a missing-element wait at 3.2 s. A differential
+fixture run (two independent evaluators per v31, v32, and v33 Rule 16, same
+seller-login task) produced no `wait --timeout` under any version; the v33 text
+halved agent-browser calls (9 against 17–22) through `batch --bail`. These were
+written command plans from one model family, not executed runs. No behavioral
+case covers these lines.
+
 ## v34 note — Rule 16 restored
 
 Date: 2026-09-29. At the owner's request, Rule 16 (Efficient browser
