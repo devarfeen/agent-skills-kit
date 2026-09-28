@@ -2,6 +2,19 @@
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
+## v36 note — agent-browser session and batch discipline
+
+Date: 2026-09-29. Rule 16 gains: one session name for the whole task; a call
+budget of about three for a simple smoke; `batch` input as quoted arguments or
+a JSON array (plain lines fail with `Invalid JSON input`), with secrets passed
+inside the JSON; an ignored-launch-flag warning treated as a failed start
+(agent-browser prints it and continues without the flag); no `close --all`;
+waits taken from the app's source; one login per run. Both behaviors were
+verified on agent-browser 0.27.1 against a local page: a `jq`-built JSON batch
+login completed in 0.6 s, and a launch flag on a running session printed
+`--ignore-https-errors ignored: daemon already running` and continued. No
+behavioral case covers these lines.
+
 ## v35 note — agent-browser lines restored to Rule 16
 
 Date: 2026-09-29. Rule 16 keeps its v31 timeout wording and regains the three
