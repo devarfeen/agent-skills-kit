@@ -74,7 +74,7 @@ Fill the `[RUNTIME TOOL-CALLING …]` slot from `references/tool-calling.md`, fo
 
 ## Versioning and regeneration
 
-The skill version is `v32`. Both generated root files carry the marker `<!-- agents-md marker · v32 · re-run /agents-md to regenerate -->` as their first line (the first line of each template asset in `assets/`). Bump it here and in both template assets together whenever these rules change. Recognize pre-`v6` attribution-bearing comments as legacy markers for migration only; replace them with the current marker in approved regeneration.
+The skill version is `v33`. Both generated root files carry the marker `<!-- agents-md marker · v33 · re-run /agents-md to regenerate -->` as their first line (the first line of each template asset in `assets/`). Bump it here and in both template assets together whenever these rules change. Recognize pre-`v6` attribution-bearing comments as legacy markers for migration only; replace them with the current marker in approved regeneration.
 
 On run, check for an existing workspace-root `AGENTS.md`:
 

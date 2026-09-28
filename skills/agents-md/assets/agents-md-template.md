@@ -1,4 +1,4 @@
-<!-- agents-md marker · v32 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v33 · re-run /agents-md to regenerate -->
 # Agent instructions
 
 [one concise, factual workspace intro inferred from the .code-workspace name and folder scan — no promotional adjectives]
@@ -195,8 +195,10 @@ Every added or modified logical code block must include a new or updated nearby 
 Hard rules for every browser mechanism in every runtime — agent-browser, a built-in browser subagent, a Playwright/CDP MCP. The browser is rarely the bottleneck; chatty per-call driving, oversized snapshots, and unstable waits are.
 
 - Reuse one authenticated session for the task. If it fails, recover only that session as described below; never disturb another worker's session.
-- Drive each route as one batched flow — open → interact → deterministic assertion — never separate calls for open, wait, snapshot, click, errors, console. Prefer the project's flow runner or JSON flow mode when one exists.
+- Drive each route as one batched flow — open → interact → deterministic assertion — never separate calls for open, wait, snapshot, click, errors, console. Prefer the project's flow runner or JSON flow mode when one exists (agent-browser: `batch --bail`).
 - Explicit timeouts on every browser command, plus one outer timeout per flow — never inherit a long default. Timeouts guard against hangs; they are not speed verdicts. Default to 3–8 s per command. Allow longer only for a step the project documents as slow (cold build, first dev-server load), and for a route timed against a latency budget, whose timeout sits well above that budget (about twice it) so the timing is measured, not cut off. Clean up spawned wait processes on exit: an orphaned wait blocks the whole session.
+- In agent-browser, the per-command timeout is `AGENT_BROWSER_DEFAULT_TIMEOUT` (ms), read when the session starts; later calls inherit it. Wait on a condition — `wait "<selector>"`, `wait --text`, `wait --url`, or `wait --fn` — or use `wait <ms>` for a known fixed delay. Never `wait --timeout N`: without a condition it ignores N, idles about 30 s, then fails. Warm a documented slow step (cold build) with an HTTP request before the browser flow, so browser commands stay within the default.
+- Launch options apply only when a session's browser starts: pass `--ignore-https-errors` (or `AGENT_BROWSER_IGNORE_HTTPS_ERRORS=1`) and the timeout on its first command. To change them, close **that session** and reopen it.
 - One command at a time per session, never overlapping. Health-check a reused session first (~2 s URL read); on failure, close and reopen **that session only** — never close all sessions, which destroys other agents' auth and state.
 - Isolate mutation checks: record originals, change one setting, verify, restore before the next — restore even when the flow fails, or the next save persists contaminated fields.
 - Prefer stable selectors (`data-test`, CSS) over framework-generated element refs that re-renders invalidate (Livewire, React, …); re-snapshot only after a re-render breaks a ref.
