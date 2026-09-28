@@ -51,9 +51,11 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
 
 1. **Read state** — resolve the task checkout through **Worktree handoff**, then run **Read state** in the shared policy. Resolve the PR base from explicit user/workspace instructions, then an existing PR, then the detected default. Stop on conflicts or a prohibited production target; never default into a forbidden branch.
 
+   Then apply **Code review**: unless `/code-review` already ran this session on this diff, ask "Run `/code-review` on this diff first (recommended), or ship without review?" A review with findings to fix stops shipping here.
+
 2. **Resolve or create the issue** — branch name → recent commits → conversation context. If none, use **Inline issue creation** for valid small ad hoc work. Create only after step 7 approval, then insert the actual number into the commit and PR issue reference.
 
-3. **Read issue labels** — run `gh issue view <num> --json state,labels,title,url` and apply **Label validation**, including its taxonomy-absence fallback. Stop states route to `/triage`. Already `CLOSED` → stop and ask whether to reopen or target another issue; never open a PR against an issue that will remain closed. Inline creation includes its own read-back.
+3. **Read issue labels** — run `gh issue view <num> --json state,labels,title,url,body` and apply **Label validation**, including its taxonomy-absence fallback. Stop states route to `/triage`. Already `CLOSED` → stop and ask whether to reopen or target another issue; never open a PR against an issue that will remain closed. Inline creation includes its own read-back.
 
 4. **Branch handling** — if the current branch is the detected default branch (`main`/`master`):
    - Stop before staging anything.
@@ -64,7 +66,7 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
 
 5. **Draft the commit message** from the issue title and diff, per **Commit message format** and **Naming anchor**.
 
-6. **Draft the PR and QA comment** — title mirrors the commit subject. Follow **How-to-test rules** and run the applicable local pass/fail checks now. Quote the decisive result in both drafts and mark unperformed manual checks pending. A failure stops shipping; an unclear plan requires the missing information.
+6. **Draft the PR and QA comment** — title mirrors the commit subject. Follow **How-to-test rules** and run the applicable local pass/fail checks now. Quote the decisive result in both drafts and mark unperformed manual checks pending. Verify each issue **Acceptance criteria** item by automated test or, for browser-visible behavior, a headless browser run, and put the acceptance report in the QA comment; an unmet criterion stops shipping unless the user defers it. A failure stops shipping; an unclear plan requires the missing information.
 
    Before presenting drafts, run the **Authorship policy** scrub and, if env files/keys changed, the **Env parity policy** sync pass.
 
@@ -133,10 +135,6 @@ Manual API checks pending. Remove test orders afterward.
 
 ## Completion criteria
 
-- [ ] Push landed — `git status` shows the branch up to date with its upstream
+- [ ] Every item in **Ship completion criteria** in the shared policy
 - [ ] PR read back: title, permitted base, head, issue reference, and test plan match the final drafts
-- [ ] Separate QA comment posted and read back with actual SHA, changed locations/paths, setup, expected results and verification status; URL reported
 - [ ] When the test plan contains a pass/fail test or validation command, its passing output tail is quoted in the PR body
-- [ ] No co-author or AI/tool attribution text in the commit message, PR title/body, or issue content
-- [ ] Hooks ran (no `--no-verify`)
-- [ ] Report line printed and the `Suggested next skills (optional)` footer appended

@@ -33,6 +33,17 @@ Read workspace environment restrictions before opening env files or choosing a p
 
 Resolve the exact push remote and destination branch from the upstream configuration. Confirm they match the intended repository and branch; if not, stop before pushing. Verify the remote branch SHA equals the local commit with `git ls-remote <remote> refs/heads/<branch>` after a successful push. Local status alone cannot prove which remote received it.
 
+## Code review
+
+Ask once per ship iteration, after **Read state** and before drafting: "Run `/code-review` on this diff first (recommended), or ship without review?" Skip the question when `/code-review` already ran in this session on the same diff content, or the user already chose for this iteration; record that instead.
+
+- **Review:** The user asked, so run `/code-review` now against the ship base (the PR base, or the detected default branch). No findings, or findings the user waives → continue drafting. Findings the user wants fixed → stop before any write and list them; shipping never edits code. After the fixes, restart from **Read state** — the earlier review covers only the content it saw.
+- **Skip:** Continue with the other required checks.
+- **Unavailable:** `/code-review` is not installed → say so and continue only if the user approves shipping unreviewed.
+- **Unanswered:** Continue preparing drafts and carry the question into the combined draft approval. Never commit without a choice; silence is neither answer.
+
+Record the outcome as the `Review:` line in the QA handoff's **Verification** section — for example `Review: /code-review — standards: no findings; spec: 1 finding waived (pagination out of scope)`, `Review: skipped at user request`, or `Review: unavailable, shipped unreviewed with user approval`.
+
 ## Label validation
 
 Routing state lives in the linked issue's labels — never add `HITL:` or `AFK:` to commit subjects, branch names, PR titles, or GitHub issue titles.
@@ -44,9 +55,26 @@ Routing state lives in the linked issue's labels — never add `HITL:` or `AFK:`
 | missing/conflicting labels, `needs-triage`, `needs-info`, or `wontfix` | stop and route through `/triage` (taxonomy or `/triage` unavailable → fallback below) |
 | no linked issue | create one inline only for valid ad hoc work (see **Inline issue creation**) |
 
-Read state with: `gh issue view <num> --json state,labels,title,url`. Match label names exactly.
+Read state with: `gh issue view <num> --json state,labels,title,url,body`. Match label names exactly.
 
 Taxonomy missing entirely (`gh label list` shows no `bug`/`enhancement` or `ready-*`/`needs-*` labels)? `/triage` may not be installed either — ask the user once: create the category + state labels now (`gh label create` each), or proceed with the closest existing labels; record the choice in the ship output. If the user is away, stop before any remote write and name the missing labels — never invent taxonomy unattended.
+
+## Acceptance criteria
+
+The linked issue's acceptance criteria are the ship bar. Read them from the issue body — its `## Acceptance criteria` section or checklist; tickets from `/to-tickets` carry one. While running the other checks, verify each criterion on the content being shipped, automated first:
+
+- **Automated test** — a passing test or validation command that asserts the criterion.
+- **Headless browser** — for behavior a user sees in a browser: drive the local app at this revision headless (the `agent-browser` companion when installed) — navigate → act → assert the visible outcome. Use only local or explicitly permitted environments, as in **How-to-test rules**.
+
+Then classify each criterion:
+
+- **Met** — cite the evidence: the test command, or the browser flow and its asserted outcome (screenshot path when captured).
+- **Pending** — no automated check can run (browser companion missing, app cannot start locally, access only the owner has); name the manual check and why it is manual. The user sees it in the combined draft approval.
+- **Unmet** — stop before any write and list it; shipping never finishes the implementation. Continue only if the user explicitly defers it, and record the follow-up issue or reason.
+
+Publish the result as the acceptance report in the QA handoff. Its verdict says `Fully accepted` only when every criterion is met by automated evidence on the shipped content, and names only the methods actually run (`by automated tests` alone when no browser run happened). Any pending or deferred criterion makes it `Partially accepted`.
+
+An existing issue without criteria → record `Acceptance: none in issue`, with no verdict; never invent criteria. Skip the check for an issue created inline. Never tick the issue's checkboxes; the QA handoff carries the result.
 
 ## Authorship policy (all supported coding agents)
 
@@ -132,8 +160,15 @@ Change: <actual commit SHA and branch; PR link when available>
 1. <action or copyable command> — expect <observable result>.
 2. <regression or edge-case action> — expect <observable result>.
 
+### Acceptance criteria
+<Fully accepted — N/N criteria verified by automated tests and headless browser. | Partially accepted — M/N verified by <methods run>; K pending manual, D deferred.>
+- [x] <criterion> — test: `<command>` passed | browser: <flow> → <asserted outcome>
+- [ ] <criterion> — pending manual: <check> (<why it is not automated>) | deferred: <follow-up or reason>
+<or `Acceptance: none in issue`; omit for an issue created inline>
+
 ### Verification
 <checks actually run, result and decisive output; manual steps not run are marked pending>
+Review: <outcome per **Code review**>
 
 ### Gaps
 <known limits, unavailable checks, owner actions, cleanup; omit if none>
@@ -219,6 +254,22 @@ Notes:
 - Verify the ship output carries no attribution text (**Authorship policy** patterns).
 - For env-key changes, report permitted updates and restricted owner actions under **Env parity policy**.
 - Honor hooks. Never `--no-verify`. If a hook fails, fix the underlying issue and create a NEW commit (do not amend).
+
+## Ship completion criteria
+
+Both skills verify every item before reporting success; each `SKILL.md` adds its own. Any unmet item makes the report partial — name it and never say shipped.
+
+- [ ] Labels read back as one category plus a ready state, or the taxonomy-fallback decision is recorded
+- [ ] Every issue acceptance criterion is met with cited automated-test or headless-browser evidence, pending a named manual check, or deferred by the user — none unmet
+- [ ] The posted acceptance verdict matches that evidence: `Fully accepted` only with every criterion met by automated evidence, naming only the methods actually run
+- [ ] Required checks passed on the shipped content before push; manual checks not performed are marked pending
+- [ ] `Issue:` line present in the commit body
+- [ ] Hooks ran on the commit — no `--no-verify` in the command that made it
+- [ ] Push landed: `git ls-remote` shows the remote branch at the local commit — or the report names the deferral or rejection under `Needs user:`
+- [ ] QA comment posted and read back with the actual SHA, changed locations/paths, setup, steps with expected results, acceptance criteria, verification, and gaps; URL in the report
+- [ ] The `Review:` line matches the in-session `/code-review` result or the user's explicit choice to ship unreviewed
+- [ ] No co-author or AI/tool attribution in any ship output
+- [ ] Report line printed and the **Response footer** appended
 
 ## Response footer
 

@@ -1,4 +1,4 @@
-<!-- agents-md marker · v30 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v31 · re-run /agents-md to regenerate -->
 # Agent instructions
 
 @AGENTS.md

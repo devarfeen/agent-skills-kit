@@ -31,13 +31,15 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
 
 1. **Read state** — resolve the task checkout through **Worktree handoff**, then run the **Read state** commands in `references/ship-policy.md`. If the current branch is not the detected default, the code this close refers to may sit unmerged — say so and confirm direct close vs routing to `/commit-push-pr`; likewise when the repo requires PRs. If the user is away, continue drafting and surface this choice with the step-6 drafts — that combined approval remains the hard gate.
 
+   Then apply **Code review**: unless `/code-review` already ran this session on this diff, ask "Run `/code-review` on this diff first (recommended), or ship without review?" A review with findings to fix stops shipping here.
+
 2. **Resolve or create the issue** — check, in order: branch name (e.g. `feat/123-...`, `agent/PROJ-456-...`), recent commits, conversation context. If none, switch to **Inline issue creation** for valid small ad hoc work — drafted now, created only after step 6's combined approval; once created, fill its number into the commit `Issue:` line and step 10's `<num>`.
 
-3. **Read issue labels** — for pre-existing issues, run `gh issue view <num> --json state,labels,title,url` and validate against the **Label validation** table, following its outcomes (stop states route to `/triage`; the taxonomy-absence fallback applies). Already `CLOSED` → stop and ask: reopen for this iteration, comment without closing, or target a different issue. Skip for issues just created inline — labels were set at creation.
+3. **Read issue labels** — for pre-existing issues, run `gh issue view <num> --json state,labels,title,url,body` and validate against the **Label validation** table, following its outcomes (stop states route to `/triage`; the taxonomy-absence fallback applies). Already `CLOSED` → stop and ask: reopen for this iteration, comment without closing, or target a different issue. Skip for issues just created inline — labels were set at creation.
 
 4. **Draft the commit message** from the issue title and diff, per **Commit message format** and **Naming anchor**.
 
-5. **Draft the issue-close comment** using **How-to-test rules**. Run applicable local pass/fail checks before shipping, and put actual results in the draft. If the plan isn't clear from the diff and repo, ask for the missing information before continuing.
+5. **Draft the issue-close comment** using **How-to-test rules**. Run applicable local pass/fail checks before shipping, and put actual results in the draft. Verify each issue **Acceptance criteria** item by automated test or, for browser-visible behavior, a headless browser run, and put the acceptance report in the draft; an unmet criterion stops shipping unless the user defers it. If the plan isn't clear from the diff and repo, ask for the missing information before continuing.
 
    Before presenting drafts, run the **Authorship policy** scrub and, if env files/keys changed, the **Env parity policy** sync pass.
 
@@ -95,8 +97,15 @@ Use the local app at this revision, a test account and the repo's payment sandbo
 2. Submit a different test order with a new request ID. Expect a separate confirmation and charge.
 3. Run `pnpm test server/checkout/handler.test.ts`. Expect all replay and race tests to pass.
 
+### Acceptance criteria
+Partially accepted — 2/3 criteria verified by automated tests and headless browser; 1 pending manual.
+- [x] A resubmitted checkout shows the original confirmation — browser: submit checkout → resubmit same `x-request-id` → original confirmation number shown.
+- [x] Concurrent replays produce one charge — test: `pnpm test server/checkout/handler.test.ts` passed.
+- [ ] Verified in the payment sandbox — pending manual: How to test step 1 (sandbox needs owner credentials).
+
 ### Verification
 Automated check: 1 test file and 6 tests passed. Manual payment checks pending.
+Review: /code-review — standards and spec: no findings.
 
 ### Gaps
 Webhook handling remains outside this fix, follow-up #419. Remove test orders after manual QA.
@@ -104,11 +113,5 @@ Webhook handling remains outside this fix, follow-up #419. Remove test orders af
 
 ## Completion criteria
 
+- [ ] Every item in **Ship completion criteria** in the shared policy
 - [ ] Issue verified closed — `gh issue view <num> --json state -q .state` → `CLOSED` (or the workspace tracker's completed state) — quoted in the report
-- [ ] Posted QA comment read back with the correct SHA, changed locations/paths, setup, steps and expected results, verification and gaps; URL included in report
-- [ ] Required checks passed on the shipped content before push; manual checks not performed are marked pending
-- [ ] Push landed: non-error exit and `git status -sb` shows the branch up-to-date with its remote — or the report carries the deferral/rejection line plus `Needs user:`
-- [ ] `Issue:` line present in the commit body
-- [ ] Labels read back as one category plus a ready state, or the explicit taxonomy-fallback decision is recorded
-- [ ] No co-author or AI/tool attribution text present in the commit message, issue content, or comments
-- [ ] Hooks ran on the commit — no `--no-verify` in the command that made it

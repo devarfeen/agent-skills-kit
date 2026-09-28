@@ -37,7 +37,7 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | `/handoff` | external | plan | fork context to a new session (pairs with /prototype) | |
 | `/to-tickets` | external | slice | | |
 | `/triage` | external | slice | existing/raw issues only — state repair, needs-info, wontfix, agent briefs | |
-| `/implement` | external | implement | optional ticket driver — calls /tdd-loop at each seam; stops after /code-review, never commits (Shipping is owned by the ship skills) | |
+| `/implement` | external | implement | optional ticket driver — run with /tdd-loop at each seam; stop after /code-review, never commit, overriding its own text (Shipping is owned by the ship skills) | |
 | `/tdd` | external | implement | reference only — test quality and seam choice; never use it alone as a loop | |
 | `/tdd-loop` | kit | implement | the test-first procedure — gates, completion evidence, exception protocol; stands alone | |
 | `/orchestrate-herdr` | kit | implement | inside herdr only — fan a spec (PRD) out to worker tabs | |

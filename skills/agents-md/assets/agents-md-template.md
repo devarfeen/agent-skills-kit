@@ -1,4 +1,4 @@
-<!-- agents-md marker · v30 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v31 · re-run /agents-md to regenerate -->
 # Agent instructions
 
 [one concise, factual workspace intro inferred from the .code-workspace name and folder scan — no promotional adjectives]
@@ -219,7 +219,7 @@ Nothing commits, pushes, opens a PR, or closes an issue outside the ship skills,
 
 - Local engineering commits are not shipping: task-branch commits inside orchestration worktrees and local `--no-ff` merges into the local integration branch are allowed without a ship skill. [Zero attribution](#zero-attribution) still applies to them, and any push, PR, or issue close still exits through a ship skill.
 - Any other skill that instructs you to commit — `/implement` included — stops instead and hands off. Report what is ready to ship; do not stage, commit, or push it.
-- The ship skills own branch-off-main, the structured commit message, issue linking, the how-to-test evidence, and [Zero attribution](#zero-attribution) — a bare commit outside them bypasses all of it and lands before the ship policy gets a say.
+- The ship skills own branch-off-main, the pre-ship `/code-review` question, the issue acceptance-criteria check, the structured commit message, issue linking, the how-to-test evidence, and [Zero attribution](#zero-attribution) — a bare commit outside them bypasses all of it and lands before the ship policy gets a say.
 
 ## Working with skills
 
@@ -238,7 +238,7 @@ Use `/ask-matt` to choose a Matt skill flow — it routes, never executes; do no
 - Idea flow: `/grill-with-docs` → if runnable uncertainty, `/handoff` + `/prototype` + `/handoff` → for multi-session work, `/to-spec` then `/to-tickets`.
 - **The fog test.** Can you state the destination in one line *and* name every open decision as a sharp question, right now? Yes → `/feature-prompt`. No → fog → `/wayfinder` (decisions become tracker tickets, one resolved per session). Fog, not size: a large mechanical refactor has no fog (→ `/to-tickets` expand–contract); a two-file change gated on one unresolved decision is fog. Greenfield enters here too. Both arms rejoin at `/to-spec`; a map is exhausted when nothing is left to decide.
 - When a user requests work in a worktree, apply [User-asked isolation](#11-local-orchestration) before `/implement`, `/diagnosing-bugs`, `/prototype`, `/code-review`, or another Matt skill does task work. Pass the verified checkout and applicable instructions into that skill; setup returns to the already-authorized task and does not authorize a new workflow. Keep these interlocks here; do not rewrite installed third-party skills.
-- Fresh session per ticket. `/implement` (when installed) drives `/tdd-loop` at each seam, with `/tdd` supplying test quality and seam choice; without it, drive `/tdd-loop` directly. `/tdd` is reference only — never a loop. `/implement` stops after `/code-review` and never commits ([Shipping is owned by the ship skills](#shipping-is-owned-by-the-ship-skills)).
+- Fresh session per ticket. `/implement` (when installed) says to use `/tdd` and to commit after `/code-review`; this workspace overrides both. Drive `/tdd-loop` at each seam instead, with `/tdd` supplying test quality and seam choice, and stop after `/code-review` without committing ([Shipping is owned by the ship skills](#shipping-is-owned-by-the-ship-skills)). Without `/implement`, drive `/tdd-loop` directly. `/tdd` is reference only — never a loop.
 - `/diagnosing-bugs` finds the root cause; ship the fix through `/tdd-loop` — the reproduction becomes the failing regression test, one red → green per bug, required full check once at batch end, subject to the on-demand rule in [Goal-driven execution](#goal-driven-execution).
 - `/triage` = raw incoming issues and external PRs only — never tickets from `/to-tickets`. `/research` = delegable primary-source reading → cited doc. `/improve-codebase-architecture` (when installed) → a chosen improvement feeds `/grill-with-docs`. `/handoff` forks context to a new session; `/compact` continues this one — only at intentional phase breaks.
 
