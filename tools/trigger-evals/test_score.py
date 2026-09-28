@@ -102,6 +102,33 @@ class ScoreTests(unittest.TestCase):
         self.assertEqual(snapshot["descriptions_sha256"]["alpha"],
                          hashlib.sha256(b"Original description.").hexdigest())
 
+    def git(self, *args):
+        return subprocess.run(["git", "-C", str(self.root), "-c", "user.name=t",
+                               "-c", "user.email=t@example.com", *args],
+                              check=True, capture_output=True, text=True).stdout.strip()
+
+    def test_snapshot_records_head_commit(self):
+        # Provenance must name the commit judged, not a fixed placeholder.
+        self.git("init", "-q")
+        self.git("add", "-A")
+        self.git("commit", "-qm", "fixture")
+        head = self.git("rev-parse", "HEAD")
+        result = self.run_score("--write-snapshot")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(self.snapshot.read_text())["recorded_at_commit"], head)
+
+    def test_snapshot_flags_uncommitted_changes(self):
+        # A dirty tree means the judged files may not match any commit; say so.
+        self.git("init", "-q")
+        self.git("add", "-A")
+        self.git("commit", "-qm", "fixture")
+        head = self.git("rev-parse", "HEAD")
+        (self.root / "notes.txt").write_text("uncommitted\n")
+        result = self.run_score("--write-snapshot")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(self.snapshot.read_text())["recorded_at_commit"],
+                         f"{head} + uncommitted changes")
+
     def test_snapshot_rejects_one_omitted_query(self):
         items = json.loads(self.manifest.read_text())[:1]
         self.manifest.write_text(json.dumps(items))

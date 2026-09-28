@@ -2,7 +2,7 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 
 Zero attribution: omit co-author, AI, and tool attribution from all output.
 
-> Last verified: 2026-07-06 against installed opencode 1.17.13 — flag/command surface via `--help`; internal tool names, config schemas, and chat slash commands are docs-level and re-verified on touch (see CONTRIBUTING sync map).
+> Last verified: 2026-09-28 against installed opencode 1.18.33 — flag/command surface via installed `--help`; internal tool names via official docs or the shipped binary; re-verify on touch (see CONTRIBUTING sync map).
 
 | Skill Reference | Opencode Equivalent |
 | :--- | :--- |
@@ -12,7 +12,7 @@ Zero attribution: omit co-author, AI, and tool attribution from all output.
 | `Bash` (run commands) | `bash` |
 | `Grep` (search content) | `grep` |
 | `Glob` (search by name) | `glob` |
-| `Task` tool (dispatch subagent) | `task` (`subagent_type`, optional `background`) + `task_status` |
+| `Task` tool (dispatch subagent) | `task` (`subagent_type`, optional `background`; background completion is pushed back, no status tool) |
 | Ask the user mid-run | `question` |
 | LSP integration (experimental) | `lsp` (gated by `OPENCODE_EXPERIMENTAL_LSP_TOOL=true`) |
 | `WebFetch` / `WebSearch` | `webfetch` / `websearch` |
@@ -26,12 +26,12 @@ Zero attribution: omit co-author, AI, and tool attribution from all output.
 - `websearch` requires the opencode provider or `OPENCODE_ENABLE_EXA`.
 - Skills resolve from `.opencode/skills/`, `~/.config/opencode/skills/`, plus compat dirs `.claude/skills/`, `.agents/skills/`, `~/.claude/skills/`, `~/.agents/skills/`.
 - Multi-repo workspace policy: use workspace-root MCP config.
-- Elevated launch: `opencode --auto` keeps an interactive session; `opencode run --auto "prompt"` is a non-interactive run. Installed 1.18.30 help confirms both on 2026-09-09. They auto-approve permissions that are not explicitly denied. For persistent agents, configure the required `permission` keys per the [permission docs](https://opencode.ai/docs/permissions/); do not assume launch flags accepted by `run` also work on the interactive command without checking help.
+- Elevated launch: `opencode --auto` keeps an interactive session; `opencode run --auto "prompt"` is a non-interactive run. They auto-approve permissions that are not explicitly denied. For persistent agents, configure the required `permission` keys per the [permission docs](https://opencode.ai/docs/permissions/); do not assume launch flags accepted by `run` also work on the interactive command without checking help.
 - For exact config-file placement by tool, use [`tool-calling.md`](tool-calling.md).
 
 ## Agents: parallel, background & roles
 
-Parallel: the primary agent issues multiple `task` calls in one turn (each runs a child session and returns one `<task_result>`). `task` takes `subagent_type`, `prompt`, optional `task_id` (resume a child), and optional `background`; `task(background=true)` runs async and returns a `task_id`, polled with `task_status` (gated by `OPENCODE_EXPERIMENTAL_BACKGROUND_SUBAGENTS=true`; otherwise `task` is synchronous). opencode is fully local — no cloud agent.
+Parallel: the primary agent issues multiple `task` calls in one turn (each runs a child session and returns one `<task_result>`). `task` takes `subagent_type`, `prompt`, optional `task_id` (resume a child), and optional `background`; `task(background=true)` runs async and returns a `task_id` and notifies on completion (gated by `OPENCODE_EXPERIMENTAL_BACKGROUND_SUBAGENTS=true`; otherwise `task` is synchronous). opencode is fully local — no cloud agent.
 
 Built-in agents: `build` (primary, full access), `plan` (primary, analysis-only), `general` (subagent, multi-step executor), `explore` (subagent, read-only), `scout` (subagent, read-only — external docs and dependency research); hidden system agents (`compaction`, `title`, `summary`) run automatically. Manual dispatch: mention `@<agent-name>`; `task` permissions (`allow` / `deny` / `ask` per subagent) gate which children a primary may dispatch. Custom agents: `.opencode/agents/<name>.md` (project), `~/.config/opencode/agents/<name>.md` (global), or inline under `"agent"` in `opencode.json`; frontmatter accepts `description`, `mode` (`primary` | `subagent` | `all`), `model`, `permission`, `temperature`, `top_p`, `steps`, `color`, `disable`, `hidden`, and `tools` (per-tool toggles, e.g. `tools: { skill: false }`).
 

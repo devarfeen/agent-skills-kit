@@ -47,11 +47,6 @@ several tickets or bug fixes — each slice runs only its focused and widened
 commands; the project's full check runs once, after the last slice — a full
 run per slice adds no signal.
 
-Exception: `composer test` is on demand only. Run it only when the user explicitly
-requests it, including when invoked through an equivalent Composer alias or wrapper.
-Otherwise, report it as skipped because it was not requested; it is not a completion
-or shipping gate. Continue the focused and widened checks below.
-
 1. **Red.** Write ONE failing test asserting the new behavior. Run the focused
    test and read the failure.
    - It must fail for the right reason — the missing behavior (an assertion
@@ -91,7 +86,7 @@ or shipping gate. Continue the focused and widened checks below.
   ```markdown
   Behavior: <the one-sentence behavior>
   Red → Green: <test name(s)> — seen failing (<how>), now passing
-  Scope run: <focused command> · <widened command> · <full check | deferred to batch end | composer test skipped: not requested | widest feasible — why>[; pre-existing failures: <names, baseline command and result>]
+  Scope run: <focused command> · <widened command> · <full check | deferred to batch end | widest feasible — why>[; pre-existing failures: <names, baseline command and result>]
   Edges: <covered: …> · <deferred: … — why>
   Docs: <path updated | nothing documents this behavior>
   Exception: <declared exception + follow-up test plan | none>
@@ -119,8 +114,7 @@ red/green evidence. Keep the remaining checks and follow-up plan.
 - [ ] Before suggesting ship: the project's full check (whole suite or the CI
       command) ran green once for the batch, per The loop —
       apart from failures verified as pre-existing and noted; or the summary
-      states why the widened scope is the widest feasible run. When the full
-      check is `composer test` and was not requested, record that skip instead.
+      states why the widened scope is the widest feasible run.
 - [ ] No assertion weakened, no failing test deleted to reach green (or the
       contract change is flagged with the user's call).
 - [ ] Edges covered or explicitly deferred, each named.

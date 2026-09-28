@@ -16,12 +16,14 @@ workspace-root `.devcontainer/compose.yml` exists, run this exact command from
 the workspace root:
 
 ```sh
-docker compose -f .devcontainer/compose.yml config --format json
+docker compose -f .devcontainer/compose.yml config --format json \
+  | jq '{services: (.services | map_values({container_name, working_dir, volumes}))}'
 ```
 
 Use the resulting `services` map, with interpolation and path resolution enabled.
-Keep the full model transient; report only the needed runtime facts, not resolved
-environment values. Do not start containers, inspect running containers, or use
+The `jq` filter keeps only the fields this reference uses, so resolved
+environment values never reach the session. Never run the command without the
+filter; if `jq` is unavailable, skip runtime synchronization with that reason. Do not start containers, inspect running containers, or use
 staging/production files. An absent file, unavailable command, failed resolution,
 or invalid JSON skips runtime synchronization with a reason; default root
 generation remains independent. Runtime-only leaves the root pair untouched.
@@ -60,7 +62,7 @@ Fill exactly these three facts from the matched service and bind mount:
 <!-- agents-md:project-runtime:end -->
 ```
 
-When `container_name` is absent, use the service key. Do not synthesize a
+When `container_name` is absent (`null` in the filtered model), use the service key. Do not synthesize a
 Compose-generated container name. The application path is always the matching
 mount's `target`, even if the service has a different `working_dir`. The mount
 alone does not establish a working directory; only explicit Compose `working_dir`

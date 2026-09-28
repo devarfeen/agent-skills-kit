@@ -1,12 +1,12 @@
 {
  "_comment": "sha256 of each skill's frontmatter description as it stood at the commit recorded in that skill's evals.json last_run. tools/validate.sh check 10 fails when a live description no longer matches -- meaning the recorded eval result is stale and the evals must be re-run. Regenerate with score.py --write-snapshot after a passing run.",
- "recorded_at_commit": "working tree matching the catalog supplied to this run",
- "catalog_sha256": "fc64102f7c5f4c5f429b0e70016b9200cf629444611fabf92c597a8462296b99",
+ "recorded_at_commit": "e45c0d73460c3186a062d425c655011fe28444de + uncommitted changes",
+ "catalog_sha256": "e5c0e1d52c3f6b465b102697f922b466146902e68ab474380837d376c435b273",
  "manifest_sha256": "3c2211f1bcf1e152bb02ef10d9faac583df26059ad7ba99145e8078b43ad4427",
  "judge_sha256": [
-  "97f6a4cd84eeb309eff999ef9443573405aaaa0ff67c6b53869bbfad8be0e971",
-  "08013a37c6710b4593d529f643b475de0792d5dc6012496360d8ddbd32b2ee34",
-  "786e220675b483147c7c83d8f2825f8bc8c69aaaf94821d25bc69883c7c9bf38"
+  "ddab30c1c216f30d78decd416930f6589f2448700601a89868e425cc76c5bb54",
+  "ecff4d87bd7f2cd2631bc7857468fa4a97e412fbbbf4d47a5d656d6ef0e816f4",
+  "286dc1a9ec9113334eb2f0413f53bf48ba8c6e61c9ba7f5236a8ec817d71cb37"
  ],
  "descriptions_sha256": {
   "agents-md": "cb6b7978841e455affe427b6bcc6663f4c3d4746a971268299dbf3e3eb9f74f7",
@@ -25,6 +25,6 @@
   "staging-fix": "cf82058aac247a9460920012d2d7c219f6e0fff518fd6c9e33db4989cc7fb641",
   "tdd-loop": "19b65a7667fd95f1f927ebd81935b8f6fdb0ab07526b84933ddf61cbbd3c83c3",
   "using-git-worktrees": "690d0d7c9a5689564e993ad20675eabf9dee5f83982f9c0f6c36975ee95787af",
-  "writing-kit-skills": "50cb25e9d76213bb0ee42f3055cffee75066567b8da98c7ff8eb260b6da8d00d"
+  "writing-kit-skills": "05a23ee63fb1ec548e6cc3ecf891527375c01325cb311af9895c9827fab526b2"
  }
 }

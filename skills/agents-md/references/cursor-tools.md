@@ -1,6 +1,6 @@
 # Cursor CLI Tool Mapping
 
-> Last verified: 2026-07-06 against installed cursor-agent 2026.07.01-41b2de7 — flag/command surface via `--help`; internal tool names, config schemas, and chat slash commands are docs-level and re-verified on touch (see CONTRIBUTING sync map).
+> Last verified: 2026-09-28 against installed cursor-agent 2026.09.26-dd393fe — flag/command surface via installed `--help`; internal tool names via official docs or the shipped binary; re-verify on touch (see CONTRIBUTING sync map).
 
 Mechanics and permissions: [`tool-calling.md`](tool-calling.md).
 
@@ -8,7 +8,7 @@ Mechanics and permissions: [`tool-calling.md`](tool-calling.md).
 | :--- | :--- |
 | `Read` (file reading) | `Read` |
 | `Write` (file creation) | `Write` |
-| `Edit` (file editing) | `StrReplace` |
+| `Edit` (file editing) | `StrReplace` (unverified 2026-09-28: absent from the installed bundle and not confirmed in docs) |
 | `Bash` (run commands) | `Shell` |
 | `Grep` (search content) | `Grep` |
 | `Glob` (search by name) | `Glob` |
@@ -34,12 +34,12 @@ Mechanics and permissions: [`tool-calling.md`](tool-calling.md).
 - Skills load from `.cursor/skills/`, `.agents/skills/`, `~/.cursor/skills/`, `~/.agents/skills/`, plus compat dirs `.claude/skills/`, `.codex/skills/`, `~/.claude/skills/`, `~/.codex/skills/`.
 - Subagent dirs: `.cursor/agents/`, `.claude/agents/`, `.codex/agents/` (project) and `~/.cursor/agents/`, `~/.claude/agents/`, `~/.codex/agents/` (user).
 - CLI permissions: per-project `<root>/.cursor/cli.json` (layered git-root → cwd), global `~/.cursor/cli-config.json`. IDE-only auto-run allowlist (separate): `~/.cursor/permissions.json`.
-- Highest elevated permission launch: `agent --yolo --sandbox=disabled --approve-mcps` for interactive sessions; `cursor-agent -p --force --sandbox=disabled --trust --approve-mcps "prompt"` for headless. `--yolo` is the `--force` alias.
+- Highest elevated permission launch: `agent --yolo --sandbox=disabled --approve-mcps` for interactive sessions; `agent -p --force --sandbox=disabled --trust --approve-mcps "prompt"` for headless. `--yolo` is the `--force` alias.
 - Built-in subagents **Explore**, **Bash**, and **Browser** are delegated automatically ([Subagents](https://cursor.com/docs/subagents)).
 
 ## Agents: parallel, background & roles
 
-Parallel: multiple `Task` calls in one turn (practical cap ~4). Local background: `is_background: true` in `.cursor/agents/<name>.md`, rejoin with `Await`; heavier isolation: up to 8 local agents in separate git worktrees. **Cloud Agents** (formerly "Background Agents") are remote — do not use them; keep everything local. Custom-agent frontmatter: `name`, `description`, `model` (`inherit` or an ID), `readonly`, `is_background`.
+Parallel: multiple `Task` calls in one turn (no documented cap). Local background: `is_background: true` in `.cursor/agents/<name>.md`, output under `~/.cursor/subagents/`; heavier isolation: `agent -w` worktree sessions. **Cloud Agents** (formerly "Background Agents") are remote — do not use them; keep everything local. Custom-agent frontmatter: `name`, `description`, `model` (`inherit` or an ID), `readonly`, `is_background`.
 
 | Role | Cursor mechanism |
 | :--- | :--- |

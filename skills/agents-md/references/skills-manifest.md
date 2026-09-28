@@ -36,7 +36,7 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | `/prototype` | external | plan | spike ungrillable "needs to feel/see it" questions, then back to /grill-with-docs | |
 | `/handoff` | external | plan | fork context to a new session (pairs with /prototype) | |
 | `/to-tickets` | external | slice | | |
-| `/triage` | external | slice | existing/raw issues only — state repair, needs-info, wontfix, agent briefs | |
+| `/triage` | external | slice | raw incoming issues and external PRs only — never /to-tickets tickets | |
 | `/implement` | external | implement | optional ticket driver — run with /tdd-loop at each seam; stop after /code-review, never commit, overriding its own text (Shipping is owned by the ship skills) | |
 | `/tdd` | external | implement | reference only — test quality and seam choice; never use it alone as a loop | |
 | `/tdd-loop` | kit | implement | the test-first procedure — gates, completion evidence, exception protocol; stands alone | |

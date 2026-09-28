@@ -1,4 +1,4 @@
-<!-- agents-md marker · v31 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v32 · re-run /agents-md to regenerate -->
 # Agent instructions
 
 [one concise, factual workspace intro inferred from the .code-workspace name and folder scan — no promotional adjectives]
@@ -28,11 +28,9 @@ Assigned local workers may start in the project checkout or worktree named in th
 
 <a id="honest-state-reporting"></a>
 
-- Before any significant step, anchor state: `[verified]` (proven true), `[current]` (in progress), `[todo]` (not started).
-- At phase changes, send a short visible update: `Stage`, `Found`, `Next`, `Needs user` — not buried in narration, raw tool output, or pre-tool chatter. After discovery or broad file reads, give it before planning, edits, tests, commits, PRs, or issue updates.
+- At phase changes, send one short visible update: `Stage`, `Found`, `Next`, `Needs user` — not buried in narration, raw tool output, or pre-tool chatter. After discovery or broad file reads, give it before planning, edits, tests, commits, PRs, or issue updates. While any subagent, background task, or job is active — under any name, in any runtime — the same update adds `Lanes: N running / M done / K blocked` and what each running lane is doing; silent background work is a reporting violation.
 - Continue within a phase when the next action follows from the request; make phase transitions explicit. Stop only when user input, approval, or a scope decision is needed.
 - Never report work done while any part is skipped, stubbed, or unverified. Surface constraints, risks, and assumptions up front.
-- While any subagent, background task, or job is active — under any name, in any runtime — every visible update states `N running / M done / K blocked` and what each running lane is doing. Work running silently in the background is a reporting violation, exactly like claiming unverified work is done.
 - After a successful task, use the active skill's required closing format. If none exists, end with `Recommended next step:` and one useful follow-up with its reason.
 
 **Why:** silent gaps and premature "done" are how broken work ships.
@@ -98,10 +96,10 @@ Before editing, understand why the code exists — its callers and exports, the 
 
 #### Graphify
 
-- The primary graph is `graphify-out/graph.json` at the workspace root, merged across Project Matrix projects. Optional `graphify-out/projects/<PROJECT-CODE>/` outputs are browse copies. If the primary graph is missing, skip Graphify; do not substitute a browse copy or repo-local graph.
-- Query the primary graph before broad source search. Resolve its path from the workspace root even when a worker runs inside a project checkout. Use `repo` tags and `PROJECT-CODE::…` node IDs to scope results, retaining relevant cross-project edges. Verify hits against current source.
+- The primary graph is `graphify-out/graph.json` at the workspace root: each project's own `<project>/graphify-out/graph.json` combined with `graphify merge-graphs`. If the primary graph is missing, skip Graphify; a single project's graph is not a substitute.
+- Query the primary graph before broad source search. Resolve its path from the workspace root even when a worker runs inside a project checkout. Scope results to the task's PROJECT-CODE by source path, retaining relevant cross-project edges. Verify hits against current source.
 - Check available indexed revisions or change metadata for stale inputs; changed indexed sources make the graph stale regardless of its age. More than ~7 days without a verified refresh warrants a warning; a recent file timestamp alone does not prove freshness. If no evidence establishes freshness, report it as unverified.
-- After a batch changes indexed sources, the main agent refreshes the merged graph once after integration and the final edit, within existing task authority. Use the workspace's verified refresh process and verify it retains repo tags, namespaced IDs, cross-project edges, and unaffected projects. Read-only tasks report staleness and recommend that process. If it is unavailable, unauthorized, or fails, report the graph as stale and continue from current source.
+- After a batch changes indexed sources, the main agent refreshes the merged graph once after integration and the final edit, within existing task authority. Run `graphify update <project>` for each changed project, then `graphify merge-graphs` over every project graph into `graphify-out/graph.json`; verify the merged graph still covers every project and its cross-project edges. Read-only tasks report staleness and recommend that process. If it is unavailable, unauthorized, or fails, report the graph as stale and continue from current source.
 
 #### North star
 
@@ -118,7 +116,7 @@ State assumptions. Present real interpretations. Push back on weak plans. Stop a
 
 <a id="decision-options"></a>
 
-Do not make the user infer your recommendation. Label each option `Recommended`, `Currently implemented`, both, or neither — in the option title, not buried in the explanation. Offer up to three concrete options plus a final `Write your own`, never padding to three. Label exactly one option `Recommended`; if none is safe to recommend, say why before the list.
+Do not make the user infer your recommendation. Label each option `Recommended`, `Currently implemented`, both, or neither — in the option title, not buried in the explanation. Offer up to three concrete options plus a final `Write your own`, never padding to three. Label at most one option `Recommended`; if none is safe to recommend, say why before the list.
 
 ### 10. Goal-driven execution
 
@@ -133,9 +131,11 @@ Before the first implementation edit, the main agent must complete this prefligh
 - Resolve the exact checkout, working directory, runtime or container, required environment variables, and canonical verification commands from applicable project instructions and executable scripts before running those commands. Reuse verified command forms, including paths and environment settings, throughout the task.
 - Inspect the aggregate full-check command before using it. Run checks it covers separately only for a needed intermediate result or when later edits invalidate the earlier result.
 
-Match check scope to change scope: verify each fix with its focused test or module-scope command. Run the project's required full check once per completed batch, after integration and the last edit, before shipping. Exception: `composer test` is on demand only. Run it only when the user explicitly requests it, including when invoked through an equivalent Composer alias or wrapper. Otherwise, report it as skipped because it was not requested; it is not a completion or shipping gate.
+Match check scope to change scope: verify each fix with its focused test or module-scope command. Run the project's required full check once per completed batch, after integration and the last edit, before shipping.
 
-Final verification covers the combined changes in the integration checkout; worker-local passes do not replace it. Report the checkout, tested revision or working-tree state, command, and result. Later edits invalidate affected results: rerun the affected checks, including any required full check when its verified state changes, subject to the on-demand rule above. Once per batch prevents duplicate per-item runs, not necessary rechecks after fixes.
+If a check fails, fix the cause. Never make it pass by deleting, skipping, or loosening a test or assertion; if the check itself is wrong, say why and ask.
+
+Final verification covers the combined changes in the integration checkout; worker-local passes do not replace it. Report the checkout, tested revision or working-tree state, command, and result. Later edits invalidate affected results: rerun the affected checks, including any required full check when its verified state changes. Once per batch prevents duplicate per-item runs, not necessary rechecks after fixes.
 
 ### 11. Local orchestration
 
@@ -152,11 +152,11 @@ One useful independent task is enough to delegate. Every worker must make a conc
 - **Verify returned work.** Workers return summaries, changed files, verification evidence with the tested checkout and state, and unresolved problems — not transcripts. Await each lane's completion or confirmed stop and inspect returned changes, including comment coverage, before integration. The main session owns combined-state verification per [Goal-driven execution](#goal-driven-execution) and final synthesis.
 - Keep parallel state visible per [Honest state & reporting](#honest-state-reporting) — lane count at dispatch, each completion or failure as it lands — for every parallel mechanism in every runtime, whatever this CLI calls it.
 
-**Checkouts:** Work in the existing workspace checkouts. Do not clone repos or create new checkouts — worktrees under each project’s own repository at `.worktrees/<task-name>` are the one exception. Add `/.worktrees/` to that repository’s `.gitignore` and verify the destination is ignored before creation. Multi-project work uses one worktree per affected repo, never a shared workspace-level container. Worktrees are on-demand: read-only lanes never get one; writers get one only for concurrent isolated writes, just in time — never speculatively, never for blocked work. Remove temporary worker worktrees after verified integration within the authorized workflow, subject to the cleanup safeguards above. Create qualifying worktrees without separate approval; runtime worktree isolation follows the same criteria.
+**Checkouts and worktrees:** Work in the existing workspace checkouts; never clone repos or create other checkouts. The one exception is a Git worktree at `<project-repo>/.worktrees/<task-name>` in the owning project's repository — multi-project work puts them in each affected repo, never in a workspace-level container. Before creating one, add `/.worktrees/` to that repository's `.gitignore` if missing, and verify the destination is ignored. A runtime's native worktree mechanism may be used only if it creates the worktree at that path, never elsewhere (such as `.claude/worktrees/` or `~/.cursor/worktrees/`).
 
-**User-asked isolation:** A user request to work in a worktree, on a branch, or "in isolation" overrides the on-demand rule above — set it up before the first edit, never after. When they name the form (`worktree` or `branch`), take them at their word. For a worktree, invoke `/using-git-worktrees` when installed before task edits, including before a third-party task skill. If missing, use the available local worktree mechanism, verify the selected checkout and baseline, and preserve the source changes. A failed setup blocks task edits; never silently work in the original checkout. Branch-only requests do not invoke the worktree skill. When they do not ("isolate this", "keep it separate", "leave my checkout alone"), ask once per [Decision options](#decision-options) — a worktree under that project repo’s `.worktrees/` (`Recommended`: task edits stay separate; setup may add the ignore rule), a new branch in the current checkout, or stay in the current checkout — and edit nothing while the question is open. That question settles which form they meant; it is never an approval gate for the lanes above.
-
-**Worktree cleanup:** Setup and shipping do not remove user-requested worktrees. On an authorized cleanup request, verify the task's work is integrated and no worker or process still needs the checkout. Preserve needed tracked, untracked, and ignored files before removal. Remove through Git from outside the worktree, then delete the local branch only when its work is retained; inspect refusals rather than forcing deletion. A pushed branch or closed issue alone is not integration proof. Keep `/.worktrees/` in the owning repo's `.gitignore`, preserve unrelated source edits, and report any pending source-only setup change. Remote branch deletion needs its own scope.
+- **On demand:** read-only lanes never get a worktree; a writer gets one just in time, only for concurrent isolated writes, without separate approval.
+- **User-asked isolation:** set up a requested worktree or branch before the first edit — a worktree through `/using-git-worktrees` when installed, before any third-party task skill; otherwise with Git, preserving the source changes. A branch-only request stays a branch. A failed setup blocks task edits; never fall back to the original checkout. If the user does not name the form ("isolate this"), ask once per [Decision options](#decision-options) — worktree (`Recommended`), new branch, or current checkout — and edit nothing meanwhile.
+- **Cleanup:** remove worker worktrees after verified integration. Remove a user-requested worktree only on an authorized cleanup request, once its work is integrated (a pushed branch or closed issue is not proof), nothing still uses the checkout, and needed tracked, untracked, and ignored files are preserved. Keep its branch unless the work is retained elsewhere; never force a removal. Remote branch deletion needs its own scope.
 
 ### 12. Systematic debugging
 
@@ -177,6 +177,8 @@ Touch only required lines. Match local style. Do not refactor unrelated code. Cl
 
 Before writes, inspect the current branch and staged, unstaged, and untracked changes. Preserve pre-existing and other workers' edits; do not revert, reset, stash, remove, or overwrite them without specific authorization. If a file changes after you read it, re-read it and apply your patch to its current content. Pause only overlapping work when you cannot preserve the other changes safely.
 
+Refer to secrets by key name only — never print, paste, or commit their values, and keep credentials, tokens, sessions, caches, logs, and runtime databases out of repositories. Never access production systems, data, or deploy targets unless project instructions explicitly allow it. Destructive commands — dropping or resetting a database, fresh migrations, force-push, history rewrites, `rm -rf` outside task-owned paths, volume or container prune — need explicit approval for that command.
+
 ### 15. Comment code changes
 
 <a id="comment-code-changes"></a>
@@ -194,13 +196,13 @@ Hard rules for every browser mechanism in every runtime — agent-browser, a bui
 
 - Reuse one authenticated session for the task. If it fails, recover only that session as described below; never disturb another worker's session.
 - Drive each route as one batched flow — open → interact → deterministic assertion — never separate calls for open, wait, snapshot, click, errors, console. Prefer the project's flow runner or JSON flow mode when one exists.
-- Short explicit timeouts: 3–8 s on every browser command, one outer timeout per flow — never inherit a long default. Clean up spawned wait processes on exit: an orphaned wait blocks the whole session.
+- Explicit timeouts on every browser command, plus one outer timeout per flow — never inherit a long default. Timeouts guard against hangs; they are not speed verdicts. Default to 3–8 s per command. Allow longer only for a step the project documents as slow (cold build, first dev-server load), and for a route timed against a latency budget, whose timeout sits well above that budget (about twice it) so the timing is measured, not cut off. Clean up spawned wait processes on exit: an orphaned wait blocks the whole session.
 - One command at a time per session, never overlapping. Health-check a reused session first (~2 s URL read); on failure, close and reopen **that session only** — never close all sessions, which destroys other agents' auth and state.
 - Isolate mutation checks: record originals, change one setting, verify, restore before the next — restore even when the flow fails, or the next save persists contaminated fields.
 - Prefer stable selectors (`data-test`, CSS) over framework-generated element refs that re-renders invalidate (Livewire, React, …); re-snapshot only after a re-render breaks a ref.
 - Assert stable state — URL, DOM/component state, or a database row — never toast timing or `networkidle`. Use compact JS eval assertions; snapshot only the specific element when its selector is unknown — full-page snapshots are overview only.
 - One interaction flow plus one evidence check per behavior; cross-page persistence and data coverage belong in the project's test suite.
-- If a route exceeds the test environment's documented latency budget, record its timing and investigate. A fixed five-second threshold cannot distinguish a regression from expected build or network latency.
+- Judge speed only against the test environment's documented latency budget: record the timing of a route that exceeds it and investigate. A fired timeout signals a hang, not a slow route; without a documented budget, report timings instead of a speed pass/fail.
 
 ### 17. Issue discipline
 
@@ -210,7 +212,7 @@ When creating, updating, or triaging issues, follow [Issue titles](#issue-titles
 
 <a id="shipping-is-owned-by-the-ship-skills"></a>
 
-Nothing commits, pushes, opens a PR, or closes an issue outside the ship skills, and each ship skill stays inside its own scope:
+Nothing commits, pushes, opens a PR, or closes a delivery issue outside the ship skills — `/wayfinder` closes its own planning maps and tickets — and each ship skill stays inside its own scope:
 
 - `/commit-push-pr` — commit, push, and create or update a PR within that skill's allowed base-branch policy.
 - `/commit-push-close` — commit, push the current branch, and close the issue (a direct default-branch push only after its separate confirm).
@@ -239,7 +241,7 @@ Use `/ask-matt` to choose a Matt skill flow — it routes, never executes; do no
 - **The fog test.** Can you state the destination in one line *and* name every open decision as a sharp question, right now? Yes → `/feature-prompt`. No → fog → `/wayfinder` (decisions become tracker tickets, one resolved per session). Fog, not size: a large mechanical refactor has no fog (→ `/to-tickets` expand–contract); a two-file change gated on one unresolved decision is fog. Greenfield enters here too. Both arms rejoin at `/to-spec`; a map is exhausted when nothing is left to decide.
 - When a user requests work in a worktree, apply [User-asked isolation](#11-local-orchestration) before `/implement`, `/diagnosing-bugs`, `/prototype`, `/code-review`, or another Matt skill does task work. Pass the verified checkout and applicable instructions into that skill; setup returns to the already-authorized task and does not authorize a new workflow. Keep these interlocks here; do not rewrite installed third-party skills.
 - Fresh session per ticket. `/implement` (when installed) says to use `/tdd` and to commit after `/code-review`; this workspace overrides both. Drive `/tdd-loop` at each seam instead, with `/tdd` supplying test quality and seam choice, and stop after `/code-review` without committing ([Shipping is owned by the ship skills](#shipping-is-owned-by-the-ship-skills)). Without `/implement`, drive `/tdd-loop` directly. `/tdd` is reference only — never a loop.
-- `/diagnosing-bugs` finds the root cause; ship the fix through `/tdd-loop` — the reproduction becomes the failing regression test, one red → green per bug, required full check once at batch end, subject to the on-demand rule in [Goal-driven execution](#goal-driven-execution).
+- `/diagnosing-bugs` finds the root cause; ship the fix through `/tdd-loop` — the reproduction becomes the failing regression test, one red → green per bug, required full check once at batch end ([Goal-driven execution](#goal-driven-execution)).
 - `/triage` = raw incoming issues and external PRs only — never tickets from `/to-tickets`. `/research` = delegable primary-source reading → cited doc. `/improve-codebase-architecture` (when installed) → a chosen improvement feeds `/grill-with-docs`. `/handoff` forks context to a new session; `/compact` continues this one — only at intentional phase breaks.
 
 [RUNTIME TOOL-CALLING — emit the `### Runtime tool-calling` subsection here, per the Working with skills rules in SKILL.md]

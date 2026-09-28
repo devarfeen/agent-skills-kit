@@ -6,11 +6,24 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import subprocess
 import sys
 
 
 def digest(data):
     return hashlib.sha256(data).hexdigest()
+
+
+def recorded_commit(root):
+    """Name the commit the judged files came from; flag a dirty tree, since the
+    judged files may then match no commit."""
+    try:
+        run = lambda *args: subprocess.run(["git", "-C", str(root), *args], check=True,
+                                           capture_output=True, text=True).stdout.strip()
+        head, dirty = run("rev-parse", "HEAD"), run("status", "--porcelain")
+    except (OSError, subprocess.CalledProcessError):
+        return "unknown: not a git checkout"
+    return f"{head} + uncommitted changes" if dirty else head
 
 
 def parse_catalog(data):
@@ -145,7 +158,7 @@ def main():
         previous = json.loads(out.read_text()) if out.exists() else {}
         payload = {
             "_comment": previous.get("_comment", ""),
-            "recorded_at_commit": "working tree matching the catalog supplied to this run",
+            "recorded_at_commit": recorded_commit(root),
             "catalog_sha256": digest(catalog_data),
             "manifest_sha256": digest(manifest_data),
             "judge_sha256": [digest(data) for data in judge_data],

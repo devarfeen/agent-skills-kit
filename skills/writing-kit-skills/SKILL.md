@@ -1,7 +1,7 @@
 ---
 name: writing-kit-skills
 disable-model-invocation: true
-description: "House style for authoring and editing skills in this kit — the skeleton, word budget, canonical one-liners, output caps, and eval gates every SKILL.md follows. Use when creating a new skill in agent-skills-kit or editing an existing kit skill's body, references, or description; generic skill creation elsewhere is skill-creator."
+description: "House style for authoring and editing skills in this kit — the skeleton, word budget, canonical one-liners, output caps, and eval gates every SKILL.md follows. Use when creating a new skill in agent-skills-kit or editing an existing kit skill's body, references, or description; generic skill creation elsewhere is skill-creator, and running the kit's eval harness is a maintainer procedure, not this skill."
 ---
 
 # writing-kit-skills

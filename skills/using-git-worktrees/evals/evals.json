@@ -1,7 +1,7 @@
 {
   "skill": "using-git-worktrees",
   "kind": "trigger-eval",
-  "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog \u2014 no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
+  "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
   "queries": [
     {
       "q": "Implement #418 in a worktree.",
@@ -16,7 +16,7 @@
       "expect": "trigger"
     },
     {
-      "q": "Do the CSV export change in a worktree under the project repo\u2019s .worktrees/export-task.",
+      "q": "Do the CSV export change in a worktree under the project repo’s .worktrees/export-task.",
       "expect": "trigger"
     },
     {
@@ -95,10 +95,10 @@
     }
   ],
   "last_run": {
-    "date": "2026-09-15",
-    "method": "3 independent fresh catalog-only Codex judges over the full 352-query mixed set, deterministic shuffle; judges saw only the catalog and query list, with no repository access.",
-    "result": "352/352 pass — majority vote passed every query.",
-    "judge_model": "Codex CLI inherited session model (3 independent ephemeral read-only runs)",
-    "catalog": "tools/trigger-evals/build-catalog.sh (live kit descriptions 2026-09-15) + tools/trigger-evals/catalog-externals.md snapshot dated 2026-08-19"
+    "date": "2026-09-28",
+    "method": "3 independent fresh catalog-only judges over the full 352-query mixed set, deterministic shuffle; each judge was instructed to read only the judge prompt, catalog, and query list, with no repository access (instruction-level isolation, not a sandbox).",
+    "result": "352/352 pass — majority vote passed every query; 349 unanimous, 3 passed 2/3 (writing-kit-skills trigger 'Move this skill's long examples out of SKILL.md properly'; design-system and port-feature no-trigger negatives split between other routes).",
+    "judge_model": "Claude Opus 5.5 (claude-opus-5-5), 3 independent Claude Code Agent-tool subagents",
+    "catalog": "tools/trigger-evals/build-catalog.sh (live kit descriptions 2026-09-28) + tools/trigger-evals/catalog-externals.md snapshot dated 2026-09-28; judged tree e45c0d73460c3186a062d425c655011fe28444de + uncommitted changes"
   }
 }

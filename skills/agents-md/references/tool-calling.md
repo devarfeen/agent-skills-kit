@@ -4,7 +4,15 @@ How the six supported runtimes — Codex CLI, Claude CLI, Antigravity CLI, Curso
 
 Zero attribution: omit co-author, AI, and tool attribution from all output. Use the current runtime's exposed tool schema when a mapping differs; these tables describe capabilities, not a guarantee that a tool is enabled in every session. Read-only role prompts are behavioral instructions; enforce access limits with runtime permissions when a hard boundary is needed.
 
-> Last verified: 2026-07-06 against all six installed CLIs (codex-cli 0.142.5, claude 2.1.201, agy 1.0.16, cursor-agent 2026.07.01, opencode 1.17.13, copilot 1.0.68) — flag/command surface via `--help`; internals are docs-level and re-verified on touch.
+> Last verified: 2026-09-28 against all six installed CLIs (codex-cli 0.158.0, claude 2.1.283, agy 1.2.12, cursor-agent 2026.09.26-dd393fe, opencode 1.18.33, copilot 1.0.88) — flag/command surface via installed `--help`; internal tool names via official docs or the shipped binary; re-verify on touch (see CONTRIBUTING sync map).
+
+## Emitting into AGENTS.md
+
+The `agents-md` generator fills its `### Runtime tool-calling` slot with exactly three untitled tables, one row per runtime in this file's order, cells copied verbatim, alignment row `| :--- |`:
+
+1. `| Runtime | Skill invocation |` — from the **All runtimes (index)** table; drop its `Tool mapping` column.
+2. `| Runtime | Parallel dispatch | Local background / async |` — from **Parallel & background mechanism by runtime**; drop `Custom agent files`.
+3. `| Runtime | Highest elevated launch / preset | Effect |` — from **Highest elevated permission by runtime**, preceded by the line `Use highest elevated launch presets only under [Skill & tool use](#skill-tool-use).`
 
 ## Agent Orchestration Model
 
@@ -16,9 +24,9 @@ Use only **local** subagents and **local** background/async execution; local wor
 
 | Runtime | Cloud/remote product to AVOID | Local equivalent to use instead |
 | :--- | :--- | :--- |
-| Codex CLI | Codex Web delegated tasks | `spawn_agent` subagents (no CLI worktree support — use plain `git worktree add`) |
+| Codex CLI | Codex Web delegated tasks | Available spawn tools (`spawn_agent`); `codex --worktree` managed worktrees |
 | Claude CLI | Routines (`/schedule`), background agents on claude.ai; local agent teams are separately excluded by kit policy | `Agent` subagents; `run_in_background` Bash; `isolation: worktree` |
-| Antigravity CLI | Managed Agents API / remote managed execution | `start_subagent` local instances; `/schedule` local background |
+| Antigravity CLI | Managed Agents API / remote managed execution | `invoke_subagent` local subagents; `/schedule` timer or cron prompts |
 | Cursor CLI | Cloud Agents (formerly "Background Agents"), `&`-prefixed cloud hand-off, cursor.com/agents | `Task` subagents; local worktree agents |
 | Opencode CLI | (no cloud agent in scope) | `task` subagents; `task(background=true)` |
 | GitHub Copilot CLI | Cloud coding agent via `/delegate` (runs in GitHub Actions, opens PRs) | `task` + `/fleet` subagents; `Ctrl+X → b` background |
@@ -43,24 +51,24 @@ Standard lane roles across this kit; each runtime's `*-tools.md` maps them to th
 | Runtime | Parallel dispatch | Local background / async | Custom agent files |
 | :--- | :--- | :--- | :--- |
 | Codex CLI | Available spawn tools; `agents.max_concurrent_threads_per_session` controls capacity (`agents.max_threads` is a legacy alias) | Available wait / follow-up tools for local threads | `.codex/agents/<name>.toml` (or `~/.codex/agents/<name>.toml`) |
-| Claude CLI | Multiple `Agent` calls in one turn | `run_in_background` Bash; `background: true` subagents; `isolation: worktree` | `.claude/agents/<name>.md` |
-| Antigravity CLI | `start_subagent` orchestrator-spawned dynamic subagents (Agent Manager); `browser_subagent` for browser tasks | `/schedule` local background; Artifacts for review | `.agents/agents.md` |
-| Cursor CLI | Multiple `Task` calls in one turn (practical cap ~4); local worktree agents (up to 8) | `is_background: true` subagent + `Await`; `bash` subagent isolates output | `.cursor/agents/<name>.md` |
-| Opencode CLI | Multiple `task` calls with `subagent_type` | `task(background=true)` + `task_status` | `.opencode/agents/<name>.md`, `~/.config/opencode/agents/<name>.md`, or inline `opencode.json` agents |
-| GitHub Copilot CLI | `task` tool + `/fleet` (orchestrated parallel subagents; built-ins `explore` / `task` / `general-purpose` / `code-review` / `research` / `rubber-duck`) | `Ctrl+X → b` promotes a task or shell to background | `.github/agents/<name>.md` or `.agent.md` (user-scope `~/.copilot/agents/`) |
+| Claude CLI | Multiple `Agent` calls in one turn | `run_in_background` Bash; `background: true` subagents | `.claude/agents/<name>.md` |
+| Antigravity CLI | `invoke_subagent` (built-ins `research` / `browser` / `self`; `define_subagent` for ad-hoc types) | `/schedule` one-time timer or cron prompt; Artifacts for review | `.agents/agents/<name>.md` (global `~/.gemini/config/agents/<name>.md`) |
+| Cursor CLI | Multiple `Task` calls in one turn (no documented cap) | `is_background: true` subagent (output under `~/.cursor/subagents/`); `Await` for background shells; `bash` subagent isolates output | `.cursor/agents/<name>.md` |
+| Opencode CLI | Multiple `task` calls with `subagent_type` | `task(background=true)` (needs `OPENCODE_EXPERIMENTAL_BACKGROUND_SUBAGENTS=true`; completion is pushed back, no polling tool) | `.opencode/agents/<name>.md`, `~/.config/opencode/agents/<name>.md`, or inline `opencode.json` agents |
+| GitHub Copilot CLI | `task` tool + `/fleet` (orchestrated parallel subagents; built-ins `explore` / `task` / `general-purpose` / `code-review` / `security-review` / `research` / `rubber-duck`) | `Ctrl+X → b` promotes a task or shell to background | `.github/agents/<name>.md` or `.agent.md` (user-scope `~/.copilot/agents/`) |
 
 ### Git worktree isolation by runtime
 
-Verified against the installed CLI surface (`--help`, feature flags, shipped bundle) for Codex, Cursor, Copilot, and Opencode; against official docs for Antigravity. Plain `git worktree add` is the portable fallback everywhere — reach for a native surface only when it buys session-switching or setup scripts.
+Verified against the installed CLI surface (`--help`, feature flags, shipped bundle) for Codex, Cursor, Copilot, and Opencode; against official docs for Antigravity. Plain `git worktree add` is the portable fallback everywhere — reach for a native surface only when it buys session-switching or setup scripts. Generated workspace rules require `<project-repo>/.worktrees/<task-name>`; of the surfaces below, only Copilot with `worktreePathTemplate` set to `{repoPath}/.worktrees/{branchSlug}`, or Claude `EnterWorktree` on a worktree first created there with Git, complies — otherwise use `git worktree add`.
 
 | Runtime | Native surface | Location | Base ref |
 | :--- | :--- | :--- | :--- |
-| Claude CLI | `EnterWorktree` / `ExitWorktree` (switches session cwd; fires only when the user or `CLAUDE.md` says "worktree"); `isolation: worktree` on subagents | `.claude/worktrees/<name>` | `worktree.baseRef` — `fresh` (default) = `origin/<default-branch>`, `head` = local HEAD |
+| Claude CLI | `-w, --worktree [name]`; `EnterWorktree` / `ExitWorktree` (switches session cwd; fires only when the user or `CLAUDE.md` says "worktree"); `isolation: worktree` on subagents | `.claude/worktrees/<name>`; no CLI location setting (`worktree.location` is Desktop-SSH only); a `WorktreeCreate` hook replaces creation and may place it elsewhere | `worktree.baseRef` — `fresh` (default) = `origin/<default-branch>`, `head` = local HEAD |
 | Cursor CLI | `-w, --worktree [name]`, `--worktree-base <branch>`, `--skip-worktree-setup`; setup scripts from `.cursor/worktrees.json` | `~/.cursor/worktrees/<reponame>/<name>` | current HEAD |
-| GitHub Copilot CLI | `-w, --worktree [name]` (hidden from `--help`) and `/worktree`; needs `/experimental on` or `--experimental`. Can move uncommitted changes in. Conflicts with `--resume` / `--continue` / `--cloud` | `<repo>/.worktrees/` | HEAD, or the default branch when the `WORKTREE_DEFAULT_BRANCH` flag is on; `worktreeBaseRef` config overrides |
-| Antigravity CLI | `start_subagent` (proto field `invoke_subagent`) with workspace mode `branch` (vs `inherit`, `share`); worktrees auto-cleaned when the subagent is killed | not documented | not documented |
+| GitHub Copilot CLI | `-w, --worktree[=NAME]` (documented; not in the 1.0.88 `--help` option list), `/worktree`, `/new worktree`, `/fork worktree`; `/move` carries uncommitted changes in. `--worktree` conflicts with `--resume` / `--continue` / `--connect` | `<repo>.worktrees/` (sibling); `worktreePathTemplate` overrides (`{repoPath}`, `{repo}`, `{branch}`, `{branchSlug}`) | `HEAD`; `worktreeBaseRef: "defaultBranch"` uses the remote default branch |
+| Antigravity CLI | `invoke_subagent` with workspace mode `branch` (vs `inherit`, `share`); worktrees auto-cleaned when the subagent is killed | not documented | not documented |
 | Opencode CLI | TUI-only: "Create new worktree" in the new-session picker, plus a per-project worktree startup script. No CLI flag. The new tab layout does not support worktrees yet | not documented | not documented |
-| Codex CLI | **None.** No flag, subcommand, or feature flag — worktrees are a Codex *app* feature, not a CLI one | — | — |
+| Codex CLI | `codex --worktree` (managed worktree; `worktrees` feature, stable and on) | `$CODEX_HOME/worktrees`; `desktop.git-worktree-root` (absolute path) overrides | not documented for the CLI |
 
 ### Highest elevated permission by runtime
 
@@ -105,5 +113,3 @@ Keep MCP configuration at workspace root for supported coding tools:
 - Cursor CLI: `<workspace-root>/.cursor/mcp.json` (plus optional `~/.cursor/mcp.json` fallback)
 - Opencode CLI: workspace-root `opencode.json` / MCP config where used
 - GitHub Copilot CLI: `<workspace-root>/.mcp.json` or `<workspace-root>/.github/mcp.json` (user fallback: `~/.copilot/mcp-config.json`)
-
-Corrections verified 2026-09-09: [Codex subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents), [Claude MCP scopes](https://code.claude.com/docs/en/mcp), [Claude agent teams](https://code.claude.com/docs/en/agent-teams), and installed `opencode --help` / `opencode run --help` 1.18.30. Other table rows retain the earlier verification scope above.

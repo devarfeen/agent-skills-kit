@@ -132,7 +132,7 @@ These are optional helpers. The kit provides `using-git-worktrees`; the other en
 | Companion | Use when |
 | :--- | :--- |
 | using-git-worktrees | Ask for work in a worktree: setup uses that project repo’s gitignored `.worktrees/<task-name>` before the requested local or third-party task skill and passes it the verified checkout. Branch-only requests stay branch operations. |
-| Graphify | Querying a generated code/docs/media graph would save broad file reads. Check `graphify-out/graph.json` at the project root, else the workspace root; absent in both → skip it. Multi-project workspaces: AST `update` for code, full LLM `extract` for docs — see [Graphify in multi-project workspaces](#graphify-in-multi-project-workspaces). |
+| Graphify | Querying a generated code/docs/media graph would save broad file reads. Use the merged `graphify-out/graph.json` at the workspace root (a repo-root graph only outside a workspace); absent → skip it. Multi-project workspaces: AST `update` for code, full LLM `extract` for docs — see [Graphify in multi-project workspaces](#graphify-in-multi-project-workspaces). |
 | ask-matt | You want Matt's upstream router for choosing a user-invoked skill flow. |
 | wait-what | The agent's last chat message did not land — re-pitch it with brief context, ASD-STE100 Simplified Technical English, and the ubiquitous language from `CONTEXT.md`. |
 | unslop | Free-prose output needs AI tells removed — chat narration, and PR/issue/doc prose the agent composes freely. Never applies to text a skill mandates verbatim: generated `AGENTS.md`/shims, output templates, section names, field labels, canonical lines. |
