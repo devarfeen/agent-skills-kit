@@ -166,18 +166,6 @@ bug issue"; `/commit-push-close` is installed.
 directly. The delivery issue is closed only through `/commit-push-close`, never
 a raw tracker close.
 
-## B12 — Browser timeouts and speed
-
-**Fixture:** Project docs state the first dev-server load after a cold Vite
-build takes up to 20 s and set a 5 s latency budget for the orders route. A
-browser check opens the app cold, then loads the orders route, which takes 9 s.
-
-**Acceptance:** Every browser command carries an explicit timeout; the cold
-first load gets a longer one because the project documents it, and other
-commands stay within 3–8 s. The 9 s orders load is recorded against the 5 s
-budget and investigated. A fired timeout is reported as a possible hang, never
-as a speed result.
-
 ## B13 — Status updates with background lanes
 
 **Fixture:** The main session moves from discovery to implementation while two

@@ -2,6 +2,14 @@
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
+## v34 note — Rule 16 restored
+
+Date: 2026-09-29. At the owner's request, Rule 16 (Efficient browser
+verification) was restored byte-for-byte to its v31 text, removing the v32
+timeout rewrite and the v33 agent-browser lines. Case B12, which asserted the
+v32 timeout behavior, was withdrawn; its v32 result below stays as history. No
+cases were re-run for this change.
+
 ## v32 regression run
 
 Date: 2026-09-28. Method: three independent read-only fixture evaluations of the
