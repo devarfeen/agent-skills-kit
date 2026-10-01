@@ -2,7 +2,7 @@
 
 Zero attribution: omit co-author, AI, and tool attribution from all output. Inspect the live Linear tool schema before using the calls below; tool availability is not permission to write tracker state.
 
-The workspace's `AGENTS.md` (or its rules files) names the issue tracker of record. Default: GitHub Issues. Resolve it once in pre-flight; every issue read and write in the run then goes through that tracker, using its identifier format and label vocabulary as the workspace docs map them. If a step has no workspace mapping, stop and ask — never fall back to `gh issue` against a tracker the workspace does not use.
+The workspace names the tracker once per run in **workspace-root `AGENTS.md`** or **`<artifacts-root>/issue-tracker.md`** — separate locations in meta workspaces (project Matrix folders have their own `AGENTS.md`; neither file lives there for this resolve). **Harness mode** calls tracker APIs only when a worker carries issue identifiers.
 
 |  | GitHub | Linear |
 | :--- | :--- | :--- |
@@ -13,9 +13,12 @@ The workspace's `AGENTS.md` (or its rules files) names the issue tracker of reco
 
 ## Resolve
 
-1. Read the workspace `AGENTS.md` (meta workspace root) for the tracker of record. Named → that is `TRACKER`. Not named → GitHub.
-2. Cross-check `SPEC_REF`'s shape against it. A `PRWL-100` under a GitHub workspace, or a GitHub issue URL under a Linear workspace, is a conflict → stop and ask which is right. Never infer the tracker from the argument alone — the workspace rules win, and a silent switch would fan out against the wrong tracker.
-3. Set `TRACKER_TAG` from the table. It is `G` or `L` for the whole run: one tracker per fan-out, never a mix.
+1. **Workspace root** — the directory that holds the workspace's `.code-workspace` file. Walk up from the orchestrator's working directory when needed; a Project Matrix project checkout is not workspace root.
+2. Read **workspace-root `AGENTS.md`** for the issue tracker of record.
+3. Not named there → resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`CONTEXT-MAP.md` at repo root), else the repo root; then read **`<artifacts-root>/issue-tracker.md`** when the file exists.
+4. Neither names a tracker → GitHub Issues.
+5. Named tracker → that is `TRACKER`. Set `TRACKER_TAG` from the table (`G` or `L`). One tracker for the whole run; every **Discover**, **Read issue**, **Block**, and **Verify** call uses that row's commands and identifier format.
+6. `SPEC_REF` and worker issue ids must be in that tracker's native form (GitHub URL/number or Linear identifier). If a step has no workspace mapping for a label or field, stop and ask — never fall back to `gh issue` when `TRACKER` is Linear, or the reverse.
 
 Both trackers use the same `<PROJECT-CODE>` issue-title species and the same `ready-for-agent` / `ready-for-human` state labels. Only the commands and the identifier format differ.
 
@@ -24,9 +27,9 @@ Both trackers use the same `<PROJECT-CODE>` issue-title species and the same `re
 Open sub-issues of `SPEC_REF`.
 
 - **GitHub** — `gh api --paginate repos/<owner>/<repo>/issues/<n>/sub_issues --jq '.[] | select(.state=="open") | .number'`. Fall back to task-list checkboxes and "Tracked by" references only when native sub-issues are unavailable, then fetch each linked issue and verify its state.
-- **Linear** — `list_issues` with `parentId: <SPEC_REF>`, requesting the `title`, `url`, `status`, and `statusType` fields. Follow every returned next-page cursor. Open = `statusType` is neither `completed` nor `canceled`; `triage`, `backlog`, `unstarted`, and `started` all count as open. Read each result's identifier (`PRWL-101`) as `<n>`. Fall back to checkbox lists and issue links only when the native relation is unavailable, verifying each linked issue's state.
+- **Linear** — `get_issue` on `SPEC_REF` first, then `list_issues` with `parentId: <parent internal id>`, requesting the `title`, `url`, `status`, and `statusType` fields. Follow every returned next-page cursor. Open = `statusType` is neither `completed` nor `canceled`; `triage`, `backlog`, `unstarted`, and `started` all count as open. Read each result's identifier (`PRWL-101`) as `<n>`. Fall back to checkbox lists and issue links only when the native relation is unavailable, verifying each linked issue's state.
 
-Deduplicate identifiers after pagination and verify fallback links belong to this parent before counting them.
+Deduplicate identifiers after pagination and verify fallback links belong to this parent before counting them. Zero open sub-issues → stop before Intake and before creating tabs; suggest `/to-tickets` or a different parent.
 
 ## Read issue
 

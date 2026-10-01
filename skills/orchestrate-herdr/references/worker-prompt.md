@@ -1,8 +1,8 @@
 # Worker prompt
 
-One prompt per worker, filled from that worker's assigned issue. Never send the full spec, and never send an identical bulk prompt to every tab — each worker owns exactly one issue.
+One prompt per worker, filled from that worker's assigned issue. Never send the full spec; each worker owns exactly one issue unless the user asked for the same task on every tab.
 
-Fill `TRACKER` with the resolved tracker of record, `ISSUE` with the issue's native identifier (`42` on GitHub, `PRWL-101` on Linear), and `ISSUE_URL` with its link.
+Fill `TRACKER` with the workspace tracker per **Resolve** in [`tracker-map.md`](tracker-map.md), `ISSUE` with the issue's native identifier (`42` on GitHub, `PRWL-101` on Linear), and `ISSUE_URL` with its link.
 
 `BRANCH` follows `ISOLATION`. In `worktree` and `branch` mode it is that issue's branch — Linear supplies `gitBranchName`, GitHub has no native name so use `<issue-number>-<slug>`. In `shared` mode there is no per-issue branch: drop the `BRANCH` line and the clause naming it, rather than sending an empty field.
 
