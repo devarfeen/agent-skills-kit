@@ -21,12 +21,12 @@ These six are the kit's supported runtimes. Name every one whose launch token re
 
 ## 2. Which permission mode
 
-A fresh session pauses at its own approval prompts (shell, tracker, test commands) unless launched with an auto-accept preset or the folder pre-approves them. Offer, for the chosen runtime:
+Reuse the user's established permission-mode preference without asking again. A fresh session pauses at its own approval prompts (shell, tracker, test commands) unless launched with an auto-accept preset or the folder pre-approves them. When no preference is established, offer, for the chosen runtime:
 
 - its elevated interactive preset from the workspace's Runtime tool-calling table, verified against the installed CLI's `--help`; if the table is absent, derive the offered flags from that help and explain their effect
 - the **bare launch token**, with the consequence stated: every worker pauses at its own approvals
 
-Never pick an elevated mode yourself. Elevation requires the user's explicit choice. A worktree separates files, but does not sandbox commands, credentials, or network access; an external container or VM supplies that boundary. Do not pass non-interactive subcommands such as `opencode run` through `agent start`; verify flags on the interactive launch command.
+A worktree separates files, but does not sandbox commands, credentials, or network access; an external container or VM supplies that boundary. Do not pass non-interactive subcommands such as `opencode run` through `agent start`; verify flags on the interactive launch command.
 
 The answer becomes `CODING_CLI`: the launch token plus flags. Under `herdr agent start`, flags go after `--`, never inside `--kind`.
 

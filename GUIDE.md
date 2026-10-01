@@ -63,9 +63,6 @@ Per-runtime mechanics and the role-to-mechanism map live in
 and each `*-tools.md`.
 
 Highest elevated permission presets live in the same tool-calling reference.
-Use them only when the user explicitly asks for highest/elevated/full/YOLO
-permission, preferably inside an isolated container, VM, dev container, or
-disposable worktree.
 
 | Runtime | Highest elevated launch / preset |
 | :--- | :--- |

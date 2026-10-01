@@ -301,9 +301,7 @@ references.
 **Acceptance:** Exactly three untitled tables, one row per runtime in the
 reference's order, with headers `| Runtime | Skill invocation |`,
 `| Runtime | Parallel dispatch | Local background / async |`, and
-`| Runtime | Highest elevated launch / preset | Effect |`. The third is preceded
-by the `Use highest elevated launch presets only under [Skill & tool use](#skill-tool-use).`
-line. No reference file is linked.
+`| Runtime | Highest elevated launch / preset | Effect |`. No reference file is linked.
 
 ## G12 — Several workspace files
 

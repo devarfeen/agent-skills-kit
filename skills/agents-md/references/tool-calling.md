@@ -12,7 +12,7 @@ The `agents-md` generator fills its `### Runtime tool-calling` slot with exactly
 
 1. `| Runtime | Skill invocation |` — from the **All runtimes (index)** table; drop its `Tool mapping` column.
 2. `| Runtime | Parallel dispatch | Local background / async |` — from **Parallel & background mechanism by runtime**; drop `Custom agent files`.
-3. `| Runtime | Highest elevated launch / preset | Effect |` — from **Highest elevated permission by runtime**, preceded by the line `Use highest elevated launch presets only under [Skill & tool use](#skill-tool-use).`
+3. `| Runtime | Highest elevated launch / preset | Effect |` — from **Highest elevated permission by runtime**.
 
 ## Agent Orchestration Model
 
@@ -71,8 +71,6 @@ Verified against the installed CLI surface (`--help`, feature flags, shipped bun
 | Codex CLI | `codex --worktree` (managed worktree; `worktrees` feature, stable and on) | `$CODEX_HOME/worktrees`; `desktop.git-worktree-root` (absolute path) overrides | not documented for the CLI |
 
 ### Highest elevated permission by runtime
-
-Use these only when the user explicitly asks for highest/elevated/full/YOLO permission, and prefer isolated containers, VMs, dev containers, or disposable worktrees.
 
 | Runtime | Highest elevated launch / preset | Effect |
 | :--- | :--- | :--- |

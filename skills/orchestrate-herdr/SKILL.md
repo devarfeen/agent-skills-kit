@@ -14,7 +14,7 @@ Fan a spec's open sub-issues out to one herdr-managed worker tab each and drive 
 
 - **SPEC_REF** — the spec (PRD) or parent issue whose open sub-issues become workers, in its tracker's native form: a Linear issue ID (`PRWL-100`, `ABC-123`) or a GitHub issue URL or number.
 - **AGENT** — which coding agent runs the workers, named from the six supported runtimes. It yields two values that are not interchangeable: `CLI_NAME`, its launch token, used for PATH checks and tab labels; and `AGENT_KIND`, its herdr `--kind`. Both come from the roster in [`references/intake.md`](references/intake.md) — never from a command's first token, which is wrong for Cursor.
-- **CODING_CLI** — `CLI_NAME` plus the permission-mode flags the user picks. The prompt is never a launch argument (see Rules).
+- **CODING_CLI** — `CLI_NAME` plus the permission-mode flags from the user's established preference or intake choice. The prompt is never a launch argument (see Rules).
 - **ISOLATION** — `worktree`, `branch`, or `shared`; it decides whether workers can run in parallel.
 - **TRACKER** / **TRACKER_TAG** — the workspace's tracker of record and its tag — GitHub `G`, Linear `L`. Derived, not asked: resolve per **Resolve** in [`references/tracker-map.md`](references/tracker-map.md), which holds the per-tracker commands cited by bold section name below.
 
@@ -52,7 +52,7 @@ Read `SPEC_REF` and list its open sub-issues per **Discover**. State the count f
 Ask **one batched question set**, after Discover and never before — two of the four need the issue list. Name the affected issues and repos in the questions. Away-fallbacks and the full matrices: [`references/intake.md`](references/intake.md).
 
 1. **Which coding agent.** Offer all six supported runtimes **by product name** — Codex CLI (`codex`), Claude CLI (`claude`), Antigravity CLI (`agy`), Cursor CLI (`cursor`), Opencode CLI (`opencode`), GitHub Copilot CLI (`copilot`); the parenthesised value is `AGENT_KIND`. Never label an option with a bare binary: Cursor launches as `agent`, which names no product the user would recognise and is not a valid `--kind`. Offer every runtime whose launch token is on PATH and say which are missing.
-2. **Which permission mode.** Offer the verified interactive preset per Intake, or the bare launch token with its permission behavior explained. Never pick elevation yourself. The answer becomes `CODING_CLI`.
+2. **Which permission mode.** Reuse the user's established permission mode; otherwise offer the verified interactive preset or bare launch token per Intake. The selected mode becomes `CODING_CLI`.
 3. **How work is isolated.** `worktree`, `branch`, or `shared`; recommend `worktree` whenever two open sub-issues share a repo.
 4. **Leftover tabs and agents** from a previous run of this spec — monitor them, or create alongside.
 

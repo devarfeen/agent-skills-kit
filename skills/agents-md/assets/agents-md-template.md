@@ -1,4 +1,4 @@
-<!-- agents-md marker · v37 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v40 · re-run /agents-md to regenerate -->
 # Agent instructions
 
 [one concise, factual workspace intro inferred from the .code-workspace name and folder scan — no promotional adjectives]
@@ -79,7 +79,6 @@ Skills are ad-hoc tools, not a pipeline: treat every installed skill as availabl
 - Companions are helpers, not authority — repo code, tests, ADRs, `CONTEXT.md`, and user instructions still win.
 - Never assume a companion is installed; if missing, say so and continue with the best local fallback.
 - Use MCPs only for the current task — no browsing unrelated external data. For database MCPs, use the narrowest approved connection, read-only unless the user approves a specific write.
-- Use the highest/elevated/full/YOLO launch presets only when the user explicitly asks for them; prefer an isolated container, VM, dev container, or disposable worktree.
 
 Style and rewriting skills (e.g. unslop) govern free prose only — chat, and doc/PR prose composed freely. Text a skill mandates verbatim — templates, markers, section names, structured field labels, issue-title formats — is emitted exactly as specified; style skills never rewrite it.
 
@@ -201,9 +200,8 @@ Hard rules for every browser mechanism in every runtime — agent-browser, a bui
 - Short explicit timeouts: 3–8 s on every browser command, one outer timeout per flow — never inherit a long default. Clean up spawned wait processes on exit: an orphaned wait blocks the whole session.
 - In agent-browser, the per-command timeout is `AGENT_BROWSER_DEFAULT_TIMEOUT` (ms), read when the session starts; later calls inherit it. Wait on a condition — `wait "<selector>"`, `wait --text`, `wait --url`, or `wait --fn` — or use `wait <ms>` for a known fixed delay. Never `wait --timeout N`: without a condition it ignores N, idles about 30 s, then fails. Warm a documented slow step (cold build) with an HTTP request before the browser flow, so browser commands stay within the default. `batch` takes quoted command arguments or a JSON array on stdin, never plain lines; pass secrets inside the JSON (for example with `jq -n --arg`), never on the command line.
 - Launch options apply only when a session's browser starts: pass `--ignore-https-errors` (or `AGENT_BROWSER_IGNORE_HTTPS_ERRORS=1`) and the timeout on its first command. To change them, close **that session** and reopen it. A warning that a launch flag was ignored means the session never got it: close that session and reopen it before continuing.
-- One command at a time per session, never overlapping. Health-check a reused session first (~2 s URL read); on failure, close and reopen **that session only** — never run `close --all`, which destroys other agents' auth and state; a full reset is the user's call. On a failed flow, fix the waits or selectors and retry in the same session; restart it only for an ignored launch flag, a dead session, or an intended auth reset, and report the reason.
+- One command at a time per session, never overlapping. Health-check a reused session first (~2 s URL read); on failure, close and reopen **that session only** — never run `close --all`, which destroys other agents' auth and state. On a failed flow, fix the waits or selectors and retry in the same session; restart it only for an ignored launch flag, a dead session, or an intended auth reset, and report the reason.
 - Isolate mutation checks: record originals, change one setting, verify, restore before the next — restore even when the flow fails, or the next save persists contaminated fields.
-- Log in once per browser run unless the task covers several accounts or failure paths. Never loop through credentials; report one failed login instead of retrying variants.
 - Prefer stable selectors (`data-test`, CSS) over framework-generated element refs that re-renders invalidate (Livewire, React, …); re-snapshot only after a re-render breaks a ref. Wait on text, routes, and selectors taken from the app's source (templates, translations, `data-test`), never guessed strings — a wait on text that never appears burns the whole timeout.
 - Assert stable state — URL, DOM/component state, or session-visible state — never toast timing or `networkidle`. Use compact JS eval assertions; snapshot only the specific element when its selector is unknown — full-page snapshots are overview only.
 - One interaction flow plus one evidence check per behavior; cross-page persistence and data coverage belong in the project's test suite.
