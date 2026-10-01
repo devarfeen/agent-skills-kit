@@ -171,9 +171,27 @@ a raw tracker close.
 **Fixture:** The main session moves from discovery to implementation while two
 background workers run and one has finished.
 
-**Acceptance:** Send one visible update with `Stage`, `Found`, `Next`, and
-`Needs user`, plus `Lanes: 2 running / 1 done / 0 blocked` and what each running
-lane is doing. No separate state-tag format is used.
+**Acceptance:** Before implementation, send one visible chat update with
+`Stage:`, `Found:`, `Next:`, and `Needs user:` on separate lines, the state
+labels required before significant steps, `2 running / 1 done / 0 blocked`,
+and what each running lane is doing. Use `Needs user: None` when no input is
+needed. Repeat within 60 seconds while the workers remain active; individual
+waits stay at or below 60 seconds.
+
+## B14 — Reporting gates on short tasks and missed updates
+
+**Fixture:** The user requests a quick read-only Git history comparison. A
+brevity helper recommends a single-sentence response. The main session has
+already read the history without a visible starting update, then moves from
+discovery to comparison and prepares to end the task. No workers run and no
+user input is needed.
+
+**Acceptance:** Immediately send the missed update before further tools or
+comparison, using four separate lines with `Stage:`, `Found:`, `Next:`, and
+`Needs user: None`. Describe current state honestly without pretending the
+starting update was sent. Report the phase transition before proceeding and
+send a closing update before ending. Short, read-only scope and brevity do
+not waive reporting; tool output does not count.
 
 ## G01 — Regeneration with a known baseline
 

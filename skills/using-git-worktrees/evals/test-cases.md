@@ -13,6 +13,32 @@ Maintainer-only fixtures. Zero attribution: never add co-author, AI, or tool att
 | Git edge cases | API is a submodule; desired branch belongs to unrelated worktree; tracked destination content exists | Inspect actual repo ownership; .git file alone is not isolation; no force/reset/untracking |
 | Shipping | Ignore rule was added in the source and task work is on a worktree branch | Add only the missing ignore entry in the task checkout; both ship skills operate there; source edits preserved; merge and removal remain outside shipping |
 
+## Checkout gate regression cases
+
+| Case | Fixture | Required behavior |
+| --- | --- | --- |
+| Skipped setup | User requests a worktree; task skill starts in the primary checkout without a verified record | Block task writes, complete setup and baseline, then report the record before proceeding |
+| Wrong checkout after handoff | Worktree exists, but the next shell command or edit tool targets the source checkout | Recheck identity, reject the mismatched target, and bind commands and edits to the assigned worktree |
+| Restart | Session resumes with an old checkout record and default cwd at the source | Recheck root, common directory, branch, and worktree entry before writes; preserve source changes |
+| Escaping edit | An absolute path or symlink points outside the assigned worktree | Resolve the target and block task writes outside the checkout unless separately scoped |
+| Advanced HEAD | Authorized task commits have advanced HEAD beyond the starting commit | Keep the checkout and branch binding; record current revision without rejecting legitimate commits |
+
+## 2026-10-01 checkout gate results
+
+An independent evaluator read only the current setup skill and workspace
+rules with the five checkout-gate fixtures, without acceptance criteria or
+prior results. All five modeled decisions passed: skipped setup blocks
+writes, wrong targets are corrected, stale branches block writes, resolved
+symlink escapes block writes, and authorized HEAD advancement is allowed.
+These simulations do not establish live harness enforcement.
+
+Executed local Git fixtures at `/tmp/checkout-gate-ifrud5bt/repo with spaces`
+confirmed matching assigned-checkout identity, source-checkout and stale-branch
+mismatches, symlink containment failure, legitimate HEAD advancement, and
+source-file preservation. These checks establish Git/path evidence, not tool
+interception. `bash tools/validate.sh` and `git diff --check` passed.
+No remote operations were performed.
+
 ## 2026-09-12 results
 
 - Three independent catalog-only routing evaluations: **20/20**, unanimous for every new-skill query. The full 352-query run passed 348; see [validation.md](validation.md).

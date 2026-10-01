@@ -1,5 +1,7 @@
 # Best Practices: Combining Skills Intentionally
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issues, docs, settings, or comments.
+
 Human-facing teaching guide. Do not load this file into `AGENTS.md`, shims, or model context.
 
 This is the *intended* way to combine the local kit skills with the wider ecosystem. It exists to teach others how these skills fit together — not as a rigid procedure, but as a set of habits that consistently raise the quality of agent-driven work.
@@ -61,7 +63,7 @@ Not every skill lives on the discover→ship line:
 
 - **Project start-off:** `/design-system` runs once per project (see Workflow A) to turn a design system into a real UI library + a preview you verify + a binding `AGENTS.md` rule, and seeds a project-local `<project-slug>-ui-coding` skill. Re-run it to extend the library or, after a page ships, to fold its emergent UI back in.
 - **Porting:** `/port-feature` is a discover→plan variant for bringing a feature that already exists in a reference implementation into a target stack (see Workflow D). It writes a gap map and hands off to `/grill-with-docs`.
-- **Worktree setup:** `/using-git-worktrees` runs when you ask for work in a worktree. It establishes the checkout before the requested task skill runs, then returns control to that task. It is not a required phase for ordinary work.
+- **Worktree setup:** `/using-git-worktrees` runs when you ask for work in a worktree. It establishes the checkout before the requested task skill runs, then returns control to that task. Before task writes, the agent reports the verified checkout record and binds commands and edit paths to it. Handoffs and restarts require checkout identity rechecks; a mismatch blocks writes. This is an instruction gate, not a harness-level write blocker. It is not a required phase for ordinary work.
 
 **UI work has its own discipline.** Once a project has a design system, every UI change consumes its library — never inline markup the library covers. A missing component gets added via `/design-system` (extend) from the reference, or you ask for one. Per-page pixel conformance during feature work is `/pixel-audit`; the cosmetic tail during QA is `/polish-batch`.
 

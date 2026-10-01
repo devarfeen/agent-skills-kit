@@ -320,6 +320,14 @@ Suppose SHOP's repository is `/projects/shop`. The task runs in:
    that checkout. A failed setup blocks task edits. A failing baseline needs
    a decision to proceed unless you already authorized those specific failures.
 
+Before task writes, report the canonical checkout path, repository, branch,
+starting commit, and baseline result. Pass this record to task skills and
+workers. Recheck checkout identity before their first write and after handoffs,
+restarts, or checkout changes. Every task command uses an explicit working
+directory; file edits use absolute paths inside that checkout, with symlinks
+resolved. A mismatch blocks writes until corrected. This instruction gate does
+not install a harness-level write blocker.
+
 In a generated multi-project workspace, keep the main session at the workspace
 root and give task commands or assigned workers the verified worktree path
 and applicable instructions. Check that containers and test runners actually

@@ -1,4 +1,4 @@
-<!-- agents-md marker · v40 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v43 · re-run /agents-md to regenerate -->
 # Agent instructions
 
 [one concise, factual workspace intro inferred from the .code-workspace name and folder scan — no promotional adjectives]
@@ -28,9 +28,12 @@ Assigned local workers may start in the project checkout or worktree named in th
 
 <a id="honest-state-reporting"></a>
 
-- At phase changes, send one short visible update: `Stage`, `Found`, `Next`, `Needs user` — not buried in narration, raw tool output, or pre-tool chatter. After discovery or broad file reads, give it before planning, edits, tests, commits, PRs, or issue updates. While any subagent, background task, or job is active — under any name, in any runtime — the same update adds `Lanes: N running / M done / K blocked` and what each running lane is doing; silent background work is a reporting violation.
+- Before any significant step, anchor state: `[verified]` (proven true), `[current]` (in progress), `[todo]` (not started).
+- Mandatory reporting gate: before the first tool call and before each phase transition, send a visible chat update with `Stage:`, `Found:`, `Next:`, and `Needs user:` on separate lines. Use `None` when no user input is needed. After discovery, investigation, or broad file reads, send this update before planning, edits, tests, commits, PRs, or issue updates. Send a closing update before ending the task. Apply this gate to every task, including short and read-only tasks; brevity, routine work, and skill-specific formats never waive it. Tool output and ordinary narration do not satisfy the gate. If an update was missed, send it immediately before continuing; report actual state without claiming it was sent earlier.
+- During an active phase, send the same update at least every 60 seconds, including while workers or jobs run. Keep individual waits at or below 60 seconds so reporting can continue. State unchanged progress honestly; do not invent findings.
 - Continue within a phase when the next action follows from the request; make phase transitions explicit. Stop only when user input, approval, or a scope decision is needed.
 - Never report work done while any part is skipped, stubbed, or unverified. Name the check layers run and not run per [Goal-driven execution](#goal-driven-execution); a read-only task says `Verification: not applicable` or lists what it checked. Surface constraints, risks, and assumptions up front.
+- While any subagent, background task, or job is active — under any name, in any runtime — every visible update states `N running / M done / K blocked` and what each running lane is doing. Work running silently in the background is a reporting violation, exactly like claiming unverified work is done.
 - After a successful task, use the active skill's required closing format. If none exists, end with `Recommended next step:` and one useful follow-up with its reason.
 
 **Why:** silent gaps and premature "done" are how broken work ships.
@@ -157,6 +160,7 @@ One useful independent task is enough to delegate. Every worker must make a conc
 
 - **On demand:** read-only lanes never get a worktree; a writer gets one just in time, only for concurrent isolated writes, without separate approval.
 - **User-asked isolation:** set up a requested worktree or branch before the first edit — a worktree through `/using-git-worktrees` when installed, before any third-party task skill; otherwise with Git, preserving the source changes. A branch-only request stays a branch. A failed setup blocks task edits; never fall back to the original checkout. If the user does not name the form ("isolate this"), ask once per [Decision options](#decision-options) — worktree (`Recommended`), new branch, or current checkout — and edit nothing meanwhile.
+- **Checkout gate:** when worktree isolation is required, creation alone is insufficient. Before task writes, verify and report the canonical checkout path, owning repository and common Git directory, branch or authorized detached state, starting commit, and baseline result. Pass that record and applicable instructions to task skills and workers. Before their first write and after handoffs, restarts, or checkout changes, recheck the Git root, common directory, branch, and worktree-list entry. Use explicit working directories for task commands and absolute edit paths inside the verified checkout, resolving symlinks before writes. A mismatch blocks dependent writes; never fall back to the source checkout. Only the narrow source `.gitignore` setup edit is allowed outside it without separate scope. Authorized commits may advance HEAD; the starting commit remains provenance.
 - **Cleanup:** remove worker worktrees after verified integration. Remove a user-requested worktree only on an authorized cleanup request, once its work is integrated (a pushed branch or closed issue is not proof), nothing still uses the checkout, and needed tracked, untracked, and ignored files are preserved. Keep its branch unless the work is retained elsewhere; never force a removal. Remote branch deletion needs its own scope.
 
 ### 12. Systematic debugging

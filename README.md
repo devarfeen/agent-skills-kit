@@ -1,5 +1,7 @@
 # Agent Skills Kit
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issues, docs, settings, or comments.
+
 A collection of reusable **skills** for six supported AI coding CLIs:
 Codex CLI, Claude CLI, Antigravity CLI, Cursor CLI, Opencode CLI, and
 GitHub Copilot CLI. No other agent runtime is supported by this kit.
@@ -71,6 +73,11 @@ Then ask: **“Fix checkout in SHOP in a worktree.”** You can also invoke
 `<shop-repo>/.worktrees/<task-name>`, adds `/.worktrees/` to the repo's `.gitignore`,
 and checks the checkout before returning to the requested task. Each affected
 project gets its own worktree. A request for a branch alone does not trigger it.
+
+The model can invoke this skill automatically. Before task writes, it reports
+the verified checkout, branch, starting commit, and baseline. Commands and edit
+paths stay bound to that checkout; handoffs and restarts require a fresh check.
+This is an instruction gate, not a harness-level write blocker.
 
 Use `/commit-push-pr` to ship the worktree branch for review. It commits,
 pushes, and opens a PR; merging is a later step. `/commit-push-close` closes

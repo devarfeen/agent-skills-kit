@@ -2,6 +2,35 @@
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
+## v43 checkout gate regression
+
+Date: 2026-10-01. The worktree rule now requires a reported checkout record,
+binding for command directories and edit paths, and identity rechecks before
+writes after handoffs or restarts. An independent evaluator read only the
+current setup skill and template plus five fixtures; all five modeled
+responses passed. Live local Git/path checks passed separately. Full evidence
+and limits are recorded in
+[worktree behavior checks](../../using-git-worktrees/evals/test-cases.md#2026-10-01-checkout-gate-results).
+No harness-level write blocker is installed or claimed.
+
+## v42 reporting gate regression
+
+Date: 2026-10-01. Method: independent evaluator read the current template and
+only the B13/B14 fixtures, without acceptance checks or prior results. These
+are simulations, not evidence of guaranteed compliance in every runtime.
+
+| Case | Observed decisions | Result |
+| :--- | :--- | :--- |
+| B13 | Update before implementation with four separate fields, state labels, worker counts and assignments; repeat within 60 seconds, bound waits, report completions, and verify combined work before closing. No unnecessary approval pause. | PASS |
+| B14 | Immediately acknowledge the missed starting update before comparison, combine recovery with the phase transition, use `Needs user: None`, and send a closing update. Brevity and read-only scope do not waive the gate. | PASS |
+
+Executed separately: `bash tools/validate.sh` and `git diff --check` passed.
+A temporary local Git fixture demonstrated an ignored project-local worktree
+at the recorded base, shared history with distinct checkout metadata, isolated
+edits, and unchanged source branch, index, unstaged edits, and untracked file.
+No remote operations were performed. The fixture remains under
+`/tmp/worktree-demo-r4hqgl79/demo repo/.worktrees/isolation-demo` for inspection.
+
 ## v37 note — check layers and browser scope
 
 Date: 2026-09-29. Rule 10 gains a check-layer choice (lowest layer that can

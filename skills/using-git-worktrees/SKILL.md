@@ -20,6 +20,7 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 - **Preserve existing work.** Inspect staged, unstaged, and untracked changes in both the source and any reused checkout. Leave unrelated changes in place. Uncommitted source changes do not appear in a new worktree; if the task needs them, resolve a scoped transfer with the user before proceeding. Never stash, reset, overwrite, or copy the whole checkout as a shortcut.
 - **Keep isolation binding.** A permission error, occupied branch, or failed setup is a blocked worktree step. Report it and pause dependent edits; never fall back to writing in the original checkout without the user's explicit change of scope.
 - **Keep shipping separate.** Setup never stages or commits, even to record an ignore rule. It does not merge, push, delete branches, or remove worktrees. Leave the worktree available to the caller; later shipping and cleanup follow their own authorized workflow. For user-requested cleanup, verify integration and preserve needed tracked, untracked, and ignored files first; a push or issue closure alone is not integration proof. Cleanup is outside this setup skill.
+- **Gate task writes.** Creation alone does not prove isolation. Before task edits, record and report the canonical checkout path, owning repository and common Git directory, branch or authorized detached state, starting commit, and baseline result. Pass this record and applicable instructions to every task skill and assigned worker. Before the first write and after a handoff, restart, or checkout change, verify the current Git root, common directory, branch, and worktree-list entry against that record. A mismatch blocks dependent writes until corrected; never fall back to the source checkout. Use an explicit working directory for every task shell command and absolute paths inside the verified checkout for file-edit tools; resolve symlinks before writes. Confirm containers and test runners use that checkout. Only the narrow source `.gitignore` setup edit is permitted outside it by this skill; other outside writes need their own scope. Subsequent authorized commits may advance HEAD; retain the starting commit as provenance rather than requiring HEAD to stay fixed.
 - **Keep context attached.** Capture applicable workspace and project instructions before switching. A worktree may live outside their filesystem scope; pass those instructions and the verified checkout to any already-authorized local worker. Creating a worktree does not authorize delegation.
 
 ## Workflow
@@ -76,7 +77,7 @@ Return at most three bullets, with the shortest decisive verification evidence:
 
 - Worktree: `/workspace/api/.worktrees/fix-tax`; branch `fix-tax`; base `a1b2c3d`; newly created.
 - Baseline: `bash tools/validate.sh` in that checkout — passed; source branch and pre-existing edits preserved.
-- Handoff: use this checkout for the requested tax fix; preserve workspace instructions. Report any uncommitted source `.gitignore` edit for later shipping.
+- Handoff: bind task commands and edit paths to this verified checkout; recheck identity before the first write and after handoffs or restarts. Preserve workspace instructions; report source-only `.gitignore` edits.
 
 On a blocker, replace the handoff with the blocked step and needed input. Stop this setup skill here. If invoked within an already-authorized task, return control so that task continues in the verified checkout without another permission prompt. A setup-only request ends here; recommend at most one next skill, never auto-chain a new workflow.
 
@@ -85,4 +86,5 @@ On a blocker, replace the handoff with the blocked step and needed input. Stop t
 - [ ] Worktree-list entry, canonical path, branch/detached state, and revision recorded and matched to the task
 - [ ] Owning repo `.gitignore` entry and destination ignore evidence captured; source branch and changes checked after setup
 - [ ] Setup and baseline command results captured from the destination, or the exact blocker reported
-- [ ] Caller has the checkout and applicable instructions; no task edits began before setup passed or a baseline exception was authorized
+- [ ] Caller and assigned workers have the checkout record and applicable instructions; task writes are bound to the verified destination, with rechecks after handoffs or restarts
+- [ ] No task edits began before setup passed or a baseline exception was authorized
