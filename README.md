@@ -123,14 +123,14 @@ install commands are [grouped by source](#global-install-commands) below the tab
 
 ### Global install commands
 
-Grouped by GitHub source. Omit `-g` for project scope. Do not use `--all` or a
-long `--agent` list (empty `~/.<tool>` homes). Large repos: one command, every
-skill name after `-s`.
+Grouped by author or org. Omit `-g` for project scope. Do not use `--all` or a
+long `--agent` list (empty `~/.<tool>` homes). To install **every** skill in a
+repo without naming them: `-s '*'`.
 
-#### [devarfeen/agent-skills-kit](https://github.com/devarfeen/agent-skills-kit) (this repo — all 26 skills)
+#### [devarfeen/agent-skills-kit](https://github.com/devarfeen/agent-skills-kit) (this repo)
 
 ```bash
-npx skills add devarfeen/agent-skills-kit -g -y -s agents-md design-system feature-discovery port-feature feature-prompt tdd-loop orchestrate-herdr pixel-audit polish-batch integration-contract agentic-qa qa-escape ci-loop risk-review commit-push-close commit-push-pr pr-feedback staging-fix deploy-watch local-to-staging staging-to-production release-notes using-git-worktrees factory incident-triage writing-kit-skills
+npx skills add devarfeen/agent-skills-kit -g -y -s '*'
 ```
 
 ### Companion install commands (global)
@@ -143,22 +143,21 @@ Credited third-party skills, grouped by source repo.
 npx skills add anthropics/skills -g -y -s mcp-builder skill-creator frontend-design
 ```
 
-#### [mattpocock/skills](https://github.com/mattpocock/skills) (all credited Matt skills)
+#### [mattpocock/skills](https://github.com/mattpocock/skills)
 
 ```bash
-npx skills add mattpocock/skills -g -y -s ask-matt claude-handoff code-review codebase-design diagnosing-bugs domain-modeling git-guardrails-claude-code grill-me grill-with-docs grilling handoff implement implement-spec improve-codebase-architecture loop-me migrate-to-shoehorn pr prototype research retro scaffold-exercises setup-matt-pocock-skills setup-pre-commit setup-ts-deep-modules tdd teach to-questionnaire to-spec to-tickets triage wait-what wayfinder wizard writing-beats writing-for-agents writing-fragments writing-shape
+npx skills add mattpocock/skills -g -y -s '*'
 ```
 
-#### [vercel-labs/agent-browser](https://github.com/vercel-labs/agent-browser)
+#### Vercel Labs
+
+[`agent-browser`](https://github.com/vercel-labs/agent-browser) and
+[`find-skills`](https://github.com/vercel-labs/skills) live in two repos; install
+both:
 
 ```bash
-npx skills add vercel-labs/agent-browser -s agent-browser -g -y
-```
-
-#### [vercel-labs/skills](https://github.com/vercel-labs/skills)
-
-```bash
-npx skills add vercel-labs/skills -s find-skills -g -y
+npx skills add vercel-labs/agent-browser -g -y -s agent-browser
+npx skills add vercel-labs/skills -g -y -s find-skills
 ```
 
 #### [cursor/plugins](https://github.com/cursor/plugins)

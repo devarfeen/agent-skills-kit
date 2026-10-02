@@ -589,6 +589,8 @@ for bash in re.findall(r"```bash\n(.*?)```", comp.group(1), re.S):
         if f"github.com/{src}" not in credits:
             print(f"source {src} is installed but its repo URL is not credited")
         for name in names:
+            if name in ("*", "'*'"):
+                continue
             if f"`{name}`" not in credits:
                 print(f"companion `{name}` ({src}) is installed but not named in the credits")
 PYEOF
