@@ -573,11 +573,8 @@ if not comp or not credits:
 credits = credits.group(1)
 def install_skills(line):
     line = line.strip()
-    m = re.match(r"npx skills add (\S+) -g -y -s (.+)$", line)
+    m = re.match(r"npx skills add (\S+) -g --skill (.+)$", line)
     if not m:
-        m = re.match(r"npx skills add (\S+) -s (\S+) -g -y$", line)
-        if m:
-            return m.group(1), [m.group(2)]
         return None, []
     return m.group(1), m.group(2).split()
 

@@ -47,7 +47,7 @@ agent-skills-kit/
 ## Installing a Skill
 
 ```bash
-npx skills add devarfeen/agent-skills-kit -s <skill-name> -g -y
+npx skills add devarfeen/agent-skills-kit -g --skill <skill-name>
 ```
 
 Omit `-g` to install into the current project instead of user-global
@@ -125,12 +125,12 @@ install commands are [grouped by source](#global-install-commands) below the tab
 
 Grouped by author or org. Omit `-g` for project scope. Do not use `--all` or a
 long `--agent` list (empty `~/.<tool>` homes). To install **every** skill in a
-repo without naming them: `-s '*'`.
+repo without naming them: `--skill '*'`.
 
 #### [devarfeen/agent-skills-kit](https://github.com/devarfeen/agent-skills-kit) (this repo)
 
 ```bash
-npx skills add devarfeen/agent-skills-kit -g -y -s '*'
+npx skills add devarfeen/agent-skills-kit -g --skill '*'
 ```
 
 ### Companion install commands (global)
@@ -140,13 +140,13 @@ Credited third-party skills, grouped by source repo.
 #### [anthropics/skills](https://github.com/anthropics/skills)
 
 ```bash
-npx skills add anthropics/skills -g -y -s mcp-builder skill-creator frontend-design
+npx skills add anthropics/skills -g --skill mcp-builder skill-creator frontend-design
 ```
 
 #### [mattpocock/skills](https://github.com/mattpocock/skills)
 
 ```bash
-npx skills add mattpocock/skills -g -y -s '*'
+npx skills add mattpocock/skills -g --skill '*'
 ```
 
 #### Vercel Labs
@@ -156,44 +156,44 @@ npx skills add mattpocock/skills -g -y -s '*'
 both:
 
 ```bash
-npx skills add vercel-labs/agent-browser -g -y -s agent-browser
-npx skills add vercel-labs/skills -g -y -s find-skills
+npx skills add vercel-labs/agent-browser -g --skill agent-browser
+npx skills add vercel-labs/skills -g --skill find-skills
 ```
 
 #### [cursor/plugins](https://github.com/cursor/plugins)
 
 ```bash
-npx skills add cursor/plugins -g -y -s blast-radius show-me-your-work unslop
+npx skills add cursor/plugins -g --skill blast-radius show-me-your-work unslop
 ```
 
 #### [github/awesome-copilot](https://github.com/github/awesome-copilot)
 
 ```bash
-npx skills add github/awesome-copilot -s boost-prompt -g -y
+npx skills add github/awesome-copilot -g --skill boost-prompt
 ```
 
 #### [google-labs-code/stitch-skills](https://github.com/google-labs-code/stitch-skills)
 
 ```bash
-npx skills add google-labs-code/stitch-skills -s enhance-prompt -g -y
+npx skills add google-labs-code/stitch-skills -g --skill enhance-prompt
 ```
 
 #### [herdrdev/herdr](https://github.com/herdrdev/herdr)
 
 ```bash
-npx skills add herdrdev/herdr -s herdr -g -y
+npx skills add herdrdev/herdr -g --skill herdr
 ```
 
 #### [pbakaus/impeccable](https://github.com/pbakaus/impeccable)
 
 ```bash
-npx skills add pbakaus/impeccable -s impeccable -g -y
+npx skills add pbakaus/impeccable -g --skill impeccable
 ```
 
 #### [sickn33/agentic-awesome-skills](https://github.com/sickn33/agentic-awesome-skills)
 
 ```bash
-npx skills add sickn33/agentic-awesome-skills -s docker-expert -g -y
+npx skills add sickn33/agentic-awesome-skills -g --skill docker-expert
 ```
 
 ### Working in a worktree
@@ -201,7 +201,7 @@ npx skills add sickn33/agentic-awesome-skills -s docker-expert -g -y
 Install the companion with:
 
 ```bash
-npx skills add devarfeen/agent-skills-kit -s using-git-worktrees -g -y
+npx skills add devarfeen/agent-skills-kit -g --skill using-git-worktrees
 ```
 
 Then ask: **“Fix checkout in SHOP in a worktree.”** You can also invoke
