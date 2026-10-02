@@ -393,7 +393,11 @@ How to read it:
 - **Blocked units come first.** For a spec with several units, `QA_RETURNED`, `DEPLOY_FAILED`, `CI_STUCK`, `QA_STUCK`, `CHANGES`, and `UNKNOWN` are listed before healthy ones. Healthy units follow oldest first, and one that has sat in a state for more than 3 days is flagged `stalled`.
 - **Incidents sit outside the path.** Use `/incident-triage`, then re-enter at `BUILDING` with the fix ticket it proposes.
 
-### Example: a new task from the start
+---
+
+## 9. Workflow G — New Task Through The Factory
+
+Start a brand-new task under the factory and follow its suggestions from idea to ready-for-owner. It uses the [factory state machine](#factory-state-machine) from Workflow F.
 
 You have an idea and nothing written down yet. Every `/factory` call below only reads state and suggests; you run each suggested skill yourself, then ask `/factory` again.
 
@@ -413,7 +417,7 @@ Pass the spec (`/factory PRWL-142`) to see every ticket at once, blocked ones fi
 
 ---
 
-## 9. Weekly Cadence
+## 10. Weekly Cadence
 
 - **`/release-notes`** — at the end of the week, generate a PM-friendly summary of what shipped, from the week's commits and closed work. Saved for handoff to your project manager. It reads each change's diff rather than trusting commit subjects, can cover a version range between local tags (`v1.3.0..v1.4.0`), and adds an *Action needed* line when users or ops must do something.
 - **Graphify AST refresh** *(when installed)* — `graphify update` loop per matrix folder + re-merge after active coding weeks (see [GUIDE.md](GUIDE.md#graphify-in-multi-project-workspaces)).
@@ -421,7 +425,7 @@ Pass the spec (`/factory PRWL-142`) to see every ticket at once, blocked ones fi
 
 ---
 
-## 10. Anti-Patterns
+## 11. Anti-Patterns
 
 What separates intentional use from vibe coding:
 
@@ -459,7 +463,7 @@ What separates intentional use from vibe coding:
 
 ---
 
-## 11. Quick Reference
+## 12. Quick Reference
 
 | Workflow | Order |
 | :--- | :--- |
@@ -469,6 +473,7 @@ What separates intentional use from vibe coding:
 | **D · Port a feature** | `/port-feature` → `/grill-with-docs` → `/to-spec` → `/to-tickets` → `/implement` *(or `/tdd-loop`)* → `/pixel-audit` → `/commit-push-*` |
 | **E · Large effort** *(fog)* | `/wayfinder` (chart) → `/wayfinder` (work, one ticket per session) → map exhausted → `/to-spec` → rejoins B |
 | **F · After the PR opens** | [`/factory`](#factory-state-machine) to locate the gate → `/ci-loop` → `/agentic-qa` → `/pr-feedback` → `/risk-review` → merge to `staging` → `/deploy-watch` → ready for owner |
+| **G · New task through the factory** | [`/factory start`](#9-workflow-g--new-task-through-the-factory) → follow each suggestion → `/factory <spec>` again after every step → ready for owner |
 | **Bug found by human QA** | `/qa-escape` → `/tdd-loop` (failing test first) → `/commit-push-*` |
 | **Staging bug / outage** | `/staging-fix` (PR to `staging`) · `/incident-triage` (read-only) |
 | **Many tickets in parallel** | `/orchestrate-herdr <spec>` |
