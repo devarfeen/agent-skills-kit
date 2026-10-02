@@ -1,12 +1,12 @@
 {
  "_comment": "sha256 of each skill's frontmatter description as it stood at the commit recorded in that skill's evals.json last_run. tools/validate.sh check 10 fails when a live description no longer matches -- meaning the recorded eval result is stale and the evals must be re-run. Regenerate with score.py --write-snapshot after a passing run.",
- "recorded_at_commit": "65493c9b209593ee1cd59dffd772b210d8b9ed41 + uncommitted changes",
- "catalog_sha256": "4932d24774e85921665cadd2533d26cc353133fe20c6a7792e7fcc8cd22fb6d0",
- "manifest_sha256": "ec5cf79edbd1b1164755e3feea14a6157ef279442eb06b7a4f732cede338920d",
+ "recorded_at_commit": "f2246e46f5af8e82e8a226745beeac82347c365a + uncommitted changes",
+ "catalog_sha256": "bdf9f65c201ff6e1f6a2bd7c6821866890d3f5b622ec6ec007431f2ea4ea7876",
+ "manifest_sha256": "82baffb049e9a8387d15ac45365b3be5c2086e009579cc2d4581bd27ae303a74",
  "judge_sha256": [
-  "0c69047fd5b2fb7f62a0a564241811c8b248d1ade10be5e026ae51cb48e00fd2",
-  "0e242b7d095bb98e95758a5a0c6784abc59aa994e82bd75100fce8a0c451dfdd",
-  "0c69047fd5b2fb7f62a0a564241811c8b248d1ade10be5e026ae51cb48e00fd2"
+  "a7641bcf99fc84d101e4b9666c20136008fd70a507659a74c84be6b7f6d2e4e4",
+  "39b1e4f7bf48844cfba702437a12b64c02ae5213fbb7763695219342ac5f528a",
+  "3c6cb3a5197ef90a37f7f5436519fe458d7351d55bae2e50c43695ded044e4a4"
  ],
  "descriptions_sha256": {
   "agentic-qa": "43b87ff54eafc8ee0bea2ffcc1a3f20a9d8ed406bbb691523c360c5f7a904078",
@@ -21,6 +21,7 @@
   "feature-prompt": "261e48dedfcd7d1ecc33f699d1fbb83a5385a6f5acec2197a60e5b10ea0f615b",
   "incident-triage": "7786f43d43ca7de188315b9641b60534e68221de23623475db080b59f5827fa1",
   "integration-contract": "1f551e4c9020a6125143e27e8ac72d7bf954c143d4682fa206f83ba40ec31995",
+  "local-to-staging": "e5b1c23d515af218e1c9f8f9a9a874d17e6929838ca8a2689f5d52cc9f2140cb",
   "orchestrate-herdr": "273656e39056530f90676eaed7a8a1de38e8a191e5fe0bf3f7b14bf99ad938c4",
   "pixel-audit": "cb9ca035623e4190ba8b2ee0cf9b79e1f09b43eb2776780ab19c1eb31f0f81db",
   "polish-batch": "711486d597a13f9f7eae20a45905813d5402fa398c35cc832dc651187f82ed32",
@@ -30,6 +31,7 @@
   "release-notes": "fa1ca3c2cb5cd7c23d8d922e3c8a80f88066ae7fd3d9c3f16c3d1bc14028cc96",
   "risk-review": "866c3f821b790ac1947b6356b5670792346a0311c6fca5b7966cb06d70b7ae3d",
   "staging-fix": "cf82058aac247a9460920012d2d7c219f6e0fff518fd6c9e33db4989cc7fb641",
+  "staging-to-production": "e914b319c5875cdd993be7594e83e37be5e041a72b40b76ab410a6f065f761ec",
   "tdd-loop": "19b65a7667fd95f1f927ebd81935b8f6fdb0ab07526b84933ddf61cbbd3c83c3",
   "using-git-worktrees": "690d0d7c9a5689564e993ad20675eabf9dee5f83982f9c0f6c36975ee95787af",
   "writing-kit-skills": "05a23ee63fb1ec548e6cc3ecf891527375c01325cb311af9895c9827fab526b2"

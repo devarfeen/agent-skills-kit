@@ -93,5 +93,12 @@
       "expect": "no-trigger",
       "route": "/ci-loop"
     }
-  ]
+  ],
+  "last_run": {
+    "date": "2026-10-03",
+    "method": "3 independent fresh catalog-only judges over the full 490-query mixed set, deterministic shuffle; each judge had a private folder with its own copy of the judge prompt, catalog, and query list and was instructed to read nothing else, with no repository access (instruction-level isolation, not a sandbox; transcripts checked to reference only their own folder beyond session-injected context).",
+    "result": "490/490 pass — majority vote passed every query; 488 unanimous, 2 passed 2/3.",
+    "judge_model": "Claude Opus 5.5 (claude-opus-5-5), 3 independent Claude Code Agent-tool subagents",
+    "catalog": "tools/trigger-evals/build-catalog.sh (live kit descriptions 2026-10-03, 26 kit skills including local-to-staging and staging-to-production) + tools/trigger-evals/catalog-externals.md snapshot dated 2026-09-28; judged tree f2246e46f5af8e82e8a226745beeac82347c365a"
+  }
 }
