@@ -270,6 +270,7 @@ eval pass.
 | Deprecating a skill (retained for reference) | Start its manifest `note` with `deprecated` — a `deprecated`-prefixed note excludes the row from generated gradient/companion tables · mark its README table row · add a STATUS banner at the top of its `SKILL.md` |
 | `agents-md` templates or generation rules (anything that changes what it emits — routine manifest row additions don't count) | Bump the version marker in `skills/agents-md/` (all three occurrences: the rule text in `SKILL.md` and the first line of each template asset) |
 | Companion list | `skills-manifest.md` companions table · `GUIDE.md` human copy · relevant README/BEST-PRACTICES pointers |
+| A credited or globally installed companion skill (README "Credits And Provenance") | The `COMPANIONS` list in `tools/install-skills.sh` — same source and skill names |
 | Worktree placement, handoff, or cleanup boundary | `using-git-worktrees/SKILL.md` · `agents-md` template/routing · both ship-policy copies · README/GUIDE/BEST-PRACTICES usage |
 | Elevated-permission presets | `skills/agents-md/references/tool-calling.md` (model-facing source) and `GUIDE.md` (human-facing copy) |
 | Any runtime fact in `tool-calling.md`, a `*-tools.md`, `memory-global-defaults.md`, or `skills/tdd-loop/references/test-commands.md` | Re-verify the claim against that tool's current official docs in the same PR — CLI flags, tool names, and test-runner syntax age fast; don't propagate a stale fact into more files |

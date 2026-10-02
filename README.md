@@ -49,6 +49,22 @@ Updating to the latest version:
 npx skills update https://github.com/devarfeen/agent-skills-kit --skill <skill-name>
 ```
 
+To install several at once, clone the repo and run the install script. It
+reads the groups from `.claude-plugin/marketplace.json` and installs globally
+to every agent the `skills` CLI detects:
+
+```bash
+bash tools/install-skills.sh                            # every kit skill
+bash tools/install-skills.sh --group factory-workflow   # one group
+bash tools/install-skills.sh --companions               # kit + credited companion skills
+bash tools/install-skills.sh --no-kit --companions      # companions only
+bash tools/install-skills.sh --project --dry-run        # print project-scope commands
+```
+
+`--local` installs the kit skills from your checkout instead of GitHub. The
+companion list mirrors [Credits And Provenance](#credits-and-provenance);
+Graphify is installed separately.
+
 The `skills` CLI fetches the named subfolder from this repo and installs it
 into your agent's local skills directory. After install, invoke a skill with
 `/skill-name` — most kit skills mark themselves for explicit invocation
