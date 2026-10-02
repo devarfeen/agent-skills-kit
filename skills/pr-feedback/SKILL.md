@@ -2,6 +2,8 @@
 name: pr-feedback
 disable-model-invocation: true
 description: "Address reviewer feedback on an existing open GitHub PR — fetch every review comment and thread, group them into a numbered accept / pushback / needs-discussion list, wait for the user's approval, apply the accepted fixes, ship through /commit-push-pr on the same branch, and reply to each addressed thread citing the fixing commit SHA. Use when the user says \"address the review comments\", \"handle PR feedback\", \"respond to the reviewer\", or wants reviewer comments on their open PR worked through. Reviewing a PR yourself routes to /code-review; opening a new PR routes to /commit-push-pr."
+metadata:
+  version: "0.0.1"
 ---
 
 # pr-feedback
@@ -47,7 +49,7 @@ gh api graphql -f query='query { repository(owner:"<owner>", name:"<repo>") {
 
 Re-query `reviewThreads` with its own `after: <endCursor>` until exhausted. For each thread whose comments have another page, query that thread by its node ID and paginate its `comments` connection independently. Deduplicate by comment ID.
 
-Also collect top-level review bodies and issue-style PR comments with `gh api --paginate repos/<owner>/<repo>/pulls/<num>/reviews` and `gh api --paginate repos/<owner>/<repo>/issues/<num>/comments`. Skip threads already resolved.
+Also collect top-level review bodies and issue-style PR comments with `gh api --paginate repos/<owner>/<repo>/pulls/<num>/reviews` and `gh api --paginate repos/<owner>/<repo>/issues/<num>/comments`. Skip threads already resolved. An unresolved thread whose last comment is not from you is awaiting an answer, even if you replied earlier — a reviewer who repeats a point reopens it.
 
 ### 3. Classify into a numbered list
 
@@ -65,7 +67,7 @@ Wait for the combined approval. The user may reclassify: an overruled pushback b
 
 ### 5. Apply the accepted fixes
 
-Work through the accepted items on the head branch and run the relevant tests. Name the command and quote its passing tail in the PR's how-to-test plan. Compare suspected pre-existing failures against a clean checkout of the recorded head; do not stash unrelated user changes. Record confirmed baseline failures; failures introduced by the fixes stop the item. No tests cover the touched code → say so. Park scope-creep items as needs-discussion and continue on the rest.
+Work through the accepted items on the head branch. A behavioural fix starts with a test of the reviewer's scenario that fails on the recorded head; quote that failure, then fix. Run the commands the PR's CI workflow runs — read them from `.github/workflows/` or the last run's log — not guessed ones. Name the command and quote its passing tail in the PR's how-to-test plan. Compare suspected pre-existing failures against a clean checkout of the recorded head; do not stash unrelated user changes. Record confirmed baseline failures; failures introduced by the fixes stop the item. A fix that no test can cover (wording, comments, config) → say why. Park scope-creep items as needs-discussion and continue on the rest.
 
 ### 6. Ship through /commit-push-pr
 
@@ -107,6 +109,8 @@ Then `Suggested next skills (optional)` — 1–3 advisory items (e.g. /code-rev
 
 - [ ] Threads re-fetched after replying: every accepted item's thread carries a reply citing a SHA that `git branch -r --contains <sha>` places on the PR's head branch
 - [ ] No thread replied to or resolved whose disposition was not fixed-and-pushed or user-approved wontfix — checked against the step 4 disposition list
+- [ ] After the re-fetch, every unresolved thread whose last comment is not yours is a needs-discussion item named in the report
+- [ ] Each behavioural fix names its test, quoted failing on the recorded head and passing on the pushed head
 - [ ] Refresh the actual PR head remote; `git merge-base --is-ancestor <recorded-sha> <fetched-head-ref>` succeeds, proving the pre-run history remains
 - [ ] Pushed commits, replies, and PR edits read back with no attribution text
 - [ ] Final report line printed and the `Suggested next skills (optional)` footer appended

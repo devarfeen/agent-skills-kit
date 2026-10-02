@@ -1,0 +1,76 @@
+{
+  "skill": "risk-review",
+  "kind": "trigger-eval",
+  "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
+  "queries": [
+    {
+      "q": "Risk-review PR 87",
+      "expect": "trigger"
+    },
+    {
+      "q": "Is this PR safe to auto-merge?",
+      "expect": "trigger"
+    },
+    {
+      "q": "Run the specialist reviewers — security, data, infra — on PR 52 and classify its risk",
+      "expect": "trigger"
+    },
+    {
+      "q": "Does PR 19 need an engineer to look at it, or can it merge on its own?",
+      "expect": "trigger"
+    },
+    {
+      "q": "Classify the risk of this pull request before it merges",
+      "expect": "trigger"
+    },
+    {
+      "q": "Check PR 64 for migration and auth risk and gate the merge",
+      "expect": "trigger"
+    },
+    {
+      "q": "CI is green on PR 31 — decide whether it goes to auto-merge",
+      "expect": "trigger"
+    },
+    {
+      "q": "Security and data review on my open PR, then tell me low or high risk",
+      "expect": "trigger"
+    },
+    {
+      "q": "Review this branch against our coding standards and the spec",
+      "expect": "no-trigger",
+      "route": "/code-review"
+    },
+    {
+      "q": "Respond to the reviewer comments on PR 8",
+      "expect": "no-trigger",
+      "route": "/pr-feedback"
+    },
+    {
+      "q": "Fix CI on PR 87",
+      "expect": "no-trigger",
+      "route": "/ci-loop"
+    },
+    {
+      "q": "Prove what this change could break beyond the diff",
+      "expect": "no-trigger",
+      "route": "blast-radius"
+    },
+    {
+      "q": "Merge PR 87 now",
+      "expect": "no-trigger",
+      "route": "none"
+    },
+    {
+      "q": "Open a PR for this issue",
+      "expect": "no-trigger",
+      "route": "/commit-push-pr"
+    }
+  ],
+  "last_run": {
+    "date": "2026-10-03",
+    "method": "3 independent fresh catalog-only judges over the full 450-query mixed set, deterministic shuffle; each judge had a private folder with its own copy of the judge prompt, catalog, and query list and was instructed to read nothing else, with no repository access (instruction-level isolation, not a sandbox; transcripts checked to reference only their own folder).",
+    "result": "450/450 pass — majority vote passed every query; 443 unanimous, 7 passed 2/3.",
+    "judge_model": "Claude Opus 5.5 (claude-opus-5-5), 3 independent Claude Code Agent-tool subagents",
+    "catalog": "tools/trigger-evals/build-catalog.sh (live kit descriptions 2026-10-03, 24 kit skills including agentic-qa and qa-escape) + tools/trigger-evals/catalog-externals.md snapshot dated 2026-09-28; judged tree 65493c9b209593ee1cd59dffd772b210d8b9ed41 + uncommitted changes"
+  }
+}

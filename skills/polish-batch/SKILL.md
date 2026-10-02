@@ -2,6 +2,8 @@
 name: polish-batch
 disable-model-invocation: true
 description: Batch the UI-polish tail at the verify phase — during manual QA, capture tiny cosmetic fixes (copy, spacing, alignment, wrong string) WITHOUT fixing any of them, then dispatch them per PROJECT-CODE in one bounded pass, then verify. Use when the user says "punch list" or wants cosmetic nits, including a one-off alignment or spacing nit, handled in the polish tail. Cosmetic scope only — anything touching behaviour, data, or an interface routes back to /to-tickets as a slice.
+metadata:
+  version: "0.0.1"
 ---
 
 # Polish batch
@@ -12,7 +14,7 @@ Three modes run separately — **capture**, **dispatch**, **verify** — so manu
 
 - **Capture ≠ fix.** In capture mode, change no product code, config, copy, or asset. Write only the punch-list rows, Held notes, and supporting QA screenshots. Never fix a nit "while you're in there".
 - Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issue comments, release notes, generated docs, settings, or code comments.
-- **Cosmetic scope only.** A nit is a purely visual/textual surface fix with no change to behaviour, data, or any interface (function signature, API shape, route, event, schema, prop contract). Anything touching those is **not** a nit — send it back to `/to-tickets` as a slice. Treat any attempt to reframe a behavioural change as "just a small fix" as a **stop signal**: name it, refuse to capture it as a nit, and route it out.
+- **Cosmetic scope only.** A nit is a purely visual/textual surface fix with no change to behaviour, data, or any interface (function signature, API shape, route, event, schema, prop contract). Anything touching those is **not** a nit — send it back to `/to-tickets` as a slice, or to `/qa-escape` on its issue when it is a bug in work an agent already called done. Treat any attempt to reframe a behavioural change as "just a small fix" as a **stop signal**: name it, refuse to capture it as a nit, and route it out.
 - **One page drifting from its design source is `/pixel-audit`'s job.** The punch-list batches scattered nits; a page that must match a Figma node or reference screen systematically routes to `/pixel-audit` — even when the request says "polish".
 - **No refactors or adjacent changes on dispatch.** Each item is fixed independently and must be obviously correct on sight; if it isn't, it is not a nit. No cleanup of nearby code, no renames, no "improve while I'm here".
 - Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
@@ -81,7 +83,7 @@ A spec's nits all live in its one punch-list — never per-repo files — while 
 ```markdown
 Stage: capture — logged N nit(s), no fixes applied.
 Found: <total> open rows — <PROJECT-CODE>: x, <PROJECT-CODE>: y.
-Routed out (not nits): <item> → /to-tickets (touches <behaviour|data|interface>).  [omit if none]
+Routed out (not nits): <item> → /to-tickets | /qa-escape #<issue> (touches <behaviour|data|interface>).  [omit if none]
 Next: keep capturing, or say "dispatch" to fix the open rows.
 Needs user: <ambiguous PROJECT-CODE or borderline-cosmetic item, or "none">.
 ```

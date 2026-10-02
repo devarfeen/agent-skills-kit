@@ -1,0 +1,76 @@
+{
+  "skill": "deploy-watch",
+  "kind": "trigger-eval",
+  "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
+  "queries": [
+    {
+      "q": "Watch the staging deploy for PR 87",
+      "expect": "trigger"
+    },
+    {
+      "q": "Did my change make it to staging?",
+      "expect": "trigger"
+    },
+    {
+      "q": "PR 12 merged to staging — babysit the deploy and smoke-test it",
+      "expect": "trigger"
+    },
+    {
+      "q": "Check the Actions deploy for my merged PR and verify it on staging",
+      "expect": "trigger"
+    },
+    {
+      "q": "Is the staging deploy of #87 green and actually working?",
+      "expect": "trigger"
+    },
+    {
+      "q": "Smoke-test staging once PR 40's deploy finishes",
+      "expect": "trigger"
+    },
+    {
+      "q": "Follow my merged change until it's live on staging",
+      "expect": "trigger"
+    },
+    {
+      "q": "Confirm the staging deploy ran for the merge commit of PR 55",
+      "expect": "trigger"
+    },
+    {
+      "q": "Staging is broken, fix it",
+      "expect": "no-trigger",
+      "route": "/staging-fix"
+    },
+    {
+      "q": "Deploy this to production",
+      "expect": "no-trigger",
+      "route": "none"
+    },
+    {
+      "q": "Check the staging logs",
+      "expect": "no-trigger",
+      "route": "none"
+    },
+    {
+      "q": "Set up a GitHub Actions deploy workflow for staging",
+      "expect": "no-trigger",
+      "route": "none"
+    },
+    {
+      "q": "Test the checkout page in the browser",
+      "expect": "no-trigger",
+      "route": "agent-browser"
+    },
+    {
+      "q": "The site is down — what's going on?",
+      "expect": "no-trigger",
+      "route": "/incident-triage"
+    }
+  ],
+  "last_run": {
+    "date": "2026-10-03",
+    "method": "3 independent fresh catalog-only judges over the full 450-query mixed set, deterministic shuffle; each judge had a private folder with its own copy of the judge prompt, catalog, and query list and was instructed to read nothing else, with no repository access (instruction-level isolation, not a sandbox; transcripts checked to reference only their own folder).",
+    "result": "450/450 pass — majority vote passed every query; 443 unanimous, 7 passed 2/3.",
+    "judge_model": "Claude Opus 5.5 (claude-opus-5-5), 3 independent Claude Code Agent-tool subagents",
+    "catalog": "tools/trigger-evals/build-catalog.sh (live kit descriptions 2026-10-03, 24 kit skills including agentic-qa and qa-escape) + tools/trigger-evals/catalog-externals.md snapshot dated 2026-09-28; judged tree 65493c9b209593ee1cd59dffd772b210d8b9ed41 + uncommitted changes"
+  }
+}

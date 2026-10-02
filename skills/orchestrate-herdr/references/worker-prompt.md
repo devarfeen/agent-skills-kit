@@ -20,6 +20,12 @@ Use `/tdd-loop` for the test-first procedure when installed and `/tdd` for
 test quality guidance. If neither is installed, reproduce the failure with a
 test and make it pass; still report the command and passing output.
 
+Before coding, read the issue's acceptance criteria, any issues labelled
+`qa-escape` for this area, and the `## QA escape guards` lines in AGENTS.md.
+Map every criterion to a test, to `agentic-qa (<surface>)` when only a running
+app can prove it, or to a deferral with its reason. Never report UI behavior
+as verified from unit tests.
+
 Do not work on the full spec. Do not redo spec orchestration. Do only the
 issue-level discovery this issue needs.
 
@@ -41,7 +47,8 @@ your tooling injects.
 Report back when completed, errored, or blocked.
 
 Completion requires test evidence: the test command and its passing output.
-End the report with two fields, one line each:
+End the report with three fields, one line each:
+AC map: <AC-n → test name | agentic-qa (surface) | deferred — why; every criterion listed>
 Decisions: <choices made that the issue didn't dictate, or "none">
 Open items: <what a next session must resolve, or "none">
 ```
@@ -52,6 +59,6 @@ The sub-agent paragraph opens with the kit's canonical lane one-liner. Check the
 
 **Widening multiplies write contention.** Under `shared` isolation, replace the widening sentences with: "Delegate read-only work only. Serialize all edits in the shared checkout." Keep the normal paragraph in `worktree` and serial `branch` mode.
 
-`Report back` is a formatting instruction, not a channel: the worker has no handle on the orchestrator, so it prints its report into its own terminal and the orchestrator reads it back per **Read** in [`herdr-commands.md`](herdr-commands.md). The two closing fields exist because a labelled single line survives a terminal scrape and a free-form sign-off does not.
+`Report back` is a formatting instruction, not a channel: the worker has no handle on the orchestrator, so it prints its report into its own terminal and the orchestrator reads it back per **Read** in [`herdr-commands.md`](herdr-commands.md). The three closing fields exist because a labelled single line survives a terminal scrape and a free-form sign-off does not.
 
 Never ask for file output here. That is the alternate-screen fallback in **Read**, used only after a read has already failed.

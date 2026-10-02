@@ -2,6 +2,8 @@
 name: release-notes
 disable-model-invocation: true
 description: Generate clear, PM-friendly release notes, changelogs, and session summaries from git commits, feature work, or the current development session. Use when the user asks for release notes (for a date, date range, project, or feature), a changelog, a PM/stakeholder update, or to summarize what changed in plain language for non-technical readers. Summarizing a PR to aid code review is /code-review; a handoff for the next agent session is /handoff.
+metadata:
+  version: "0.0.1"
 ---
 
 # release-notes

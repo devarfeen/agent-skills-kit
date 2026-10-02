@@ -156,7 +156,7 @@ These are optional helpers. The kit provides `using-git-worktrees`; the other en
 
 ## Graphify In Multi-Project Workspaces
 
-Graphify is a separate install ([graphify](https://github.com/safishamsi/graphify)). In a VS Code `.code-workspace` with several PROJECT-CODE folders, there is no single built-in “index the whole workspace” command. Build **one graph per project**, **merge** them at the workspace root, then **query** the merged graph for cross-repo questions.
+Graphify is a separate install ([graphify](https://github.com/Graphify-Labs/graphify)). In a VS Code `.code-workspace` with several PROJECT-CODE folders, there is no single built-in “index the whole workspace” command. Build **one graph per project**, **merge** them at the workspace root, then **query** the merged graph for cross-repo questions.
 
 Run every command from the **workspace root** — the folder that holds the `.code-workspace` file and `AGENTS.md`. Use the `Path` column from the Project Matrix (skip the `.` meta row).
 
@@ -431,7 +431,7 @@ subject to the same preservation checks.
                                                                    |
                         /to-tickets -> /implement (optional; drives /tdd-loop)
                                                                    |
-                        /code-review -> /pixel-audit -> /commit-push-pr -> /release-notes
+                        /code-review -> /pixel-audit -> /commit-push-pr -> /agentic-qa -> /release-notes
 ```
 
 **The fog test** decides the fork. Ask: can you state the destination in one line *and* name every open decision as a sharp question, right now? If yes, `/feature-prompt`. If not, that's fog — `/wayfinder` charts the decisions as tracker tickets and resolves them one per session until nothing is left to decide. Fog, not size, is the test: a large mechanical refactor has no fog and belongs in `/to-tickets` as expand–contract, while a two-file change gated on one unresolved architectural decision *is* fog. Greenfield work, with no code to discover, enters at `/wayfinder` directly.
@@ -442,7 +442,32 @@ Variations branch off this line:
 
 - **Implementing** a ticket runs `/implement` when installed — it drives `/tdd-loop` at each pre-agreed seam, with `/tdd` supplying test quality and seam choice. Without `/implement`, drive `/tdd-loop` directly. `/implement` stops after `/code-review`; it never commits.
 - **Porting** a feature from a reference implementation starts with `/port-feature` (in place of `/feature-discovery` → `/feature-prompt`), which writes a gap map and hands to `/grill-with-docs`.
-- **Verify** is a cluster, not one skill: `/pixel-audit` for per-page conformance, manual QA + `/polish-batch` for the cosmetic tail, and `/integration-contract` when the spec spans more than one PROJECT-CODE. After a UI slice ships, `/design-system` (extend) folds any new reusable UI back into the library.
+- **Verify** is a cluster, not one skill: `/agentic-qa` for functional QA of any change that can reach a screen, `/pixel-audit` for per-page conformance, manual QA + `/polish-batch` for the cosmetic tail, and `/integration-contract` when the spec spans more than one PROJECT-CODE. After a UI slice ships, `/design-system` (extend) folds any new reusable UI back into the library.
+
+## Factory Workflow
+
+The factory group (`factory-workflow` in `npx skills`) covers what happens after a PR opens. It runs as a state machine: `/factory` works out where each unit stands from the tracker, the PR, CI, review comments, and deploy runs, then names the one skill that moves it forward. It has no state file, so you can re-run it at any point.
+
+```text
+BUILDING -> CI -> QA -> REVIEW -> risk gate --low--> MERGE -> STAGING -> READY_FOR_OWNER
+   ^         |     |                  |                          |
+   |    /ci-loop  findings          high                    deploy fails
+   +-- /tdd-loop --+                   v                          v
+                                 HUMAN_REVIEW                /staging-fix
+
+human QA finds a bug later -> QA_RETURNED -> /qa-escape -> BUILDING
+```
+
+| State | Run |
+| :--- | :--- |
+| CI red on the PR | `/ci-loop <pr>` — up to 3 fix-and-push attempts under one approval; never edits tests or workflows to pass |
+| CI green, change can reach a screen | `/agentic-qa <pr>` — state × viewport × role grid against the running app, console and network gate; reports findings, never edits code |
+| Human QA found a bug after done | `/qa-escape <issue>` — reproduction, escape class recorded on the issue, regression test to write first |
+| CI green and QA passed, not yet reviewed | `/risk-review <pr>` — specialist lenses, then a fixed-rubric tier; low offers auto-merge, high requests an engineer |
+| Merged to `staging` | `/deploy-watch <pr>` — watches the deploy run, smoke-checks staging with your approval, records pass or fail |
+| Something is on fire | `/incident-triage` — timeline, ranked causes, owner-run mitigations; read-only |
+
+Gates pass on evidence the skills leave on the PR: a green run for the head SHA, an `agentic-qa` and a `risk-review` marker comment for the head SHA, and a `deploy-watch` marker for the merge commit. Every factory step that runs or changes code works in an isolated worktree under the owning repo's `.worktrees/` (`pr-<n>` for a PR, `qa-escape-<issue>` for an escape) and reports its checkout record first; read-only steps never create one. `/factory` stops at `READY_FOR_OWNER`. Promoting to production and rolling out feature flags stay with the owner, and no factory skill ever accesses production.
 
 ## Issue Naming And Label Preflight (Hard Gate)
 
@@ -451,7 +476,7 @@ default; a workspace-named tracker overrides it — same title patterns):
 
 1. Read local workspace instructions (`AGENTS.md`; Claude CLI reads the `CLAUDE.md` shim).
 2. Select the exact issue title pattern (`Spec:`, `Ticket NNNN of …`, `Way:`, or the non-spec implementation form). Issues titled `PRD:` predate the spec rename and `Slice NNNN of …` predates the ticket rename — treat them as spec and ticket issues respectively; do not retitle either.
-3. Select exactly one category label (`bug` or `enhancement`) and one state label. **Delivery issues only.** `Way:` issues are planning artifacts: they carry only `/wayfinder`'s own labels (`wayfinder:map`, `wayfinder:research` / `prototype` / `grilling` / `task`), get no category or state label, and are closed before `/to-spec` runs.
+3. Select exactly one category label (`bug` or `enhancement`) and one state label. The `qa-escape` marker label, added by `/qa-escape`, sits beside them and never replaces either. **Delivery issues only.** `Way:` issues are planning artifacts: they carry only `/wayfinder`'s own labels (`wayfinder:map`, `wayfinder:research` / `prototype` / `grilling` / `task`), get no category or state label, and are closed before `/to-spec` runs.
 4. Confirm no routing marker (`HITL:` / `AFK:` / `BLOCKER:`) is present in issue titles. Wayfinder's HITL/AFK classification is a ticket *type*, carried by labels — never by a title.
 
 If tracker vocabulary is missing, stop and run `/setup-matt-pocock-skills` first.
@@ -546,6 +571,12 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 - **Cosmetic Nits Pile Up:** `/polish-batch` — capture them, then dispatch in one pass per PROJECT-CODE.
 - **Cross-Repo Seam Risk:** `/integration-contract` before shipping a multi-project spec.
 - **Inlined UI Instead Of The Library:** back to `/design-system` (extend) to promote it into the library, then consume it from the page.
+- **Red CI On An Open PR:** `/ci-loop`; at its 3-attempt cap, stop and diagnose with `/diagnosing-bugs`.
+- **Risk Review Finds Blocking Issues:** Fix, push, and the PR returns to CI — re-run `/factory` to confirm.
+- **Staging Deploy Fails After Merge:** `/staging-fix`, or a revert PR to `staging`.
+- **Human QA Finds A Bug After Done:** `/qa-escape` on the issue first — it records the escape class and names the regression test — then `/tdd-loop`. A class that escapes three times gets a durable guard, applied only with your approval.
+- **Agentic QA Reports Findings:** `/tdd-loop` per finding; the tester never fixes. A finding still failing on its third re-check goes to the engineer.
+- **Incident Or Outage:** `/incident-triage` first; its fix ticket re-enters at `/factory`.
 - **Production Error:** Start with `/sentry` -> `/diagnosing-bugs`.
 
 ## Practical Default

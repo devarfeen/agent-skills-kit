@@ -67,6 +67,9 @@ The linked issue's acceptance criteria are the ship bar. Read them from the issu
 
 - **Automated test** — a passing test or validation command that asserts the criterion.
 - **Headless browser** — for behavior a user sees in a browser: drive the local app at this revision headless (the `agent-browser` companion when installed) — navigate → act → assert the visible outcome. Use only local or explicitly permitted environments, as in **How-to-test rules**.
+- **Agentic QA** — when the diff can reach a screen (any changed file on a path that ends at something a user sees: a component, view, template, page, style, translation, or store; or an API, model, policy, job, mail, or migration whose output a screen shows; unsure → it reaches), read the PR's `<!-- agentic-qa: sha=… -->` marker. A `verified` marker for the shipped SHA meets the criteria its grid covers; cite it.
+
+Evidence is what ran in this session or a marker for this SHA. A builder's or worker's report that tests pass is a claim, not evidence — re-run the command or cite the marker.
 
 Then classify each criterion:
 
@@ -74,7 +77,7 @@ Then classify each criterion:
 - **Pending** — no automated check can run (browser companion missing, app cannot start locally, access only the owner has); name the manual check and why it is manual. The user sees it in the combined draft approval.
 - **Unmet** — stop before any write and list it; shipping never finishes the implementation. Continue only if the user explicitly defers it, and record the follow-up issue or reason.
 
-Publish the result as the acceptance report in the QA handoff. Its verdict says `Fully accepted` only when every criterion is met by automated evidence on the shipped content, and names only the methods actually run (`by automated tests` alone when no browser run happened). Any pending or deferred criterion makes it `Partially accepted`.
+Publish the result as the acceptance report in the QA handoff. Its verdict says `Fully accepted` only when every criterion is met by automated evidence on the shipped content, and names only the methods actually run (`by automated tests` alone when no browser run happened). Any pending or deferred criterion makes it `Partially accepted`. A diff that can reach a screen with no `verified` agentic-qa marker for the shipped SHA is `Partially accepted`, with `/agentic-qa` named as pending.
 
 An existing issue without criteria → record `Acceptance: none in issue`, with no verdict; never invent criteria. Skip the check for an issue created inline. Never tick the issue's checkboxes; the QA handoff carries the result.
 
@@ -169,6 +172,7 @@ Change: <actual commit SHA and branch; PR link when available>
 <or `Acceptance: none in issue`; omit for an issue created inline>
 
 ### Verification
+Status: <VERIFIED | PARTIAL | BLOCKED> — source: <executed now | supplied | mixed>
 <checks actually run, result and decisive output; manual steps not run are marked pending>
 Review: <outcome per **Code review**>
 
@@ -265,6 +269,7 @@ Both skills verify every item before reporting success; each `SKILL.md` adds its
 - [ ] Every issue acceptance criterion is met with cited automated-test or headless-browser evidence, pending a named manual check, or deferred by the user — none unmet
 - [ ] The posted acceptance verdict matches that evidence: `Fully accepted` only with every criterion met by automated evidence, naming only the methods actually run
 - [ ] Required checks passed on the shipped content before push; manual checks not performed are marked pending
+- [ ] The `Status:` line says `VERIFIED` only when the verdict is `Fully accepted` and no gap is listed; its source names whether the evidence ran in this session
 - [ ] `Issue:` line present in the commit body
 - [ ] Hooks ran on the commit — no `--no-verify` in the command that made it
 - [ ] Push landed: `git ls-remote` shows the remote branch at the local commit — or the report names the deferral or rejection under `Needs user:`

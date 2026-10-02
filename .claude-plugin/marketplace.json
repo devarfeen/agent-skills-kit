@@ -1,0 +1,48 @@
+{
+  "name": "agent-skills-kit",
+  "owner": {
+    "name": "Arfeen Arif",
+    "url": "https://github.com/devarfeen"
+  },
+  "description": "Agent skills for workspace setup, discovery, building, verifying, and shipping.",
+  "plugins": [
+    {
+      "name": "manual-workflow",
+      "source": "./",
+      "description": "Human-driven workflow skills: workspace setup, discovery, test-first building, UI verification, and shipping.",
+      "skills": [
+        "./skills/agents-md",
+        "./skills/commit-push-close",
+        "./skills/commit-push-pr",
+        "./skills/design-system",
+        "./skills/feature-discovery",
+        "./skills/feature-prompt",
+        "./skills/integration-contract",
+        "./skills/orchestrate-herdr",
+        "./skills/pixel-audit",
+        "./skills/polish-batch",
+        "./skills/port-feature",
+        "./skills/pr-feedback",
+        "./skills/release-notes",
+        "./skills/staging-fix",
+        "./skills/tdd-loop",
+        "./skills/using-git-worktrees",
+        "./skills/writing-kit-skills"
+      ]
+    },
+    {
+      "name": "factory-workflow",
+      "source": "./",
+      "description": "Factory workflow skills: a conductor that reads where work stands and names the next gate, plus CI repair, agentic QA, risk-gated review, staging deploy watch, QA-escape intake, and incident triage.",
+      "skills": [
+        "./skills/factory",
+        "./skills/ci-loop",
+        "./skills/agentic-qa",
+        "./skills/risk-review",
+        "./skills/deploy-watch",
+        "./skills/qa-escape",
+        "./skills/incident-triage"
+      ]
+    }
+  ]
+}

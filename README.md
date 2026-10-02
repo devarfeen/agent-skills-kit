@@ -113,12 +113,19 @@ and rules live in each skill's `SKILL.md`; this table is the index.
 | [`pixel-audit`](skills/pixel-audit/SKILL.md) | verify | Strict per-page visual-conformance audit against Figma or reference screens, with an element-level verification gate on served assets | `Pixel-audit the assets list page in ADMIN-WEB against this Figma node` |
 | [`polish-batch`](skills/polish-batch/SKILL.md) | verify | Captures cosmetic QA nits without fixing them, dispatches them per PROJECT-CODE in one bounded pass, then verifies | `Punch-list this for SPEC-142: Billing header says "Recieve invoices"` |
 | [`integration-contract`](skills/integration-contract/SKILL.md) | verify | For multi-project specs (PRDs) only: writes a producer/consumer contract plus a smoke gate (agent-browser / curl / manual) that must pass before the spec ships | `Build the integration contract for SPEC-142` |
+| [`agentic-qa`](skills/agentic-qa/SKILL.md) | verify | Agent-run functional QA before a human sees the work: drives every acceptance criterion across states, viewports, and roles, fails on console errors and failed requests, records VERIFIED/PARTIAL/BLOCKED on the PR — never edits code | `QA PR 87 like a tester would` |
+| [`qa-escape`](skills/qa-escape/SKILL.md) | verify | Turns a bug human QA found after an agent said done into a reproduction, an escape class recorded on the issue, and the regression test to write first; proposes a durable guard when a class repeats three times | `QA bounced #418 — empty invoice list crashes` |
+| [`ci-loop`](skills/ci-loop/SKILL.md) | verify | Drives an open PR's failing CI to green — reads the failing log, fixes within the ticket's scope, pushes, watches; capped at 3 attempts under one approval | `Fix CI on PR 87` |
+| [`risk-review`](skills/risk-review/SKILL.md) | verify | Parallel specialist review (data, infra, cloud, security) plus a fixed-rubric low/high risk gate; low offers auto-merge, high requests an engineer | `Is PR 87 safe to auto-merge?` |
 | [`commit-push-close`](skills/commit-push-close/SKILL.md) | ship | Commits with a structured message, pushes, and closes the linked GitHub issue with a how-to-test comment | `I'm done with #418, ship it` |
 | [`commit-push-pr`](skills/commit-push-pr/SKILL.md) | ship | Commits, pushes (branching off `main` first), and opens a PR with `Closes #N`, summary, and test plan | `Commit, push, and open a PR for this issue` |
 | [`pr-feedback`](skills/pr-feedback/SKILL.md) | ship | Works reviewer feedback on an open PR — classifies every thread, fixes what the user accepts, replies citing the fixing commits | `Address the review comments on PR #87` |
 | [`staging-fix`](skills/staging-fix/SKILL.md) | ship | Fixes a staging bug locally with a test and ships it as an auto-merge PR to `staging` — servers are never touched | `Staging is broken: checkout 500s since this morning` |
+| [`deploy-watch`](skills/deploy-watch/SKILL.md) | ship | Watches a merged PR's staging deploy run, smoke-checks staging with approval, and records pass or fail on the PR — never touches a server or production | `Watch the staging deploy for PR 87` |
 | [`release-notes`](skills/release-notes/SKILL.md) | ship | Turns git history, the current session, or a feature into PM-friendly release notes with QA steps | `Generate release notes for 11 March 2026` |
 | [`using-git-worktrees`](skills/using-git-worktrees/SKILL.md) | companion | Sets up or reuses a worktree in each project repo’s gitignored `.worktrees/` before requested task work, verifies the checkout and baseline, and returns to the calling workflow | `Implement #418 in a worktree` |
+| [`factory`](skills/factory/SKILL.md) | companion | Factory conductor: reads where a spec, ticket, or PR stands across CI, review, risk gate, and staging deploy, then names the one skill that moves it next — never runs it, never goes past staging | `/factory SPEC-142` |
+| [`incident-triage`](skills/incident-triage/SKILL.md) | companion | Read-only incident triage: timeline, ranked causes with evidence, owner-run mitigations, one incident note — production never accessed | `We have an incident: checkout 502s since 14:00` |
 | [`writing-kit-skills`](skills/writing-kit-skills/SKILL.md) | — | Kit-internal house style for authoring and editing this repo's skills: skeleton, word budget, canonical one-liners, output caps, eval gates | `Rewrite this SKILL.md to house style` |
 
 The gradient's plan/slice/implement/verify core (`/grill-with-docs`,
@@ -217,16 +224,57 @@ skills from the wider agent-skills ecosystem.
   https://github.com/vercel-labs/agent-skills
 - Other optional companions referenced by `agents-md`: Matt Pocock's
   `ask-matt` router (https://github.com/mattpocock/skills), Graphify
-  (https://github.com/safishamsi/graphify), Codex plugin for Claude Code
+  (https://github.com/Graphify-Labs/graphify), Codex plugin for Claude Code
   (https://github.com/openai/codex-plugin-cc), Impeccable
   (https://github.com/pbakaus/impeccable), notebooklm-py
   (https://github.com/teng-lin/notebooklm-py), herdr
-  (https://github.com/ogulcancelik/herdr), docker-expert from
-  antigravity-awesome-skills (https://github.com/sickn33/antigravity-awesome-skills),
+  (https://github.com/herdrdev/herdr), docker-expert from
+  agentic-awesome-skills (https://github.com/sickn33/agentic-awesome-skills, formerly antigravity-awesome-skills),
   Laravel Boost (https://github.com/laravel/boost), unslop, blast-radius, and
   show-me-your-work from Cursor's plugins repo
   (https://github.com/cursor/plugins), and Figma MCP
   (https://developers.figma.com/docs/figma-mcp-server/).
+- **Globally installed skills.** The skills below were installed globally
+  (`npx skills list -g`, 2026-10-03) beside this kit's own skills. They are
+  separate installs, credited by source and never vendored here:
+  - Anthropic (https://github.com/anthropics/skills): `mcp-builder`,
+    `skill-creator`, `frontend-design`.
+  - Matt Pocock (https://github.com/mattpocock/skills): `ask-matt`,
+    `claude-handoff`, `code-review`, `codebase-design`, `diagnosing-bugs`,
+    `domain-modeling`, `git-guardrails-claude-code`, `grill-me`,
+    `grill-with-docs`, `grilling`, `handoff`, `implement`, `implement-spec`,
+    `improve-codebase-architecture`, `loop-me`, `migrate-to-shoehorn`, `pr`,
+    `prototype`, `research`, `retro`, `scaffold-exercises`,
+    `setup-matt-pocock-skills`, `setup-pre-commit`, `setup-ts-deep-modules`,
+    `tdd`, `teach`, `to-questionnaire`, `to-spec`, `to-tickets`, `triage`,
+    `wait-what`, `wayfinder`, `wizard`, `writing-beats`, `writing-for-agents`,
+    `writing-fragments`, `writing-shape`.
+  - Vercel Labs: `agent-browser` (https://github.com/vercel-labs/agent-browser)
+    and `find-skills` (https://github.com/vercel-labs/skills).
+  - Cursor (https://github.com/cursor/plugins): `blast-radius`,
+    `show-me-your-work`, `unslop`.
+  - GitHub awesome-copilot (https://github.com/github/awesome-copilot):
+    `boost-prompt`.
+  - Google Labs Stitch skills (https://github.com/google-labs-code/stitch-skills):
+    `enhance-prompt`.
+  - herdr (https://github.com/herdrdev/herdr): `herdr`.
+  - Impeccable (https://github.com/pbakaus/impeccable): `impeccable`.
+  - agentic-awesome-skills (https://github.com/sickn33/agentic-awesome-skills):
+    `docker-expert`.
+  - Graphify (https://github.com/Graphify-Labs/graphify): `graphify`, installed
+    from a local copy rather than through the `skills` CLI.
+- The QA-escape loop (`agentic-qa`, `qa-escape`, and the acceptance-matrix,
+  evidence, and risk-lens changes to existing skills) adapts ideas from skills
+  in GitHub's awesome-copilot collection
+  (https://github.com/github/awesome-copilot/tree/main/skills — notably
+  webmcpify, bug-receipt, bug-reproduction-brief, quality-playbook,
+  test-gap-audit, mcp-release-qa, api-breaking-change-detector,
+  protobuf-grpc-api-review, copilot-pr-autopilot, incident-postmortem, and
+  poka-yoke) and from Chris Titus's titus-ai skills
+  (https://github.com/ChrisTitusTech/titus-ai/tree/main/.agents/skills —
+  pr-readiness and ai-project-manager). The factory workflow's shape follows
+  The Pragmatic Engineer's diagram of OpenAI's "agentic software factory". No
+  text was copied; credit lives here, never in generated output.
 - `/sentry` refers to Sentry's CLI for developers and agents:
   https://cli.sentry.dev/
 - **Cursor CLI:** `AGENTS.md` is the canonical workspace context file;

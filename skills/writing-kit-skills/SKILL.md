@@ -2,6 +2,8 @@
 name: writing-kit-skills
 disable-model-invocation: true
 description: "House style for authoring and editing skills in this kit — the skeleton, word budget, canonical one-liners, output caps, and eval gates every SKILL.md follows. Use when creating a new skill in agent-skills-kit or editing an existing kit skill's body, references, or description; generic skill creation elsewhere is skill-creator, and running the kit's eval harness is a maintainer procedure, not this skill."
+metadata:
+  version: "0.0.1"
 ---
 
 # writing-kit-skills
@@ -67,6 +69,7 @@ Distinguish a preference from permission. Optional choices may have a stated awa
 
 - `description:` is the router. Model-invoked skills get identity + one trigger per genuinely distinct branch — synonym stacks are duplication; collapse them. Keep negative-routing clauses ("X routes to /other instead") and legacy aliases (the "(PRD)" spec alias) — they are branches, not synonyms.
 - Any `description:` edit or new skill invalidates the eval-provenance snapshot (validate.sh check 10) and requires a completed trigger-eval sweep plus `score.py --write-snapshot` before it can land. The maintainer may run or explicitly delegate it. Batch description work; never invent or manually restamp `last_run`.
+- `metadata.version` is semver, starting at `0.0.1`. Bump it with every change outside `evals/` — patch for wording, minor for a new rule or step, major for a removed input, marker, or refusal — or validate.sh check 16 fails.
 - `disable-model-invocation: true` ⇔ `agents/openai.yaml` with `allow_implicit_invocation: false` (cross-runtime parity, validator-enforced).
 - Keep descriptions containing `: ` double-quoted. Check 1 uses strict YAML when PyYAML is available and a stated quote/colon heuristic otherwise; heuristic success is not a strict parse.
 

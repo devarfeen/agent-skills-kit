@@ -174,7 +174,7 @@ understanding checks) are bound by the generated `AGENTS.md` rules themselves.
 
 ### Optional: Graphify across the Project Matrix
 
-When [Graphify](https://github.com/safishamsi/graphify) is installed and broad codebase questions would otherwise mean huge `rg` sweeps, treat it as a workspace-level companion — not binding memory.
+When [Graphify](https://github.com/Graphify-Labs/graphify) is installed and broad codebase questions would otherwise mean huge `rg` sweeps, treat it as a workspace-level companion — not binding memory.
 
 Graphify builds two layers: **AST** (structural code edges, free) and **LLM semantic** (docs, ADRs, inferred cross-file links, costs tokens). First build always needs the full pass; day-to-day refresh can stay AST-only.
 

@@ -1,6 +1,8 @@
 ---
 name: tdd-loop
 description: Enforceable test-first execution loop for features and bug fixes — red, green, refactor, with completion evidence. Use when the user says "TDD", "red-green", or "test-first" — building a feature, fixing a bug with a reproducing test, or implementing a slice, ticket, or issue test-first — and when the loop must adapt for a characterization test in untested legacy code, a safe exploratory refactor, or an urgent hotfix that must be fixed now with tests added right after under the exception protocol. A bare "implement this ticket" with no test-first ask belongs to /implement; adding test-first routes here. /tdd supplies test-quality advice and seam choice; this skill executes the loop.
+metadata:
+  version: "0.0.1"
 ---
 
 # TDD loop
@@ -32,7 +34,12 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
    neighboring tests first and match their style, fixtures, and naming. If the
    seam choice is genuinely contestable, ask the user; if the user is away,
    state your choice and proceed.
-3. **Declare any exception now** (see Exception protocol) — before writing
+3. **Map acceptance criteria to tests.** Build the matrix in
+   [`references/ac-matrix.md`](references/ac-matrix.md) — one row per criterion per path
+   (happy, edge, failure, alternative), plus the span check. Rows that only a
+   running app can prove are owed to `/agentic-qa`. No criteria in the ticket →
+   write them from the step-1 sentence and say so.
+4. **Declare any exception now** (see Exception protocol) — before writing
    any code.
 
 Outside a declared exception, no focused-test command means no loop. Finding how to run one test in this repo is
@@ -71,10 +78,9 @@ run per slice adds no signal.
      contradicts the agreed behavior, and flag it in the summary.
 4. **Refactor on green only.** Behavior-preserving cleanup of what this slice
    touched, then re-run the widened scope. Nothing needs it → skip.
-5. **Next edge.** List the edges this change creates — empty/null input,
-   boundaries, error paths, permissions — and loop back to Red for each one
-   that matters. Stop when the next test would assert behavior nobody asked
-   for.
+5. **Next row.** Loop back to Red for the next open matrix row, including the
+   edges taken from the guards in the code you touched. Stop when the next
+   test would assert behavior nobody asked for.
 
 ## After the loop
 
@@ -87,6 +93,7 @@ run per slice adds no signal.
   Behavior: <the one-sentence behavior>
   Red → Green: <test name(s)> — seen failing (<how>), now passing
   Scope run: <focused command> · <widened command> · <full check | deferred to batch end | widest feasible — why>[; pre-existing failures: <names, baseline command and result>]
+  AC map: <AC-n path → test | agentic-qa (surface) | deferred — why>; span check: <finding | none found>
   Edges: <covered: …> · <deferred: … — why>
   Docs: <path updated | nothing documents this behavior>
   Exception: <declared exception + follow-up test plan | none>
@@ -96,8 +103,9 @@ run per slice adds no signal.
   [`references/summary-example.md`](references/summary-example.md) — match
   its concreteness.
 
-  Then suggest `/code-review`, then `/commit-push-close` or `/commit-push-pr` —
-  suggest only, never auto-chain. Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
+  Then suggest `/code-review`, then `/commit-push-close` or `/commit-push-pr`,
+  then `/agentic-qa` on the shipped revision when the change can reach a
+  screen or any row is owed to it — suggest only, never auto-chain. Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
 
 ## Completion criterion — evidence, not assurance
 
@@ -117,7 +125,9 @@ red/green evidence. Keep the remaining checks and follow-up plan.
       states why the widened scope is the widest feasible run.
 - [ ] No assertion weakened, no failing test deleted to reach green (or the
       contract change is flagged with the user's call).
-- [ ] Edges covered or explicitly deferred, each named.
+- [ ] Every matrix row is closed by a passing test, owed to `/agentic-qa`, or
+      deferred with a reason; the span check is answered; the test-quality
+      check in the matrix reference found nothing open.
 - [ ] Docs updated, or "nothing documents this behavior".
 - [ ] Any exception was declared up front and its follow-up test plan recorded.
 
@@ -150,7 +160,8 @@ summary (and in the ship skill's `Notes:` section when shipping).
   out of scope, verify manually and file the harness as the follow-up.
 - **Urgent hotfix.** The fix may ship on manual verification evidence when
   waiting is worse than shipping. The regression test is written immediately
-  after — same iteration, before the issue closes. Implement locally; this
+  after — same iteration, before the issue closes — and must be seen failing
+  against the pre-fix commit. Implement locally; this
   exception grants no production access or deployment authority.
 - **Infrastructure / config.** Unit tests rarely apply. Assert what is
   assertable — a validation command, dry run, plan diff, or smoke check — name

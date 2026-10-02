@@ -1,0 +1,76 @@
+{
+  "skill": "qa-escape",
+  "kind": "trigger-eval",
+  "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
+  "queries": [
+    {
+      "q": "QA found a bug in #418 after the agent said it was fixed",
+      "expect": "trigger"
+    },
+    {
+      "q": "QA bounced this ticket — the empty invoice list crashes",
+      "expect": "trigger"
+    },
+    {
+      "q": "This was marked fixed but QA says it's still broken on staging",
+      "expect": "trigger"
+    },
+    {
+      "q": "Human QA reopened #212, record why our checks missed it",
+      "expect": "trigger"
+    },
+    {
+      "q": "The tester found a role bug the agent's QA run passed — log the escape",
+      "expect": "trigger"
+    },
+    {
+      "q": "QA reports the save button double-submits on a ticket the agent closed; work it so it doesn't come back",
+      "expect": "trigger"
+    },
+    {
+      "q": "Our QA keeps finding missing empty states after AI says done — process this one, #431",
+      "expect": "trigger"
+    },
+    {
+      "q": "/factory says #418 is QA_RETURNED",
+      "expect": "trigger"
+    },
+    {
+      "q": "Fix this bug",
+      "expect": "no-trigger",
+      "route": "/diagnosing-bugs"
+    },
+    {
+      "q": "Staging is broken: checkout 500s since this morning",
+      "expect": "no-trigger",
+      "route": "/staging-fix"
+    },
+    {
+      "q": "QA PR 87 like a tester would",
+      "expect": "no-trigger",
+      "route": "/agentic-qa"
+    },
+    {
+      "q": "Punch-list these spacing nits from QA",
+      "expect": "no-trigger",
+      "route": "/polish-batch"
+    },
+    {
+      "q": "We have an incident — checkout is failing for everyone",
+      "expect": "no-trigger",
+      "route": "/incident-triage"
+    },
+    {
+      "q": "File issues for these three bugs I found during QA",
+      "expect": "no-trigger",
+      "route": "/triage"
+    }
+  ],
+  "last_run": {
+    "date": "2026-10-03",
+    "method": "3 independent fresh catalog-only judges over the full 450-query mixed set, deterministic shuffle; each judge had a private folder with its own copy of the judge prompt, catalog, and query list and was instructed to read nothing else, with no repository access (instruction-level isolation, not a sandbox; transcripts checked to reference only their own folder).",
+    "result": "450/450 pass — majority vote passed every query; 443 unanimous, 7 passed 2/3.",
+    "judge_model": "Claude Opus 5.5 (claude-opus-5-5), 3 independent Claude Code Agent-tool subagents",
+    "catalog": "tools/trigger-evals/build-catalog.sh (live kit descriptions 2026-10-03, 24 kit skills including agentic-qa and qa-escape) + tools/trigger-evals/catalog-externals.md snapshot dated 2026-09-28; judged tree 65493c9b209593ee1cd59dffd772b210d8b9ed41 + uncommitted changes"
+  }
+}

@@ -1,4 +1,4 @@
-<!-- agents-md marker · v43 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v44 · re-run /agents-md to regenerate -->
 # Agent instructions
 
 [one concise, factual workspace intro inferred from the .code-workspace name and folder scan — no promotional adjectives]
@@ -129,11 +129,14 @@ Define success before edits. Turn bugs into reproductions, changes into checks. 
 Before the first implementation edit, the main agent must complete this preflight:
 
 - For an issue-backed task, read the tracker state and labels. Surface any existing triage or workflow gate before implementation or shipping work begins.
+- Read the issues labelled `qa-escape` for the area you will touch and the `## QA escape guards` section of this file when it exists. Each escape class there becomes a test or QA row for this task.
 - Lock the acceptance boundary for terms such as "all", "available", "visible", and "current". Check pagination, lazy loading, authorization, and hidden records when they can change that boundary. Put the decisive edge case into the first focused test.
 - Resolve the exact checkout, working directory, runtime or container, required environment variables, and canonical verification commands from applicable project instructions and executable scripts before running those commands. Reuse verified command forms, including paths and environment settings, throughout the task.
 - Inspect the aggregate full-check command before using it. Run checks it covers separately only for a needed intermediate result or when later edits invalidate the earlier result.
 
 Pick the lowest check layer that can disprove the claim — unit or feature test, then HTTP/API, then browser — and add higher layers only when the claim needs them. Browser checks prove UI and client-side claims only ([Efficient browser verification](#16-efficient-browser-verification)); persistence, authorization, tenant isolation, mail, and queues need automated tests.
+
+A change whose code can reach a screen — any changed file on a path that ends at something a user sees: a component, view, template, page, style, translation, or store; or an API, model, policy, job, mail, or migration whose output a screen shows; unsure → it reaches — passes `/agentic-qa` on its head revision before it is handed to a human for review or QA. A builder's or worker's report that something works is a claim, not evidence. When human QA finds a bug in work an agent called done, run `/qa-escape` on that issue before fixing it.
 
 Match check scope to change scope: verify each fix with its focused test or module-scope command. Run the project's required full check once per completed batch, after integration and the last edit, before shipping.
 
@@ -284,6 +287,6 @@ These titles live in the workspace's issue tracker of record (default: GitHub Is
 
 `<PROJECT-CODE>: <short imperative heading>`
 
-**Labels.** Every triaged *delivery* issue — spec, spec ticket, non-spec — carries exactly one category (`bug` or `enhancement`) and exactly one state (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`).
+**Labels.** Every triaged *delivery* issue — spec, spec ticket, non-spec — carries exactly one category (`bug` or `enhancement`) and exactly one state (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). `qa-escape` is a marker label that sits beside the category and state labels on an issue whose bug escaped to human QA; it never replaces them.
 
 Wayfinder issues are planning artifacts, not delivery work: they carry only `/wayfinder`'s own labels (`wayfinder:map`, and `wayfinder:research` / `prototype` / `grilling` / `task`), are closed before `/to-spec` runs, and never get a category or state label. Their HITL/AFK classification is a ticket *type*, never a title marker — no issue title in any species may carry `HITL:`, `AFK:`, or `BLOCKER:`.

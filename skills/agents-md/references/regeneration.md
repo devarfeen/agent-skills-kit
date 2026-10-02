@@ -19,7 +19,7 @@ unresolved conflict or no response means stop without writing.
 ## Preserve foreign sections
 
 Carry over verbatim any section another skill added (e.g.
-`## Design System / UI Library` from `/design-system`); regeneration replaces
+`## Design System / UI Library` from `/design-system`, `## QA escape guards` from `/qa-escape`); regeneration replaces
 only sections this skill generates.
 
 ## Migrate docs to specs

@@ -1,0 +1,76 @@
+{
+  "skill": "incident-triage",
+  "kind": "trigger-eval",
+  "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
+  "queries": [
+    {
+      "q": "We have an incident — checkout is failing for everyone",
+      "expect": "trigger"
+    },
+    {
+      "q": "The site is down, help me figure out why",
+      "expect": "trigger"
+    },
+    {
+      "q": "Triage this alert: p95 latency on /api/orders jumped to 8s",
+      "expect": "trigger"
+    },
+    {
+      "q": "Error rate spiked at 14:00, here are the logs — what's going on?",
+      "expect": "trigger"
+    },
+    {
+      "q": "Outage on staging since the last deploy — investigate and propose mitigations",
+      "expect": "trigger"
+    },
+    {
+      "q": "The pager went off for a queue backlog; triage it",
+      "expect": "trigger"
+    },
+    {
+      "q": "Users report 502s since this morning, here's the Datadog screenshot",
+      "expect": "trigger"
+    },
+    {
+      "q": "Help me run this incident: timeline, likely causes, mitigations",
+      "expect": "trigger"
+    },
+    {
+      "q": "Fix this on staging — login is broken there",
+      "expect": "no-trigger",
+      "route": "/staging-fix"
+    },
+    {
+      "q": "This test fails intermittently, debug it",
+      "expect": "no-trigger",
+      "route": "/diagnosing-bugs"
+    },
+    {
+      "q": "Check the production logs for errors",
+      "expect": "no-trigger",
+      "route": "none"
+    },
+    {
+      "q": "Restart the prod containers",
+      "expect": "no-trigger",
+      "route": "none"
+    },
+    {
+      "q": "Investigate how the invite-user workflow works",
+      "expect": "no-trigger",
+      "route": "/feature-discovery"
+    },
+    {
+      "q": "Fix CI on PR 87",
+      "expect": "no-trigger",
+      "route": "/ci-loop"
+    }
+  ],
+  "last_run": {
+    "date": "2026-10-03",
+    "method": "3 independent fresh catalog-only judges over the full 450-query mixed set, deterministic shuffle; each judge had a private folder with its own copy of the judge prompt, catalog, and query list and was instructed to read nothing else, with no repository access (instruction-level isolation, not a sandbox; transcripts checked to reference only their own folder).",
+    "result": "450/450 pass — majority vote passed every query; 443 unanimous, 7 passed 2/3.",
+    "judge_model": "Claude Opus 5.5 (claude-opus-5-5), 3 independent Claude Code Agent-tool subagents",
+    "catalog": "tools/trigger-evals/build-catalog.sh (live kit descriptions 2026-10-03, 24 kit skills including agentic-qa and qa-escape) + tools/trigger-evals/catalog-externals.md snapshot dated 2026-09-28; judged tree 65493c9b209593ee1cd59dffd772b210d8b9ed41 + uncommitted changes"
+  }
+}

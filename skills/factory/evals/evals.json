@@ -1,0 +1,76 @@
+{
+  "skill": "factory",
+  "kind": "trigger-eval",
+  "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
+  "queries": [
+    {
+      "q": "/factory SPEC-142",
+      "expect": "trigger"
+    },
+    {
+      "q": "Where is SPEC-142 in the factory?",
+      "expect": "trigger"
+    },
+    {
+      "q": "What's next for PR 87 — which gate is it at?",
+      "expect": "trigger"
+    },
+    {
+      "q": "Walk this spec from outcome to staging and tell me what to run next",
+      "expect": "trigger"
+    },
+    {
+      "q": "Which gate is PRWL-100 stuck at?",
+      "expect": "trigger"
+    },
+    {
+      "q": "Show every ticket in this spec and where it stands across CI, review, and staging",
+      "expect": "trigger"
+    },
+    {
+      "q": "Run the factory on issue #412",
+      "expect": "trigger"
+    },
+    {
+      "q": "What should I run next to move ABC-123 forward?",
+      "expect": "trigger"
+    },
+    {
+      "q": "Fix CI on PR 87",
+      "expect": "no-trigger",
+      "route": "/ci-loop"
+    },
+    {
+      "q": "Is this PR safe to auto-merge?",
+      "expect": "no-trigger",
+      "route": "/risk-review"
+    },
+    {
+      "q": "Deploy to production",
+      "expect": "no-trigger",
+      "route": "none"
+    },
+    {
+      "q": "Fan this spec out to worker tabs in herdr",
+      "expect": "no-trigger",
+      "route": "/orchestrate-herdr"
+    },
+    {
+      "q": "Break this spec into tickets",
+      "expect": "no-trigger",
+      "route": "/to-tickets"
+    },
+    {
+      "q": "Write release notes for what shipped this week",
+      "expect": "no-trigger",
+      "route": "/release-notes"
+    }
+  ],
+  "last_run": {
+    "date": "2026-10-03",
+    "method": "3 independent fresh catalog-only judges over the full 450-query mixed set, deterministic shuffle; each judge had a private folder with its own copy of the judge prompt, catalog, and query list and was instructed to read nothing else, with no repository access (instruction-level isolation, not a sandbox; transcripts checked to reference only their own folder).",
+    "result": "450/450 pass — majority vote passed every query; 443 unanimous, 7 passed 2/3.",
+    "judge_model": "Claude Opus 5.5 (claude-opus-5-5), 3 independent Claude Code Agent-tool subagents",
+    "catalog": "tools/trigger-evals/build-catalog.sh (live kit descriptions 2026-10-03, 24 kit skills including agentic-qa and qa-escape) + tools/trigger-evals/catalog-externals.md snapshot dated 2026-09-28; judged tree 65493c9b209593ee1cd59dffd772b210d8b9ed41 + uncommitted changes"
+  }
+}

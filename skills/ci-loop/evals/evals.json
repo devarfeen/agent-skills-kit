@@ -1,0 +1,76 @@
+{
+  "skill": "ci-loop",
+  "kind": "trigger-eval",
+  "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
+  "queries": [
+    {
+      "q": "Fix CI on PR 87",
+      "expect": "trigger"
+    },
+    {
+      "q": "Get this PR green",
+      "expect": "trigger"
+    },
+    {
+      "q": "The build is failing on my PR, fix it",
+      "expect": "trigger"
+    },
+    {
+      "q": "PR #12's unit tests went red after my last push — sort it out",
+      "expect": "trigger"
+    },
+    {
+      "q": "Lint is failing on the pull request, make CI pass",
+      "expect": "trigger"
+    },
+    {
+      "q": "GitHub Actions checks failed on my PR; fix and push until green",
+      "expect": "trigger"
+    },
+    {
+      "q": "The typecheck job fails on PR 340",
+      "expect": "trigger"
+    },
+    {
+      "q": "Keep fixing my PR until the checks pass",
+      "expect": "trigger"
+    },
+    {
+      "q": "Set up GitHub Actions CI for this repo",
+      "expect": "no-trigger",
+      "route": "none"
+    },
+    {
+      "q": "Address the review comments on PR 87",
+      "expect": "no-trigger",
+      "route": "/pr-feedback"
+    },
+    {
+      "q": "This function returns the wrong total, debug it",
+      "expect": "no-trigger",
+      "route": "/diagnosing-bugs"
+    },
+    {
+      "q": "Staging is broken: checkout 500s since this morning",
+      "expect": "no-trigger",
+      "route": "/staging-fix"
+    },
+    {
+      "q": "Review the changes on this branch",
+      "expect": "no-trigger",
+      "route": "/code-review"
+    },
+    {
+      "q": "Commit, push, and open a PR for this issue",
+      "expect": "no-trigger",
+      "route": "/commit-push-pr"
+    }
+  ],
+  "last_run": {
+    "date": "2026-10-03",
+    "method": "3 independent fresh catalog-only judges over the full 450-query mixed set, deterministic shuffle; each judge had a private folder with its own copy of the judge prompt, catalog, and query list and was instructed to read nothing else, with no repository access (instruction-level isolation, not a sandbox; transcripts checked to reference only their own folder).",
+    "result": "450/450 pass — majority vote passed every query; 443 unanimous, 7 passed 2/3.",
+    "judge_model": "Claude Opus 5.5 (claude-opus-5-5), 3 independent Claude Code Agent-tool subagents",
+    "catalog": "tools/trigger-evals/build-catalog.sh (live kit descriptions 2026-10-03, 24 kit skills including agentic-qa and qa-escape) + tools/trigger-evals/catalog-externals.md snapshot dated 2026-09-28; judged tree 65493c9b209593ee1cd59dffd772b210d8b9ed41 + uncommitted changes"
+  }
+}

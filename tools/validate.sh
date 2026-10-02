@@ -35,6 +35,12 @@
 #      it must carry the house one-liner byte-exact, not a paraphrase.
 #  14. No placeholder scaffolding in references/ or assets/ — a stub file a
 #      SKILL.md cites as real content is worse than a dead link.
+#  16. Every SKILL.md carries a semver `metadata.version`; a skill whose files
+#      (outside evals/) differ from the branch base must carry a higher version
+#      than the base had. Base = merge-base with origin/main, else HEAD.
+#  15. Every skill is listed in exactly one plugin group in
+#      .claude-plugin/marketplace.json, and every listed path is a real skill —
+#      an unlisted skill lands in the skills CLI's "Other" group.
 
 set -u
 
@@ -418,6 +424,86 @@ if grep -rnE "$PLACEHOLDER_RE" skills/*/references skills/*/assets 2>/dev/null; 
   fail "placeholder scaffolding found (see lines above) — reference/asset files must carry real content"
 else
   note "no placeholder scaffolding in references/assets"
+fi
+
+echo "== 15. Every skill in exactly one marketplace.json plugin group =="
+mp_out="$(python3 - <<'PYEOF'
+import glob, json, os
+try:
+    m = json.load(open(".claude-plugin/marketplace.json", encoding="utf-8"))
+except Exception as e:
+    print(".claude-plugin/marketplace.json: " + str(e).splitlines()[0]); raise SystemExit
+seen = {}
+for plugin in m.get("plugins", []):
+    for path in plugin.get("skills", []):
+        seen.setdefault(os.path.normpath(path), []).append(plugin.get("name", "?"))
+skills = {os.path.normpath("./" + os.path.dirname(p)) for p in glob.glob("skills/*/SKILL.md")}
+for s in sorted(skills):
+    groups = seen.get(s, [])
+    if len(groups) != 1:
+        print(s + " is in " + str(len(groups)) + " plugin groups (expected exactly 1): " + ", ".join(groups))
+for s in sorted(set(seen) - skills):
+    print(s + " is listed in marketplace.json but has no SKILL.md")
+PYEOF
+)"
+if [[ -n "$mp_out" ]]; then
+  while IFS= read -r line; do
+    [[ -n "$line" ]] && fail "marketplace.json — $line"
+  done <<< "$mp_out"
+else
+  note "every skill in exactly one marketplace.json plugin group"
+fi
+
+echo "== 16. Skill versions present and bumped on change =="
+if git rev-parse --verify --quiet origin/main >/dev/null 2>&1; then
+  VBASE="$(git merge-base HEAD origin/main 2>/dev/null || git rev-parse HEAD)"
+else
+  VBASE="$(git rev-parse HEAD)"
+fi
+ver_out="$(VBASE="$VBASE" python3 - <<'PYEOF'
+import glob, os, re, subprocess
+base = os.environ["VBASE"]
+SEMVER = re.compile(r'^(\d+)\.(\d+)\.(\d+)$')
+
+def version(text):
+    if not text.startswith("---"):
+        return None
+    fm = text[3:text.find("\n---", 3)]
+    m = re.search(r'^metadata:\s*\n((?:[ \t]+.*\n?)*)', fm, re.M)
+    if not m:
+        return None
+    v = re.search(r'^[ \t]+version:[ \t]*"?([^"\s]+)"?[ \t]*$', m.group(1), re.M)
+    return v.group(1) if v else None
+
+def changed(name):
+    path = f"skills/{name}"
+    excl = f":(exclude){path}/evals"
+    diff = subprocess.run(["git", "diff", "--quiet", base, "--", path, excl]).returncode != 0
+    untracked = subprocess.run(["git", "ls-files", "--others", "--exclude-standard", "--", path, excl],
+                               capture_output=True, text=True).stdout.strip()
+    return diff or bool(untracked)
+
+for f in sorted(glob.glob("skills/*/SKILL.md")):
+    name = os.path.basename(os.path.dirname(f))
+    cur = version(open(f, encoding="utf-8").read())
+    if cur is None or not SEMVER.match(cur):
+        print(f"{f}: missing or non-semver metadata.version (expected e.g. \"0.0.1\")"); continue
+    old_text = subprocess.run(["git", "show", f"{base}:{f}"], capture_output=True, text=True)
+    if old_text.returncode != 0:
+        continue  # new skill at base
+    old = version(old_text.stdout)
+    if old is None or not SEMVER.match(old):
+        continue  # base predates versioning
+    if changed(name) and tuple(map(int, SEMVER.match(cur).groups())) <= tuple(map(int, SEMVER.match(old).groups())):
+        print(f"{f}: files changed since {base[:7]} but version {cur} is not above {old} — bump metadata.version")
+PYEOF
+)"
+if [[ -n "$ver_out" ]]; then
+  while IFS= read -r line; do
+    [[ -n "$line" ]] && fail "skill version — $line"
+  done <<< "$ver_out"
+else
+  note "every skill versioned; changed skills bumped since ${VBASE:0:7}"
 fi
 
 echo

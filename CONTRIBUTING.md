@@ -13,10 +13,13 @@ for agents working *in* this repo live in [AGENTS.md](AGENTS.md).
    a skill by matching the request against the description — a separate
    trigger-phrases file does nothing. Spend your effort there.
 3. Run `bash tools/validate.sh` before committing. CI runs it on every PR.
-4. Adding or moving a skill means updating **three places**: the skill folder, a
-   row in `skills/agents-md/references/skills-manifest.md`, and the skills table
-   in `README.md`. The validator fails if you miss one.
-5. Ship small, focused commits. Never add co-author, AI, tool, or generator
+4. Adding or moving a skill means updating **four places**: the skill folder, a
+   row in `skills/agents-md/references/skills-manifest.md`, the skills table
+   in `README.md`, and its path in exactly one plugin group in
+   `.claude-plugin/marketplace.json` (the group heading `npx skills` shows).
+   The validator fails if you miss one.
+5. Every skill carries its own version in frontmatter (`metadata: version: "0.0.1"`). Any change to a skill's files outside `evals/` bumps it: patch for wording or fixes that change no behaviour, minor for a new rule, step, input, or output, major for a removed or renamed input, output, marker, or refusal boundary. The validator (check 16) fails a changed skill whose version did not rise.
+6. Ship small, focused commits. Never add co-author, AI, tool, or generator
    attribution to commits, PRs, issues, or docs (zero-attribution policy).
 
 ## Doc map — what is model-facing vs human-facing
@@ -260,7 +263,7 @@ eval pass.
 
 | You changed | Also update |
 | :--- | :--- |
-| Added/removed/renamed a skill folder | `skills-manifest.md` row · README skills table · `GUIDE.md` usage/tables for its gradient or companion role |
+| Added/removed/renamed a skill folder | `skills-manifest.md` row · README skills table · its path in one `.claude-plugin/marketplace.json` plugin group (`manual-workflow` or `factory-workflow`) · `GUIDE.md` usage/tables for its gradient or companion role |
 | A skill's phase or gradient position | `skills-manifest.md` (single source for generated AGENTS.md tables) |
 | `ship-policy.md` in either ship skill | The other copy, byte-identical |
 | An issue-title species or its grammar (`Spec:`, `Ticket NNNN of …`, `Way:`, non-spec) | `agents-md-template.md` "Issue titles" (tracker-neutral) · both `ship-policy.md` copies (the title is the commit-subject anchor) · `GUIDE.md` issue-preflight gate · add a "predates this naming, do not retitle" clause for the old form |
@@ -272,6 +275,7 @@ eval pass.
 | Any runtime fact in `tool-calling.md`, a `*-tools.md`, `memory-global-defaults.md`, or `skills/tdd-loop/references/test-commands.md` | Re-verify the claim against that tool's current official docs in the same PR — CLI flags, tool names, and test-runner syntax age fast; don't propagate a stale fact into more files |
 | Any runtime fact in `skills/orchestrate-herdr/references/` — `herdr-commands.md` CLI syntax and lifecycle states, `tracker-map.md` `gh` and Linear MCP calls | Re-verify against the *installed* surface in the same PR, not prose docs: `herdr <group> --help` plus `herdr --skill` for herdr (its binary is the stated authority for its own syntax), the live tool schema for Linear MCP, `gh <cmd> --help` for GitHub. A flag, subcommand, or enum value absent from `--help` is phantom tooling — the defect class `writing-kit-skills` names |
 | A skill's frontmatter `description` | Re-run the trigger evals, restamp that skill's `last_run`, and refresh `tools/trigger-evals/last-run-descriptions.json` (`score.py … --write-snapshot`). `validate.sh` check 10 fails until you do — a description edited after a passing run silently invalidates that run's result |
+| Any file in a skill folder outside `evals/` | That skill's `metadata.version` — patch, minor, or major per the one-minute version; `validate.sh` check 16 |
 | A skill's `disable-model-invocation` flag | Its `agents/openai.yaml` mirror (`allow_implicit_invocation: false`) — parity enforced by `validate.sh` check 11 |
 | A canonical one-liner (shared kit protocol wording) | `skills/writing-kit-skills/SKILL.md` (source of truth) · every SKILL.md carrying it · the `CANON` block in `validate.sh` check 13 — all byte-identical |
 | The house style's word ceiling or skeleton | `tools/validate.sh` check 12 (ceiling) and `skills/writing-kit-skills/SKILL.md` stay in agreement |

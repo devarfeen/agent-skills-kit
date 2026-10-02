@@ -2,6 +2,8 @@
 name: feature-prompt
 disable-model-invocation: true
 description: "Use when the user wants to turn a feature idea, change request, or rough requirement into a small prompt for grill-with-docs. When cheap repo exploration reveals domain terms missing from or stale in CONTEXT.md, surface those candidate terms for user approval before any context update. Post-decision artifacts route onward instead: turning an ADR into a spec or implementation prompt is /to-spec, and investigating how existing behaviour works is /feature-discovery."
+metadata:
+  version: "0.0.1"
 ---
 
 # feature-prompt
@@ -27,7 +29,9 @@ can challenge tradeoffs, not just wording.]
 
 Expected end result:
 [Observable done state. Prefer user-visible behavior, passing checks, or a
-demo flow; seeds the later acceptance criteria.]
+demo flow; seeds the later acceptance criteria. Name the empty, loading,
+error, and recovery behavior, each role that sees it, and one thing that must
+not happen.]
 
 Known limits:
 [Conditional. Hard constraints, non-goals, compatibility needs, or exclusions

@@ -46,10 +46,15 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | `/polish-batch` | kit | verify | cosmetic punch-list | |
 | `/pixel-audit` | kit | verify | per-page visual conformance | |
 | `/integration-contract` | kit | verify | multi-project seams — build after /to-tickets, gate before the spec ships | |
+| `/agentic-qa` | kit | verify | agent-run functional QA on any change that can reach a screen — state × viewport × role grid, console and network gate; never edits code | |
+| `/qa-escape` | kit | verify | a bug human QA found after an agent said done → reproduction, escape class on the issue, regression test first; durable guard at 3 with approval | |
+| `/ci-loop` | kit | verify | an open PR's failing CI → green — up to 3 fix-and-push attempts under one approval; never edits the gate | |
+| `/risk-review` | kit | verify | specialist lenses + fixed-rubric low/high tier on a green PR; low offers auto-merge, high requests an engineer | |
 | `/commit-push-close` | kit | ship | | |
 | `/commit-push-pr` | kit | ship | | |
 | `/pr-feedback` | kit | ship | address reviewer comments on an open PR — classify, fix, reply with SHAs | |
 | `/staging-fix` | kit | ship | staging bug → local fix with test → PR to `staging` with auto-merge; servers never touched | |
+| `/deploy-watch` | kit | ship | merged PR → watch the staging deploy run + approved smoke check; ends at ready for owner | |
 | `/release-notes` | kit | ship | | |
 
 ## Companion Skills And MCPs
@@ -57,6 +62,8 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | skill | kind | phase | note | use-when |
 | ----- | ---- | ----- | ---- | -------- |
 | `/using-git-worktrees` | kit | companion | | The user asks to work in a worktree — invoke before task edits or the task skill; reuse or create the checkout under that project repo’s gitignored `.worktrees/`, verify its baseline, then return to the authorized task. Branch-only requests do not qualify. |
+| `/factory` | kit | companion | | You want to know where a spec (PRD), ticket, or PR stands — CI, review, risk gate, staging deploy — and which one skill moves it next. Read-only; suggests, never runs the next skill; stops at staging. |
+| `/incident-triage` | kit | companion | | An incident or outage needs a timeline, ranked causes with evidence, and owner-run mitigations. Read-only; production is never accessed. |
 | ask-matt | companion | | | You want Matt's upstream router for choosing a user-invoked skill flow. |
 | wait-what | companion | | | The agent's last chat message did not land — re-pitch it with brief context, ASD-STE100 Simplified Technical English, and the ubiquitous language from `CONTEXT.md`. |
 | unslop | companion | | | Free-prose output needs AI tells removed — chat narration, and PR/issue/doc prose the agent composes freely. Never applies to text a skill mandates verbatim: generated `AGENTS.md`/shims, output templates, section names, field labels, canonical lines. |

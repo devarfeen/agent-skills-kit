@@ -2,6 +2,8 @@
 name: orchestrate-herdr
 disable-model-invocation: true
 description: "Orchestrate herdr worker tabs for a spec (PRD). Takes a spec reference — a Linear issue ID (PRWL-100, ABC-123) or a GitHub issue URL/number — finds its open sub-issues in the workspace's tracker of record (Linear or GitHub), launches one herdr-managed worker tab per issue running a chosen coding CLI, then monitors the tabs until every issue is completed with test evidence, blocked, or errored. Use when running inside herdr (HERDR_ENV=1) and the user wants to fan a spec out to per-issue workers."
+metadata:
+  version: "0.0.1"
 ---
 
 # Orchestrate herdr
@@ -29,8 +31,8 @@ Fan work out to one herdr-managed worker tab per unit (tracker sub-issue or harn
 - **Isolation is the user's choice, and herdr's job.** Never `cd` into task, issue, or any other folder. Create a worktree only when the user picked `worktree`, and only through `herdr worktree create` — never hand-rolled `git worktree add`. In `branch` and `shared` mode every worker tab starts in the orchestrator's folder.
 - **Saved IDs only.** Every submit, read, monitor, and follow-up call uses a tab ID and agent name saved at creation — never the active tab, latest tab, visual order, or a guess.
 - **Prompts are pasted and submitted into a ready CLI** — never passed as launch arguments/flags, never left staged or unsent, and **never pasted into a dead tab's shell**, where the prompt text would execute as commands.
-- **Completion requires test evidence:** the worker's test command plus its quoted passing output, read from the tab. An unquoted "tests pass" stays incomplete.
-- **Suggest, never auto-chain.** After the final report, suggest `/code-review` on the workers' diffs or `/release-notes` for what shipped — suggest only, then stop.
+- **Completion requires test evidence:** the worker's test command plus its quoted passing output, read from the tab, and in spec mode an `AC map:` line covering every acceptance criterion. An unquoted "tests pass" or a criterion missing from the map stays incomplete; a worker's report is a claim until read from its tab.
+- **Suggest, never auto-chain.** After the final report, suggest `/agentic-qa` for each PR whose `AC map` owes rows to it, `/code-review` on the workers' diffs, or `/release-notes` for what shipped — suggest only, then stop.
 
 ## Workflow
 
@@ -89,13 +91,13 @@ Wait on lifecycle state per **Watch** — it reacts the moment a worker settles,
 
 ### 7. Report
 
-Report mode, agent and isolation mode, workspace/session ID, working folder, tab map, assignments (issues or harness labels), and blocked/errored workers, plus per worker end state, decisive test tail when applicable, and `Decisions` / `Open items`.
+Report mode, agent and isolation mode, workspace/session ID, working folder, tab map, assignments (issues or harness labels), and blocked/errored workers, plus per worker end state, decisive test tail when applicable, and `AC map` / `Decisions` / `Open items` (`AC map` in spec mode).
 
 ## Completion criteria
 
 - [ ] The final tab map accounts for every worker in the set (discovered sub-issues or harness **WORKERS**), including failed launches and exited workers; saved IDs and end states match read-back
 - [ ] Each tab, read back, shows its submitted prompt and a worker response — nothing staged or unsent
 - [ ] In `worktree` or `branch` mode, each worker's commits land on that issue's branch and no other
-- [ ] Every sub-issue's end state is reported: completed with quoted test command and passing output, blocked, or errored
+- [ ] Every sub-issue's end state is reported: completed with quoted test command, passing output, and (spec mode) its `AC map` line, blocked, or errored
 - [ ] Each blocked tracker-assigned issue shows `ready-for-human` and a decision-naming comment in the **Verify** read-back, title unchanged
-- [ ] The transcript ends with the final report and the `/code-review` / `/release-notes` suggestion — nothing after it
+- [ ] The transcript ends with the final report and the `/agentic-qa` / `/code-review` / `/release-notes` suggestion — nothing after it
