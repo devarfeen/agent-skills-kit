@@ -43,3 +43,8 @@ included. Non-artifact `docs/` content (for example a GitHub Pages site) stays.
    paths. Never rewrite a project-repository link; report each one again.
 4. **Report** every move and rewrite. On a failed move or write, stop and report
    what moved and what did not.
+
+## Legacy markers
+
+Recognize pre-`v6` attribution-bearing comments as legacy markers for migration
+only; replace them with the current marker in approved regeneration.

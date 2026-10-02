@@ -1,4 +1,4 @@
-<!-- agents-md marker · v44 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v45 · re-run /agents-md to regenerate -->
 # Agent instructions
 
 [one concise, factual workspace intro inferred from the .code-workspace name and folder scan — no promotional adjectives]
@@ -33,6 +33,7 @@ Assigned local workers may start in the project checkout or worktree named in th
 - During an active phase, send the same update at least every 60 seconds, including while workers or jobs run. Keep individual waits at or below 60 seconds so reporting can continue. State unchanged progress honestly; do not invent findings.
 - Continue within a phase when the next action follows from the request; make phase transitions explicit. Stop only when user input, approval, or a scope decision is needed.
 - Never report work done while any part is skipped, stubbed, or unverified. Name the check layers run and not run per [Goal-driven execution](#goal-driven-execution); a read-only task says `Verification: not applicable` or lists what it checked. Surface constraints, risks, and assumptions up front.
+- Call a failure pre-existing only after reproducing it on the base revision; otherwise report it as `unverified — may be related`.
 - While any subagent, background task, or job is active — under any name, in any runtime — every visible update states `N running / M done / K blocked` and what each running lane is doing. Work running silently in the background is a reporting violation, exactly like claiming unverified work is done.
 - After a successful task, use the active skill's required closing format. If none exists, end with `Recommended next step:` and one useful follow-up with its reason.
 
@@ -76,7 +77,7 @@ Skills are ad-hoc tools, not a pipeline: treat every installed skill as availabl
 
 - When choosing a skill or companion, consult the relevant catalogs and conditional routing in [Working with skills](#working-with-skills). For runtime-specific invocation, parallel/background mechanisms, or elevated launch presets, consult [Runtime tool-calling](#runtime-tool-calling).
 - **Live tools:** the current session's exposed tools, schemas, and permissions take precedence over runtime tables. A listed capability may be unavailable. Use an available fallback within the same authorization; otherwise report the blocked step. Never invent a tool call or broaden permissions to match a table.
-- Skills live in each repo's `.agents/skills/` and in the kit — prefer the project-local one; never assume a skill exists, use what is installed.
+- Skills live in each repo's `.agents/skills/` and in the kit — prefer the project-local one; never assume a skill exists, use what is installed. Read a skill's current SKILL.md each time you use it; never run it from memory.
 - After finishing the authorized workflow, suggest a next skill when one fits and stop. Suggestions never authorize a new workflow; a handoff explicitly included in the user's requested workflow may proceed within that authority.
 - Companions are optional helpers — the catalog identifies kit-provided skills; external companions remain separate installs and are never vendored.
 - Companions are helpers, not authority — repo code, tests, ADRs, `CONTEXT.md`, and user instructions still win.

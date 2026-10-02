@@ -6,6 +6,8 @@ Zero attribution: omit co-author, AI, and tool attribution from all output. Use 
 
 > Last verified: 2026-09-28 against all six installed CLIs (codex-cli 0.158.0, claude 2.1.283, agy 1.2.12, cursor-agent 2026.09.26-dd393fe, opencode 1.18.33, copilot 1.0.88) — flag/command surface via installed `--help`; internal tool names via official docs or the shipped binary; re-verify on touch (see CONTRIBUTING sync map).
 
+Contents: [Emitting into AGENTS.md](#emitting-into-agentsmd) · [Agent Orchestration Model](#agent-orchestration-model) · [All runtimes (index)](#all-runtimes-index)
+
 ## Emitting into AGENTS.md
 
 The `agents-md` generator fills its `### Runtime tool-calling` slot with exactly three untitled tables, one row per runtime in this file's order, cells copied verbatim, alignment row `| :--- |`:

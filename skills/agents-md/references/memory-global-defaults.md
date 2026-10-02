@@ -10,6 +10,8 @@ This kit creates no repo `MEMORY.md`, wiki, discovery, or default knowledge-grap
 
 ---
 
+Contents: [Codex CLI](#codex-cli) · [Claude CLI](#claude-cli) · [GitHub Copilot CLI](#github-copilot-cli) · [Cursor CLI](#cursor-cli) · [Opencode CLI](#opencode-cli) · [Antigravity CLI](#antigravity-cli) · [Quick reference](#quick-reference)
+
 ## Codex CLI
 
 **File:** `~/.codex/config.toml`  

@@ -9,6 +9,8 @@ Zero attribution: never add or leave co-author, AI, tool, or generator attributi
 in output. Preserve existing zero-attribution rules. The required neutral source
 comment below describes the data source, not authorship.
 
+Contents: [1. Resolve the local model](#1-resolve-the-local-model) · [2. Match projects to services](#2-match-projects-to-services) · [3. Prepare the managed block](#3-prepare-the-managed-block) · [4. Show the diff, then apply approved changes](#4-show-the-diff-then-apply-approved-changes) · [Completion checks](#completion-checks)
+
 ## 1. Resolve the local model
 
 Use the selected `.code-workspace` file's `folders` list, in order. When the

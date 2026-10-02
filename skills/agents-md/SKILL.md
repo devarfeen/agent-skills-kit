@@ -3,7 +3,7 @@ name: agents-md
 disable-model-invocation: true
 description: "Generate or refresh the workspace-root AGENTS.md and its CLAUDE.md redirect shim for a VS Code .code-workspace root. Any request to write, create, or generate an AGENTS.md file routes here — /writing-for-agents is style guidance for authoring agent-facing documents, not the generator. It creates the Project Matrix of PROJECT-CODEs and the workspace's non-negotiable rules. Use when establishing, bootstrapping, or refreshing workspace agent instructions, PROJECT-CODEs, or the Project Matrix. Use only when a .code-workspace file exists; stop otherwise. It does not seed a project UI-coding skill or build its binding AGENTS.md rule — that is /design-system."
 metadata:
-  version: "0.0.1"
+  version: "0.1.0"
 ---
 
 # AGENTS.md generator
@@ -72,11 +72,11 @@ Apply the manifest's note exclusions before emitting any catalog or startup note
 
 Gradient cells list each skill as `` `/name` `` followed by its manifest note, comma-separated, in manifest order.
 
-Fill the `[RUNTIME TOOL-CALLING …]` slot from `references/tool-calling.md`, following its **Emitting into AGENTS.md** format exactly; open a per-runtime `*-tools.md` only when a cell is missing or unclear. Never link the reference files (they do not ship) or restate the Local orchestration rule.
+Fill the `[RUNTIME TOOL-CALLING …]` slot from `references/tool-calling.md`, following its **Emitting into AGENTS.md** format exactly; open a per-runtime table ([claude](references/claude-tools.md), [codex](references/codex-tools.md), [copilot](references/copilot-tools.md), [cursor](references/cursor-tools.md), [opencode](references/opencode-tools.md), [antigravity](references/antigravity-tools.md)) only when a cell is missing or unclear. Native memory setup, on request only: [memory defaults](references/memory-global-defaults.md). Never link the reference files (they do not ship) or restate the Local orchestration rule.
 
 ## Versioning and regeneration
 
-The skill version is `v44`. Both generated root files carry the marker `<!-- agents-md marker · v44 · re-run /agents-md to regenerate -->` as their first line (the first line of each template asset in `assets/`). Bump it here and in both template assets together whenever these rules change. Recognize pre-`v6` attribution-bearing comments as legacy markers for migration only; replace them with the current marker in approved regeneration.
+The skill version is `v45`. Both generated root files carry the marker `<!-- agents-md marker · v45 · re-run /agents-md to regenerate -->` as their first line (the first line of each template asset in `assets/`). Bump it here and in both template assets together whenever these rules change. Legacy pre-`v6` markers: [regeneration](references/regeneration.md#legacy-markers).
 
 On run, check for an existing workspace-root `AGENTS.md`:
 
@@ -94,7 +94,7 @@ Pre-v7 workspaces kept the artifacts tree under `docs/`. When an artifact subfol
 
 ## Output
 
-Chat carries the pre-write diff, the migration move list and report, the manifest file read for each Project Matrix row, the rule-link check result, and the close: suggest `/setup-matt-pocock-skills`, and `/design-system` for each UI project, then stop — suggest only, never run them.
+Chat carries the pre-write diff, the migration move list and report, the manifest file read for each Project Matrix row, the rule-link check result, [competing instruction files](references/competing-instructions.md), and the close — suggesting [env-guard hooks](references/env-guard-hooks.md) when hosts are named — suggest `/setup-matt-pocock-skills`, and `/design-system` for each UI project, then stop — suggest only, never run them.
 
 ## Completion criteria
 
