@@ -189,7 +189,7 @@ completion.
 
 ### Self-contained installs (why ship-policy.md is duplicated)
 
-Skills install standalone via `npx skills install … --skill <name>`, so a skill
+Skills install standalone via `npx skills add … --skill <name>`, so a skill
 may not reference another skill's files. Shared text is therefore *duplicated by
 design* and must stay **byte-identical** across its copies — currently
 `references/ship-policy.md` (both ship skills) and `references/context-terms.md`
@@ -299,6 +299,6 @@ eval pass.
 
 ### Releasing
 
-Consumers install directly from `main` via `npx skills install`. Treat `main`
+Consumers install directly from `main` via `npx skills add`. Treat `main`
 as always-releasable: validator green, no half-migrated skills. Anything
 experimental stays on a branch until it meets the review rubric.
