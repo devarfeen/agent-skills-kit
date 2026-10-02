@@ -393,6 +393,24 @@ How to read it:
 - **Blocked units come first.** For a spec with several units, `QA_RETURNED`, `DEPLOY_FAILED`, `CI_STUCK`, `QA_STUCK`, `CHANGES`, and `UNKNOWN` are listed before healthy ones. Healthy units follow oldest first, and one that has sat in a state for more than 3 days is flagged `stalled`.
 - **Incidents sit outside the path.** Use `/incident-triage`, then re-enter at `BUILDING` with the fix ticket it proposes.
 
+### Example: a new task from the start
+
+You have an idea and nothing written down yet. Every `/factory` call below only reads state and suggests; you run each suggested skill yourself, then ask `/factory` again.
+
+| You run | `/factory` places it at | It suggests, and you run |
+| :--- | :--- | :--- |
+| `/factory start` | `OUTCOME` — no spec yet | `/feature-prompt` → `/grill-with-docs` → `/to-spec`, which files spec issue `PRWL-142` with acceptance criteria |
+| `/factory PRWL-142` | `TICKETS` — spec exists, no sub-issues | `/to-tickets` (add `/integration-contract` if the spec spans projects); tickets `PRWL-143` and `PRWL-144` are created |
+| `/factory PRWL-142` | both tickets `BUILDING` | `/tdd-loop` on `PRWL-143`, then `/commit-push-pr`, which opens PR #87 and posts its acceptance-criteria verdict (several tickets inside herdr: `/orchestrate-herdr PRWL-142`) |
+| `/factory PRWL-142` | PR #87 `CI` — a required check fails | `/ci-loop 87` |
+| `/factory 87` | `QA` — green on head, the diff reaches a screen | `/agentic-qa 87` |
+| `/factory 87` | `REVIEW` — QA marker verified on head | `/risk-review 87`; human review threads go through `/pr-feedback 87` |
+| `/factory 87` | `MERGE` — low risk on head | merge into `staging` yourself, or accept the auto-merge `/risk-review` offers |
+| `/factory 87` | `STAGING` — merged, deploy running | `/deploy-watch 87` |
+| `/factory 87` | `READY_FOR_OWNER` | nothing — the owner promotes to production |
+
+Pass the spec (`/factory PRWL-142`) to see every ticket at once, blocked ones first; pass a ticket or PR to see one unit. If a step sends the PR back — a new push, QA findings, a blocking risk finding — the next `/factory` call says so (`CI` or `CHANGES`), and you follow its new suggestion. Already have a spec, ticket, or PR? Skip `start` and pass that reference directly.
+
 ---
 
 ## 9. Weekly Cadence
