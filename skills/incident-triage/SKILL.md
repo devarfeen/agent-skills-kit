@@ -3,7 +3,7 @@ name: incident-triage
 disable-model-invocation: true
 description: "Triage an incident or outage from evidence — build a timeline, rank likely causes with the evidence for and against each, propose mitigations for the owner, answer questions, and write one incident note. Use when the user says \"we have an incident\", \"the site is down\", \"triage this alert\", or pastes alerts, error spikes, or logs and asks what is going on. Read-only: works from user-supplied evidence and, with this session's approval, read-only staging inspection; never accesses production and never applies a mitigation. Fixing a known staging bug is /staging-fix; root-causing a reproducible bug locally is /diagnosing-bugs."
 metadata:
-  version: "0.0.1"
+  version: "0.1.0"
 ---
 
 # incident-triage
@@ -19,12 +19,14 @@ incident-triage turns scattered incident evidence into a ranked, checkable pictu
 
 ## Rules
 
-- **Production is never accessed.** No SSH, server commands, prod database, files, logs, env, or dashboards reached by the agent. If the next decisive fact lives in production, name the exact query or log line and ask the owner to run it and paste the result.
+- **Production is never accessed.** No SSH, server commands, prod database, files, logs, env, or dashboards reached by the agent. If the next decisive fact lives in production, name the exact query or log line and ask the owner to run it and paste the result — ideally one sanitized failing request with its timestamp or request ID plus the matching app log lines.
 - **Staging is read-only and approved.** Inspect staging only within this session's approval. Any mutating step — restart, rollback, config edit, data fix — is proposed to the owner, never run.
 - **Propose mitigations, never apply them.** Every mitigation names who runs it, its expected effect, its risk, and how to undo it. Rollbacks go through a revert PR via `/staging-fix` for staging, or the owner's own process for production.
 - **Hypotheses carry evidence both ways.** Each cause lists what supports it, what argues against it, and the one check that would confirm or kill it. Rank by evidence, not by how familiar the cause sounds.
+- **A suspected breach changes the path.** Signs of unauthorized access, data exposure, or a leaked secret → tell the owner at once to start their security process, keep attack detail out of the note, and never test the exploit.
 - **Time-box the first answer.** Give a first ranked picture within the first pass of evidence; refine as answers arrive instead of waiting for completeness.
 - **Facts and guesses stay apart.** Timeline entries are observed facts with a source; inference goes in hypotheses.
+- Redact before anything leaves the session: replace tokens, keys, cookies, session IDs, passwords, emails, and customer identifiers in quoted evidence with `<redacted>`, keeping only the lines that show the fault.
 - **Zero attribution.** No co-author, AI, or tool attribution in the note or any output.
 - Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`CONTEXT-MAP.md` at repo root), else the repo root.
 - Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.
@@ -41,7 +43,7 @@ Merge evidence, merged PRs, and deploy runs into one ordered timeline, each line
 
 ### 3. Rank causes
 
-List 2–4 hypotheses in the format from Rules, most-supported first. For each, name the confirming check and whether the agent can run it (code reading, `gh`, approved staging) or the owner must.
+List 2–4 hypotheses in the format from Rules, most-supported first. Include at least one that isn't a recent change — a shared dependency, a third-party provider, traffic or data shape, or an expired certificate, token, or quota. When several services fail together, rank the shared dependency first. For each, name the confirming check and whether the agent can run it (code reading, `gh`, approved staging) or the owner must.
 
 ### 4. Run the checks you can
 
@@ -58,11 +60,13 @@ Write `<artifacts-root>/specs/incidents/<YYYY-MM-DD>-<slug>.md`:
 ```
 # Incident: <one-line symptom>
 Status: investigating | mitigated | resolved — owner: <name>
+Severity: SEV1–4 (owner confirms)
 Window: <first-bad> → <now or resolved> · Impact: <who, what>
 
 ## Timeline
 - 14:02 first 5xx alert on /checkout (Datadog alert, pasted)
 - 13:55 PR #87 merged to staging; deploy run 9912 success (gh)
+- — gap: 14:32–14:47 unknown
 
 ## Hypotheses
 1. Credit-note query times out under load — for: trace shows 30s in InvoiceTotal; against: started before #87; check: owner runs EXPLAIN on prod replica
@@ -73,7 +77,7 @@ Window: <first-bad> → <now or resolved> · Impact: <who, what>
 ## Open questions
 ```
 
-Append to the same note as the incident develops; never create a second note for one incident.
+Append to the same note as the incident develops; never create a second note for one incident. When status becomes `resolved`, append `## Resolution`: the confirmed cause and the evidence that confirmed it, contributing factors in blameless wording ("the check did not", not "X forgot"), and follow-ups each with an owner.
 
 ## Output
 

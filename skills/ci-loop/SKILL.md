@@ -3,7 +3,7 @@ name: ci-loop
 disable-model-invocation: true
 description: "Drive an open PR's failing CI to green — read the failing job's log, reproduce locally, fix within the PR's scope, push, and watch the next run, repeating up to 3 attempts under one up-front approval. Use when the user says \"fix CI on PR 87\", \"get this PR green\", \"the build is failing on my PR\", or /factory reports a unit in CI. Stops on a flaky or infrastructure failure, a fix outside the ticket's scope, or the attempt cap. Reviewer comments route to /pr-feedback; a bug with no PR or CI run is /diagnosing-bugs; setting up a CI pipeline is not this skill."
 metadata:
-  version: "0.0.1"
+  version: "0.1.0"
 ---
 
 # ci-loop
@@ -22,10 +22,12 @@ ci-loop turns one PR's red checks green by fixing the code, not the checks. It i
 - **One approval covers the loop.** Before the first push, show the plan: PR, failing checks, attempt cap, and the commit-subject pattern `fix(ci): <check> — <cause>`. After the user approves, each attempt may commit and push to this PR's head branch without asking again. Approval never covers another branch, a force-push, or a base-branch change.
 - **Fix the code, never the gate.** Never skip, delete, mark `xfail`, loosen assertions, raise timeouts, disable lint rules, or edit workflow files to make a check pass. When the check itself is wrong, stop and report it as a finding.
 - **Stay in scope.** A fix belongs to this ticket only when the failure is caused by the PR's diff. Failures that also occur on the base branch, or whose fix needs files unrelated to the ticket, stop the loop with the evidence.
-- **Flaky and infrastructure failures stop.** Runner timeouts, network or registry errors, missing secrets, and quota limits are not code faults. Offer one `gh run rerun <run-id> --failed`; if the rerun fails the same way, stop.
+- **Flaky and infrastructure failures stop.** Runner timeouts, network or registry errors, missing secrets, and quota limits are not code faults. Offer one `gh run rerun <run-id> --failed`; if the rerun fails the same way, stop. A flake in a test or code path this PR added or changed is a **Code** failure: fix the race by waiting on the real condition, never by retry or sleep.
 - **Circles and stalls stop the loop.** Before each attempt, compare the planned diff with earlier attempts. An attempt that would re-apply a change an earlier attempt reverted, or undo an earlier attempt's fix, stops the loop as `oscillating`. An attempt that leaves the same checks failing with the same error lines stops it as `no progress` — the cap is a ceiling, not a target.
 - **Feature branches only.** Never push to the staging branch, the default branch, or any branch a workflow deploys from — read the workflow triggers to know which. A PR whose head is one of those stops before the plan.
 - **Push only forward.** New commits on the head branch; no force-push, rebase, or amend of pushed commits.
+- **Fresh state each attempt.** Before each attempt, `git fetch` and confirm the remote head is the SHA you last pushed. A commit you didn't make stops the loop as `head moved`; the approval covered the head you saw.
+- A failed or erroring `gh` query is unknown — never an empty result, a pass, or green; report the command and its error.
 - **Reproduce before fixing.** Run the failing job's command locally first; a fix that was never witnessed failing locally is a guess. When the job can't run locally, say so and name the substitute signal.
 - **Zero attribution.** No co-author, AI, or tool attribution in commits or comments; strip tool-injected footers before committing.
 - Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.
@@ -40,13 +42,13 @@ gh run list --branch <head-branch> --commit <head-sha> --json databaseId,workflo
 gh run view <run-id> --log-failed
 ```
 
-Only `bucket: fail` checks count. Record the starting set — each failing check with its decisive error line — as the baseline every attempt is measured against. All `pending` → there is nothing to fix; report the pending checks and stop. Quote the shortest decisive log tail per failing check: the assertion or error line and the step name.
+Only `bucket: fail` checks count; a `cancel` bucket is not a pass. A repo without required checks makes `--required` exit 1 with `no required checks reported` — fall back to all checks without `--required` and say so in the report. Record the starting set — each failing check with its decisive error line — as the baseline every attempt is measured against. All `pending` → there is nothing to fix; report the pending checks and stop. Quote the shortest decisive log tail per failing check: the assertion or error line and the step name.
 
 ### 2. Classify
 
 Sort each failing check into one class:
 
-- **Code** — the diff broke a test, type check, lint, or build. Continue.
+- **Code** — the diff broke a test, type check, lint, or build, or a test this PR added or changed is flaky. Continue.
 - **Base** — the same check fails on the base branch's latest run (`gh run list --branch <base> --workflow <name> --limit 1`). Stop: not this PR's fault.
 - **Flaky or infra** — per Rules. Offer the single rerun.
 - **Gate is wrong** — the check contradicts the ticket's acceptance criteria. Stop and report.
@@ -59,10 +61,10 @@ Present the plan from Rules and wait. User away → print the plan and stop; the
 
 For each attempt, up to the cap:
 
-1. Reproduce locally with the job's own command and see it fail.
+1. Reproduce locally with the job's own command and see it fail. Passes locally → don't fix yet: diff CI against local (runtime and tool versions from the job log, env vars, service containers, test order or seed, timezone) and reproduce under CI conditions. Still green → stop as `no repro` with the differences listed.
 2. Make the smallest in-scope fix. Run the failing command, then the repo's fast check suite.
 3. Stage the fix paths by name, inspect `git diff --cached`, commit with `fix(ci): <check> — <cause>`, and push.
-4. Watch the new run: `gh pr checks <pr> --required --watch --fail-fast`.
+4. Watch the new run: `gh pr checks <pr> --required --watch --fail-fast`. Stop watching at 2× the workflow's recent run time (`gh run list --workflow <name> --limit 5`) and report `pending`.
 5. All required checks `pass` on the new head → done. Any failure → next attempt: re-read and re-classify it (Workflow steps 1–2) before fixing; a stop class ends the loop.
 
 ### 5. Stop
@@ -73,7 +75,7 @@ The loop ends on green, the attempt cap, or any stop condition in Rules. At the 
 
 ```
 ci-loop — PR #87 (<head-branch>)
-Result: green | stopped (<reason>) | oscillating | no progress | capped (3/3)
+Result: green | stopped (<reason>) | oscillating | no progress | head moved | no repro | pending | capped (3/3)
 Baseline: unit-tests (null user in InvoiceTotal), lint (unused import)
 Attempts:
 - 1 a1b2c3d — unit-tests: null user in InvoiceTotal — fixed guard → still failing (lint)
@@ -85,7 +87,7 @@ One line per attempt. On a stop, replace `Attempts` with the classification and 
 
 ## Completion criteria
 
-- [ ] `gh pr checks <pr> --required` shows every check `pass` on the pushed head SHA, or the report names the stop reason with a quoted log line
+- [ ] `gh pr checks <pr> --required` (or all checks, when the repo has no required checks) shows every check `pass` on the pushed head SHA, or the report names the stop reason with a quoted log line
 - [ ] The checkout record was reported before the first command, and every commit was made in that worktree
 - [ ] Attempt count ≤ the cap, and each attempt's commit SHA appears on the head branch
 - [ ] `git diff <first-head>..HEAD --name-only` shows no workflow files, skip markers, or deleted tests
