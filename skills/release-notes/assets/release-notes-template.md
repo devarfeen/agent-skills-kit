@@ -33,6 +33,7 @@ Date: <DD Month YYYY>
 
 **Impact**
 - <What is better now>
+- Action needed: <what users or operations must do — re-login, new setting, migration, env key; omit if none>
 
 **Scope**
 - <Which screen/app/user group is affected>
