@@ -270,7 +270,7 @@ eval pass.
 | Deprecating a skill (retained for reference) | Start its manifest `note` with `deprecated` — a `deprecated`-prefixed note excludes the row from generated gradient/companion tables · mark its README table row · add a STATUS banner at the top of its `SKILL.md` |
 | `agents-md` templates or generation rules (anything that changes what it emits — routine manifest row additions don't count) | Bump the version marker in `skills/agents-md/` (all three occurrences: the rule text in `SKILL.md` and the first line of each template asset) |
 | Companion list | `skills-manifest.md` companions table · `GUIDE.md` human copy · relevant README/BEST-PRACTICES pointers |
-| A credited or globally installed companion skill (README "Credits And Provenance") | The `COMPANIONS` list in `tools/install-skills.sh` — same source and skill names |
+| A credited or globally installed companion skill (README "Credits And Provenance") | The `COMPANIONS` list in `tools/install-skills.sh` — same source and skill names; `validate.sh` check 18 fails when an installed companion is missing from the credits |
 | Worktree placement, handoff, or cleanup boundary | `using-git-worktrees/SKILL.md` · `agents-md` template/routing · both ship-policy copies · README/GUIDE/BEST-PRACTICES usage |
 | Elevated-permission presets | `skills/agents-md/references/tool-calling.md` (model-facing source) and `GUIDE.md` (human-facing copy) |
 | Any runtime fact in `tool-calling.md`, a `*-tools.md`, `memory-global-defaults.md`, or `skills/tdd-loop/references/test-commands.md` | Re-verify the claim against that tool's current official docs in the same PR — CLI flags, tool names, and test-runner syntax age fast; don't propagate a stale fact into more files |
@@ -278,7 +278,8 @@ eval pass.
 | A skill's frontmatter `description` | Re-run the trigger evals, restamp that skill's `last_run`, and refresh `tools/trigger-evals/last-run-descriptions.json` (`score.py … --write-snapshot`). `validate.sh` check 10 fails until you do — a description edited after a passing run silently invalidates that run's result |
 | Any file in a skill folder outside `evals/` | That skill's `metadata.version` — patch, minor, or major per the one-minute version; `validate.sh` check 16 |
 | A skill's `disable-model-invocation` flag | Its `agents/openai.yaml` mirror (`allow_implicit_invocation: false`) — parity enforced by `validate.sh` check 11 |
-| A canonical one-liner (shared kit protocol wording) | `skills/writing-kit-skills/SKILL.md` (source of truth) · every SKILL.md carrying it · the `CANON` block in `validate.sh` check 13 — all byte-identical |
+| A canonical one-liner (shared kit protocol wording) | `skills/writing-kit-skills/SKILL.md` (source of truth) · every SKILL.md and shared `references/` policy carrying it · the `CANON` block in `validate.sh` check 13 — all byte-identical. A file exempt from one marker needs user approval and a `CANON_EXEMPT` entry with its reason |
+| API-change vocabulary — match labels (`generated` / `normalized-route` / `name-only`) or rollout classes (`compatible` / `rollout-dependent — <order>` / `breaking`) | `skills/integration-contract/references/consumer-sweep.md` and `skills/risk-review/references/risk-rubric.md` use the same terms and definitions — skills install standalone, so neither may point at the other |
 | The house style's word ceiling or skeleton | `tools/validate.sh` check 12 (ceiling) and `skills/writing-kit-skills/SKILL.md` stay in agreement |
 
 ### Versioning and provenance

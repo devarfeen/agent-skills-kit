@@ -57,6 +57,20 @@ contested: [`tdd-workflow-eval.md`](tdd-workflow-eval.md),
 [`agent-usability-eval.md`](agent-usability-eval.md), and
 [`frontier-readiness-eval.md`](frontier-readiness-eval.md).
 
+## Writing behavior cases
+
+Behavior cases (`skills/<name>/evals/behavioral-cases.md` and similar) test what an
+agent does once the skill is loaded. A case earns its place only by showing a failure:
+
+- **Run a no-skill control first.** The same scenario without the skill must show the
+  failure the rule targets. If the control already behaves, there is nothing to fix —
+  drop the case and the rule it was meant to justify.
+- **Combine at least three pressures** in one forced-choice scenario — for example the
+  user is away, work is already sunk, and an authority figure asks for the shortcut. One
+  pressure at a time rarely breaks a rule an agent already knows.
+- **Repeat each case.** Single samples lie; record the run count beside the result and
+  report a rate (`4 of 5 held`), never a lone pass.
+
 ## Relationship to CONTRIBUTING.md
 
 [`CONTRIBUTING.md`](../CONTRIBUTING.md) carries the **merge gate**: nine
