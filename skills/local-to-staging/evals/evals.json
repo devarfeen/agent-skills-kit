@@ -1,0 +1,97 @@
+{
+  "skill": "local-to-staging",
+  "kind": "trigger-eval",
+  "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
+  "queries": [
+    {
+      "q": "Promote local to staging on all projects",
+      "expect": "trigger"
+    },
+    {
+      "q": "Open PRs from origin/local to origin/staging in every repo that has a staging branch and merge them",
+      "expect": "trigger"
+    },
+    {
+      "q": "Push everything on local up to staging across the workspace and tell me if the Actions pass",
+      "expect": "trigger"
+    },
+    {
+      "q": "Merge local into staging for all projects via PRs, then check the GitHub Actions runs",
+      "expect": "trigger"
+    },
+    {
+      "q": "Run the local→staging promotion",
+      "expect": "trigger"
+    },
+    {
+      "q": "Every repo with origin/staging: PR local into it, merge, wait for CI, report",
+      "expect": "trigger"
+    },
+    {
+      "q": "Move this week's local branch work onto staging everywhere",
+      "expect": "trigger"
+    },
+    {
+      "q": "Open and merge the local-to-staging PRs, then verify the deploy workflows succeeded",
+      "expect": "trigger"
+    },
+    {
+      "q": "Promote SHOP-WEB and ADMIN-WEB from local to staging",
+      "expect": "trigger"
+    },
+    {
+      "q": "Sync staging with local on all our projects and confirm the pipelines are green",
+      "expect": "trigger"
+    },
+    {
+      "q": "Staging is broken after the last merge, fix it",
+      "expect": "no-trigger",
+      "route": "/staging-fix"
+    },
+    {
+      "q": "Watch the staging deploy for PR 87 and smoke-test it",
+      "expect": "no-trigger",
+      "route": "/deploy-watch"
+    },
+    {
+      "q": "Is staging ready to go to production?",
+      "expect": "no-trigger",
+      "route": "/staging-to-production"
+    },
+    {
+      "q": "Commit, push, and open a PR for this issue",
+      "expect": "no-trigger",
+      "route": "/commit-push-pr"
+    },
+    {
+      "q": "Fix the failing CI on PR 87",
+      "expect": "no-trigger",
+      "route": "/ci-loop"
+    },
+    {
+      "q": "Is PR 87 safe to auto-merge into staging?",
+      "expect": "no-trigger",
+      "route": "/risk-review"
+    },
+    {
+      "q": "Where does SPEC-142 stand in the factory?",
+      "expect": "no-trigger",
+      "route": "/factory"
+    },
+    {
+      "q": "Create a branch called local in the current checkout",
+      "expect": "no-trigger",
+      "route": "none"
+    },
+    {
+      "q": "Generate release notes for what went to staging this week",
+      "expect": "no-trigger",
+      "route": "/release-notes"
+    },
+    {
+      "q": "Deploy this to production",
+      "expect": "no-trigger",
+      "route": "none"
+    }
+  ]
+}

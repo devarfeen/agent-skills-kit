@@ -18,6 +18,7 @@
         "./skills/feature-discovery",
         "./skills/feature-prompt",
         "./skills/integration-contract",
+        "./skills/local-to-staging",
         "./skills/orchestrate-herdr",
         "./skills/pixel-audit",
         "./skills/polish-batch",
@@ -25,6 +26,7 @@
         "./skills/pr-feedback",
         "./skills/release-notes",
         "./skills/staging-fix",
+        "./skills/staging-to-production",
         "./skills/tdd-loop",
         "./skills/using-git-worktrees",
         "./skills/writing-kit-skills"

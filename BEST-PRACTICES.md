@@ -34,7 +34,7 @@ discover → sharpen → plan → slice → implement → verify → ship
 | **slice** | Break the plan into thin, grabbable units | `/to-tickets` |
 | **implement** | Build it test-first | `/implement` (optional ticket driver), `/tdd-loop` (the procedure — gates + exception protocol), `/tdd` (test-quality reference) |
 | **verify** | Prove it works | `/code-review`, `/agentic-qa` (agent-run functional QA on a PR), `/pixel-audit` (per-page pixel conformance), manual QA, `/polish-batch` (cosmetic tail), `/integration-contract` (cross-repo seam), `/diagnosing-bugs` |
-| **ship** | Land it with proof | `/commit-push-close`, `/commit-push-pr`; once a PR is open, the factory skills (`/ci-loop`, `/pr-feedback`, `/risk-review`, `/deploy-watch`) carry it to staging — see Workflow F |
+| **ship** | Land it with proof | `/commit-push-close`, `/commit-push-pr`; once a PR is open, the factory skills (`/ci-loop`, `/pr-feedback`, `/risk-review`, `/deploy-watch`) carry it to staging — see Workflow F; `/local-to-staging` and `/staging-to-production` (read-only) promote between environments |
 
 ### The fog fork
 
@@ -65,7 +65,7 @@ Not every skill lives on the discover→ship line:
 - **Porting:** `/port-feature` is a discover→plan variant for bringing a feature that already exists in a reference implementation into a target stack (see Workflow D). It writes a gap map and hands off to `/grill-with-docs`.
 - **Factory conductor:** `/factory` reads where a spec, ticket, or PR stands from the tracker, the PR, CI, review, and deploy state, names the one gate it is at, and suggests the single skill that moves it forward. It holds no state file, so you can re-run it any time (see Workflow F).
 - **Parallel workers:** `/orchestrate-herdr` fans a spec's open sub-issues out to herdr worker tabs and monitors them. Sub-issues blocked by another open sub-issue are not parallel work; it asks before dispatching them after their blocker. A worktree isolates files, not ports, databases, or `.env*` files, so workers that share those are serialized or given separate ports.
-- **Operations:** `/staging-fix` fixes a staging bug locally and ships it as a PR to `staging`; `/incident-triage` builds a timeline and ranked causes from evidence, read-only; `/qa-escape` takes a bug human QA found after the agent called the work done and turns it into a failing test to write first.
+- **Operations:** `/staging-fix` fixes a staging bug locally and ships it as a PR to `staging`; `/local-to-staging` promotes `origin/local` to `origin/staging` across all projects and watches the Actions runs; `/staging-to-production` checks production readiness read-only and prints the commands you run; `/incident-triage` builds a timeline and ranked causes from evidence, read-only; `/qa-escape` takes a bug human QA found after the agent called the work done and turns it into a failing test to write first.
 - **Worktree setup:** `/using-git-worktrees` runs when you ask for work in a worktree. It establishes the checkout before the requested task skill runs, then returns control to that task. Before task writes, the agent reports the verified checkout record and binds commands and edit paths to it. Handoffs and restarts require checkout identity rechecks; a mismatch blocks writes. This is an instruction gate, not a harness-level write blocker. It is not a required phase for ordinary work.
 
 **UI work has its own discipline.** Once a project has a design system, every UI change consumes its library — never inline markup the library covers. A missing component gets added via `/design-system` (extend) from the reference, or you ask for one. Per-page pixel conformance during feature work is `/pixel-audit`; the cosmetic tail during QA is `/polish-batch`.
@@ -104,6 +104,24 @@ setup may add the narrow ignore entry in the source checkout and task branch.
 Do not create a second worktree for shipping or silently edit the source
 checkout when setup fails. Keep `/.worktrees/` in `.gitignore` for future tasks.
 The [guide's example](GUIDE.md#working-in-a-worktree) shows the complete flow.
+
+Name every step you want in one prompt, and leave out the ones you don't:
+
+- *“In SHOP-WEB and ADMIN-WEB, each in its own worktree under `.worktrees/`,
+  add or update a file `dummy-worktree-smoke.txt` with the project name and
+  today's date. Use separate branches, commit in each repo, then merge both
+  into our usual local integration branch. Don't push or open a PR — just show
+  me it worked.”*
+- *“In all projects under the global workspace, each in its own worktree with
+  `/using-git-worktrees`, bump the version to the next version, 1.1.6. Give me
+  a before/after table per project. Use separate branches, commit in each repo,
+  then merge all into our usual local integration branch. Use
+  `/orchestrate-herdr` as the parallel harness with Codex (`cxd`), Claude
+  (`ccd`), and Antigravity (`agd`) via their aliases.”*
+
+Both authorize commit and merge because they say so; push, PR, and cleanup
+still need their own request. See the
+[guide's multi-repo prompts](GUIDE.md#example-prompts-several-repos).
 
 ### Companion skills and MCPs are part of ad-hoc workflow
 
@@ -479,6 +497,7 @@ What separates intentional use from vibe coding:
 | **Many tickets in parallel** | `/orchestrate-herdr <spec>` |
 | **UI / design system** | `/design-system` bootstrap, then `extend` as it grows or after a page ships |
 | **Work in a worktree** | `/using-git-worktrees` before the requested task; ship from that checkout; merge and verify; request cleanup |
+| **Promote environments** | `/local-to-staging` → `/staging-to-production` (read-only; you run the printed commands) |
 | **Weekly** | `/release-notes` |
 
 The fork between **B** and **E** is the fog test: can you state the destination *and* every open decision, sharply, right now?

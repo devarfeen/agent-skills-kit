@@ -1,4 +1,4 @@
-<!-- agents-md marker · v45 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v46 · re-run /agents-md to regenerate -->
 # Agent instructions
 
 [one concise, factual workspace intro inferred from the .code-workspace name and folder scan — no promotional adjectives]
@@ -229,6 +229,7 @@ Nothing commits, pushes, opens a PR, or closes a delivery issue outside the ship
 - `/commit-push-close` — commit, push the current branch, and close the issue (a direct default-branch push only after its separate confirm).
 - `/pr-feedback` — fixes on an existing PR branch; it ships through `/commit-push-pr` on that same branch, never a raw push.
 - `/staging-fix` — commit, push, and open a PR targeting the staging branch only, with auto-merge; never the default branch.
+- `/local-to-staging` — open and merge `local` → `staging` PRs only, after their checks pass; never pushes, never a production or default branch. `/staging-to-production` is read-only and prints the owner's commands.
 
 - Local engineering commits are not shipping: task-branch commits inside orchestration worktrees and local `--no-ff` merges into the local integration branch are allowed without a ship skill. [Zero attribution](#zero-attribution) still applies to them, and any push, PR, or issue close still exits through a ship skill.
 - Any other skill that instructs you to commit — `/implement` included — stops instead and hands off. Report what is ready to ship; do not stage, commit, or push it.

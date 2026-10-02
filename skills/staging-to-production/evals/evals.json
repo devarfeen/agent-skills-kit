@@ -1,0 +1,97 @@
+{
+  "skill": "staging-to-production",
+  "kind": "trigger-eval",
+  "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
+  "queries": [
+    {
+      "q": "Is staging ready for production?",
+      "expect": "trigger"
+    },
+    {
+      "q": "Prep the staging to production promotion for all projects",
+      "expect": "trigger"
+    },
+    {
+      "q": "Which projects have staging ahead of main and green CI?",
+      "expect": "trigger"
+    },
+    {
+      "q": "Give me the commands to promote staging to production in every repo",
+      "expect": "trigger"
+    },
+    {
+      "q": "Run the staging-to-production readiness check",
+      "expect": "trigger"
+    },
+    {
+      "q": "How many commits is staging ahead of production in each project, and did staging's Actions pass?",
+      "expect": "trigger"
+    },
+    {
+      "q": "Before I release, check every repo's staging branch is green and show what I'd need to run to merge it into main",
+      "expect": "trigger"
+    },
+    {
+      "q": "Production promotion checklist across the workspace — read only",
+      "expect": "trigger"
+    },
+    {
+      "q": "Can we promote staging to prod today? Check each project",
+      "expect": "trigger"
+    },
+    {
+      "q": "List the staging→production PRs I need to open and whether each is safe",
+      "expect": "trigger"
+    },
+    {
+      "q": "Promote local to staging on all projects",
+      "expect": "no-trigger",
+      "route": "/local-to-staging"
+    },
+    {
+      "q": "Watch the staging deploy for PR 87",
+      "expect": "no-trigger",
+      "route": "/deploy-watch"
+    },
+    {
+      "q": "Staging is broken: checkout 500s since this morning",
+      "expect": "no-trigger",
+      "route": "/staging-fix"
+    },
+    {
+      "q": "Production is down — what's going on?",
+      "expect": "no-trigger",
+      "route": "/incident-triage"
+    },
+    {
+      "q": "Where is PR 87 in the factory?",
+      "expect": "no-trigger",
+      "route": "/factory"
+    },
+    {
+      "q": "Is PR 87 safe to auto-merge?",
+      "expect": "no-trigger",
+      "route": "/risk-review"
+    },
+    {
+      "q": "Generate release notes for this release",
+      "expect": "no-trigger",
+      "route": "/release-notes"
+    },
+    {
+      "q": "Commit, push, and open a PR for this issue",
+      "expect": "no-trigger",
+      "route": "/commit-push-pr"
+    },
+    {
+      "q": "Check the production server logs for errors",
+      "expect": "no-trigger",
+      "route": "none"
+    },
+    {
+      "q": "Fix CI on PR 87",
+      "expect": "no-trigger",
+      "route": "/ci-loop"
+    }
+  ]
+}

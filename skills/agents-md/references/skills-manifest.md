@@ -55,6 +55,8 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | `/pr-feedback` | kit | ship | address reviewer comments on an open PR — classify, fix, reply with SHAs | |
 | `/staging-fix` | kit | ship | staging bug → local fix with test → PR to `staging` with auto-merge; servers never touched | |
 | `/deploy-watch` | kit | ship | merged PR → watch the staging deploy run + approved smoke check; ends at ready for owner | |
+| `/local-to-staging` | kit | ship | all projects: `origin/local` → `origin/staging` PRs, merged on green, Actions runs watched; never past staging | |
+| `/staging-to-production` | kit | ship | read-only: staging→production readiness per project + commands for the owner; never opens or merges | |
 | `/release-notes` | kit | ship | | |
 
 ## Companion Skills And MCPs
