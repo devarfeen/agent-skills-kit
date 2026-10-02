@@ -370,7 +370,7 @@ stateDiagram-v2
 | `OUTCOME` | A spec issue with acceptance criteria exists | `/feature-prompt` → `/grill-with-docs` → `/to-spec` |
 | `TICKETS` | The spec has at least one sub-issue | `/to-tickets` (plus `/integration-contract` when the spec spans projects) |
 | `QA_RETURNED` | A `qa-escape` marker newer than the reopen or report | `/qa-escape <issue>` |
-| `BUILDING` | A non-draft PR carrying an `Acceptance criteria` verdict | `/tdd-loop` for one ticket; `/orchestrate-herdr <spec>` for several |
+| `BUILDING` | A non-draft PR with an `Acceptance criteria` verdict in its body or its `## QA handoff` comment | `/tdd-loop` for one ticket; `/orchestrate-herdr <spec>` for several |
 | `CI_STUCK` | A green run on head | `/diagnosing-bugs` — the CI loop's three attempts are spent |
 | `CI` | Every required check on head passes | `/ci-loop <pr>` when failing; wait and re-run `/factory` when only pending |
 | `QA_STUCK` | The engineer's decision: an approval on head or a new push | Engineer — no skill |
