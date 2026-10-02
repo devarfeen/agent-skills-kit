@@ -23,15 +23,15 @@ Touched PROJECT-CODEs: API-SVC (producer), ADMIN-WEB, MOBILE-APP
 
 | PROJECT-CODE | Surface | Change |
 |-|-|-|
-| API-SVC | `POST /v2/orders` | added required `idempotency_key`; auth unchanged (customer session), no new personal data |
-| API-SVC | `GET /v2/orders/{id}` | `status` enum gains `partially_shipped` |
+| API-SVC | `POST /v2/orders` | added required `idempotency_key`; auth unchanged (customer session), no new personal data; `rollout-dependent — ADMIN-WEB first` |
+| API-SVC | `GET /v2/orders/{id}` | `status` enum gains `partially_shipped`; `breaking` — MOBILE-APP branches on `status` |
 
 ## 3. Consumers
 
 | Consumer PROJECT-CODE | Consumes surface | Call-site (file:symbol) | Notes / Risk |
 |-|-|-|-|
-| ADMIN-WEB | `POST /v2/orders` | `resources/js/checkout/submit.ts:createOrder()` | sends no `idempotency_key` yet |
-| MOBILE-APP | `GET /v2/orders/{id}` | `src/screens/OrderDetail.tsx:useOrder()` | RISK: outside the spec — new slice via /to-tickets |
+| ADMIN-WEB | `POST /v2/orders` | `resources/js/checkout/submit.ts:createOrder()` | `normalized-route`; sends no `idempotency_key` yet |
+| MOBILE-APP | `GET /v2/orders/{id}` | `src/screens/OrderDetail.tsx:useOrder()` | `normalized-route`; RISK: outside the spec — new slice via /to-tickets |
 | — | `POST /v2/orders` (idempotency_key) | NO CONSUMER LOCATED | RISK: unused, or call-site missed |
 
 ## 4. Smoke checklist

@@ -3,7 +3,7 @@ name: port-feature
 disable-model-invocation: true
 description: Use only when the user explicitly wants to port, migrate, rebuild, or recreate a complete feature from a REFERENCE implementation into a TARGET stack (e.g. bring a legacy screen into the new app). Sits at the discover → plan entry — reads the target's binding context, traces the reference's real behaviour/workflow/permissions/states, surveys what the target already has, and writes ONE gap map artifact, then suggests /grill-with-docs and stops. Do not use it to copy a helper function from one repo to another or ask how two existing features differ. The reference is truth for behaviour; the target's design system is truth for UI. Never implements, never auto-chains; interviews for any missing input.
 metadata:
-  version: "0.0.1"
+  version: "0.1.0"
 ---
 
 # Port feature
@@ -47,7 +47,7 @@ Carry this through every gap-map section:
 `CONTEXT.md` and `specs/adr/` in the target's `<artifacts-root>`, plus the target's `AGENTS.md` and UI-coding skill for stack/DS rules. Done when the binding rules are in hand or each absence is noted for Open questions.
 
 ### 2. Discover the reference
-Trace the real behaviour, workflow, navigation, permissions, states, and data effects, `/feature-discovery`-style. Done when every claim carries a concrete ref (`file:symbol`, route, migration, test).
+Trace the real behaviour, workflow, navigation, permissions, states, and data effects, `/feature-discovery`-style. Include field validation and defaults, field interdependencies, row and bulk actions, import/export, auto-refresh, and role-gated controls. A path backed by mock, fixture, or stubbed data is not behaviour truth: mark it as inference and list it under Open questions. Done when every claim carries a concrete ref (`file:symbol`, route, migration, test).
 
 ### 3. Survey the target's current state
 What exists today, what's partial or wrong versus the reference, and which design-system components and existing patterns are reusable. If the feature has UI, locate and inspect the target's component preview in an authorized local environment. If no preview exists or is available, inventory component source and record that limitation; do not invent a preview route.
@@ -80,6 +80,7 @@ Nine sections, in order, **≤3 bullets each** — link or cite evidence (`file:
 
 ## 2. Target current state
 - <what exists today for this feature in the target> — evidence refs.
+- <target piece that already matches the reference> — do not touch; evidence ref.
 
 ## 3. Missing / wrong in target
 - <gap or divergence from the reference> — absent, partial, or behaving differently.
@@ -97,6 +98,7 @@ Nine sections, in order, **≤3 bullets each** — link or cite evidence (`file:
 
 ## 7. Risks
 - <behaviour, data, permission, or migration risk> and where it bites.
+- Coexistence: while reference and target both run on shared data, which one writes.
 
 ## 8. First slice
 - One thin vertical slice that cuts through all layers and is testable on its own — not a layer, not a big-bang.
@@ -109,6 +111,7 @@ Section rules (filled example bullets live in [`references/gapmap-example.md`](r
 
 - Every claim in sections 1–4 carries a concrete evidence ref; unproven claims are marked as inference, not fact.
 - Section 5 seeds later acceptance criteria — cover every category its template bullet lists.
+- Section 5 marks each section-1 behaviour that has no reference test; port it behind a characterization test or list it under Open questions.
 
 ## Output
 

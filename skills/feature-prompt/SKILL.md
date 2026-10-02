@@ -3,7 +3,7 @@ name: feature-prompt
 disable-model-invocation: true
 description: "Use when the user wants to turn a feature idea, change request, or rough requirement into a small prompt for grill-with-docs. When cheap repo exploration reveals domain terms missing from or stale in CONTEXT.md, surface those candidate terms for user approval before any context update. Post-decision artifacts route onward instead: turning an ADR into a spec or implementation prompt is /to-spec, and investigating how existing behaviour works is /feature-discovery."
 metadata:
-  version: "0.0.1"
+  version: "0.1.0"
 ---
 
 # feature-prompt
@@ -25,7 +25,8 @@ What is needed:
 
 Why it is needed:
 [The problem, user pain, business reason, or workflow gap — so grill-with-docs
-can challenge tradeoffs, not just wording.]
+can challenge tradeoffs, not just wording — and what happens if nothing is
+built.]
 
 Expected end result:
 [Observable done state. Prefer user-visible behavior, passing checks, or a
@@ -79,7 +80,8 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
   abbreviate project codes or invent shorthand.
 - Reference existing files/modules/seams when known, and keep "reuse existing
   seam vs create new seam" under `Open questions` explicitly — it is how
-  duplicate logic gets prevented.
+  duplicate logic gets prevented. When cheap search finds no existing seam,
+  say which terms were searched.
 - Include only non-obvious context: constraints, architecture quirks, and
   domain rules the model cannot infer cheaply from repo scans. Omit stack
   facts the code already shows.
@@ -125,8 +127,10 @@ Sub-agents: dispatch local lanes automatically for independent work — never cl
 ## Final output
 
 1. Draft the final prompt.
-2. For non-trivial or inferred prompts, show it once for correction. User
-   away → save as drafted and note at the top that it is unconfirmed.
+2. For non-trivial or inferred prompts, show it once for correction, listing
+   inferred facts (project, slice boundary, end result) separately from what
+   the user stated. User away → save as drafted and note at the top that it
+   is unconfirmed.
 3. If candidate context terms were found, run the shared approval flow.
 4. Verify the pre-save checklist and save to the path below, then re-open the
    saved file and confirm sections and path match the approved draft, or the
@@ -185,4 +189,6 @@ drop-in usable as input to `grill-with-docs`.
 - [ ] For a new file, `NNNN` unique across `specs/adr/` and `specs/prompts/`; an in-place update retains its own number; slug ≤ 4 words,
       kebab-case ASCII, `-prompt` suffix
 - [ ] Split intake: deferred slices recorded under `Known limits`
+- [ ] No placeholder text (`TBD`, `TODO`, `[...]`) remains, and no two sections
+      contradict each other
 - [ ] File body is the prompt only — drop-in, no preface

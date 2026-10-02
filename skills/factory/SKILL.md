@@ -3,7 +3,7 @@ name: factory
 disable-model-invocation: true
 description: "Conductor for the factory workflow — reads where a spec (PRD), ticket, or PR stands from the tracker, the PR, CI, review, and deploy state, names the one gate it is at, checks that gate's evidence, and suggests the single skill that moves it forward. Use when the user runs /factory, asks \"where is SPEC-142 in the factory\", \"what's next for this PR\", or wants a spec walked from outcome to staging. Never implements, never runs the next skill itself, and never goes past staging — production promotion is the owner's. Running one stage directly routes to that stage's skill (/ci-loop, /risk-review, /deploy-watch, /incident-triage)."
 metadata:
-  version: "0.0.1"
+  version: "0.1.0"
 ---
 
 # factory
@@ -23,7 +23,7 @@ The factory is a state machine over things that already exist — tracker issues
 - **Gates need evidence, not status words.** A gate passes only on the observable signal in [`references/states.md`](references/states.md) — a green run URL for the head SHA, an agentic-qa and a risk-review marker comment for the head SHA, a deploy-watch pass marker for the merge commit. A label, a chat claim, or "CI is fine" does not pass a gate.
 - **Head SHA binds everything.** Review, QA, and risk evidence counts only for the PR's current `headRefOid`; an approval counts only when its review's `commit.oid` is head. A new push sends the PR back to CI.
 - **Staging is the ceiling.** `READY_FOR_OWNER` is terminal. Never suggest a production deploy, a merge or PR into the default or any production branch, or feature-flag rollout; name the owner as the next actor instead.
-- **Unreadable signals stop.** A signal the table needs can't be read (tracker access denied, no deploy workflow found) → report `UNKNOWN` with what is missing. Never guess the more advanced state.
+- **Unreadable signals stop.** A signal the table needs can't be read (tracker access denied, no deploy workflow found) → report `UNKNOWN` with what is missing. Never guess the more advanced state. A failed or erroring `gh` query is unknown — never an empty result, a pass, or green; report the command and its error.
 - **Zero attribution.** No co-author, AI, or tool attribution in any output.
 - Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.
 
@@ -52,7 +52,7 @@ Match the signals against the table in [`references/states.md`](references/state
 
 ### 4. Check the gate and pick one next skill
 
-For each unit, state the gate out of its current state and whether its evidence is present. Pick exactly one next skill per unit from the table's `next` column. When that skill runs or changes code, name the worktree it will use — `<project-repo>/.worktrees/pr-<n>` for a PR, `.worktrees/qa-escape-<issue>` for an escape — so every code-touching step works in isolation per the workspace `AGENTS.md`. For a spec with several units, order the suggestions so a blocked unit (`QA_RETURNED`, `DEPLOY_FAILED`, `CI_STUCK`, `QA_STUCK`, `CHANGES`, `UNKNOWN`) comes before progress on healthy ones. Units that share a gate and skill collapse into one suggestion (for example, `/orchestrate-herdr` for every `BUILDING` ticket of one spec).
+For each unit, state the gate out of its current state and whether its evidence is present. Pick exactly one next skill per unit from the table's `next` column. When that skill runs or changes code, name the worktree it will use — `<project-repo>/.worktrees/pr-<n>` for a PR, `.worktrees/qa-escape-<issue>` for an escape — so every code-touching step works in isolation per the workspace `AGENTS.md`. For a spec with several units, order the suggestions so a blocked unit (`QA_RETURNED`, `DEPLOY_FAILED`, `CI_STUCK`, `QA_STUCK`, `CHANGES`, `UNKNOWN`) comes before progress on healthy ones; healthy units follow oldest `Since` first, and a unit in one state for more than 3 days is flagged `stalled`. Units that share a gate and skill collapse into one suggestion (for example, `/orchestrate-herdr` for every `BUILDING` ticket of one spec).
 
 ### 5. Report and stop
 
@@ -63,17 +63,17 @@ Print the output below. Do not run the suggested skill, even when the user is aw
 ```
 Factory — <reference>  (<n> units)
 
-| Unit | PR | State | Gate evidence | Next |
-| ---- | -- | ----- | ------------- | ---- |
-| #418 | #87 | CI | run 9912 failed on a1b2c3d (unit-tests) | /ci-loop 87 |
-| #419 | #88 | HUMAN_REVIEW | risk-review tier=high on 4e5f6a7 (migration) | engineer review — no skill |
-| #420 | #85 | READY_FOR_OWNER | deploy run 9890 success on merge 7c8d9e0, smoke passed | owner promotes — factory ends |
+| Unit | PR | State | Since | Gate evidence | Next |
+| ---- | -- | ----- | ----- | ------------- | ---- |
+| #418 | #87 | CI | 2026-10-02 14:10 | run 9912 failed on a1b2c3d (unit-tests) | /ci-loop 87 |
+| #419 | #88 | HUMAN_REVIEW | 2026-09-28 09:02 (stalled) | risk-review tier=high on 4e5f6a7 (migration) | engineer review — no skill |
+| #420 | #85 | READY_FOR_OWNER | 2026-10-01 17:45 | deploy run 9890 success on merge 7c8d9e0, smoke passed | owner promotes — factory ends |
 
 Escapes: 2 qa-escape on this spec — 1 after agentic-qa verified (honesty gap: #418 missed-empty-state)
 Next: /ci-loop 87
 ```
 
-At most one table row per unit; `Gate evidence` names the run, SHA, or comment — never a bare "pass". The closing `Next:` line carries the single most urgent suggestion. When a unit is `UNKNOWN`, its row says which signal is missing. The `Escapes:` line counts the spec's reproduced `qa-escape` markers, excluding class `not-a-regression`, and how many name a PR (`pr=`) whose final head carried a `verified` agentic-qa marker — that count is the honesty gap; name each one.
+At most one table row per unit; `Gate evidence` names the run, SHA, or comment — never a bare "pass". `Since` is the timestamp of the signal that placed the unit (head push, marker, run), read this run. The closing `Next:` line carries the single most urgent suggestion. When a unit is `UNKNOWN`, its row says which signal is missing. The `Escapes:` line counts the spec's reproduced `qa-escape` markers, excluding class `not-a-regression`, and how many name a PR (`pr=`) whose final head carried a `verified` agentic-qa marker — that count is the honesty gap; name each one.
 
 ## Completion criteria
 

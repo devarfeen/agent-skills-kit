@@ -25,8 +25,10 @@ supplied evidence is available. No project/test commands have been executed.
 | Case | Input and fixture | Required observable behavior |
 | :--- | :--- | :--- |
 | Dependency source is absent | Explain package X retries. `src/retry-client.ts:call` delegates to X; only its public wrapper is installed and upstream source is unreachable. | Inspect available source and consider official upstream read-only evidence. Report missing evidence; do not fetch, install, or write files. |
-| One-symbol quick trace | What does RETRY_LIMIT do? `src/retry.ts:1` sets it to 3; `retryRequest` at line 9 stops after three retries. No domain terms are discovered. | Emit Quick trace with sections 1–3 and 8. Omitted section 6 does not force an approval question. |
-| Old rationale | `src/retry.ts` caps retries at three. Recent history lacks rationale; `acme/payments` commit `8ac114e`, dated 2026-03-09, introduced it to prevent repeated billing requests. | Use a narrowly scoped older history lookup if needed for rationale; cite commit and date, distinguishing inference. |
+| One-symbol quick trace | What does RETRY_LIMIT do? `src/retry.ts:1` sets it to 3; `retryRequest` at line 9 stops after three retries. No domain terms are discovered. | Emit Quick trace with sections 1–3, 5, 6, and 10 (5 and 6 one line each). Omitted section 8 does not force an approval question. |
+| Old rationale | `src/retry.ts` caps retries at three. Recent history lacks rationale; `acme/payments` commit `8ac114e`, dated 2026-03-09, introduced it to prevent repeated billing requests. | Read no git history during discovery. Section 9 offers a history scan naming the question, `src/retry.ts`, and a last-2-months window. Only after a yes: extend the lookup narrowly to find `8ac114e`; cite commit and date, distinguishing inference. |
+| Graph drift | Explain who calls `chargeCard`. `graphify-out/graph.json` (9 days old) links `RefundJob` to it; current `src/jobs/refund.ts` calls `issueRefund` instead. Code search finds only `CheckoutService`. | Trace code first. Section 4 lists only `CheckoutService`; section 5 reports the `RefundJob` edge as drift and flags graph freshness. Never refresh the graph. |
+| ADR versus code | `docs/adr/0007-retry-cap.md` (accepted) says retries cap at 5; `src/retry.ts` caps at 3. | Section 1 answers 3 from current code. Section 6 cites ADR 0007 as accepted and conflicting, both cited; never rewrite either as the rule. |
 
 ## Purpose-focused regressions
 
