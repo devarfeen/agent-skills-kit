@@ -65,8 +65,9 @@ Update an installed skill:
 npx skills update <skill-name>
 ```
 
-One command per skill (global) is listed under [Available Skills](#available-skills)
-below. Companions mirror [Credits And Provenance](#credits-and-provenance);
+Line-by-line global installs are under [Available Skills](#available-skills),
+[grouped by GitHub source](#global-install-commands). Companions mirror
+[Credits And Provenance](#credits-and-provenance);
 Graphify is installed separately. The `skills` CLI has no version or ref option,
 so companions install from each source's default branch (unpinned).
 
@@ -83,46 +84,13 @@ only read commits already on your machine — never `git fetch` / `git pull`.
 `ci-loop` is the one exception: it runs `git fetch` before each attempt to
 confirm the PR head hasn't moved under it.
 
-### Working in a worktree
-
-Install the companion with:
-
-```bash
-npx skills add https://github.com/devarfeen/agent-skills-kit --skill using-git-worktrees
-```
-
-Then ask: **“Fix checkout in SHOP in a worktree.”** You can also invoke
-`/using-git-worktrees` directly for setup only. The companion creates or reuses
-`<shop-repo>/.worktrees/<task-name>`, adds `/.worktrees/` to the repo's `.gitignore`,
-and checks the checkout before returning to the requested task. Each affected
-project gets its own worktree. A request for a branch alone does not trigger it.
-
-The model can invoke this skill automatically. Before task writes, it reports
-the verified checkout, branch, starting commit, and baseline. Commands and edit
-paths stay bound to that checkout; handoffs and restarts require a fresh check.
-This is an instruction gate, not a harness-level write blocker.
-
-Use `/commit-push-pr` to ship the worktree branch for review. It commits,
-pushes, and opens a PR; merging is a later step. `/commit-push-close` closes
-the issue directly after pushing and does **not** merge the branch. Keep the
-worktree until its work is integrated and verified, then request cleanup.
-
-For existing generated workspaces, re-run `/agents-md` and review its proposed
-update to add worktree routing, including the interlocks with Matt's skills.
-See the [worktree walkthrough](GUIDE.md#working-in-a-worktree) for setup,
-shipping, and cleanup examples.
-
-**Cursor CLI:** Install with `npx skills add` (skills land in
-`~/.cursor/skills/` or `.cursor/skills/`). Invoke a skill with `/skill-name`
-(for example `/release-notes`). Run the CLI with `agent` for interactive
-sessions or `agent -p "..."` for scripts and CI.
-
 ## Available Skills
 
 Skills sit on a workflow gradient — discover → sharpen → plan → slice →
 implement → verify → ship — plus two startup skills that run once per
 workspace/project and an on-demand worktree companion. Full behavior, modes,
-and rules live in each skill's `SKILL.md`; this table is the index.
+and rules live in each skill's `SKILL.md`; this table is the index. Global
+install commands are [grouped by source](#global-install-commands) below the table.
 
 | Skill | Phase | What it does | Example prompt |
 | :--- | :--- | :--- | :--- |
@@ -153,91 +121,115 @@ and rules live in each skill's `SKILL.md`; this table is the index.
 | [`incident-triage`](skills/incident-triage/SKILL.md) | companion | Read-only incident triage: timeline, ranked causes with evidence (always including one that isn't a recent change), owner-run mitigations, one redacted incident note with a Resolution section — production never accessed; a suspected breach goes straight to the owner | `We have an incident: checkout 502s since 14:00` |
 | [`writing-kit-skills`](skills/writing-kit-skills/SKILL.md) | — | Kit-internal house style for authoring and editing this repo's skills: skeleton, word budget, the eight canonical one-liners, output caps, eval gates, and matching each rule's form to the failure it fixes | `Rewrite this SKILL.md to house style` |
 
-### Kit install commands (global)
+### Global install commands
+
+Grouped by GitHub source. Omit `-g` for project scope. Do not use `--all` or a
+long `--agent` list (empty `~/.<tool>` homes). Large repos: one command, every
+skill name after `-s`.
+
+#### [devarfeen/agent-skills-kit](https://github.com/devarfeen/agent-skills-kit) (this repo — all 26 skills)
 
 ```bash
-npx skills add devarfeen/agent-skills-kit -s agents-md -g -y
-npx skills add devarfeen/agent-skills-kit -s commit-push-close -g -y
-npx skills add devarfeen/agent-skills-kit -s commit-push-pr -g -y
-npx skills add devarfeen/agent-skills-kit -s design-system -g -y
-npx skills add devarfeen/agent-skills-kit -s feature-discovery -g -y
-npx skills add devarfeen/agent-skills-kit -s feature-prompt -g -y
-npx skills add devarfeen/agent-skills-kit -s integration-contract -g -y
-npx skills add devarfeen/agent-skills-kit -s local-to-staging -g -y
-npx skills add devarfeen/agent-skills-kit -s orchestrate-herdr -g -y
-npx skills add devarfeen/agent-skills-kit -s pixel-audit -g -y
-npx skills add devarfeen/agent-skills-kit -s polish-batch -g -y
-npx skills add devarfeen/agent-skills-kit -s port-feature -g -y
-npx skills add devarfeen/agent-skills-kit -s pr-feedback -g -y
-npx skills add devarfeen/agent-skills-kit -s release-notes -g -y
-npx skills add devarfeen/agent-skills-kit -s staging-fix -g -y
-npx skills add devarfeen/agent-skills-kit -s staging-to-production -g -y
-npx skills add devarfeen/agent-skills-kit -s tdd-loop -g -y
-npx skills add devarfeen/agent-skills-kit -s using-git-worktrees -g -y
-npx skills add devarfeen/agent-skills-kit -s writing-kit-skills -g -y
-npx skills add devarfeen/agent-skills-kit -s factory -g -y
-npx skills add devarfeen/agent-skills-kit -s ci-loop -g -y
-npx skills add devarfeen/agent-skills-kit -s agentic-qa -g -y
-npx skills add devarfeen/agent-skills-kit -s risk-review -g -y
-npx skills add devarfeen/agent-skills-kit -s deploy-watch -g -y
-npx skills add devarfeen/agent-skills-kit -s qa-escape -g -y
-npx skills add devarfeen/agent-skills-kit -s incident-triage -g -y
+npx skills add devarfeen/agent-skills-kit -g -y -s agents-md design-system feature-discovery port-feature feature-prompt tdd-loop orchestrate-herdr pixel-audit polish-batch integration-contract agentic-qa qa-escape ci-loop risk-review commit-push-close commit-push-pr pr-feedback staging-fix deploy-watch local-to-staging staging-to-production release-notes using-git-worktrees factory incident-triage writing-kit-skills
 ```
 
 ### Companion install commands (global)
 
+Credited third-party skills, grouped by source repo.
+
+#### [anthropics/skills](https://github.com/anthropics/skills)
+
 ```bash
-npx skills add anthropics/skills -s mcp-builder -g -y
-npx skills add anthropics/skills -s skill-creator -g -y
-npx skills add anthropics/skills -s frontend-design -g -y
-npx skills add mattpocock/skills -s ask-matt -g -y
-npx skills add mattpocock/skills -s claude-handoff -g -y
-npx skills add mattpocock/skills -s code-review -g -y
-npx skills add mattpocock/skills -s codebase-design -g -y
-npx skills add mattpocock/skills -s diagnosing-bugs -g -y
-npx skills add mattpocock/skills -s domain-modeling -g -y
-npx skills add mattpocock/skills -s git-guardrails-claude-code -g -y
-npx skills add mattpocock/skills -s grill-me -g -y
-npx skills add mattpocock/skills -s grill-with-docs -g -y
-npx skills add mattpocock/skills -s grilling -g -y
-npx skills add mattpocock/skills -s handoff -g -y
-npx skills add mattpocock/skills -s implement -g -y
-npx skills add mattpocock/skills -s implement-spec -g -y
-npx skills add mattpocock/skills -s improve-codebase-architecture -g -y
-npx skills add mattpocock/skills -s loop-me -g -y
-npx skills add mattpocock/skills -s migrate-to-shoehorn -g -y
-npx skills add mattpocock/skills -s pr -g -y
-npx skills add mattpocock/skills -s prototype -g -y
-npx skills add mattpocock/skills -s research -g -y
-npx skills add mattpocock/skills -s retro -g -y
-npx skills add mattpocock/skills -s scaffold-exercises -g -y
-npx skills add mattpocock/skills -s setup-matt-pocock-skills -g -y
-npx skills add mattpocock/skills -s setup-pre-commit -g -y
-npx skills add mattpocock/skills -s setup-ts-deep-modules -g -y
-npx skills add mattpocock/skills -s tdd -g -y
-npx skills add mattpocock/skills -s teach -g -y
-npx skills add mattpocock/skills -s to-questionnaire -g -y
-npx skills add mattpocock/skills -s to-spec -g -y
-npx skills add mattpocock/skills -s to-tickets -g -y
-npx skills add mattpocock/skills -s triage -g -y
-npx skills add mattpocock/skills -s wait-what -g -y
-npx skills add mattpocock/skills -s wayfinder -g -y
-npx skills add mattpocock/skills -s wizard -g -y
-npx skills add mattpocock/skills -s writing-beats -g -y
-npx skills add mattpocock/skills -s writing-for-agents -g -y
-npx skills add mattpocock/skills -s writing-fragments -g -y
-npx skills add mattpocock/skills -s writing-shape -g -y
+npx skills add anthropics/skills -g -y -s mcp-builder skill-creator frontend-design
+```
+
+#### [mattpocock/skills](https://github.com/mattpocock/skills) (all credited Matt skills)
+
+```bash
+npx skills add mattpocock/skills -g -y -s ask-matt claude-handoff code-review codebase-design diagnosing-bugs domain-modeling git-guardrails-claude-code grill-me grill-with-docs grilling handoff implement implement-spec improve-codebase-architecture loop-me migrate-to-shoehorn pr prototype research retro scaffold-exercises setup-matt-pocock-skills setup-pre-commit setup-ts-deep-modules tdd teach to-questionnaire to-spec to-tickets triage wait-what wayfinder wizard writing-beats writing-for-agents writing-fragments writing-shape
+```
+
+#### [vercel-labs/agent-browser](https://github.com/vercel-labs/agent-browser)
+
+```bash
 npx skills add vercel-labs/agent-browser -s agent-browser -g -y
+```
+
+#### [vercel-labs/skills](https://github.com/vercel-labs/skills)
+
+```bash
 npx skills add vercel-labs/skills -s find-skills -g -y
-npx skills add cursor/plugins -s blast-radius -g -y
-npx skills add cursor/plugins -s show-me-your-work -g -y
-npx skills add cursor/plugins -s unslop -g -y
+```
+
+#### [cursor/plugins](https://github.com/cursor/plugins)
+
+```bash
+npx skills add cursor/plugins -g -y -s blast-radius show-me-your-work unslop
+```
+
+#### [github/awesome-copilot](https://github.com/github/awesome-copilot)
+
+```bash
 npx skills add github/awesome-copilot -s boost-prompt -g -y
+```
+
+#### [google-labs-code/stitch-skills](https://github.com/google-labs-code/stitch-skills)
+
+```bash
 npx skills add google-labs-code/stitch-skills -s enhance-prompt -g -y
+```
+
+#### [herdrdev/herdr](https://github.com/herdrdev/herdr)
+
+```bash
 npx skills add herdrdev/herdr -s herdr -g -y
+```
+
+#### [pbakaus/impeccable](https://github.com/pbakaus/impeccable)
+
+```bash
 npx skills add pbakaus/impeccable -s impeccable -g -y
+```
+
+#### [sickn33/agentic-awesome-skills](https://github.com/sickn33/agentic-awesome-skills)
+
+```bash
 npx skills add sickn33/agentic-awesome-skills -s docker-expert -g -y
 ```
+
+### Working in a worktree
+
+Install the companion with:
+
+```bash
+npx skills add devarfeen/agent-skills-kit -s using-git-worktrees -g -y
+```
+
+Then ask: **“Fix checkout in SHOP in a worktree.”** You can also invoke
+`/using-git-worktrees` directly for setup only. The companion creates or reuses
+`<shop-repo>/.worktrees/<task-name>`, adds `/.worktrees/` to the repo's `.gitignore`,
+and checks the checkout before returning to the requested task. Each affected
+project gets its own worktree. A request for a branch alone does not trigger it.
+
+The model can invoke this skill automatically. Before task writes, it reports
+the verified checkout, branch, starting commit, and baseline. Commands and edit
+paths stay bound to that checkout; handoffs and restarts require a fresh check.
+This is an instruction gate, not a harness-level write blocker.
+
+Use `/commit-push-pr` to ship the worktree branch for review. It commits,
+pushes, and opens a PR; merging is a later step. `/commit-push-close` closes
+the issue directly after pushing and does **not** merge the branch. Keep the
+worktree until its work is integrated and verified, then request cleanup.
+
+For existing generated workspaces, re-run `/agents-md` and review its proposed
+update to add worktree routing, including the interlocks with Matt's skills.
+See the [worktree walkthrough](GUIDE.md#working-in-a-worktree) for setup,
+shipping, and cleanup examples.
+
+**Cursor CLI:** Install with `npx skills add` (skills land in
+`~/.cursor/skills/` or `.cursor/skills/`). Invoke a skill with `/skill-name`
+(for example `/release-notes`). Run the CLI with `agent` for interactive
+sessions or `agent -p "..."` for scripts and CI.
 
 The gradient's plan/slice/implement/verify core (`/grill-with-docs`,
 `/wayfinder`, `/to-spec`, `/to-tickets`, `/implement`, `/tdd`, `/code-review`,

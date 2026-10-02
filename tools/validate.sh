@@ -561,27 +561,36 @@ echo "== 18. Companion parity with README credits =="
 comp_out="$(python3 - <<'PYEOF'
 import re
 readme = open("README.md", encoding="utf-8").read()
-block = re.search(
-    r"^### Companion install commands \(global\)\n\n```bash\n(.*?)```",
+comp = re.search(
+    r"^### Companion install commands \(global\)\n(.*?)(?=^### Working|\Z)",
     readme,
     re.M | re.S,
 )
 credits = re.search(r"^## Credits And Provenance\n(.*?)(?=^## |\Z)", readme, re.M | re.S)
-if not block or not credits:
+if not comp or not credits:
     print("could not locate Companion install commands or Credits And Provenance in README.md")
     raise SystemExit
 credits = credits.group(1)
-for line in block.group(1).splitlines():
-    m = re.match(r"npx skills add (\S+) -s (\S+)", line.strip())
+def install_skills(line):
+    line = line.strip()
+    m = re.match(r"npx skills add (\S+) -g -y -s (.+)$", line)
     if not m:
-        continue
-    src, name = m.group(1), m.group(2)
-    if src == "devarfeen/agent-skills-kit":
-        continue
-    if f"github.com/{src}" not in credits:
-        print(f"source {src} is installed but its repo URL is not credited")
-    if f"`{name}`" not in credits:
-        print(f"companion `{name}` ({src}) is installed but not named in the credits")
+        m = re.match(r"npx skills add (\S+) -s (\S+) -g -y$", line)
+        if m:
+            return m.group(1), [m.group(2)]
+        return None, []
+    return m.group(1), m.group(2).split()
+
+for bash in re.findall(r"```bash\n(.*?)```", comp.group(1), re.S):
+    for line in bash.splitlines():
+        src, names = install_skills(line)
+        if not src or src == "devarfeen/agent-skills-kit":
+            continue
+        if f"github.com/{src}" not in credits:
+            print(f"source {src} is installed but its repo URL is not credited")
+        for name in names:
+            if f"`{name}`" not in credits:
+                print(f"companion `{name}` ({src}) is installed but not named in the credits")
 PYEOF
 )"
 if [[ -n "$comp_out" ]]; then
