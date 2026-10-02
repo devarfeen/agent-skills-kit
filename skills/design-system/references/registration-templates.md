@@ -13,7 +13,7 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in commi
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issue comments, release notes, generated docs, settings, or code comments.
 
-- **Source:** <Figma URL | spec doc | reference app | guided-definition (approved <date>)>
+- **Source:** <DESIGN.md path | project UI skill/library path | Figma URL | spec doc | reference app | guided-definition (approved <date>)>
 - **Stack:** <from the Project Matrix>
 - **Tokens:** <actual path and token mechanism from the installed project>
 - **Library:** <path where the components live>

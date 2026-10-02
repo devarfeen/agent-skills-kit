@@ -33,6 +33,9 @@ Read and write issue state only through TRACKER above.
 
 Avoid unrelated changes.
 
+If tests need a gitignored file missing from this checkout (`.env*`, local
+config), report blocked naming it; never copy secrets between checkouts.
+
 Sub-agents: dispatch local lanes automatically for independent work — never
 cloud agents; announce the lane count at dispatch and report each lane as it
 completes. Run as many lanes at once as your CLI supports — that is the point,
@@ -47,7 +50,8 @@ your tooling injects.
 Report back when completed, errored, or blocked.
 
 Completion requires test evidence: the test command and its passing output.
-End the report with three fields, one line each:
+End the report with four fields, one line each:
+Status: <completed | blocked — decision needed | errored — cause>
 AC map: <AC-n → test name | agentic-qa (surface) | deferred — why; every criterion listed>
 Decisions: <choices made that the issue didn't dictate, or "none">
 Open items: <what a next session must resolve, or "none">
@@ -59,6 +63,6 @@ The sub-agent paragraph opens with the kit's canonical lane one-liner. Check the
 
 **Widening multiplies write contention.** Under `shared` isolation, replace the widening sentences with: "Delegate read-only work only. Serialize all edits in the shared checkout." Keep the normal paragraph in `worktree` and serial `branch` mode.
 
-`Report back` is a formatting instruction, not a channel: the worker has no handle on the orchestrator, so it prints its report into its own terminal and the orchestrator reads it back per **Read** in [`herdr-commands.md`](herdr-commands.md). The three closing fields exist because a labelled single line survives a terminal scrape and a free-form sign-off does not.
+`Report back` is a formatting instruction, not a channel: the worker has no handle on the orchestrator, so it prints its report into its own terminal and the orchestrator reads it back per **Read** in [`herdr-commands.md`](herdr-commands.md). The four closing fields exist because a labelled single line survives a terminal scrape and a free-form sign-off does not; `Status:` matters most, since herdr's `idle` means the terminal settled, not that the task finished.
 
 Never ask for file output here. That is the alternate-screen fallback in **Read**, used only after a read has already failed.

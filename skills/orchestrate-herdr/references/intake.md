@@ -36,11 +36,15 @@ Name the affected issues and their repos in the question, then offer:
 
 | Mode | Each worker gets | Concurrency | Cost |
 | :--- | :--- | :--- | :--- |
-| `worktree` | its own git worktree and branch | parallel, no collisions | one checkout per issue on disk |
+| `worktree` | its own git worktree and branch | parallel, no file collisions | one checkout per issue on disk |
 | `branch` | its own branch in the shared checkout | **serial only** — one checkout cannot hold two branches at once | none |
 | `shared` | the orchestrator's folder and branch | parallel, collisions possible | none |
 
 `worktree` is the recommended default whenever more than one open sub-issue touches the same repo — it is the only mode that makes same-repo parallelism safe, and the kit's guide already sanctions locally worktree-isolated agents.
+
+A worktree isolates files, not ports, databases, Compose projects, or gitignored setup files (`.env*`). Name any shared runtime resource the workers' tests start in this question; serialize those workers or confirm per-worker ports.
+
+When **Discover** found blocked pairs, list them here and ask whether each blocked issue dispatches after its blocker completes. **User away →** hold blocked issues until their blocker completes.
 
 `branch` cannot run parallel workers against one repo: two workers checking out two branches in one working folder overwrite each other. Choosing `branch` for a same-repo set means serial dispatch — say that in the question rather than discovering it at fan-out.
 

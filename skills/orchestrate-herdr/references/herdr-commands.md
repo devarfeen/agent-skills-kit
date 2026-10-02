@@ -26,6 +26,8 @@ herdr agent list
 
 `tab list` backs the leftover-tab check; `agent list` shows which worker names are already live.
 
+**Recovery.** After compaction or restart, rebuild the tab map from these listings and tracker state (**Verify**) before any submit, read, or monitor call; never re-submit a prompt from recollection — a re-dispatched worker redoes finished work.
+
 ## Names
 
 Each worker needs two distinct names — they are not interchangeable:

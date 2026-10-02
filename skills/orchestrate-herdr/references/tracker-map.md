@@ -29,6 +29,13 @@ Open sub-issues of `SPEC_REF`.
 - **GitHub** — `gh api --paginate repos/<owner>/<repo>/issues/<n>/sub_issues --jq '.[] | select(.state=="open") | .number'`. Fall back to task-list checkboxes and "Tracked by" references only when native sub-issues are unavailable, then fetch each linked issue and verify its state.
 - **Linear** — `get_issue` on `SPEC_REF` first, then `list_issues` with `parentId: <parent internal id>`, requesting the `title`, `url`, `status`, and `statusType` fields. Follow every returned next-page cursor. Open = `statusType` is neither `completed` nor `canceled`; `triage`, `backlog`, `unstarted`, and `started` all count as open. Read each result's identifier (`PRWL-101`) as `<n>`. Fall back to checkbox lists and issue links only when the native relation is unavailable, verifying each linked issue's state.
 
+**Blocking relations** — for each open sub-issue, read what blocks it, and keep only blockers that are themselves open sub-issues of this parent:
+
+- **GitHub** — `gh api --paginate repos/<owner>/<repo>/issues/<n>/dependencies/blocked_by --jq '.[] | select(.state=="open") | .number'`.
+- **Linear** — `get_issue` with `id: <n>` and `includeRelations: true`; read the blocked-by relations.
+
+An unavailable relation is a gap to state in the Intake question, never proof of independence.
+
 Deduplicate identifiers after pagination and verify fallback links belong to this parent before counting them. Zero open sub-issues → stop before Intake and before creating tabs; suggest `/to-tickets` or a different parent.
 
 ## Read issue

@@ -3,7 +3,7 @@ name: orchestrate-herdr
 disable-model-invocation: true
 description: "Orchestrate herdr worker tabs for a spec (PRD). Takes a spec reference — a Linear issue ID (PRWL-100, ABC-123) or a GitHub issue URL/number — finds its open sub-issues in the workspace's tracker of record (Linear or GitHub), launches one herdr-managed worker tab per issue running a chosen coding CLI, then monitors the tabs until every issue is completed with test evidence, blocked, or errored. Use when running inside herdr (HERDR_ENV=1) and the user wants to fan a spec out to per-issue workers."
 metadata:
-  version: "0.0.1"
+  version: "0.1.0"
 ---
 
 # Orchestrate herdr
@@ -26,7 +26,6 @@ Fan work out to one herdr-managed worker tab per unit (tracker sub-issue or harn
 - **Zero attribution.** Omit co-author, AI, and tool attribution from prompts, commits, tracker comments, and reports.
 
 - **Never implement.** The orchestrator reads, creates tabs, submits prompts, monitors, and reports — nothing else.
-- **Two modes.** Spec: workers from **Discover** on `SPEC_REF`. Harness: workers from **WORKERS**.
 - **Herdr-managed tabs only,** created in the existing herdr workspace/session. No pane splits, no internal sub-agents, no nested coding sessions, and never launch `CODING_CLI` from inside another `CODING_CLI`.
 - **Isolation is the user's choice, and herdr's job.** Never `cd` into task, issue, or any other folder. Create a worktree only when the user picked `worktree`, and only through `herdr worktree create` — never hand-rolled `git worktree add`. In `branch` and `shared` mode every worker tab starts in the orchestrator's folder.
 - **Saved IDs only.** Every submit, read, monitor, and follow-up call uses a tab ID and agent name saved at creation — never the active tab, latest tab, visual order, or a guess.
@@ -49,7 +48,7 @@ Fail fast before creating anything, naming what is missing:
 
 ### 2. Build the worker set
 
-**Spec** — list open sub-issues per **Discover**. State the count and cross-check against the spec before tabs — under-fanning drops slices. Every open sub-issue; `ready-for-agent` does not filter. Identifier `<n>` per issue. Zero open → stop before Intake.
+**Spec** — list open sub-issues per **Discover**. State the count and cross-check against the spec before tabs — under-fanning drops slices. Every open sub-issue; `ready-for-agent` does not filter. Identifier `<n>` per issue. Zero open → stop before Intake. A sub-issue blocked by another open sub-issue is not parallel work; list pairs per **Discover** and ask in Intake question 3.
 
 **Harness** — define **WORKERS** per [`references/harness.md`](references/harness.md). State the count before tabs.
 
@@ -70,7 +69,7 @@ Save the caller's workspace, tab, and folder per **Context**. One tab per worker
 
 Parallelize the slow parts across tabs:
 
-- Start every worker per **Start agent**, `AGENT_KIND` as `--kind` and `CODING_CLI`'s flags after `--`. Each call blocks until its agent is ready, so issue them concurrently — serially, every worker waits out the one before it. `branch` isolation on a shared checkout is the exception: dispatch those workers one at a time. Never poll or sleep for readiness. `agent_not_ready` means it booted straight into an approval UI — surface that under Needs user, never relaunch it; any other error is a dead-CLI case under Monitor.
+- Start every worker per **Start agent**, `AGENT_KIND` as `--kind` and `CODING_CLI`'s flags after `--`. Each call blocks until its agent is ready, so issue them concurrently. `branch` isolation on a shared checkout is the exception: dispatch those workers one at a time. Never poll or sleep for readiness. `agent_not_ready` means it booted straight into an approval UI — surface that under Needs user, never relaunch it; any other error is a dead-CLI case under Monitor.
 - Submit that issue's worker prompt per **Submit**.
 
 A worker is not launched until its tab ID and agent name are saved, its prompt is accepted, and its first response is visible.
@@ -81,7 +80,7 @@ Workers with neither test-first skill installed still owe test evidence; say so 
 
 ### 6. Monitor
 
-Wait on lifecycle state per **Watch** — it reacts the moment a worker settles, and needs no sweep. Read a settled tab per **Read**.
+Wait on lifecycle state per **Watch** — it reacts the moment a worker settles, and needs no sweep. Read a settled tab per **Read**. After compaction or restart, recover per **Context** before any call.
 
 - **States:** `blocked` → an approval or question UI; surface under Needs user, never relaunch or answer it. `idle` / `done` → read the tab for the report. `working` → leave it.
 - **Stalls:** `unknown` never proves completion. After a start, submit, or wait error, inspect state and output before retrying; a timeout can follow successful submission. Agent gone → redo Launch workers once after confirming its process exited. A live long test stays running; silence alone never makes it blocked. Report a blocker only with an observed failure or missing human decision.
@@ -91,7 +90,7 @@ Wait on lifecycle state per **Watch** — it reacts the moment a worker settles,
 
 ### 7. Report
 
-Report mode, agent and isolation mode, workspace/session ID, working folder, tab map, assignments (issues or harness labels), and blocked/errored workers, plus per worker end state, decisive test tail when applicable, and `AC map` / `Decisions` / `Open items` (`AC map` in spec mode).
+Report mode, agent and isolation mode, workspace/session ID, working folder, tab map, assignments (issues or harness labels), and blocked/errored workers, plus per worker end state, decisive test tail when applicable, and `AC map` / `Decisions` / `Open items` (`AC map` in spec mode). In `worktree`/`branch` mode, list files changed by more than one worker branch (`git diff --name-only <base>...<branch>`) as merge risk.
 
 ## Completion criteria
 
