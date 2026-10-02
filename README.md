@@ -130,7 +130,7 @@ repo without naming them: `--skill '*'`.
 #### [devarfeen/agent-skills-kit](https://github.com/devarfeen/agent-skills-kit) (this repo)
 
 ```bash
-npx skills add devarfeen/agent-skills-kit -g --skill '*'
+npx skills add devarfeen/agent-skills-kit -g
 ```
 
 ### Companion install commands (global)
@@ -146,7 +146,7 @@ npx skills add anthropics/skills -g --skill mcp-builder skill-creator frontend-d
 #### [mattpocock/skills](https://github.com/mattpocock/skills)
 
 ```bash
-npx skills add mattpocock/skills -g --skill '*'
+npx skills add mattpocock/skills -g
 ```
 
 #### Vercel Labs
@@ -325,7 +325,7 @@ skills from the wider agent-skills ecosystem.
 - The non-negotiable discipline in `agents-md` was originally seeded by
   Forrest Chang's Karpathy-inspired `CLAUDE.md` guidelines and later expanded
   in this repo into a 14-rule core:
-  https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md
+  <https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md>
   The upstream repository is MIT licensed. This repo records credit here rather
   than emitting source notes into generated `AGENTS.md` files.
 - The workflow guide references companion skills from Matt Pocock's skills repo,
@@ -334,36 +334,36 @@ skills from the wider agent-skills ecosystem.
   `research`, `tdd`, `diagnosing-bugs`, `triage`, `domain-modeling`,
   `codebase-design`, `improve-codebase-architecture`, `prototype`, `handoff`,
   `wait-what`, `wizard`, and `to-questionnaire`:
-  https://github.com/mattpocock/skills
+  <https://github.com/mattpocock/skills>
 - The worktree companion follows the setup approach in
   [using-git-worktrees](https://github.com/obra/superpowers/blob/main/skills/using-git-worktrees/SKILL.md).
   Its local rules preserve requested isolation on failure, leave commits to the
   ship skills, and return the verified checkout to the authorized task.
 - `/skill-creator` is credited to Anthropic's public skills repository:
-  https://github.com/anthropics/skills/tree/main/skills/skill-creator
+  <https://github.com/anthropics/skills/tree/main/skills/skill-creator>
 - `/agent-browser`, the `skills` CLI, `find-skills`, and Vercel React/React
   Native best-practice skills are credited to Vercel Labs:
-  https://github.com/vercel-labs/agent-browser
-  https://github.com/vercel-labs/skills
-  https://github.com/vercel-labs/agent-skills
+  <https://github.com/vercel-labs/agent-browser>
+  <https://github.com/vercel-labs/skills>
+  <https://github.com/vercel-labs/agent-skills>
 - Other optional companions referenced by `agents-md`: Matt Pocock's
-  `ask-matt` router (https://github.com/mattpocock/skills), Graphify
-  (https://github.com/Graphify-Labs/graphify), Codex plugin for Claude Code
-  (https://github.com/openai/codex-plugin-cc), Impeccable
-  (https://github.com/pbakaus/impeccable), notebooklm-py
-  (https://github.com/teng-lin/notebooklm-py), herdr
-  (https://github.com/herdrdev/herdr), docker-expert from
-  agentic-awesome-skills (https://github.com/sickn33/agentic-awesome-skills, formerly antigravity-awesome-skills),
-  Laravel Boost (https://github.com/laravel/boost), unslop, blast-radius, and
+  `ask-matt` router (<https://github.com/mattpocock/skills>), Graphify
+  (<https://github.com/Graphify-Labs/graphify>), Codex plugin for Claude Code
+  (<https://github.com/openai/codex-plugin-cc>), Impeccable
+  (<https://github.com/pbakaus/impeccable>), notebooklm-py
+  (<https://github.com/teng-lin/notebooklm-py>), herdr
+  (<https://github.com/herdrdev/herdr>), docker-expert from
+  agentic-awesome-skills (<https://github.com/sickn33/agentic-awesome-skills>, formerly antigravity-awesome-skills),
+  Laravel Boost (<https://github.com/laravel/boost>), unslop, blast-radius, and
   show-me-your-work from Cursor's plugins repo
-  (https://github.com/cursor/plugins), and Figma MCP
-  (https://developers.figma.com/docs/figma-mcp-server/).
+  (<https://github.com/cursor/plugins>), and Figma MCP
+  (<https://developers.figma.com/docs/figma-mcp-server/>).
 - **Globally installed skills.** The skills below were installed globally
   (`npx skills list -g`, 2026-10-03) beside this kit's own skills. They are
   separate installs, credited by source and never vendored here:
-  - Anthropic (https://github.com/anthropics/skills): `mcp-builder`,
+  - Anthropic (<https://github.com/anthropics/skills>): `mcp-builder`,
     `skill-creator`, `frontend-design`.
-  - Matt Pocock (https://github.com/mattpocock/skills): `ask-matt`,
+  - Matt Pocock (<https://github.com/mattpocock/skills>): `ask-matt`,
     `claude-handoff`, `code-review`, `codebase-design`, `diagnosing-bugs`,
     `domain-modeling`, `git-guardrails-claude-code`, `grill-me`,
     `grill-with-docs`, `grilling`, `handoff`, `implement`, `implement-spec`,
@@ -373,29 +373,29 @@ skills from the wider agent-skills ecosystem.
     `tdd`, `teach`, `to-questionnaire`, `to-spec`, `to-tickets`, `triage`,
     `wait-what`, `wayfinder`, `wizard`, `writing-beats`, `writing-for-agents`,
     `writing-fragments`, `writing-shape`.
-  - Vercel Labs: `agent-browser` (https://github.com/vercel-labs/agent-browser)
-    and `find-skills` (https://github.com/vercel-labs/skills).
-  - Cursor (https://github.com/cursor/plugins): `blast-radius`,
+  - Vercel Labs: `agent-browser` (<https://github.com/vercel-labs/agent-browser>)
+    and `find-skills` (<https://github.com/vercel-labs/skills>).
+  - Cursor (<https://github.com/cursor/plugins>): `blast-radius`,
     `show-me-your-work`, `unslop`.
-  - GitHub awesome-copilot (https://github.com/github/awesome-copilot):
+  - GitHub awesome-copilot (<https://github.com/github/awesome-copilot>):
     `boost-prompt`.
-  - Google Labs Stitch skills (https://github.com/google-labs-code/stitch-skills):
+  - Google Labs Stitch skills (<https://github.com/google-labs-code/stitch-skills>):
     `enhance-prompt`.
-  - herdr (https://github.com/herdrdev/herdr): `herdr`.
-  - Impeccable (https://github.com/pbakaus/impeccable): `impeccable`.
-  - agentic-awesome-skills (https://github.com/sickn33/agentic-awesome-skills):
+  - herdr (<https://github.com/herdrdev/herdr>): `herdr`.
+  - Impeccable (<https://github.com/pbakaus/impeccable>): `impeccable`.
+  - agentic-awesome-skills (<https://github.com/sickn33/agentic-awesome-skills>):
     `docker-expert`.
-  - Graphify (https://github.com/Graphify-Labs/graphify): `graphify`, installed
+  - Graphify (<https://github.com/Graphify-Labs/graphify>): `graphify`, installed
     from a local copy rather than through the `skills` CLI.
 - The QA-escape loop (`agentic-qa`, `qa-escape`, and the acceptance-matrix,
   evidence, and risk-lens changes to existing skills) adapts ideas from skills
   in GitHub's awesome-copilot collection
-  (https://github.com/github/awesome-copilot/tree/main/skills — notably
+  (<https://github.com/github/awesome-copilot/tree/main/skills> — notably
   webmcpify, bug-receipt, bug-reproduction-brief, quality-playbook,
   test-gap-audit, mcp-release-qa, api-breaking-change-detector,
   protobuf-grpc-api-review, copilot-pr-autopilot, incident-postmortem, and
   poka-yoke) and from Chris Titus's titus-ai skills
-  (https://github.com/ChrisTitusTech/titus-ai/tree/main/.agents/skills —
+  (<https://github.com/ChrisTitusTech/titus-ai/tree/main/.agents/skills> —
   pr-readiness and ai-project-manager). The factory workflow's shape follows
   The Pragmatic Engineer's diagram of OpenAI's "agentic software factory". No
   text was copied; credit lives here, never in generated output.
@@ -412,11 +412,11 @@ skills from the wider agent-skills ecosystem.
   and [garrytan/gstack](https://github.com/garrytan/gstack). Nothing from them
   is vendored or installed by this kit.
 - `/sentry` refers to Sentry's CLI for developers and agents:
-  https://cli.sentry.dev/
+  <https://cli.sentry.dev/>
 - **Cursor CLI:** `AGENTS.md` is the canonical workspace context file;
   skills use `/skill-name` invocation and the `Task` tool for subagents.
-  https://cursor.com/docs/cli/overview
-  https://cursor.com/docs/context/skills
+  <https://cursor.com/docs/cli/overview>
+  <https://cursor.com/docs/context/skills>
 - **Supported runtime boundary:** This kit supports Codex CLI, Claude CLI,
   Antigravity CLI, Cursor CLI, Opencode CLI, and GitHub Copilot CLI only.
   Compatibility files such as `GEMINI.md` exist solely for supported runtimes
