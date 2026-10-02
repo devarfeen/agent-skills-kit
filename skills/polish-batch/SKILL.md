@@ -3,7 +3,7 @@ name: polish-batch
 disable-model-invocation: true
 description: Batch the UI-polish tail at the verify phase — during manual QA, capture tiny cosmetic fixes (copy, spacing, alignment, wrong string) WITHOUT fixing any of them, then dispatch them per PROJECT-CODE in one bounded pass, then verify. Use when the user says "punch list" or wants cosmetic nits, including a one-off alignment or spacing nit, handled in the polish tail. Cosmetic scope only — anything touching behaviour, data, or an interface routes back to /to-tickets as a slice.
 metadata:
-  version: "0.0.1"
+  version: "0.1.0"
 ---
 
 # Polish batch
@@ -59,7 +59,7 @@ A single markdown table:
 
 Runs only on the user's fresh, explicit dispatch instruction — capturing a nit, even the last open one, never triggers it; neither does an upfront "fix them all later" said while capturing.
 
-1. Record pre-dispatch status and diffs. Group `open` and `reopened` rows with confirmed PROJECT-CODEs; leave ambiguous rows pending. Order text/string before spacing/alignment. Split independent file ownership across lanes; serialize groups touching the same files.
+1. Record pre-dispatch status and diffs. Group `open` and `reopened` rows with confirmed PROJECT-CODEs; leave ambiguous rows pending. For a copy row, search for the Wrong string first. If it renders from a shared key or appears elsewhere, list every occurrence in the row and fix at the source string, never in built output; a shared key changes other screens, so that row waits for the user's confirmation. A key that also exists in other shipped locales lists those locales under Needs user; never auto-translate. Order text/string before spacing/alignment. Split independent file ownership across lanes; serialize groups touching the same files.
 2. Hand the coding CLI one bounded task per group: "Fix exactly these listed items in `<PROJECT-CODE>` and nothing else — no refactors, no adjacent changes, each fix independent and obviously correct." Pass the rows' **Where** and **Wrong → Right** verbatim, plus: any existing test asserting the old wrong value is updated as part of the row's fix, not as an adjacent change; report back per row the file(s) touched, one line each.
 3. Mark handed-off rows `dispatched` and emit the dispatch update. Do not verify or ship yet.
 
@@ -68,7 +68,7 @@ Runs only on the user's fresh, explicit dispatch instruction — capturing a nit
 After the dispatched tasks report back.
 
 1. Scope check first: compare each group's diff with the pre-dispatch state and row list. Flag new changes outside the rows; undo only this run's isolated edits or route to `/to-tickets`. Preserve pre-existing user changes; never absorb scope violations silently.
-2. Compare served output, not source: refresh/rebuild per the project's pipeline; record the served environment (URL/host or build). Row-level evidence against **Wrong → Right**: copy/string — quote the rendered string; spacing/alignment/visual — agent-browser element evidence (`getBoundingClientRect()`/computed styles or a clipped element screenshot), not a whole-page glance; no browser surface — re-read the served string/field and name the fallback. Never mark a row verified on assumption. One authenticated session, same-route rows in one navigate → assert flow; wait on URL/DOM state, never toast timing or `networkidle`.
+2. Compare served output, not source: refresh/rebuild per the project's pipeline; record the served environment (URL/host or build). Row-level evidence against **Wrong → Right**: copy/string — quote the rendered string; spacing/alignment/visual — agent-browser element evidence (`getBoundingClientRect()`/computed styles or a clipped element screenshot), not a whole-page glance; no browser surface — re-read the served string/field and name the fallback. Never mark a row verified on assumption. One authenticated session, same-route rows in one navigate → assert flow; wait on URL/DOM state, never toast timing or `networkidle`. A row also fails on a new console error on its route compared with before dispatch.
 3. Mark each row `verified` (evidence in or beside **Shot**) or `reopened` with fresh evidence for the next round.
 4. Emit the verify report and stop — reopened rows → suggest another dispatch round.
 

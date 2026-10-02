@@ -3,7 +3,7 @@ name: agentic-qa
 disable-model-invocation: true
 description: "Agent-run functional QA before a human sees the work — for a PR or branch whose code can reach a screen, drives every acceptance criterion through the running app across states, viewports, and roles, fails on console errors and failed requests, checks neighbouring flows, and records VERIFIED, PARTIAL, or BLOCKED with evidence on the PR. Use when the user says \"QA this PR\", \"test it like QA would\", \"run agentic QA on #87\", or /factory reports a unit in QA. The tester never edits code — findings route to /tdd-loop. Pixel conformance against a design is /pixel-audit; cosmetic nits are /polish-batch; a bug human QA already found is /qa-escape."
 metadata:
-  version: "0.0.1"
+  version: "0.1.0"
 ---
 
 # agentic-qa
@@ -17,7 +17,7 @@ agentic-qa finds what a human QA pass would find, before any human runs one. It 
 - **Isolated worktree** — the app runs from `<project-repo>/.worktrees/pr-<n>` at the head SHA (detached is fine; the tester commits nothing): reuse the PR's worktree when it exists, else create it through `/using-git-worktrees` when installed, otherwise with `git worktree add --detach`, per the workspace `AGENTS.md` worktree rules. Before the first command there, verify and report the checkout record the workspace `AGENTS.md` requires: path, owning repository and common Git directory, branch or detached state, starting commit, and baseline. Setup failure or a mismatch blocks the run; never fall back to the main checkout. Leave the worktree in place and report its path; cleanup follows the workspace rules. The base-commit baseline runs from its own worktree, `.worktrees/pr-<n>-base`.
 - **Running app** — a local URL served from that worktree at the head SHA. Staging only with this session's explicit approval, and read-only there. Neither → `BLOCKED`.
 - **Roles** — each role that can see the touched surfaces, with test logins referenced by env var name only, never values. A role with no login → its cells are gaps, not skips.
-- **Escape classes** — open and closed issues labelled `qa-escape` whose area matches the touched surfaces (`gh issue list --label qa-escape --state all --search "<area>"`, or the tracker's label filter). Each class, and each line for the area under the workspace `AGENTS.md` section `## QA escape guards`, becomes grid rows; skip markers with `reproduced=no`.
+- **Escape classes** — open and closed issues labelled `qa-escape` whose area matches the touched surfaces (`gh issue list --label qa-escape --state all --search "<area>"`, or the tracker's label filter). Each class, and each line for the area under the workspace `AGENTS.md` section `## QA escape guards`, becomes grid rows; skip markers with `reproduced=no`. A guard line whose surface no longer exists → report it under Needs user; never skip it silently.
 
 ## Rules
 
@@ -25,7 +25,7 @@ agentic-qa finds what a human QA pass would find, before any human runs one. It 
 - **Reach is decided by the code, not the label.** The change needs this skill when any changed file is reachable from a route, page, component, template, translation, or style, or is an API whose response a screen renders. Trace it per [`references/qa-grid.md`](references/qa-grid.md) and quote the path. No reach → record `no-ui-reach` with that trace and stop.
 - **A blank cell is not done.** Every grid cell is `pass`, `fail`, or `not reachable — <reason>`. A reason names why the state cannot occur, not why it was inconvenient.
 - **Browser errors fail the cell.** Capture console, page errors, and XHR/fetch responses for every flow. A new `error`-level message, unhandled rejection, or 4xx/5xx response fails the cell, unless the cell expects it (a 403 for a forbidden role) or the same signal appears on the base commit run.
-- **Success is a visible change.** Capture the relevant state before acting and assert the expected change after. A success message with no changed state is a fail.
+- **Success is a visible change.** Capture the relevant state before acting and assert the expected change after. A success message with no changed state is a fail. For a write, the change also survives a reload.
 - **Prove presence before a negative.** Before asserting a control is rejected or hidden for a role, show it exists for a role that should see it. Otherwise "missing" passes as "denied".
 - **Production is never touched.** On staging: read-only flows only, unless the user approves that single mutating step; restore anything changed.
 - **Status is earned.** `VERIFIED` only when every cell passed and no gap remains. Any failed cell or gap → `PARTIAL`. App not runnable, no criteria, or no login for a required role → `BLOCKED`. Never the word "fixed".
@@ -44,7 +44,7 @@ Trace each changed file to a screen per the reference. Quote one path per reacha
 
 ### 2. Build the grid
 
-Rows: each acceptance criterion and each path it owes, each escape class for the area, and one row per neighbouring flow — other screens that call the changed code, sibling entry points, create vs edit. Columns: the states each row can reach (default, loading, empty, error, success, disabled, permission denied, offline, long content), at 375 and 1280 widths, for each role. Write the grid to `<artifacts-root>/specs/qa/<pr>-<short-sha>/grid.md` before driving anything; template in the reference.
+Rows: each acceptance criterion and each path it owes, each escape class for the area, and one row per neighbouring flow — other screens that call the changed code, sibling entry points, create vs edit. Columns: the states each row can reach (default, loading, empty, error, success, disabled, permission denied, offline, long content, keyboard-only), at 375 and 1280 widths, for each role. Write the grid to `<artifacts-root>/specs/qa/<pr>-<short-sha>/grid.md` before driving anything; template in the reference.
 
 ### 3. Baseline
 
@@ -56,7 +56,7 @@ Follow the workspace browser rule: one named session, one batched flow per cell,
 
 ### 5. Judge and write findings
 
-Mark each cell. For each fail, record: cell, exact reproduction (the batch you ran), expected, actual, and the evidence paths. Re-checks of earlier findings carry their count (`re-check 2/3`), read from the previous report for this PR.
+Mark each cell. Before marking a cell `fail`, replay its exact batch once from the same starting state: fails both times → `fail`; fails once → `fail (intermittent 1 of 2)`, still a finding that says so. For each fail, record: cell, exact reproduction (the batch you ran), expected, actual, and the evidence paths. Re-checks of earlier findings carry their count (`re-check 2/3`), read from the previous report for this PR.
 
 ### 6. Record
 

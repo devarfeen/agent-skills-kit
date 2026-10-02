@@ -3,7 +3,7 @@ name: pixel-audit
 disable-model-invocation: true
 description: Strict per-page visual-conformance audit at the verify phase — ONE page/route against a source of truth (Figma MCP nodes, or reference screens when no Figma exists). Captures a full-size pixel inventory, writes a MISSING-vs-EXTRA defect list, fixes node-by-node reusing the project's UI library (never inlining), and refuses to say "verified" until a hard element-level gate passes — served assets confirmed, getBoundingClientRect/computed-style proof, every in-scope state checked. Use when the user asks to audit a target page against legacy or reference screens, including when no Figma exists; it audits visual conformance, not feature porting. Stays inside the given SCOPE; never auto-chains; distinct from /design-system's startup preview check.
 metadata:
-  version: "0.0.1"
+  version: "0.1.0"
 ---
 
 # Pixel audit
@@ -15,7 +15,7 @@ Audit **one page** against its source of truth, fix the mismatches, and prove ea
 Infer from the request; interview only for what's missing:
 
 - **TARGET PROJECT-CODE** — full Project Matrix code; sets the stack idiom and UI library.
-- **SCOPE** — the single page/route plus the states to audit (list/detail, modals, forms, empty/error/loading, responsive breakpoints). **Scope is a hard boundary — never edit other pages, routes, or steps.**
+- **SCOPE** — the single page/route plus the states to audit (list/detail, modals, forms, empty/error/loading, responsive breakpoints, theme variants such as light/dark when the source has them). **Scope is a hard boundary — never edit other pages, routes, or steps.**
 - **SOURCE OF TRUTH** — Figma node(s) via the Figma MCP companion, or reference screens / a reference implementation when no Figma exists. Name which is in use in the artifact. If neither is available, stop and ask — never audit against memory.
 - **Login / env** — local credentials only, if the page needs auth.
 
@@ -87,9 +87,10 @@ Scope: <route + states audited>
 - **State the env:** host/URL and browser/session, or local app build and simulator/device.
 - **Cross the build pipeline:** rebuild/refresh after each change and confirm the changed classes/styles/components exist in the assets the page or app actually loaded, not just source files.
 - **Prove each fix with element-level evidence:** selector/ref, `getBoundingClientRect()`, relevant computed styles, DOM, and a clipped screenshot when alignment matters. Native apps require equivalent inspector geometry, resolved styles, rendered tree, and screenshots from the local simulator. Full-page shots are overview only. If the required automation is unavailable, list pending manual checks and do not mark any row `verified` on assumption.
-- **These count as failure:** hidden, zero-size, collapsed, clipped, misaligned, wrong-size, or ignored-class elements.
+- **These count as failure:** hidden, zero-size, collapsed, clipped, misaligned, wrong-size, or ignored-class elements, and a new console error versus the step-3 capture.
 - **Falsify before declaring verified:** actively look for the ways the fix could be wrong (wrong breakpoint, stale asset, class not applied, element off-screen) and rule them out.
 - **Do not say "verified / done / fixed" unless ALL hold:** env stated · build pipeline crossed · loaded assets contain the change · element proof captured · source captured full-size · expected-vs-actual compared · every in-scope state checked. Unattempted rows stay `open`; changed rows failing the gate become `reopened`.
+- **Final sweep:** before the final report, re-run element proof for every `verified` row once on the final build. A row that drifted becomes `reopened`.
 
 ## Rules
 

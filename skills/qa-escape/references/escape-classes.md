@@ -18,6 +18,7 @@ Pick the one that names the gap in the checks, not the symptom. When two fit, pi
 | `stale-contract` | The risk-review contract lens: a consumer reads a field, route, or status the producer changed |
 | `adjacent-flow` | A neighbour row for other screens and entry points that use the changed code |
 | `persistence` | A write-then-reload round trip through the owner path |
+| `keyboard-focus` | A keyboard-only row: Tab reaches the control, Enter/Space activates it, Escape closes overlays, and focus stays visible |
 | `validation-boundary` | Edge rows for min, max, empty, duplicate, and format limits |
 | `concurrency` | A repeated concurrent trigger |
 | `copy-i18n` | Text checked against the source strings in each shipped locale |
@@ -33,7 +34,8 @@ A new slug needs a one-line definition in the comment and a proposal to add it h
 
 **Expected:** with no invoices, the list shows "No invoices yet"
 **Actual:** the list area is blank and the console shows `TypeError: rows.map is not a function`
-**Minimal case:** account with zero invoices; any role · reproduced 2 of 2
+**Minimal case:** account with zero invoices; any role · reproduced 2 of 2 · base 9f8e7d6 not reproduced
+**Evidence:** executed (staging @ a1b2c3d)
 
 **Agent claim overturned:** agentic-qa VERIFIED on a1b2c3d — grid had no empty row for the invoice list
 **Why missed:** empty list crashes → no empty-state row → criteria named only the populated list → grid built rows only from criteria → **check to change:** empty state is a default row for every list surface in BILLING-WEB:/invoices
@@ -42,6 +44,8 @@ A new slug needs a one-line definition in the comment and a proposal to add it h
 
 <!-- qa-escape: class=missed-empty-state area=BILLING-WEB:/invoices pr=87 tested=a1b2c3d reproduced=yes -->
 ```
+
+`Evidence:` is `executed (<env> @ <sha>)`, `supplied (<QA artifact>)`, or `mixed`; never imply supplied evidence was executed in this run.
 
 ## Guard ladder
 

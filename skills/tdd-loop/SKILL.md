@@ -2,7 +2,7 @@
 name: tdd-loop
 description: Enforceable test-first execution loop for features and bug fixes — red, green, refactor, with completion evidence. Use when the user says "TDD", "red-green", or "test-first" — building a feature, fixing a bug with a reproducing test, or implementing a slice, ticket, or issue test-first — and when the loop must adapt for a characterization test in untested legacy code, a safe exploratory refactor, or an urgent hotfix that must be fixed now with tests added right after under the exception protocol. A bare "implement this ticket" with no test-first ask belongs to /implement; adding test-first routes here. /tdd supplies test-quality advice and seam choice; this skill executes the loop.
 metadata:
-  version: "0.0.1"
+  version: "0.1.0"
 ---
 
 # TDD loop
@@ -28,8 +28,8 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
    request isn't ready for implementation — route it to `/feature-prompt`
    (unclear scope) or `/diagnosing-bugs` (unclear cause) and stop.
 2. **Locate the seam.** Find the code that owns the behavior, its existing
-   tests, and the project's focused-test command (one file or one test — e.g.
-   `pnpm vitest run path/to/file`; per-ecosystem commands in
+   tests, and the project's focused-test command (one file or one test;
+   per-ecosystem commands in
    [`references/test-commands.md`](references/test-commands.md)). Read the
    neighboring tests first and match their style, fixtures, and naming. If the
    seam choice is genuinely contestable, ask the user; if the user is away,
@@ -61,7 +61,9 @@ run per slice adds no signal.
      before continuing.
    - A new test that passes immediately is a stop signal: either the behavior
      already exists (report that and stop) or the test asserts nothing new
-     (rewrite it).
+     (rewrite it). If this session's own uncommitted code supplies it, revert
+     that hunk, watch red, then re-apply it; never report it as existing
+     behavior.
 2. **Green.** Make the smallest change that passes the focused test — no
    speculative parameters, no adjacent cleanup. Re-run the focused test.
 3. **Widen.** Run the surrounding suite (module or package scope — never the

@@ -44,6 +44,16 @@ and [yarn run](https://yarnpkg.com/cli/run).
 
 - Usually Jest (as above) with `@testing-library/react-native` for component seams; device/E2E suites are verify-phase, not loop-phase.
 
+## Repeat runs
+
+When red came from an intermittent reproduction or the test touches timing,
+green is a repeated pass; quote the count. Playwright: `--repeat-each=10`.
+Go: `-count=10`. Other runners: loop the focused command 10 times and stop on
+the first failure; never add a plugin or runner to get a repeat flag.
+
+Flags checked 2026-10-03 against Playwright's CLI (`--repeat-each <N>`) and
+`go help testflag` (`-count n`).
+
 ## Watch mode
 
 Prefer single non-watch runs inside the loop — deterministic exit codes beat

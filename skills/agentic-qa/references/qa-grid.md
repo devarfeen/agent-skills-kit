@@ -50,6 +50,7 @@ Set states inside the cell's batch, before the action, and reset them after.
 | Loading | Assert the loading indicator while a routed request is held by a slow fixture, or read it from the component's state |
 | Long content | Seed a fixture or local record with long text, many items, and non-ASCII characters |
 | Permission denied | Log in as the role; first prove the control exists for a role that should see it |
+| Keyboard-only | 1280 only, with `press Tab`, `press Enter` or `press Space`, and `press Escape`. Pass when Tab reaches the control, Enter/Space activates it, Escape closes overlays, and focus stays visible |
 
 Per flow, capture and read:
 

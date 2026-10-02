@@ -30,6 +30,7 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in commi
   `getComputedStyle(el)` for the specific properties in the defect row
   (margin/padding/gap/font-size/line-height/color/border-radius/box-shadow).
   Record the numbers in the row's Evidence cell — "looks right" is not a value.
+- **Console baseline:** during the step-3 inventory, record the page's console errors per in-scope state; after each fix, a console error not in that baseline fails the gate.
 - **Screenshots:** save zoomed/clipped element shots under the audit's shots
   folder and record the path; full-page shots are overview only.
 - **State coverage:** drive each in-scope state (hover, focus, disabled,

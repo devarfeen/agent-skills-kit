@@ -46,4 +46,8 @@ Before completion, read each new test once more:
 - More than half the asserts are presence-only (`not None`, `toBeTruthy`, `toBeDefined`) → assert values.
 - The test mocks the unit it claims to test, or asserts that a mock returns what it was told to → rewrite against the real unit.
 - The input and the expected value are both derived from the same helper, so passing is guaranteed by construction → use an independent expected value.
-- Ask: would this test fail on a result that is structurally right but semantically wrong?
+- Mentally mutate the code: wrong constant or argument, wrong branch, missing side effect, empty/default return, missing validation for empty, zero, or unauthorized input. Each realistic mutation fails at least one new test, or that row is unprotected.
+- A mocked response drops fields the real one carries → mirror the full real structure.
+- The test needs an export, flag, or hook no production caller uses → test at the real boundary instead.
+- A fixed sleep waits for async work → wait on the condition itself.
+- The run prints a new warning or error log → it is part of the slice; clear it or explain it.

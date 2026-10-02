@@ -3,7 +3,7 @@ name: qa-escape
 disable-model-invocation: true
 description: "Intake for a bug that human QA found after an agent called the work done — reproduce it as an evidence brief, classify the escape, trace why the agent's checks missed it to a check that can be fixed, record it as a labelled comment on the issue, and name the failing regression test /tdd-loop must write first. When the same escape class reaches three issues, proposes a durable guard and applies it only on approval. Use when the user says \"QA found a bug in #87\", \"QA bounced this ticket\", \"this was marked fixed but QA says it's broken\", or /factory reports a unit in QA_RETURNED. Never edits code. A bug with no prior agent claim is /diagnosing-bugs; a staging-only fault is /staging-fix."
 metadata:
-  version: "0.0.1"
+  version: "0.1.0"
 ---
 
 # qa-escape
@@ -25,6 +25,7 @@ An escape is a bug a human found after an agent's checks said the work was done.
 - **Classes come from the fixed list** in [`references/escape-classes.md`](references/escape-classes.md). A new class needs a slug and one-line definition added to the comment and proposed for the list.
 - **Promotion waits for three and for approval.** When this escape makes three issues with the same class and area, propose one durable guard. Apply nothing until the user approves that guard; declined → record the decline in the comment.
 - **One approval before any remote write.** Show the issue comment and the label change together and wait. User away → print both and stop.
+- Redact before anything leaves the session: replace tokens, keys, cookies, session IDs, passwords, emails, and customer identifiers in quoted evidence with `<redacted>`, keeping only the lines that show the fault.
 - **Zero attribution.** No co-author, AI, or tool attribution in the comment or any output.
 - Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
 - Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.
@@ -33,7 +34,7 @@ An escape is a bug a human found after an agent's checks said the work was done.
 
 ### 1. Write the reproduction brief
 
-State expected and actual as observations. Reproduce on the same revision QA tested. Shrink the case: remove one condition at a time, restore the last one whose removal makes the bug disappear, and record it as required. Run the final case twice; record `reproduced: yes | intermittent (n of m) | no`. On `no`, skip to step 6 and record what was tried.
+State expected and actual as observations. Reproduce on the same revision QA tested. Shrink the case: remove one condition at a time, restore the last one whose removal makes the bug disappear, and record it as required. Run the final case twice; record `reproduced: yes | intermittent (n of m) | no`. On `no`, skip to step 6 and record what was tried. Then run the minimal case once on the PR's base commit, from `.worktrees/qa-escape-<issue>-base`. Reproduces there → class `not-a-regression`.
 
 ### 2. Read the agent's claim
 
@@ -45,7 +46,7 @@ Pick the class. Then the why-chain, at most five steps, ending at a fixable chec
 
 ### 4. Specify the regression test
 
-Name the lowest layer that can show the bug: a unit test for logic; a handler test asserting status, body, and side effect for an API; a write-then-reload test for persistence; a browser test in the project's end-to-end runner when only the rendered app shows it. Give the test's name, setup, action, and the assertion that fails today. This is the first Red for `/tdd-loop`. No end-to-end runner for a render-only bug → say so; the marker from step 6 is the regression check, because `/agentic-qa` turns every escape marker for the area into grid rows on each later change.
+Name the lowest layer that can show the bug: a unit test for logic; a handler test asserting status, body, and side effect for an API; a write-then-reload test for persistence; a browser test in the project's end-to-end runner when only the rendered app shows it. Give the test's name, setup, action, and the assertion that fails today. State its proof: fails at `<tested-sha>`, passes at base (or `n/a — not-a-regression`), passes after the fix. Prefer a new row in an existing test or table over a new file; name it. This is the first Red for `/tdd-loop`. No end-to-end runner for a render-only bug → say so; the marker from step 6 is the regression check, because `/agentic-qa` turns every escape marker for the area into grid rows on each later change.
 
 ### 5. Count the class
 
