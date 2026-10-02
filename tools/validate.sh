@@ -47,8 +47,8 @@
 #  17. No hidden zero-width (U+200B–U+200D, U+2060) or bidi-control
 #      (U+202A–U+202E, U+2066–U+2069) characters in skills/**/*.md — they can
 #      carry instructions a reviewer never sees.
-#  18. Companion parity: every COMPANIONS skill in tools/install-skills.sh is
-#      named in README.md's Credits And Provenance section, with its source repo.
+#  18. Companion parity: every companion in README "Companion install commands"
+#      is named in README.md's Credits And Provenance section, with its source repo.
 #  19. Total description budget for model-invocable skills (3000 characters;
 #      1779 at introduction) — every model-invocable description loads into
 #      every session's catalog.
@@ -560,20 +560,28 @@ fi
 echo "== 18. Companion parity with README credits =="
 comp_out="$(python3 - <<'PYEOF'
 import re
-sh = open("tools/install-skills.sh", encoding="utf-8").read()
-block = re.search(r'^COMPANIONS=\((.*?)^\)', sh, re.M | re.S)
 readme = open("README.md", encoding="utf-8").read()
-credits = re.search(r'^## Credits And Provenance\n(.*?)(?=^## |\Z)', readme, re.M | re.S)
+block = re.search(
+    r"^### Companion install commands \(global\)\n\n```bash\n(.*?)```",
+    readme,
+    re.M | re.S,
+)
+credits = re.search(r"^## Credits And Provenance\n(.*?)(?=^## |\Z)", readme, re.M | re.S)
 if not block or not credits:
-    print("could not locate COMPANIONS in install-skills.sh or the Credits And Provenance section in README.md")
+    print("could not locate Companion install commands or Credits And Provenance in README.md")
     raise SystemExit
 credits = credits.group(1)
-for src, names in re.findall(r'"([^"|]+)\|([^"]+)"', block.group(1)):
+for line in block.group(1).splitlines():
+    m = re.match(r"npx skills add (\S+) -s (\S+)", line.strip())
+    if not m:
+        continue
+    src, name = m.group(1), m.group(2)
+    if src == "devarfeen/agent-skills-kit":
+        continue
     if f"github.com/{src}" not in credits:
         print(f"source {src} is installed but its repo URL is not credited")
-    for name in names.split():
-        if f"`{name}`" not in credits:
-            print(f"companion `{name}` ({src}) is installed but not named in the credits")
+    if f"`{name}`" not in credits:
+        print(f"companion `{name}` ({src}) is installed but not named in the credits")
 PYEOF
 )"
 if [[ -n "$comp_out" ]]; then

@@ -33,7 +33,6 @@ agent-skills-kit/
 ├── .github/workflows/   # CI: runs tools/validate.sh on every PR
 ├── tools/
 │   ├── validate.sh      # Repo invariant checks — run before every commit
-│   ├── install-skills.sh # Batch installer for kit + companion skills
 │   └── trigger-evals/   # Maintainer trigger-eval harness (score.py, query sets)
 ├── evals/               # Kit-level eval method, rubrics, audit templates
 ├── audits/              # Dated audit reports and findings
@@ -48,32 +47,28 @@ agent-skills-kit/
 ## Installing a Skill
 
 ```bash
-npx skills add https://github.com/devarfeen/agent-skills-kit --skill <skill-name>
+npx skills add devarfeen/agent-skills-kit -s <skill-name> -g -y
 ```
 
-Add `-g` to install globally (user-level) instead of into the current project.
-Updating to the latest version:
+Omit `-g` to install into the current project instead of user-global
+(`~/.agents/skills/`). Do not pass a long `--agent` list; that creates empty
+`~/.<tool>` homes. **PromptScript** does not support `npx skills -g`; use
+[`prs skills add`](https://getpromptscript.dev/latest/reference/cli/) or project
+scope (no `-g`). **Antigravity** reads
+`~/.gemini/antigravity-cli/skills/` (and `~/.gemini/antigravity/skills/`); global
+`-g` still lands in `~/.agents/skills/` — symlink or copy into those paths if
+Antigravity does not pick them up.
+
+Update an installed skill:
 
 ```bash
 npx skills update <skill-name>
 ```
 
-To install several at once, clone the repo and run the install script. It
-reads the groups from `.claude-plugin/marketplace.json` and installs globally
-to every agent the `skills` CLI detects:
-
-```bash
-bash tools/install-skills.sh                            # every kit skill
-bash tools/install-skills.sh --group factory-workflow   # one group
-bash tools/install-skills.sh --companions               # kit + credited companion skills
-bash tools/install-skills.sh --no-kit --companions      # companions only
-bash tools/install-skills.sh --project --dry-run        # print project-scope commands
-```
-
-`--local` installs the kit skills from your checkout instead of GitHub. The
-companion list mirrors [Credits And Provenance](#credits-and-provenance);
-Graphify is installed separately. The `skills` CLI has no version or ref
-option, so companions install from each source's default branch (unpinned).
+One command per skill (global) is listed under [Available Skills](#available-skills)
+below. Companions mirror [Credits And Provenance](#credits-and-provenance);
+Graphify is installed separately. The `skills` CLI has no version or ref option,
+so companions install from each source's default branch (unpinned).
 
 The `skills` CLI fetches the named subfolder from this repo and installs it
 into your agent's local skills directory. After install, invoke a skill with
@@ -157,6 +152,92 @@ and rules live in each skill's `SKILL.md`; this table is the index.
 | [`factory`](skills/factory/SKILL.md) | companion | Factory conductor: reads where a spec, ticket, or PR stands across CI, review, risk gate, and staging deploy, then names the one skill that moves it next — never runs it, never goes past staging. Shows how long each unit has sat in its state and flags stalled ones | `/factory SPEC-142` |
 | [`incident-triage`](skills/incident-triage/SKILL.md) | companion | Read-only incident triage: timeline, ranked causes with evidence (always including one that isn't a recent change), owner-run mitigations, one redacted incident note with a Resolution section — production never accessed; a suspected breach goes straight to the owner | `We have an incident: checkout 502s since 14:00` |
 | [`writing-kit-skills`](skills/writing-kit-skills/SKILL.md) | — | Kit-internal house style for authoring and editing this repo's skills: skeleton, word budget, the eight canonical one-liners, output caps, eval gates, and matching each rule's form to the failure it fixes | `Rewrite this SKILL.md to house style` |
+
+### Kit install commands (global)
+
+```bash
+npx skills add devarfeen/agent-skills-kit -s agents-md -g -y
+npx skills add devarfeen/agent-skills-kit -s commit-push-close -g -y
+npx skills add devarfeen/agent-skills-kit -s commit-push-pr -g -y
+npx skills add devarfeen/agent-skills-kit -s design-system -g -y
+npx skills add devarfeen/agent-skills-kit -s feature-discovery -g -y
+npx skills add devarfeen/agent-skills-kit -s feature-prompt -g -y
+npx skills add devarfeen/agent-skills-kit -s integration-contract -g -y
+npx skills add devarfeen/agent-skills-kit -s local-to-staging -g -y
+npx skills add devarfeen/agent-skills-kit -s orchestrate-herdr -g -y
+npx skills add devarfeen/agent-skills-kit -s pixel-audit -g -y
+npx skills add devarfeen/agent-skills-kit -s polish-batch -g -y
+npx skills add devarfeen/agent-skills-kit -s port-feature -g -y
+npx skills add devarfeen/agent-skills-kit -s pr-feedback -g -y
+npx skills add devarfeen/agent-skills-kit -s release-notes -g -y
+npx skills add devarfeen/agent-skills-kit -s staging-fix -g -y
+npx skills add devarfeen/agent-skills-kit -s staging-to-production -g -y
+npx skills add devarfeen/agent-skills-kit -s tdd-loop -g -y
+npx skills add devarfeen/agent-skills-kit -s using-git-worktrees -g -y
+npx skills add devarfeen/agent-skills-kit -s writing-kit-skills -g -y
+npx skills add devarfeen/agent-skills-kit -s factory -g -y
+npx skills add devarfeen/agent-skills-kit -s ci-loop -g -y
+npx skills add devarfeen/agent-skills-kit -s agentic-qa -g -y
+npx skills add devarfeen/agent-skills-kit -s risk-review -g -y
+npx skills add devarfeen/agent-skills-kit -s deploy-watch -g -y
+npx skills add devarfeen/agent-skills-kit -s qa-escape -g -y
+npx skills add devarfeen/agent-skills-kit -s incident-triage -g -y
+```
+
+### Companion install commands (global)
+
+```bash
+npx skills add anthropics/skills -s mcp-builder -g -y
+npx skills add anthropics/skills -s skill-creator -g -y
+npx skills add anthropics/skills -s frontend-design -g -y
+npx skills add mattpocock/skills -s ask-matt -g -y
+npx skills add mattpocock/skills -s claude-handoff -g -y
+npx skills add mattpocock/skills -s code-review -g -y
+npx skills add mattpocock/skills -s codebase-design -g -y
+npx skills add mattpocock/skills -s diagnosing-bugs -g -y
+npx skills add mattpocock/skills -s domain-modeling -g -y
+npx skills add mattpocock/skills -s git-guardrails-claude-code -g -y
+npx skills add mattpocock/skills -s grill-me -g -y
+npx skills add mattpocock/skills -s grill-with-docs -g -y
+npx skills add mattpocock/skills -s grilling -g -y
+npx skills add mattpocock/skills -s handoff -g -y
+npx skills add mattpocock/skills -s implement -g -y
+npx skills add mattpocock/skills -s implement-spec -g -y
+npx skills add mattpocock/skills -s improve-codebase-architecture -g -y
+npx skills add mattpocock/skills -s loop-me -g -y
+npx skills add mattpocock/skills -s migrate-to-shoehorn -g -y
+npx skills add mattpocock/skills -s pr -g -y
+npx skills add mattpocock/skills -s prototype -g -y
+npx skills add mattpocock/skills -s research -g -y
+npx skills add mattpocock/skills -s retro -g -y
+npx skills add mattpocock/skills -s scaffold-exercises -g -y
+npx skills add mattpocock/skills -s setup-matt-pocock-skills -g -y
+npx skills add mattpocock/skills -s setup-pre-commit -g -y
+npx skills add mattpocock/skills -s setup-ts-deep-modules -g -y
+npx skills add mattpocock/skills -s tdd -g -y
+npx skills add mattpocock/skills -s teach -g -y
+npx skills add mattpocock/skills -s to-questionnaire -g -y
+npx skills add mattpocock/skills -s to-spec -g -y
+npx skills add mattpocock/skills -s to-tickets -g -y
+npx skills add mattpocock/skills -s triage -g -y
+npx skills add mattpocock/skills -s wait-what -g -y
+npx skills add mattpocock/skills -s wayfinder -g -y
+npx skills add mattpocock/skills -s wizard -g -y
+npx skills add mattpocock/skills -s writing-beats -g -y
+npx skills add mattpocock/skills -s writing-for-agents -g -y
+npx skills add mattpocock/skills -s writing-fragments -g -y
+npx skills add mattpocock/skills -s writing-shape -g -y
+npx skills add vercel-labs/agent-browser -s agent-browser -g -y
+npx skills add vercel-labs/skills -s find-skills -g -y
+npx skills add cursor/plugins -s blast-radius -g -y
+npx skills add cursor/plugins -s show-me-your-work -g -y
+npx skills add cursor/plugins -s unslop -g -y
+npx skills add github/awesome-copilot -s boost-prompt -g -y
+npx skills add google-labs-code/stitch-skills -s enhance-prompt -g -y
+npx skills add herdrdev/herdr -s herdr -g -y
+npx skills add pbakaus/impeccable -s impeccable -g -y
+npx skills add sickn33/agentic-awesome-skills -s docker-expert -g -y
+```
 
 The gradient's plan/slice/implement/verify core (`/grill-with-docs`,
 `/wayfinder`, `/to-spec`, `/to-tickets`, `/implement`, `/tdd`, `/code-review`,
