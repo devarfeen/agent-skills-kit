@@ -1,16 +1,16 @@
 ---
 name: feature-prompt
 disable-model-invocation: true
-description: "Use when the user wants to turn a feature idea, change request, or rough requirement into a small prompt for grill-with-docs. When cheap repo exploration reveals domain terms missing from or stale in CONTEXT.md, surface those candidate terms for user approval before any context update. Post-decision artifacts route onward instead: turning an ADR into a spec or implementation prompt is /to-spec, and investigating how existing behaviour works is /feature-discovery."
+description: "Use when the user wants to turn a feature idea, change request, or rough requirement into a small prompt for grill-with-docs. When cheap repo exploration reveals domain terms missing from or stale in GLOSSARY.md, surface those candidate terms for user approval before any context update. Post-decision artifacts route onward instead: turning an ADR into a spec or implementation prompt is /to-spec, and investigating how existing behaviour works is /feature-discovery."
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
 # feature-prompt
 
 Produces the smallest useful handoff for the next step — not an implementation
 spec. `grill-with-docs` will challenge the plan, sharpen domain terms, update
-`CONTEXT.md`, and offer ADRs only for hard decisions.
+`GLOSSARY.md`, and offer ADRs only for hard decisions.
 
 ## Output contract
 
@@ -54,8 +54,8 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 
 - Start from free-form intake. Infer first; ask only when `What is needed` is
   unclear or project/context cannot be inferred safely.
-- Use repo evidence when cheap: Project Matrix, cwd, `CONTEXT.md`,
-  `CONTEXT-MAP.md`, and ADR names. Do not run a broad code scan by default.
+- Use repo evidence when cheap: Project Matrix, cwd, `GLOSSARY.md`,
+  `GLOSSARY-MAP.md`, and ADR names. Do not run a broad code scan by default.
 - Use `graphify-out/graph.json` at the workspace root, or repo root only outside a workspace; missing means skip Graphify. Query before raw search and verify hits against current source. Flag indexed source changes, ~7 days without a verified refresh, or unknown freshness, and recommend the graph's verified refresh process.
 
 ### Scope and slicing
@@ -104,7 +104,7 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 - A vague answer to a sharp question ("as fast as possible", "all users") is
   not an answer — ask once for a number or a named segment; still vague →
   park it under `Open questions` as written.
-- Do not implement the feature, create a spec, or edit ADRs. `CONTEXT.md`
+- Do not implement the feature, create a spec, or edit ADRs. `GLOSSARY.md`
   changes happen only through the approved candidate-terms flow below.
 - Keep the final prompt spartan, direct, plain English — it is a generated
   artifact, never compressed shorthand.
@@ -112,7 +112,7 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 ## Candidate context terms
 
 Only when cheap repo evidence or user-requested exploration reveals domain
-terms missing from or stale in `CONTEXT.md` — never run extra exploration just
+terms missing from or stale in `GLOSSARY.md` — never run extra exploration just
 to fill this. The shared flow — what qualifies, presentation, the
 away-fallback, applying approvals — lives in
 [`references/context-terms.md`](references/context-terms.md). Show candidates
@@ -139,7 +139,7 @@ Sub-agents: dispatch local lanes automatically for independent work — never cl
 5. Add only:
 
 ```markdown
-Context updated: <relative CONTEXT.md path> [only if edited]
+Context updated: <relative GLOSSARY.md path> [only if edited]
 Saved to: <relative path written>
 Next: pass this final prompt to the `grill-with-docs` skill.
 Suggested next skills (optional):
@@ -157,7 +157,7 @@ Suggested next skills (optional):
 <artifacts-root>/specs/prompts/NNNN-<feature-slug>-prompt.md
 ```
 
-Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`CONTEXT-MAP.md` at repo root), else the repo root.
+Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`GLOSSARY-MAP.md` at repo root; legacy `CONTEXT-MAP.md`), else the repo root.
 
 - **`NNNN`** — scan `<artifacts-root>/specs/adr/` and `specs/prompts/` for the
   highest existing four-digit number and increment, so prompt numbers never

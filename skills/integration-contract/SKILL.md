@@ -3,7 +3,7 @@ name: integration-contract
 disable-model-invocation: true
 description: After /to-tickets, pull cross-repo confidence out of your head into a durable contract + a smoke gate — but only when a spec (PRD) touches more than one PROJECT-CODE. It maps the producer surface that changed (usually the API PROJECT-CODE), traces each consumer's call-sites narrowly like /feature-discovery, and writes an agent-browser smoke checklist that proves the seam holds. Use when a multi-project spec (PRD) is sliced and you want to know the integration won't break before shipping or handing to the PM. Single-project spec with no cross-project consumers → it reports "single project — no contract needed" and stops.
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # Integration contract
@@ -21,7 +21,7 @@ Writes a spec's cross-repo seam to disk as a **contract** file and checks it wit
 - **Single project is a sweep, not trust.** Spec touches one PROJECT-CODE → sweep the other Project Matrix repos for call-sites of the changed surfaces (narrow retrieval, below). No call-site outside the project → report `single project — no contract needed` and **stop**; do not create a file. Any external call-site found → the seam is cross-project despite the spec: build the contract, flag each such consumer as a risk row.
 - **Narrow retrieval only.** Search each changed surface across every Project Matrix repo per [`references/consumer-sweep.md`](references/consumer-sweep.md); never bulk-read a repo or its `specs/` tree. Cite consumers as `file:symbol`. An unavailable repo makes the sweep incomplete: record the risk and do not conclude no contract is needed.
 - Use `graphify-out/graph.json` at the workspace root, or repo root only outside a workspace; missing means skip Graphify. Query before raw search and verify hits against current source. Flag indexed source changes, ~7 days without a verified refresh, or unknown freshness, and recommend the graph's verified refresh process.
-- **Distinguish intent from implementation.** Read `CONTEXT.md` and relevant ADRs for recorded decisions; trace current code for actual behavior. Record conflicts with the spec or current user decisions as risk rows. Native CLI memory is a lead to verify.
+- **Distinguish intent from implementation.** Read `GLOSSARY.md` (legacy name `CONTEXT.md`) and relevant ADRs for recorded decisions; trace current code for actual behavior. Record conflicts with the spec or current user decisions as risk rows. Native CLI memory is a lead to verify.
 - **Decisions are artifacts.** Chat reports only what was written plus the phase update.
 - Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
 - **No located consumer is a risk, not a pass.** A changed surface with no consumer call-site anywhere in the matrix, or a consumer outside the spec's slices, gets a **RISK** row — never silently assumed unused.
@@ -32,7 +32,7 @@ Writes a spec's cross-repo seam to disk as a **contract** file and checks it wit
 
 ## The contract artifact
 
-One per spec at `<artifacts-root>/specs/integration/<SPEC-ID>-contract.md`. Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`CONTEXT-MAP.md` at repo root), else the repo root.
+One per spec at `<artifacts-root>/specs/integration/<SPEC-ID>-contract.md`. Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`GLOSSARY-MAP.md` at repo root; legacy `CONTEXT-MAP.md`), else the repo root.
 
 On reruns, read the existing contract, preserve user edits and the gate log, and reset affected flows to `pending` when their implementation or environment changes. Validate `<SPEC-ID>` as one filename component, with no path separators or `..`.
 

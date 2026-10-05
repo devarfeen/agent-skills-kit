@@ -98,7 +98,7 @@ Verified against the installed CLI surface (`--help`, feature flags, shipped bun
 
 | Artifact | Location | Steward |
 | :--- | :--- | :--- |
-| `CONTEXT.md` | `<artifacts-root>` | `grill-with-docs` |
+| `GLOSSARY.md` | `<artifacts-root>` | `grill-with-docs` |
 | `specs/adr/` | `<artifacts-root>/specs/adr/` | `grill-with-docs` |
 
 Native CLI memory defaults: [`memory-global-defaults.md`](memory-global-defaults.md).

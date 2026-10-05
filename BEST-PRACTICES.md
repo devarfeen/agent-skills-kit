@@ -32,7 +32,7 @@ discover → sharpen → plan → slice → implement → verify → ship
 | **sharpen** | Turn a rough idea into a precise prompt | `/feature-prompt` (no fog), `/wayfinder` (fog — decisions gate the scope) |
 | **plan** | Challenge the plan, capture the decision | `/grill-with-docs` (→ ADR), `/to-spec` (→ spec/PRD) |
 | **slice** | Break the plan into thin, grabbable units | `/to-tickets` |
-| **implement** | Build it test-first | `/implement` (optional ticket driver), `/tdd-loop` (the procedure — gates + exception protocol), `/tdd` (test-quality reference) |
+| **implement** | Build it test-first | `/implement` (optional ticket driver), `/implement-spec` (optional whole-spec driver), `/tdd-loop` (the procedure — gates + exception protocol), `/tdd` (test-quality reference) |
 | **verify** | Prove it works | `/code-review`, `/agentic-qa` (agent-run functional QA on a PR), `/pixel-audit` (per-page pixel conformance), manual QA, `/polish-batch` (cosmetic tail), `/integration-contract` (cross-repo seam), `/diagnosing-bugs` |
 | **ship** | Land it with proof | `/commit-push-close`, `/commit-push-pr`; once a PR is open, the factory skills (`/ci-loop`, `/pr-feedback`, `/risk-review`, `/deploy-watch`) carry it to staging — see Workflow F; `/local-to-staging` and `/staging-to-production` (read-only) promote between environments |
 
@@ -47,15 +47,16 @@ Fog, not size, is the test. A forty-file mechanical rename has nothing left to d
 
 ### Implement is a driver, not a rival
 
-Three layers, each of the outer two optional:
+Four layers; only `/tdd-loop` is required:
 
 | Layer | Skill | Owns |
 | :--- | :--- | :--- |
+| Spec | `/implement-spec` *(optional)* | Works the whole ticket graph in one run: parallel implementers in worktrees, merged onto one local integration branch; one `/code-review` at the end |
 | Ticket | `/implement` *(optional)* | Works one ticket; typecheck cadence; full suite once at the end; hands to `/code-review` |
 | Behavior | `/tdd-loop` *(kit)* | Red → green → widen → refactor; the completion evidence; the exception protocol |
 | Test quality | `/tdd` *(optional)* | What a good test is; where seams go; the anti-patterns |
 
-Without `/implement`, drive `/tdd-loop` directly per ticket — same outcome, one less wrapper. `/tdd` is a reference document, not a loop; using it alone gets you no witnessed red. And `/implement` **stops after `/code-review`**: its own text says to commit, but shipping belongs to the ship skills, which own branch-off-main, issue linking, and test evidence.
+Without `/implement`, drive `/tdd-loop` directly per ticket — same outcome, one less wrapper. `/tdd` is a reference document, not a loop; using it alone gets you no witnessed red. And `/implement` **stops after `/code-review`**: its own text says to commit, but shipping belongs to the ship skills, which own branch-off-main, issue linking, and test evidence. `/implement-spec` meets the same boundary one step later: its local commits and merges onto the integration branch are engineering work, but the draft PR and ticket closing its text describes are shipping.
 
 ### Helpers alongside the gradient
 
@@ -63,12 +64,29 @@ Not every skill lives on the discover→ship line:
 
 - **Project start-off:** `/design-system` runs once per project (see Workflow A) to turn a design system into a real UI library + a preview you verify + a binding `AGENTS.md` rule, and seeds a project-local `<project-slug>-ui-coding` skill. Re-run it to extend the library or, after a page ships, to fold its emergent UI back in.
 - **Porting:** `/port-feature` is a discover→plan variant for bringing a feature that already exists in a reference implementation into a target stack (see Workflow D). It writes a gap map and hands off to `/grill-with-docs`.
+- **Router:** `/ask-kit` names the one kit skill that fits a situation you describe and never runs it. Use it before there is anything to point `/factory` at.
 - **Factory conductor:** `/factory` reads where a spec, ticket, or PR stands from the tracker, the PR, CI, review, and deploy state, names the one gate it is at, and suggests the single skill that moves it forward. It holds no state file, so you can re-run it any time (see Workflow F).
 - **Parallel workers:** `/orchestrate-herdr` fans a spec's open sub-issues out to herdr worker tabs and monitors them. Sub-issues blocked by another open sub-issue are not parallel work; it asks before dispatching them after their blocker. A worktree isolates files, not ports, databases, or `.env*` files, so workers that share those are serialized or given separate ports.
+- **Looking back:** `/retro` (Matt's, user-invoked) reviews a finished session and proposes changes to the agent's environment rather than the code. A mechanical mistake gets a deterministic check — a lint rule, a pre-commit hook, a CI job; a judgement call gets a coding standard for `/code-review` to enforce. Run it in the session it looks back on, before clearing context.
+- **PR-body shape:** `/pr` (Matt's, model-invoked) shapes a PR body as a visual summary, before/after evidence, and a merge-danger call. `/commit-push-pr` mandates its own body — which now carries the same ideas as **Evidence** and **Merge danger** sections — so inside the ship skill its headings and order win, and `/pr` shapes the visual and wording.
 - **Operations:** `/staging-fix` fixes a staging bug locally and ships it as a PR to `staging`; `/local-to-staging` promotes `origin/local` to `origin/staging` across all projects and watches the Actions runs; `/staging-to-production` checks production readiness read-only and prints the commands you run; `/incident-triage` builds a timeline and ranked causes from evidence, read-only; `/qa-escape` takes a bug human QA found after the agent called the work done and turns it into a failing test to write first.
 - **Worktree setup:** `/using-git-worktrees` runs when you ask for work in a worktree. It establishes the checkout before the requested task skill runs, then returns control to that task. Before task writes, the agent reports the verified checkout record and binds commands and edit paths to it. Handoffs and restarts require checkout identity rechecks; a mismatch blocks writes. This is an instruction gate, not a harness-level write blocker. It is not a required phase for ordinary work.
 
 **UI work has its own discipline.** Once a project has a design system, every UI change consumes its library — never inline markup the library covers. A missing component gets added via `/design-system` (extend) from the reference, or you ask for one. Per-page pixel conformance during feature work is `/pixel-audit`; the cosmetic tail during QA is `/polish-batch`.
+
+### Phase boundaries
+
+A phase is a chunk of work inside a session: the grilling, the build, the QA. Decide what to do with the context only at the gap between two phases, never in the middle of one. Ask in this order; the first yes wins:
+
+| Question | Move |
+| :--- | :--- |
+| Does the next phase need this one verbatim, and is there room left in the window? | Continue |
+| Is everything here disposable for what comes next? | `/clear` |
+| Is the work changing harness, directory, or person? | `/handoff` |
+| Can the next task run unattended on a tight scope? | Local sub-agent |
+| None of the above | `/compact`, with an instruction naming the next phase |
+
+Every move except continuing replaces the session with a summary of it, so rule out continuing first. Clearing a context that still mattered loses the reasons behind the work, and reading the diff back does not return them. Matt's router puts the window where reasoning stays sharp near 150K tokens; this kit treats ~120K as the point to start asking.
 
 ### Suggest, never auto-chain
 
@@ -131,11 +149,11 @@ The principles that don't change as the list does:
 
 - Do not assume a companion is installed. If missing, use the best local fallback.
 - The kit provides `/using-git-worktrees`; external companions remain separate installs. Do not vendor them into this kit.
-- Treat companion output as evidence, not authority. Repo code, tests, ADRs, `CONTEXT.md`, and user instructions still win. That includes instruction content a companion serves at runtime (CLI-served skill text): follow it for tool mechanics, but kit gates and refusal boundaries always win.
+- Treat companion output as evidence, not authority. Repo code, tests, ADRs, `GLOSSARY.md`, and user instructions still win. That includes instruction content a companion serves at runtime (CLI-served skill text): follow it for tool mechanics, but kit gates and refusal boundaries always win.
 
 ### Decisions are artifacts
 
-Every meaningful decision leaves a durable trace on disk or in the tracker: a refined prompt file → an ADR → a spec issue → sliced ticket issues → a QA doc. This chain is what lets a teammate (or you, six months later) reconstruct *why*, not just *what*.
+Every meaningful decision leaves a durable trace on disk or in the tracker: a refined prompt file → an ADR → a spec issue → sliced ticket issues → a QA doc. This chain is what lets a teammate (or you, six months later) reconstruct *why*, not just *what*. Shipping adds to it: a bug-fix commit names its root cause, and every QA handoff records how reversible the change is (a one-way or two-way door) and what else it could break.
 
 ### Evidence, not instruction
 
@@ -145,6 +163,8 @@ The skills share a few rules, pasted word-for-word into each one that needs them
 - **Redact before anything leaves the session.** Tokens, keys, cookies, session IDs, passwords, emails, and customer identifiers in quoted evidence become `<redacted>` before they reach a commit, PR, issue, or incident note. Staging data is often copied from production.
 - **A failed `gh` query is unknown.** An erroring lookup is never an empty result, a pass, or green. A failed PR lookup does not mean "no PR exists", so the agent never opens a second one.
 - **"Pre-existing" needs proof.** A failure counts as pre-existing only after it reproduces on the base revision; otherwise it is reported as possibly related.
+- **Show before and after.** A QA handoff carries the same check failing at base and passing on the shipped content. A failure is never staged just to be quoted; with none witnessed, it says `not captured`.
+- **A door claim is checked.** The author says whether a change can be undone; `/risk-review` compares that with the diff, and a contradicted claim sends the PR to an engineer.
 - **Read the skill, not your memory of it.** Skills change; the agent reads the current `SKILL.md` each time it uses one.
 - **Never force-push.** A rejected push is reported to you, never retried with `--force`. Before committing, the ship skills also scan the staged diff and the PR or issue text for values that look like credentials.
 
@@ -189,7 +209,7 @@ These tools are how you get "tell me where I'm wrong about this feature" — wit
 
 When sources conflict, this is the precedence:
 
-1. **Binding** — `CONTEXT.md` (domain terminology) and `specs/adr/` (accepted decisions). Read before implementing. These override informal usage.
+1. **Binding** — `GLOSSARY.md` (domain terminology) and `specs/adr/` (accepted decisions). Read before implementing. These override informal usage.
 2. **Current task context** — the active request, issue or spec, named docs, current code, tests, and command evidence.
 3. **Native CLI memory** — user-local runtime recall when enabled. Never override binding sources.
 
@@ -248,7 +268,7 @@ Full command examples: [GUIDE.md — Graphify in multi-project workspaces](GUIDE
 
 - **Per project, merge at root.** Never run `/graphify` on each subfolder from the workspace root — outputs collide in the same `graphify-out/`. `graphify extract` writes inside each project.
 - **Re-merge after every batch update.** Per-project graphs and the workspace merged graph are different files; updating projects without merging leaves cross-project queries stale.
-- **Match refresh to what changed.** Code-only week → AST loop. Docs or binding context (`CONTEXT.md`, `specs/adr/`) moved → full LLM re-extract on affected projects.
+- **Match refresh to what changed.** Code-only week → AST loop. Docs or binding context (`GLOSSARY.md`, `specs/adr/`) moved → full LLM re-extract on affected projects.
 - **Verify against code.** Graphify is evidence that speeds discovery (`/feature-discovery`, `/integration-contract`); repo code and tests still win when they disagree.
 - **Do not bulk-read the graph.** Query narrowly (`graphify query`, `path`, `explain`) the same way you retrieve from `specs/` — never load `graph.json` or `GRAPH_REPORT.md` wholesale into chat.
 - **Cadence:** AST loop after active coding days; full LLM loop weekly or before a multi-project spec. Discovery skills may suggest an update but stay read-only — you run the refresh.
@@ -264,7 +284,7 @@ Workspace-root level. Each step produces an artifact the next step consumes.
 2. **`/grill-with-docs`** — pass it the prompt file. It grills in **frontier rounds**: each round asks every question whose prerequisites are already settled, numbered and with a recommended answer; your answers reshape the tree and unlock the next round. Facts it can look up itself go to sub-agents, never to you. It challenges the plan against your domain model and writes an **ADR** to disk; done when the frontier is empty.
 3. **`/to-spec`** — run it on the ADR. It publishes a **spec** (you may know it as a PRD) to your configured tracker (GitHub issue is convenient — the CLI can fetch it back cheaply).
 4. **`/to-tickets`** — run it on the spec issue number. It creates **sub-issues / vertical-slice tickets**, each declaring its blocking edges (native sub-issue and blocking links where the tracker has them), and auto-applies ready labels. No separate `/triage` step is needed in this path.
-5. **`/implement`** *(optional)* — work the ticket frontier one ticket at a time, fresh session each. It drives `/tdd-loop` at each pre-agreed seam (Red → Green; refactoring rides the review stage), typechecks as it goes, runs the full suite once at the end, and hands to `/code-review`. Without `/implement` installed, invoke **`/tdd-loop`** directly per ticket for the same result. It stops there — it does not commit.
+5. **`/implement`** *(optional)* — work the ticket frontier one ticket at a time, fresh session each. It drives `/tdd-loop` at each pre-agreed seam (Red → Green; refactoring rides the review stage), typechecks as it goes, runs the full suite once at the end, and hands to `/code-review`. Without `/implement` installed, invoke **`/tdd-loop`** directly per ticket for the same result. It stops there — it does not commit. To build the whole spec in one run instead, invoke **`/implement-spec`**: it works the ticket graph with parallel implementers in worktrees and merges them onto one local integration branch, then stops after `/code-review` — the ship step below still opens the PR and closes the tickets.
 6. **After each slice, the agent suggests a next step** — usually `/code-review`, then `/commit-push-close` or `/commit-push-pr`, sometimes `/release-notes`. You choose. (`/code-review` after each slice is a strong default.)
 7. **Verify** — prove the slice does what the ADR/spec asked, using what applies:
    - **`/agentic-qa`** — once the PR's CI is green and the change can reach a screen, the agent drives every acceptance criterion through the running app across states, viewports, and roles, and records VERIFIED, PARTIAL, or BLOCKED on the PR. It replays a failure once before reporting it, checks that a write survives a reload, and never edits code.
@@ -288,7 +308,8 @@ Workspace-root level.
 
 1. **`/feature-discovery`** — point it at the module, sub-module, UI, or behavior the bug lives in. It traces current code first, cross-checks with Graphify, reads related ADRs, and returns the report in chat. This is your evidence base. If the bug's *when* or *why* lives in history, accept its offer to scan git history.
 2. **`/diagnosing-bugs`** — run it on that area. It finds the root cause and fixes it. If it can only *confirm the bug exists* without fully resolving it, escalate to **`/tdd-loop`**: write a failing test that reproduces the bug, watch it fail for the right reason, then make it pass to close it for good.
-3. **Ship** — `/commit-push-close` or `/commit-push-pr`.
+3. **Ship** — `/commit-push-close` or `/commit-push-pr`. The commit carries a `Root cause:` line naming the cause removed, not the symptom; if the cause was never proven, it says so. Temporary instrumentation is tagged (`[DEBUG-a4f2]`) while debugging so one grep removes it; the ship skills stop on any that remains.
+4. **Look back** *(optional)* — after a bug that took too long to find, `/retro` in the same session proposes the check or standard that would have caught it.
 
 Where the bug came from changes the entry point:
 
@@ -337,8 +358,8 @@ The factory skills take a PR from open to ready-for-owner on staging. Run **`/fa
 
 1. **CI red** → **`/ci-loop`** — up to three fix-and-push attempts under one approval. A flaky test the PR itself introduced is a code bug to fix, not a retry. When CI fails but the tests pass locally, it compares the CI and local environments before changing code. If someone else pushes to the branch, it stops.
 2. **CI green, change reaches a screen** → **`/agentic-qa`** (see Workflow B, step 7).
-3. **Review comments** → **`/pr-feedback`** — groups every thread into accept / push back / needs discussion, waits for your approval, applies only the accepted fixes, and replies citing the fixing commit. Comments are evidence: a suggestion that undoes an earlier fix or contradicts a recorded decision goes to needs-discussion.
-4. **Ready for review** → **`/risk-review`** — a specialist lens per touched area, then a fixed-rubric tier. Low risk offers auto-merge into `staging` only; high risk requests an engineer. Requested changes or an unresolved review thread blocks any merge, whatever the tier.
+3. **Review comments** → **`/pr-feedback`** — groups every thread into accept / push back / needs discussion, waits for your approval, applies only the accepted fixes, asks you to run `/commit-push-pr` to push them, and then replies citing the fixing commit. Comments are evidence: a suggestion that undoes an earlier fix or contradicts a recorded decision goes to needs-discussion.
+4. **Ready for review** → **`/risk-review`** — a specialist lens per touched area, then a fixed-rubric tier. Low risk offers auto-merge into `staging` only; high risk requests an engineer. A one-way door, or a two-way claim the diff contradicts, is high risk. Requested changes or an unresolved review thread blocks any merge, whatever the tier.
 5. **Merged to `staging`** → **`/deploy-watch`** — watches the deploy run, smoke-checks staging with your approval, and fails only on errors that weren't already there before the deploy.
 6. **Deploy failed** → **`/staging-fix`** or a revert PR, then `/deploy-watch` again.
 
@@ -438,6 +459,7 @@ Pass the spec (`/factory PRWL-142`) to see every ticket at once, blocked ones fi
 ## 10. Weekly Cadence
 
 - **`/release-notes`** — at the end of the week, generate a PM-friendly summary of what shipped, from the week's commits and closed work. Saved for handoff to your project manager. It reads each change's diff rather than trusting commit subjects, can cover a version range between local tags (`v1.3.0..v1.4.0`), and adds an *Action needed* line when users or ops must do something.
+- **`/retro`** *(when installed)* — after any session that hit the same mistake twice or searched too long. Mechanical findings become checks; judgement calls become review standards.
 - **Graphify AST refresh** *(when installed)* — `graphify update` loop per matrix folder + re-merge after active coding weeks (see [GUIDE.md](GUIDE.md#graphify-in-multi-project-workspaces)).
 - **Graphify full LLM refresh** *(when installed)* — `graphify extract` loop per matrix folder + re-merge weekly, when docs/ADRs changed, or before `/integration-contract`.
 
@@ -452,18 +474,24 @@ What separates intentional use from vibe coding:
 - **Treating companion tools as default memory.** Graph or index tools can help a task, but their artifacts are not binding context.
 - **Updating per-project graphs but not re-merging.** Cross-project `graphify query` reads the workspace-root `graphify-out/graph.json`; stale merge = wrong answers across PROJECT-CODEs.
 - **Running `/graphify` on each matrix folder from the workspace root.** Outputs overwrite the same `graphify-out/` — use `graphify extract <path>` per project instead.
-- **AST-only refresh when docs moved.** `graphify update` skips LLM on code-only diffs — re-extract semantically when `CONTEXT.md`, ADRs, or specs changed.
+- **AST-only refresh when docs moved.** `graphify update` skips LLM on code-only diffs — re-extract semantically when `GLOSSARY.md`, ADRs, or specs changed.
 - **Fabricating an issue before coding** for genuinely ad-hoc work. Let the ship skill create the issue at the end from the real diff and decisions.
 - **Skipping discovery on a bug.** Jumping straight to a fix without tracing the journey.
 - **Mixing conventions across projects.** In a multi-tech workspace, never carry one project's patterns into another. Always name the full Project from the matrix.
 - **Big-bang slices.** If a slice can't be tested on its own, it's too big — back to `/to-tickets`.
 - **Grilling through fog.** Trying to grill a plan whose scope is gated on undecided questions. Grilling sharpens a plan you can state; it can't produce one you can't. That's `/wayfinder`.
 - **Charging at the destination.** Using `/wayfinder` to *do* the work rather than decide it, or resolving several tickets in one session. Each ticket is sized to a fresh context window; the map is done when nothing is left to decide.
+- **Letting `/implement-spec` open the PR or close tickets.** Its local integration branch is fine; the draft PR and ticket resolution in its text are shipping, and go through `/commit-push-pr` or `/commit-push-close`.
+- **Letting `/pr` rewrite a ship skill's PR body.** `/pr` is model-invoked and fires on any PR body. `/commit-push-pr`'s sections (`Closes #N`, how to test) feed the QA handoff and the factory gates — keep them.
+- **Skipping the retro after a bad session.** The same mistake recurs until the environment changes. `/retro` turns it into a check or a standard.
 - **Letting `/implement` commit.** Its own text ends "commit your work to the current branch." The ship skills own commits — branch-off-main, structured message, issue link, test evidence, zero attribution. A bare commit bypasses all of it.
+- **Compacting mid-phase.** The agent loses the thread. Decide at the boundary between phases, and rule out continuing first.
+- **Shipping debug output.** Untagged logs survive; tag temporary instrumentation so one grep removes it before the ship skill stops on it.
+- **Assuming user-invoked means the model cannot fire it.** True in Claude CLI, Codex CLI, and Cursor CLI. Opencode and Antigravity ignore the flag, so the description's boundary sentence is what keeps a skill from loading there.
 - **Switching checkouts to ship.** Commit and push from the verified task worktree; do not move its edits back to the original checkout.
 - **Deleting a worktree after push or issue closure.** Confirm integration and preserve local files first. Shipping is not merging, and ignored files may still be valuable.
 - **Using `/tdd` as a loop.** Since upstream v1.1.0 it is a reference document — what a good test is, where seams go. Invoking it alone gets you no witnessed red. The procedure is `/tdd-loop`.
-- **Treating native memory as authority.** Native memory is user-local recall. `CONTEXT.md` and ADRs bind.
+- **Treating native memory as authority.** Native memory is user-local recall. `GLOSSARY.md` and ADRs bind.
 - **Recreating secondary recall systems.** Do not create repo `MEMORY.md`, wiki, discovery, or default knowledge-graph memory. Use native CLI memory only. Use optional graph/index companions only when task-fit.
 - **Inlining UI the library already covers.** Once a project has a design system, hand-rolling markup in a page instead of consuming its `<project-slug>-ui-coding` library. A missing component goes through `/design-system` (extend), not a one-off.
 - **Claiming a UI fix "verified" by eye.** Per-page conformance needs `/pixel-audit`'s element-level gate — served assets, `getBoundingClientRect()`, computed styles — not a glance at a full-page screenshot.
@@ -487,11 +515,13 @@ What separates intentional use from vibe coding:
 | :--- | :--- |
 | **A · Project start** | `/agents-md` → `/setup-matt-pocock-skills` → fill `AGENTS.md` placeholders → `/design-system` (per UI project) |
 | **B · New feature** *(no fog)* | `/feature-prompt` → `/grill-with-docs` → `/to-spec` → `/to-tickets` → `/implement` *(or `/tdd-loop`)* → `/code-review` → `/pixel-audit` → manual QA → `/polish-batch` → `/integration-contract` (multi-project) → `/commit-push-*` → F when it's a PR |
-| **C · Debug** | `/feature-discovery` → `/diagnosing-bugs` → (`/tdd-loop` if needed) → `/commit-push-*` |
+| **C · Debug** | `/feature-discovery` → `/diagnosing-bugs` → (`/tdd-loop` if needed) → `/commit-push-*` (with `Root cause:`) → `/retro` if it was hard to find |
 | **D · Port a feature** | `/port-feature` → `/grill-with-docs` → `/to-spec` → `/to-tickets` → `/implement` *(or `/tdd-loop`)* → `/pixel-audit` → `/commit-push-*` |
 | **E · Large effort** *(fog)* | `/wayfinder` (chart) → `/wayfinder` (work, one ticket per session) → map exhausted → `/to-spec` → rejoins B |
 | **F · After the PR opens** | [`/factory`](#factory-state-machine) to locate the gate → `/ci-loop` → `/agentic-qa` → `/pr-feedback` → `/risk-review` → merge to `staging` → `/deploy-watch` → ready for owner |
 | **G · New task through the factory** | [`/factory start`](#9-workflow-g--new-task-through-the-factory) → follow each suggestion → `/factory <spec>` again after every step → ready for owner |
+| **Unsure which skill** | `/ask-kit` (no spec or PR yet) · `/factory <reference>` (one exists) |
+| **After a rough session** | `/retro` → apply only what you approve |
 | **Bug found by human QA** | `/qa-escape` → `/tdd-loop` (failing test first) → `/commit-push-*` |
 | **Staging bug / outage** | `/staging-fix` (PR to `staging`) · `/incident-triage` (read-only) |
 | **Many tickets in parallel** | `/orchestrate-herdr <spec>` |

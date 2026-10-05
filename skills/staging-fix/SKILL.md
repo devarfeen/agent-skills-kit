@@ -3,7 +3,7 @@ name: staging-fix
 disable-model-invocation: true
 description: "Fix a staging bug without ever touching a server — work from evidence (read-only staging inspection only with this session's explicit approval), fix locally with a test, then ship a PR targeting the `staging` branch with auto-merge so GitHub Actions deploys it. Use when the user says \"fix this on staging\", \"staging is broken\", or \"bug on the staging server\". Merely inspecting staging — checking logs, DB state, or env — with no fix requested is not this skill. Shipping normal issue work is /commit-push-pr or /commit-push-close; diagnosing a bug with no staging environment involved is /diagnosing-bugs."
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
 # staging-fix
@@ -39,11 +39,11 @@ If read-only staging inspection was explicitly approved this session, use it wit
 
 ### 2. Fix locally with a test
 
-On the workspace's required delivery branch (`local` when it mandates `origin/local`), never directly on `staging` or the default branch, write a failing test that captures the bug, then make it pass. Where a test is impractical, say so and name the substitute verification. Run the repo's check suite before shipping. Compare suspected baseline failures in a clean checkout of the pre-fix commit, preserving unrelated changes; record confirmed baseline failures in the PR. Failures introduced by the fix stop the workflow.
+On the workspace's required delivery branch (`local` when it mandates `origin/local`), never directly on `staging` or the default branch, shrink the reproduction to the smallest case that still fails, write a failing test that captures it, then make it pass. Tag temporary instrumentation with one unique prefix (`[DEBUG-<4 hex>]`) and grep every tagged line out before shipping. Where a test is impractical, say so and name the substitute verification. Run the repo's check suite before shipping. Compare suspected baseline failures in a clean checkout of the pre-fix commit, preserving unrelated changes; record confirmed baseline failures in the PR. Failures introduced by the fix stop the workflow.
 
 ### 3. Ship
 
-Read the staging deploy workflow and confirm its branch trigger and destination. Missing or ambiguous CI routing stops shipping; do not promise a deploy from the branch name alone. Draft the commit and PR with the fix, changed paths, human reproduction steps with expected results, and test evidence, redacted per Rules. Scrub attribution and present both for the combined approval. After approval, stage only the fix paths, inspect the staged diff, commit with the approved message, then:
+Read the staging deploy workflow and confirm its branch trigger and destination. Missing or ambiguous CI routing stops shipping; do not promise a deploy from the branch name alone. Draft the commit and PR with the fix, its root cause (the cause removed, or `not established` with what was ruled out), changed paths, human reproduction steps with expected results, and test evidence, redacted per Rules. Scrub attribution and present both for the combined approval. After approval, stage only the fix paths, inspect the staged diff, commit with the approved message, then:
 
 ```bash
 git push -u origin <branch>

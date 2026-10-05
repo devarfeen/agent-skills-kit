@@ -3,7 +3,7 @@ name: commit-push-close
 disable-model-invocation: true
 description: Ship one iteration of issue work directly — commit with a structured message, push, then close the linked issue with a comment that explains how to test the change; creates the issue inline when none exists. Use when the user says "commit, push, and close", "close out an issue with testing steps", "ship this issue", or is done and says "ship it" without requesting a PR. A reviewable PR is /commit-push-pr.
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
 # commit-push-close
@@ -39,7 +39,7 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
 
 3. **Read issue labels** — for pre-existing issues, run `gh issue view <num> --json state,labels,title,url,body` and validate against the **Label validation** table, following its outcomes (stop states route to `/triage`; the taxonomy-absence fallback applies). Already `CLOSED` → stop and ask: reopen for this iteration, comment without closing, or target a different issue. Skip for issues just created inline — labels were set at creation.
 
-4. **Draft the commit message** from the issue title and diff, per **Commit message format** and **Naming anchor**.
+4. **Draft the commit message** from the issue title and diff, per **Commit message format** and **Naming anchor**. A clean tree with commits ahead of the base follows **Commits already on the branch**: no new commit, and step 8 is skipped.
 
 5. **Draft the issue-close comment** using **How-to-test rules**. Run applicable local pass/fail checks before shipping, and put actual results in the draft. Verify each issue **Acceptance criteria** item by automated test or, for browser-visible behavior, a headless browser run, and put the acceptance report in the draft; an unmet criterion stops shipping unless the user defers it. If the plan isn't clear from the diff and repo, ask for the missing information before continuing.
 
@@ -108,7 +108,13 @@ Partially accepted — 2/3 criteria verified by automated tests and headless bro
 ### Verification
 Status: PARTIAL — source: executed now
 Automated check: 1 test file and 6 tests passed. Manual payment checks pending.
+Before: `handler.test.ts` "replays return the original result" failed at base — expected 1 charge, received 2.
+After: the same test passes.
 Review: /code-review — standards and spec: no findings.
+
+### Merge danger
+Door: two-way — reverting the commit restores the old path; idempotency keys expire in 24h.
+Blast radius: checkout API clients — checked: `rg "x-request-id"` shows only the web client sends it.
 
 ### Gaps
 Webhook handling remains outside this fix, follow-up #419. Remove test orders after manual QA.

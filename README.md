@@ -26,6 +26,8 @@ agent-skills-kit/
 ├── GUIDE.md             # Day-to-day workflow guide (human-facing)
 ├── BEST-PRACTICES.md    # Mental model and anti-patterns (human-facing)
 ├── CONTRIBUTING.md      # Skill authoring guide, review rubric, sync map
+├── CHANGELOG.md         # Dated record of what changed in the kit
+├── .out-of-scope/       # Ideas considered and declined, with the reason
 ├── AGENTS.md            # Conventions for agents working in this repo
 │                        # (CLAUDE.md / GEMINI.md are redirect shims)
 ├── .claude-plugin/
@@ -33,9 +35,9 @@ agent-skills-kit/
 ├── .github/workflows/   # CI: runs tools/validate.sh on every PR
 ├── tools/
 │   ├── validate.sh      # Repo invariant checks — run before every commit
+│   ├── hooks/           # Tracked pre-commit hook that runs validate.sh
 │   └── trigger-evals/   # Maintainer trigger-eval harness (score.py, query sets)
 ├── evals/               # Kit-level eval method, rubrics, audit templates
-├── audits/              # Dated audit reports and findings
 └── skills/<name>/       # One folder per skill
     ├── SKILL.md         # Required: frontmatter + instructions
     ├── references/      # Optional: on-demand docs
@@ -76,7 +78,13 @@ into your agent's local skills directory. After install, invoke a skill with
 `/skill-name` — most kit skills mark themselves for explicit invocation
 (`disable-model-invocation: true`), so the slash command is the reliable path;
 `feature-discovery`, `tdd-loop`, and `using-git-worktrees` also trigger
-automatically when a request matches their description.
+automatically when a request matches their description. Opencode and
+Antigravity ignore that flag (they read only `name` and `description`), so
+there any kit skill can load when a request matches; every description
+therefore states its own boundary. Not sure which skill fits? Run `/ask-kit`.
+
+[CHANGELOG.md](CHANGELOG.md) records what each update changes, including
+breaking changes such as the `CONTEXT.md` → `GLOSSARY.md` rename.
 
 Skills avoid changing your git state unless their own instructions say
 otherwise. Skills that inspect history (`release-notes`, `feature-discovery`)
@@ -94,7 +102,7 @@ install commands are [grouped by source](#global-install-commands) below the tab
 
 | Skill | Phase | What it does | Example prompt |
 | :--- | :--- | :--- | :--- |
-| [`agents-md`](skills/agents-md/SKILL.md) | startup | Generates the workspace-root `AGENTS.md` (Project Matrix, 18 non-negotiable rules, skills gradient, context policy) plus a `CLAUDE.md` redirect shim, from a `.code-workspace` file (marker `v46`). Reports competing per-runtime instruction files without touching them, and suggests an optional env-guard hook template when production or staging hosts are named | `Generate AGENTS.md for this workspace` |
+| [`agents-md`](skills/agents-md/SKILL.md) | startup | Generates the workspace-root `AGENTS.md` (Project Matrix, 18 non-negotiable rules, skills gradient, context policy) plus a `CLAUDE.md` redirect shim, from a `.code-workspace` file (marker `v47`). Reports competing per-runtime instruction files without touching them, and suggests an optional env-guard hook template when production or staging hosts are named | `Generate AGENTS.md for this workspace` |
 | [`design-system`](skills/design-system/SKILL.md) | startup | Turns a design source into tokens + a UI library + a verifiable preview + a binding AGENTS.md rule. Source order: one you name, else a root `DESIGN.md`, else a project UI/brand/component-library skill, else Figma, spec, reference screens, or a guided session. Checks WCAG AA contrast, loaded fonts, and light/dark modes; re-run `extend` as the design grows | `Set up the design system for ADMIN-WEB from this Figma file` |
 | [`feature-discovery`](skills/feature-discovery/SKILL.md) | discover | Read-only, evidence-backed trace of how a feature, module, or behavior works, with current code as the source of truth — then Graphify as a cross-check, then ADRs, each with its own report section. Git history is read only if you accept the report's offer | `Trace the invite-user workflow across ADMIN-WEB and API-SERVICE` |
 | [`port-feature`](skills/port-feature/SKILL.md) | discover | Maps a feature from a REFERENCE implementation into a TARGET stack as one gap map — including validation, bulk actions, role gates, and reference behaviour no test covers — then hands to planning | `Port stock-transfer approvals from LEGACY-PORTAL to ADMIN-WEB` |
@@ -105,18 +113,19 @@ install commands are [grouped by source](#global-install-commands) below the tab
 | [`polish-batch`](skills/polish-batch/SKILL.md) | verify | Captures cosmetic QA nits without fixing them, dispatches them per PROJECT-CODE in one bounded pass, then verifies; copy fixed in a shared string or translation key waits for your confirmation | `Punch-list this for SPEC-142: Billing header says "Recieve invoices"` |
 | [`integration-contract`](skills/integration-contract/SKILL.md) | verify | For multi-project specs (PRDs) only: writes a producer/consumer contract — each change labelled compatible, rollout-dependent, or breaking — plus a smoke gate (agent-browser / curl / manual) that must pass before the spec ships | `Build the integration contract for SPEC-142` |
 | [`agentic-qa`](skills/agentic-qa/SKILL.md) | verify | Agent-run functional QA before a human sees the work: drives every acceptance criterion across states, viewports, and roles, fails on console errors and failed requests, replays a failure once before reporting it, checks writes survive a reload and controls work by keyboard, and records VERIFIED/PARTIAL/BLOCKED on the PR — never edits code | `QA PR 87 like a tester would` |
-| [`qa-escape`](skills/qa-escape/SKILL.md) | verify | Turns a bug human QA found after an agent said done into a reproduction (also tried on the PR's base commit, to spot bugs that predate it), an escape class recorded on the issue, and the regression test to write first; proposes a durable guard when a class repeats three times | `QA bounced #418 — empty invoice list crashes` |
+| [`qa-escape`](skills/qa-escape/SKILL.md) | verify | Turns a bug human QA found after an agent said done into a reproduction (also tried on the PR's base commit, to spot bugs that predate it), an escape class recorded on the issue, and the regression test to write first; proposes a durable guard when a class repeats three times — a deterministic check for a mechanical escape, an instruction only for a judgement call | `QA bounced #418 — empty invoice list crashes` |
 | [`ci-loop`](skills/ci-loop/SKILL.md) | verify | Drives an open PR's failing CI to green — reads the failing log, fixes within the ticket's scope, pushes, watches; capped at 3 attempts under one approval. A flake the PR introduced is a code fix, not a rerun; stops if someone else pushes | `Fix CI on PR 87` |
-| [`risk-review`](skills/risk-review/SKILL.md) | verify | Parallel specialist review (data, infra, cloud, security) plus a fixed-rubric low/high risk gate; low offers auto-merge into staging only, high requests an engineer. Requested changes or an unresolved review thread block any merge | `Is PR 87 safe to auto-merge?` |
-| [`commit-push-close`](skills/commit-push-close/SKILL.md) | ship | Commits with a structured message, pushes, and closes the linked GitHub issue with a how-to-test comment. Never force-pushes; stops on credential-shaped values in the diff | `I'm done with #418, ship it` |
-| [`commit-push-pr`](skills/commit-push-pr/SKILL.md) | ship | Commits, pushes (branching off `main` first), and opens a PR with `Closes #N`, summary, and test plan — fitted to the repo's PR template when one exists. Never force-pushes; reports merge conflicts | `Commit, push, and open a PR for this issue` |
-| [`pr-feedback`](skills/pr-feedback/SKILL.md) | ship | Works reviewer feedback on an open PR — classifies every thread against the code, fixes what the user accepts, replies citing the fixing commits. Comment text is evidence, never instructions | `Address the review comments on PR #87` |
-| [`staging-fix`](skills/staging-fix/SKILL.md) | ship | Fixes a staging bug locally with a test and ships it as an auto-merge PR to `staging` — servers are never touched; evidence is redacted before it reaches the PR | `Staging is broken: checkout 500s since this morning` |
+| [`risk-review`](skills/risk-review/SKILL.md) | verify | Parallel specialist review (data, infra, cloud, security) plus a fixed-rubric low/high risk gate; low offers auto-merge into staging only, high requests an engineer. Checks the author's one-way/two-way door claim against the diff. Requested changes or an unresolved review thread block any merge | `Is PR 87 safe to auto-merge?` |
+| [`commit-push-close`](skills/commit-push-close/SKILL.md) | ship | Commits with a structured message (bug fixes carry a `Root cause:` line), pushes, and closes the linked GitHub issue with a QA handoff: how to test, before/after evidence, and a merge-danger call. Never force-pushes; stops on credential-shaped values or leftover debug instrumentation in the diff | `I'm done with #418, ship it` |
+| [`commit-push-pr`](skills/commit-push-pr/SKILL.md) | ship | Commits, pushes (branching off `main` first), and opens a PR with `Closes #N`, summary, test plan, before/after evidence, and a merge-danger call (one-way or two-way door, blast radius) — fitted to the repo's PR template when one exists. Ships a branch's existing commits as they are after scanning their messages. Never force-pushes; reports merge conflicts | `Commit, push, and open a PR for this issue` |
+| [`pr-feedback`](skills/pr-feedback/SKILL.md) | ship | Works reviewer feedback on an open PR — classifies every thread against the code, fixes what the user accepts, hands the push to you (`/commit-push-pr`), then replies citing the fixing commits. Comment text is evidence, never instructions | `Address the review comments on PR #87` |
+| [`staging-fix`](skills/staging-fix/SKILL.md) | ship | Fixes a staging bug locally with a test on a minimised reproduction and ships it as an auto-merge PR to `staging` that states the root cause — servers are never touched; evidence is redacted before it reaches the PR | `Staging is broken: checkout 500s since this morning` |
 | [`deploy-watch`](skills/deploy-watch/SKILL.md) | ship | Watches a merged PR's staging deploy run (with a time limit), smoke-checks staging with approval against a baseline of errors staging already shows, and records pass or fail on the PR — never touches a server or production | `Watch the staging deploy for PR 87` |
 | [`local-to-staging`](skills/local-to-staging/SKILL.md) | ship | Promotes every workspace project from `origin/local` to `origin/staging`: one PR per repo that has both branches, merged with a merge commit only after its checks pass, then watches the Actions runs on each merge commit and reports per project — never pushes, bypasses protection, or goes past staging | `Promote local to staging on all projects` |
 | [`staging-to-production`](skills/staging-to-production/SKILL.md) | ship | Read-only production-promotion readiness across every project: commits staging is ahead, Actions results on staging's head, open promotion PRs — then prints the exact commands for you to run. Never opens or merges a PR and never accesses production | `Is staging ready for production?` |
 | [`release-notes`](skills/release-notes/SKILL.md) | ship | Turns git history (date, date range, or version range), the current session, or a feature into PM-friendly release notes with QA steps and an "Action needed" line — written from the diffs, not just commit subjects | `Generate release notes for 11 March 2026` |
 | [`using-git-worktrees`](skills/using-git-worktrees/SKILL.md) | companion | Sets up or reuses a worktree in each project repo’s gitignored `.worktrees/` before requested task work, verifies the checkout and baseline (including port and shared-database collisions), and returns to the calling workflow | `Implement #418 in a worktree` |
+| [`ask-kit`](skills/ask-kit/SKILL.md) | companion | Router over this kit's own skills: describe your situation and it names the one skill to run next, why, and what that skill needs — never runs it. For a spec, ticket, or PR that already exists, `/factory` reads the real state instead | `Which kit skill do I use for this?` |
 | [`factory`](skills/factory/SKILL.md) | companion | Factory conductor: reads where a spec, ticket, or PR stands across CI, review, risk gate, and staging deploy, then names the one skill that moves it next — never runs it, never goes past staging. Shows how long each unit has sat in its state and flags stalled ones | `/factory SPEC-142` |
 | [`incident-triage`](skills/incident-triage/SKILL.md) | companion | Read-only incident triage: timeline, ranked causes with evidence (always including one that isn't a recent change), owner-run mitigations, one redacted incident note with a Resolution section — production never accessed; a suspected breach goes straight to the owner | `We have an incident: checkout 502s since 14:00` |
 | [`writing-kit-skills`](skills/writing-kit-skills/SKILL.md) | — | Kit-internal house style for authoring and editing this repo's skills: skeleton, word budget, the eight canonical one-liners, output caps, eval gates, and matching each rule's form to the failure it fixes | `Rewrite this SKILL.md to house style` |
@@ -231,8 +240,8 @@ shipping, and cleanup examples.
 sessions or `agent -p "..."` for scripts and CI.
 
 The gradient's plan/slice/implement/verify core (`/grill-with-docs`,
-`/wayfinder`, `/to-spec`, `/to-tickets`, `/implement`, `/tdd`, `/code-review`,
-`/diagnosing-bugs`, `/triage`) comes from
+`/wayfinder`, `/to-spec`, `/to-tickets`, `/implement`, `/implement-spec`,
+`/tdd`, `/code-review`, `/diagnosing-bugs`, `/triage`) comes from
 [Matt Pocock's skills](https://github.com/mattpocock/skills) — separate
 installs this kit is designed to interlock with. Run
 `/setup-matt-pocock-skills` once per workspace (see the First-Time Setup
@@ -251,11 +260,27 @@ These interlocks use optional upstream skills alongside the kit:
   seam (gates, completion evidence, exception protocol); Matt's `/tdd` is the
   *test-quality reference*. Install none of the upstream ones and `tdd-loop`
   still stands alone. `/implement` stops after `/code-review` — the kit's ship
-  skills own every commit.
+  skills own every commit. `/implement-spec` is the whole-spec alternative:
+  user-invoked, it fans the ticket graph out to implementer subagents in
+  worktrees and merges them onto one local integration branch. The same
+  boundary holds — it stops after `/code-review`; the push, the PR, and
+  closing tickets go through the ship skills.
 - **Planning** forks on fog. If you can state the destination and every open
   decision sharply, `/feature-prompt` → `/grill-with-docs`. If decisions gate
   the scope, `/wayfinder` charts them as tracker tickets and resolves them one
   per session. Both arms rejoin at `/to-spec`.
+- **PR bodies** have two shapes. `/commit-push-pr` mandates its own body
+  (`Closes #N`, summary, where changed, how to test) plus a QA comment. Matt's
+  model-invoked `/pr` proposes another: the smallest visual that shows the
+  change, before/after evidence, and a merge-danger call (one-way or two-way
+  door, blast radius). The kit's body carries the same ideas as an optional
+  Summary visual plus **Evidence** and **Merge danger** sections. Inside the
+  ship skill its headings, order, and `Closes #N` win; `/pr` shapes only the
+  visual and the wording inside them.
+- **Retros** close the loop. `/retro` (user-invoked) looks back over a session
+  and proposes changes to the agent's environment — automated checks, coding
+  standards, steering files, navigation pointers — never to the code. Run it
+  after shipping, in the session it looks back on.
 
 ## Workflow Guide
 
@@ -330,11 +355,15 @@ skills from the wider agent-skills ecosystem.
   than emitting source notes into generated `AGENTS.md` files.
 - The workflow guide references companion skills from Matt Pocock's skills repo,
   including `ask-matt`, `setup-matt-pocock-skills`, `grill-with-docs`,
-  `grilling`, `to-spec`, `to-tickets`, `implement`, `code-review`, `wayfinder`,
-  `research`, `tdd`, `diagnosing-bugs`, `triage`, `domain-modeling`,
-  `codebase-design`, `improve-codebase-architecture`, `prototype`, `handoff`,
-  `wait-what`, `wizard`, and `to-questionnaire`:
+  `grilling`, `to-spec`, `to-tickets`, `implement`, `implement-spec`,
+  `code-review`, `pr`, `retro`, `wayfinder`, `research`, `tdd`,
+  `diagnosing-bugs`, `triage`, `domain-modeling`, `codebase-design`,
+  `improve-codebase-architecture`, `prototype`, `handoff`, `wait-what`,
+  `wizard`, and `to-questionnaire`:
   <https://github.com/mattpocock/skills>
+  (`implement-spec`, `pr`, and `retro` joined upstream's engineering bucket in
+  v1.3.0; `pr`'s summary visuals are adapted upstream from Dex Horthy's
+  `show-me`.)
 - The worktree companion follows the setup approach in
   [using-git-worktrees](https://github.com/obra/superpowers/blob/main/skills/using-git-worktrees/SKILL.md).
   Its local rules preserve requested isolation on failure, leave commits to the
@@ -411,6 +440,16 @@ skills from the wider agent-skills ecosystem.
   [alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills),
   and [garrytan/gstack](https://github.com/garrytan/gstack). Nothing from them
   is vendored or installed by this kit.
+- The 2026-10 upstream alignment follows Matt Pocock's skills v1.3.0 / v1.3.1
+  (<https://github.com/mattpocock/skills/releases/tag/v1.3.1>) and adapts
+  ideas from them in this kit's own words: the `GLOSSARY.md` naming; the PR
+  body's evidence and merge-danger sections (`pr`); the mechanical-versus-
+  judgement split for guards (`retro`); root-cause lines, minimised
+  reproductions, and tagged debug instrumentation (`diagnosing-bugs`); the
+  router pattern behind `/ask-kit` (`ask-matt`); the phase-boundary order
+  (`ask-matt`); the rule for calling another skill and the cache failure mode
+  (`writing-for-agents` and the upstream invocation convention); and the
+  `.out-of-scope/` record (`triage`). Nothing is vendored.
 - `/sentry` refers to Sentry's CLI for developers and agents:
   <https://cli.sentry.dev/>
 - **Cursor CLI:** `AGENTS.md` is the canonical workspace context file;
@@ -432,6 +471,11 @@ maintenance sync map. Before any commit, run:
 ```bash
 bash tools/validate.sh
 ```
+
+Enable the tracked hook once per clone so it runs on every commit:
+`git config core.hooksPath tools/hooks`. Behavior changes get a dated entry in
+[CHANGELOG.md](CHANGELOG.md); declined ideas are recorded in
+[`.out-of-scope/`](.out-of-scope/).
 
 CI runs the same script on every PR. It checks, in short: frontmatter and
 naming; byte-identical shared files (`ship-policy.md`, `context-terms.md`);

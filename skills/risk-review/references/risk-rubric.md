@@ -32,6 +32,8 @@ Each trigger that fires is recorded with the `file:line` that fired it.
 10. **Out of scope** — any change that the ticket's acceptance criteria do not cover.
 11. **Unproven acceptance** — the diff can reach a screen and no agentic-qa `verified` marker exists for the head SHA; or the PR's acceptance verdict is missing, or lists a criterion pending manual or deferred for any reason other than `/agentic-qa` pending.
 
+12. **One-way door** — the author's `Door:` line says `one-way`; or it says `two-way` and the diff contains a one-way change: a migration with no working down path, a statement that drops, truncates, or rewrites stored data, a send to an external party (email, payment, webhook, third-party write) on a path the change newly reaches, a removed or renamed public contract, or a rotated or revoked credential. Record the claim, the verdict (`confirmed` or `contradicted`), and the `file:line`. No `Door:` line → this trigger does not fire; triggers 1, 4, and 6 still judge the content.
+
 Docs, tests that only add coverage, copy changes, and styling with no logic change fire no trigger on their own.
 
 ## Lens checklists
@@ -57,4 +59,5 @@ Lanes check these and report only findings with a concrete failure scenario.
 - Copy fix in a Blade view, 3 lines, agentic-qa `verified` on head → no trigger → `low`.
 - New nullable column with a migration → trigger 1 → `high`, even though the migration is safe.
 - Refactor of an invoice total helper with full tests → trigger 3 → `high`.
+- A PR whose body says `Door: two-way` while its migration drops a column → trigger 12 (`contradicted`) and trigger 1 → `high`.
 - Button copy change on a settings page, verified grid on head → no trigger → `low`; the same change with no agentic-qa marker → trigger 11 → `high`.

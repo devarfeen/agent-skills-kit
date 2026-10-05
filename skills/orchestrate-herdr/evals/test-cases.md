@@ -1,7 +1,7 @@
 # Test cases — `/orchestrate-herdr`
 
 The routing test set for this skill lives in [`evals.json`](evals.json); this file is its readable
-form. 14 should-trigger queries and 13 near-miss negatives.
+form. 14 should-trigger queries and 14 near-miss negatives.
 
 Near-miss negatives name the sibling they *should* route to. An obviously-irrelevant negative
 proves nothing — if a query could never plausibly hit this skill, it is not testing the boundary.
@@ -25,7 +25,7 @@ proves nothing — if a query could never plausibly hit this skill, it is not te
 | 13 | Fan PRWL-100's sub-issues out to one worker tab each |
 | 14 | Spin up a claude tab for every open child issue of ABC-123 |
 
-## Should NOT trigger (13)
+## Should NOT trigger (14)
 
 | # | Query | Routes to |
 | :--- | :--- | :--- |
@@ -42,6 +42,7 @@ proves nothing — if a query could never plausibly hit this skill, it is not te
 | 11 | Create a Linear issue for this bug | `none` (no tracker MCP in the routing catalog) |
 | 12 | Break PRWL-100 into ticket issues | `/to-tickets` |
 | 13 | Mark PRWL-101 ready-for-human with a comment | `none` (no tracker MCP in the routing catalog) |
+| 14 | Implement this whole spec in one run with parallel implementer subagents | `/implement-spec` |
 
 ## Rule
 

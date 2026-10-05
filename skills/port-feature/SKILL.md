@@ -3,7 +3,7 @@ name: port-feature
 disable-model-invocation: true
 description: Use only when the user explicitly wants to port, migrate, rebuild, or recreate a complete feature from a REFERENCE implementation into a TARGET stack (e.g. bring a legacy screen into the new app). Sits at the discover → plan entry — reads the target's binding context, traces the reference's real behaviour/workflow/permissions/states, surveys what the target already has, and writes ONE gap map artifact, then suggests /grill-with-docs and stops. Do not use it to copy a helper function from one repo to another or ask how two existing features differ. The reference is truth for behaviour; the target's design system is truth for UI. Never implements, never auto-chains; interviews for any missing input.
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # Port feature
@@ -12,7 +12,7 @@ Port a feature that already works in a **REFERENCE** implementation into a **TAR
 
 ## Inputs
 
-Infer first from the request and cheap repo evidence (Project Matrix, cwd, `CONTEXT.md`, ADR names); interview `/feature-prompt`-style only for what's genuinely missing:
+Infer first from the request and cheap repo evidence (Project Matrix, cwd, `GLOSSARY.md`, ADR names); interview `/feature-prompt`-style only for what's genuinely missing:
 
 - **Feature to port** — the behaviour/workflow being brought over.
 - **REFERENCE PROJECT-CODE** — the source of behaviour truth.
@@ -26,7 +26,7 @@ Carry this through every gap-map section:
 
 - **The REFERENCE is truth for behaviour** — workflow, navigation (menu placement, entry points, routes), permissions, data effects, and states. When the target's current behaviour disagrees with the reference, the reference wins (unless the user has explicitly decided to change the behaviour — a `/grill-with-docs` decision, not one this skill makes).
 - **The TARGET's design system is truth for UI.** When reference UI conflicts with the target design system, choose the design system and **record the deviation** (reference did X; target DS does Y; chose DS) in the UI/design gaps section.
-- **Never hardcode stack rules.** Read the target's rules from its binding context — `CONTEXT.md`, `specs/adr/`, `AGENTS.md` — and its UI-coding skill. If a rule the port depends on (stack version, DS convention, component discipline, ADR location) is not recorded there, do not invent it — surface it under Open questions / Needs-user rather than guessing.
+- **Never hardcode stack rules.** Read the target's rules from its binding context — `GLOSSARY.md`, `specs/adr/`, `AGENTS.md` — and its UI-coding skill. If a rule the port depends on (stack version, DS convention, component discipline, ADR location) is not recorded there, do not invent it — surface it under Open questions / Needs-user rather than guessing.
 
 ## Rules
 
@@ -36,7 +36,7 @@ Carry this through every gap-map section:
 - Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
 - **Narrow retrieval only.** Trace the reference and survey the target with targeted, evidence-backed search (`rg`/`git grep` for the exact route/path/symbol/state), `/feature-discovery`-style. **Never** bulk-read a repo or its `specs/` tree to "find everything".
 - Use `graphify-out/graph.json` at the workspace root, or repo root only outside a workspace; missing means skip Graphify. Query before raw search and verify hits against current source. Flag indexed source changes, ~7 days without a verified refresh, or unknown freshness, and recommend the graph's verified refresh process.
-- **Read context before deciding.** `CONTEXT.md` and relevant ADRs describe recorded decisions; current code and tests show implemented behavior. Follow the current user's explicit decisions, record conflicts with older context, and treat native CLI memory as a lead to verify.
+- **Read context before deciding.** `GLOSSARY.md` and relevant ADRs describe recorded decisions; current code and tests show implemented behavior. Follow the current user's explicit decisions, record conflicts with older context, and treat native CLI memory as a lead to verify.
 - **Decisions are artifacts.** The output is the durable gap map file, not a chat summary; chat reports only what was written and the phase update.
 - **Don't fabricate an issue before coding.** Issues come later, from `/to-tickets` after `/grill-with-docs`.
 - Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes.
@@ -44,7 +44,7 @@ Carry this through every gap-map section:
 ## Process
 
 ### 1. Read the target's binding context
-`CONTEXT.md` and `specs/adr/` in the target's `<artifacts-root>`, plus the target's `AGENTS.md` and UI-coding skill for stack/DS rules. Done when the binding rules are in hand or each absence is noted for Open questions.
+`GLOSSARY.md` (legacy name `CONTEXT.md`) and `specs/adr/` in the target's `<artifacts-root>`, plus the target's `AGENTS.md` and UI-coding skill for stack/DS rules. Done when the binding rules are in hand or each absence is noted for Open questions.
 
 ### 2. Discover the reference
 Trace the real behaviour, workflow, navigation, permissions, states, and data effects, `/feature-discovery`-style. Include field validation and defaults, field interdependencies, row and bulk actions, import/export, auto-refresh, and role-gated controls. A path backed by mock, fixture, or stubbed data is not behaviour truth: mark it as inference and list it under Open questions. Done when every claim carries a concrete ref (`file:symbol`, route, migration, test).
@@ -63,7 +63,7 @@ Write **one** gap map per ported feature:
 <artifacts-root>/specs/port/<feature-slug>-gapmap.md
 ```
 
-Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`CONTEXT-MAP.md` at repo root), else the repo root. `<feature-slug>` is kebab-case from the feature name, max ~4 words, ASCII. The gap map is an on-demand slug file — it does not consume the `NNNN` prompt/ADR sequence.
+Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`GLOSSARY-MAP.md` at repo root; legacy `CONTEXT-MAP.md`), else the repo root. `<feature-slug>` is kebab-case from the feature name, max ~4 words, ASCII. The gap map is an on-demand slug file — it does not consume the `NNNN` prompt/ADR sequence.
 
 Read an existing gap map before updating it. Preserve user edits and recorded decisions; if new findings contradict them, show the conflict and wait for direction before replacing that text. If the user is away, retain it and append the conflict under Open questions.
 

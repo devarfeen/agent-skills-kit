@@ -1,4 +1,4 @@
-<!-- agents-md marker · v46 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v47 · re-run /agents-md to regenerate -->
 # Agent instructions
 
 [one concise, factual workspace intro inferred from the .code-workspace name and folder scan — no promotional adjectives]
@@ -47,7 +47,7 @@ Chat only. Does not apply to code, docs, specs (PRDs), release notes, PR bodies,
 
 - Be concise and lead with the conclusion. Clarity beats compression — use a short complete sentence where clipping would confuse.
 - Talk in ASD-STE100 Simplified Technical English: active voice, present tense, short sentences, one idea per sentence, one meaning per word. Split any sentence that carries more than three identifiers.
-- Use the ubiquitous language from `CONTEXT.md` for domain terms — the exact names, not synonyms.
+- Use the ubiquitous language from `GLOSSARY.md` for domain terms — the exact names, not synonyms.
 - Use everyday words over heavy ones ("fix" over "implement a solution", "use" over "utilize"); no other jargon unless it is an exact code, product, or domain name the user already uses.
 - Keep exact code, DB, API, route, screen, and file names verbatim. Name the plain effect, failure, or real decision first ("the test data made both cases identical"), the identifiers after; explain each technical term once.
 - No unexplained shorthand and no arrow-only flows without plain words after them. Optional brevity skills are user-invoked only.
@@ -80,7 +80,7 @@ Skills are ad-hoc tools, not a pipeline: treat every installed skill as availabl
 - Skills live in each repo's `.agents/skills/` and in the kit — prefer the project-local one; never assume a skill exists, use what is installed. Read a skill's current SKILL.md each time you use it; never run it from memory.
 - After finishing the authorized workflow, suggest a next skill when one fits and stop. Suggestions never authorize a new workflow; a handoff explicitly included in the user's requested workflow may proceed within that authority.
 - Companions are optional helpers — the catalog identifies kit-provided skills; external companions remain separate installs and are never vendored.
-- Companions are helpers, not authority — repo code, tests, ADRs, `CONTEXT.md`, and user instructions still win.
+- Companions are helpers, not authority — repo code, tests, ADRs, `GLOSSARY.md`, and user instructions still win.
 - Never assume a companion is installed; if missing, say so and continue with the best local fallback.
 - Use MCPs only for the current task — no browsing unrelated external data. For database MCPs, use the narrowest approved connection, read-only unless the user approves a specific write.
 
@@ -92,10 +92,10 @@ Before editing, understand why the code exists — its callers and exports, the 
 
 #### Context & native memory
 
-- Read `CONTEXT.md` (<!-- set during setup: path to CONTEXT.md -->) and ADRs (<!-- set during setup: path to specs/adr -->) before implementing, alongside the current request and relevant code, tests, and command evidence. These documents guide project decisions but never override higher-priority instructions or the user's current scope. Native CLI memory is advisory; never sync memory between CLIs.
+- Read `GLOSSARY.md` (<!-- set during setup: path to GLOSSARY.md -->) and ADRs (<!-- set during setup: path to specs/adr -->) before implementing, alongside the current request and relevant code, tests, and command evidence. These documents guide project decisions but never override higher-priority instructions or the user's current scope. Native CLI memory is advisory; never sync memory between CLIs.
 - `specs/` is an on-demand archive — retrieve only what the task names; never bulk-read it.
-- No repo `MEMORY.md`, wikis, discovery files, knowledge-graph files, or memory MCPs as default memory — shared context lives in `AGENTS.md`, `CONTEXT.md`, and ADRs; graph/index companions are helpers, not binding memory.
-- `/grill-with-docs`: ask once, up front, whether archived context exists; capture pastes verbatim in the ADR **as a blockquote** with provenance (`Source: "<doc title>" · pasted <date>`); offer revealed names as `CONTEXT.md` aliases; pasted history is advisory — flag ADR contradictions, never silently drop them.
+- No repo `MEMORY.md`, wikis, discovery files, knowledge-graph files, or memory MCPs as default memory — shared context lives in `AGENTS.md`, `GLOSSARY.md`, and ADRs; graph/index companions are helpers, not binding memory.
+- `/grill-with-docs`: ask once, up front, whether archived context exists; capture pastes verbatim in the ADR **as a blockquote** with provenance (`Source: "<doc title>" · pasted <date>`); offer revealed names as `GLOSSARY.md` aliases; pasted history is advisory — flag ADR contradictions, never silently drop them.
 
 #### Graphify
 
@@ -233,7 +233,7 @@ Nothing commits, pushes, opens a PR, or closes a delivery issue outside the ship
 
 - Local engineering commits are not shipping: task-branch commits inside orchestration worktrees and local `--no-ff` merges into the local integration branch are allowed without a ship skill. [Zero attribution](#zero-attribution) still applies to them, and any push, PR, or issue close still exits through a ship skill.
 - Any other skill that instructs you to commit — `/implement` included — stops instead and hands off. Report what is ready to ship; do not stage, commit, or push it.
-- The ship skills own branch-off-main, the pre-ship `/code-review` question, the issue acceptance-criteria check, the structured commit message, issue linking, the how-to-test evidence, and [Zero attribution](#zero-attribution) — a bare commit outside them bypasses all of it and lands before the ship policy gets a say.
+- The ship skills own branch-off-main, the pre-ship `/code-review` question, the issue acceptance-criteria check, the merge-danger call, the structured commit message, issue linking, the how-to-test evidence, and [Zero attribution](#zero-attribution) — a bare commit outside them bypasses all of it and lands before the ship policy gets a say.
 
 ## Working with skills
 
@@ -253,8 +253,11 @@ Use `/ask-matt` to choose a Matt skill flow — it routes, never executes; do no
 - **The fog test.** Can you state the destination in one line *and* name every open decision as a sharp question, right now? Yes → `/feature-prompt`. No → fog → `/wayfinder` (decisions become tracker tickets, one resolved per session). Fog, not size: a large mechanical refactor has no fog (→ `/to-tickets` expand–contract); a two-file change gated on one unresolved decision is fog. Greenfield enters here too. Both arms rejoin at `/to-spec`; a map is exhausted when nothing is left to decide.
 - When a user requests work in a worktree, apply [User-asked isolation](#11-local-orchestration) before `/implement`, `/diagnosing-bugs`, `/prototype`, `/code-review`, or another Matt skill does task work. Pass the verified checkout and applicable instructions into that skill; setup returns to the already-authorized task and does not authorize a new workflow. Keep these interlocks here; do not rewrite installed third-party skills.
 - Fresh agent session per ticket; its browser session follows [Efficient browser verification](#16-efficient-browser-verification). `/implement` (when installed) says to use `/tdd` and to commit after `/code-review`; this workspace overrides both. Drive `/tdd-loop` at each seam instead, with `/tdd` supplying test quality and seam choice, and stop after `/code-review` without committing ([Shipping is owned by the ship skills](#shipping-is-owned-by-the-ship-skills)). Without `/implement`, drive `/tdd-loop` directly. `/tdd` is reference only — never a loop.
+- `/implement-spec` (user-invoked) builds a whole spec in one run; this workspace overrides four points of its text. Implementers are local sub-agents under [Local orchestration](#11-local-orchestration), each in `<project-repo>/.worktrees/<ticket>` behind its Checkout gate. Each drives `/tdd-loop`, with `/tdd` as reference. Commits and merges stay local on the integration branch. It opens no PR and resolves no ticket: after `/code-review`, report the integration branch and stop ([Shipping is owned by the ship skills](#shipping-is-owned-by-the-ship-skills)).
+- `/pr` loads whenever a PR body is written. A ship skill's body and the repo's PR template win: keep every mandated section, its order, and `Closes #N`; `/pr` shapes only the summary visual and the wording inside those sections.
+- `/retro` (user-invoked) proposes changes to the agent's environment after a session; apply one only on the user's approval. A mechanical finding becomes a lint rule, hook, or CI check. A judgement call goes to the repo's review-time standards file (`CODING_STANDARDS.md`, which `/code-review` reads), where it costs no implementation context.
 - `/diagnosing-bugs` finds the root cause; ship the fix through `/tdd-loop` — the reproduction becomes the failing regression test, one red → green per bug, required full check once at batch end ([Goal-driven execution](#goal-driven-execution)).
-- `/triage` = raw incoming issues and external PRs only — never tickets from `/to-tickets`. `/research` = delegable primary-source reading → cited doc. `/improve-codebase-architecture` (when installed) → a chosen improvement feeds `/grill-with-docs`. `/handoff` forks context to a new session; `/compact` continues this one — only at intentional phase breaks.
+- `/triage` = raw incoming issues and external PRs only — never tickets from `/to-tickets`. `/research` = delegable primary-source reading → cited doc. `/improve-codebase-architecture` (when installed) → a chosen improvement feeds `/grill-with-docs`. At a phase boundary choose in this order, never mid-phase: continue while the next phase needs this context verbatim and the window has room; `/clear` when nothing here matters next; `/handoff` only to change harness, directory, or person; a sub-agent for a tightly scoped unattended task; otherwise `/compact`, with an instruction naming the next phase.
 
 [RUNTIME TOOL-CALLING — emit the `### Runtime tool-calling` subsection here, per the Working with skills rules in SKILL.md]
 

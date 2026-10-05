@@ -35,7 +35,7 @@ proves nothing — if a query could never plausibly hit this skill, it is not te
 | 7 | Pixel-audit the transfers page against the Figma | `/pixel-audit` |
 | 8 | Port the invoice screen from LEGACY-PORTAL to ADMIN-WEB | `/port-feature` |
 | 9 | File a bug: approvals fail for managers with two roles | `none` |
-| 10 | Sharpen the domain terms in CONTEXT.md for the billing module | `/grill-with-docs` |
+| 10 | Sharpen the domain terms in GLOSSARY.md for the billing module | `/grill-with-docs` |
 | 11 | Turn ADR-0017 into a prompt for the implementation agent | `/to-spec` |
 
 ## Rule

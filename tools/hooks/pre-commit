@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Run the repo invariant checks before every commit (AGENTS.md rule 1).
+# Enable once per clone: git config core.hooksPath tools/hooks
+set -euo pipefail
+exec bash "$(git rev-parse --show-toplevel)/tools/validate.sh"

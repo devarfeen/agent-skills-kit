@@ -3,7 +3,7 @@ name: writing-kit-skills
 disable-model-invocation: true
 description: "House style for authoring and editing skills in this kit — the skeleton, word budget, canonical one-liners, output caps, and eval gates every SKILL.md follows. Use when creating a new skill in agent-skills-kit or editing an existing kit skill's body, references, or description; generic skill creation elsewhere is skill-creator, and running the kit's eval harness is a maintainer procedure, not this skill."
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
 # writing-kit-skills
@@ -37,6 +37,10 @@ A SKILL.md typically needs **1,000–1,300 words**; shorter is fine when the wor
 - No invented abbreviations or arrow-chain prose in agent-facing output rules; arrows as notation inside instruction text are fine.
 - One-clause rationale after a rule is house style ("dead routing rules cost every session tokens"); paragraph-length justification is not.
 
+### Calling another skill
+
+A step that needs another skill names the call: `Call the Skill tool with "<name>"` where the runtime has one, one call per skill. A bare `/name` in prose is only a label. Only for a model-invoked target. A user-invoked skill (`disable-model-invocation: true`) cannot be started by any skill: tell the user to run `/<name>` and stop. Footer suggestions keep the `/name` label.
+
 ### Form follows the failure
 
 Classify the observed failure before writing the fix. Knows the rule, skips it under pressure → prohibition, its replacement, one-clause why. Right behavior, wrong output shape → a positive recipe: the output's parts, in order; prohibition lists invite negotiation. Omits a required element → a required slot in the template it fills. Condition-dependent → a conditional on an observable predicate. Never append nuance ("unless it matters") or exemption clauses; restructure so the rule cannot reach the exempt case.
@@ -45,7 +49,7 @@ Classify the observed failure before writing the fix. Knows the rule, skips it u
 
 These eight lines are shared kit protocol. Paste them **byte-exact** (validator-enforced); never paraphrase or expand them. The only exemption is a user-approved marker-and-file pair listed in `CANON_EXEMPT` in validate.sh (feature-discovery's code-first Graphify rule); add none without that approval:
 
-- Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`CONTEXT-MAP.md` at repo root), else the repo root.
+- Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`GLOSSARY-MAP.md` at repo root; legacy `CONTEXT-MAP.md`), else the repo root.
 - Use `graphify-out/graph.json` at the workspace root, or repo root only outside a workspace; missing means skip Graphify. Query before raw search and verify hits against current source. Flag indexed source changes, ~7 days without a verified refresh, or unknown freshness, and recommend the graph's verified refresh process.
 - Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes.
 - Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
@@ -76,13 +80,14 @@ Distinguish a preference from permission. Optional choices may have a stated awa
 
 - `description:` is the router; it never summarizes the workflow, because an agent given a process summary follows it instead of the body. Model-invoked skills get identity + one trigger per genuinely distinct branch — synonym stacks are duplication; collapse them. Keep negative-routing clauses ("X routes to /other instead") and legacy aliases (the "(PRD)" spec alias) — they are branches, not synonyms.
 - Any `description:` edit or new skill invalidates the eval-provenance snapshot (validate.sh check 10) and requires a completed trigger-eval sweep plus `score.py --write-snapshot` before it can land. The maintainer may run or explicitly delegate it. Batch description work; never invent or manually restamp `last_run`.
+- User-invoked skills keep trigger descriptions too: Opencode and Antigravity ignore `disable-model-invocation`, so the description still routes there.
 - `metadata.version` is semver, starting at `0.0.1`. Bump it with every change outside `evals/` — patch for wording, minor for a new rule or step, major for a removed input, marker, or refusal — or validate.sh check 16 fails.
 - `disable-model-invocation: true` ⇔ `agents/openai.yaml` with `allow_implicit_invocation: false` (cross-runtime parity, validator-enforced).
 - Keep descriptions containing `: ` double-quoted. Check 1 uses strict YAML when PyYAML is available and a stated quote/colon heuristic otherwise; heuristic success is not a strict parse.
 
 ## Failure modes to hunt
 
-**Sediment** — layers that settle because adding feels safe; prune on every edit. **Sprawl** — over budget even when every line is live; cure by disclosure to `references/`, not by thinning safety language. **Duplication** — the same meaning twice in one file (description↔body, rules↔checklist); keep one. **No-op** — a line the agent already obeys by default; delete the sentence, don't trim it. **Speculative rule** — a line added for a failure no run, transcript, or behavior case has shown; name the observed failure in the change or drop it — zero additions is a valid audit result. **Phantom tooling** — documented commands or pointers that don't hold: a flag absent from the script's `--help`, a reference committed as placeholder scaffolding. If scripts ever land, flag↔`--help` parity becomes a validator check.
+**Sediment** — layers that settle because adding feels safe; prune on every edit. **Sprawl** — over budget even when every line is live; cure by disclosure to `references/`, not by thinning safety language. **Duplication** — the same meaning twice in one file (description↔body, rules↔checklist); keep one. **No-op** — a line the agent already obeys by default; delete the sentence, don't trim it. **Speculative rule** — a line added for a failure no run, transcript, or behavior case has shown; name the observed failure in the change or drop it — zero additions is a valid audit result. **Cache** — text restating what one lookup answers (a script name, a flag list, a directory layout); it goes stale silently. Keep what looking cannot find: the convention, the reason, the gotcha. **Phantom tooling** — documented commands or pointers that don't hold: a flag absent from the script's `--help`, a reference committed as placeholder scaffolding. If scripts ever land, flag↔`--help` parity becomes a validator check.
 
 ## Completion criteria
 

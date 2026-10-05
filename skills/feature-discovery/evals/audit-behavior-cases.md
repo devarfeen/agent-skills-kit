@@ -52,7 +52,7 @@ lookup to the correct repository.
 
 **Fixture:** Explain credit holds and identify context terms needing attention.
 `src/holds.ts:12` blocks charges but permits refunds; `src/refunds.ts:30` does
-not check credit holds. `CONTEXT.md:18` says holds block charges and refunds.
+not check credit holds. `GLOSSARY.md:18` says holds block charges and refunds.
 Already supplied `acme/payments#18` is a still-current approved requirement
 that refunds remain blocked. Nothing explains the divergence. No context edits
 are approved, and no tests or runtime behavior have been observed.

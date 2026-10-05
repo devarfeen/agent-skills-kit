@@ -35,11 +35,19 @@ Read workspace environment restrictions before opening env files or choosing a p
 
 Resolve the exact push remote and destination branch from the upstream configuration. Confirm they match the intended repository and branch; if not, stop before pushing. Verify the remote branch SHA equals the local commit with `git ls-remote <remote> refs/heads/<branch>` after a successful push. Local status alone cannot prove which remote received it.
 
+## Commits already on the branch
+
+A branch can arrive with local commits ahead of the ship base — task commits made in a worktree, or an integration branch that parallel implementers merged into. List them during **Read state** with `git log <base>..HEAD --format='%H %s%n%b'`.
+
+- **Scan every message** for **Authorship policy** patterns and the credential shapes in **Pre-commit safety**. A hit stops before any push: report the commit SHA and the pattern, never the value. Rewriting those unpushed commits needs the user's explicit approval; a commit already on the remote is reported, never rewritten.
+- **Ship them as they are.** Never squash, amend, or reorder them to fit **Commit message format**; that format binds the commit this iteration creates. Uncommitted changes are committed on top as usual. A clean working tree skips the commit step, and HEAD is the shipped SHA.
+- **Several issues on one branch** (an integration branch for a spec): run **Label validation** and **Acceptance criteria** for each issue, group the acceptance report by issue in one QA handoff, and name every issue in the ship output. The skill's closing step — closing keywords in the PR, or the direct close — covers each issue. Use the spec issue's title as the **Naming anchor**; no spec issue → ask.
+
 ## Code review
 
 Ask once per ship iteration, after **Read state** and before drafting: "Run `/code-review` on this diff first (recommended), or ship without review?" Skip the question when `/code-review` already ran in this session on the same diff content, or the user already chose for this iteration; record that instead.
 
-- **Review:** The user asked, so run `/code-review` now against the ship base (the PR base, or the detected default branch). No findings, or findings the user waives → continue drafting. Findings the user wants fixed → stop before any write and list them; shipping never edits code. After the fixes, restart from **Read state** — the earlier review covers only the content it saw.
+- **Review:** The user asked, so load the `code-review` skill now — call the Skill tool with `code-review` where the runtime has one — and review against the ship base (the PR base, or the detected default branch). No findings, or findings the user waives → continue drafting. Findings the user wants fixed → stop before any write and list them; shipping never edits code. After the fixes, restart from **Read state** — the earlier review covers only the content it saw.
 - **Skip:** Continue with the other required checks.
 - **Unavailable:** `/code-review` is not installed → say so and continue only if the user approves shipping unreviewed.
 - **Unanswered:** Continue preparing drafts and carry the question into the combined draft approval. Never commit without a choice; silence is neither answer.
@@ -80,6 +88,13 @@ Then classify each criterion:
 Publish the result as the acceptance report in the QA handoff. Its verdict says `Fully accepted` only when every criterion is met by automated evidence on the shipped content, and names only the methods actually run (`by automated tests` alone when no browser run happened). Any pending or deferred criterion makes it `Partially accepted`. A diff that can reach a screen with no `verified` agentic-qa marker for the shipped SHA is `Partially accepted`, with `/agentic-qa` named as pending.
 
 An existing issue without criteria → record `Acceptance: none in issue`, with no verdict; never invent criteria. Skip the check for an issue created inline. Never tick the issue's checkboxes; the QA handoff carries the result.
+
+## Merge danger
+
+State how hard this change is to undo, from the final diff. The QA handoff carries it, and so does the PR body when there is one. It is the author's claim; a reviewer checks it against the diff.
+
+- **Door** — `two-way` when reverting the commit restores the previous behavior and data. `one-way` when it does not: a destructive or irreversible migration, deleted or rewritten stored data, a message, payment, or third-party write already sent, a removed public contract, a rotated secret. Unsure → `one-way`. A one-way door names what cannot be undone and the rollback or mitigation that exists.
+- **Blast radius** — one short phrase for what could break beyond the diff (`checkout API consumers`, `mobile layout`, `this screen only`), followed by the search or check that supports it. Never claim a narrow radius from the diff alone.
 
 ## Authorship policy (all supported coding agents)
 
@@ -175,7 +190,13 @@ Change: <actual commit SHA and branch; PR link when available>
 ### Verification
 Status: <VERIFIED | PARTIAL | BLOCKED> — source: <executed now | supplied | mixed>
 <checks actually run, result and decisive output; manual steps not run are marked pending>
+Before: <the same check failing or absent at base — test output, error, or screenshot path | not captured>
+After: <that check passing on the shipped content>
 Review: <outcome per **Code review**>
+
+### Merge danger
+Door: <two-way | one-way — what cannot be undone, and the mitigation>
+Blast radius: <short phrase> — checked: <search or check run>
 
 ### Gaps
 <known limits, unavailable checks, owner actions, cleanup; omit if none>
@@ -184,6 +205,7 @@ Review: <outcome per **Code review**>
 - Derive locations and commands from the final diff and repo configuration. Use exact paths; add commit-pinned file links when known. Never invent routes, credentials, test results, or line numbers. Name both the product location and the meaningful changed files, including affected projects in a multi-repo change.
 - Use plain English with exact technical names where QA needs them. UI steps name clicks, input, and visible results. API steps give method/path or a safe copyable request with expected status/payload. Internal/config/docs changes use the actual validation command and explain what it protects.
 - Use 3–6 steps for a typical change; use fewer for a trivial change and more when separate affected behaviors need coverage. Include at least one relevant regression or negative case, plus cleanup when tests create data.
+- Show before and after for the changed behavior: one test, command, or screen that fails or is absent at base and passes on the shipped content. Reuse a failure witnessed earlier in this session (a red test run, a reproduced bug). Never stage a failure only to quote it and never invent one; without one, write `Before: not captured`.
 - Identify the tested revision and environment. A pushed commit is not evidence of a deployment. Use local or explicitly permitted test environments and synthetic data; missing access stays an owner prerequisite, never an instruction to access production.
 - Run applicable local pass/fail checks before commit/push and again if staged content or hooks change the tested content. Reuse evidence when content and environment are unchanged. Failures in the change's test plan or required checks stop shipping; an unavailable required check is a blocker. An unrelated baseline failure may remain recorded only when repo policy and existing user authorization permit it; never call that check passed. Manual QA outside required gates may remain explicitly pending.
 - If the diff and repo do not support a real plan, prepare the known parts and ask for the missing information before shipping. If the user is away, stop with the drafts; do not invent a plan.
@@ -196,6 +218,7 @@ Post comments using a prepared file and `--body-file`. Read back the comment bod
 <issue title or closest practical match>
 
 Issue: #<num>
+Root cause: <bug fixes only — the cause this change removes>
 
 Decisions:
 - <key decision 1>
@@ -213,6 +236,7 @@ Rules:
 
 - Subject per **Naming anchor**; attribution per **Authorship policy**.
 - Always keep the subject and the `Issue:` line. Omit any other section that has nothing to say.
+- A bug fix also keeps `Root cause:` — one line naming the cause the change removes, never the symptom. Cause not proven → `Root cause: not established — <what was ruled out>`; never guess one.
 - `Files:` lists meaningful changes, not every touched file. `Notes:` is for the next iteration.
 - Body under ~20 lines.
 
@@ -258,6 +282,7 @@ Notes:
 - Refuse to stage secret-pattern files by default: `.env`, `.env.*`, `*.pem`, `*.key`, `id_rsa*`, `credentials*.json`, `*secret*`. Sample/example files may be staged after confirming they contain safe placeholders. Other env files require explicit approval, intentionally tracked non-secret content, and permission under workspace restrictions.
 - Stage explicitly by path — never `git add -A` / `git add .`.
 - Inspect the complete index with `git diff --cached --name-status` and `git diff --cached` before committing. If unrelated changes are already staged, stop and resolve ownership without unstaging the user's work. Include intended untracked files in the review; `git diff HEAD` does not show them.
+- Search the added lines of the staged diff for temporary debug instrumentation: lines tagged `[DEBUG-…]`, and untagged debug prints or breakpoints (`console.log`, `dd(`, `var_dump`, `print(`, `debugger`, `binding.pry`). A hit stops before commit; report path and line, and keep a line only when the user confirms it is intended.
 - Verify the ship output carries no attribution text (**Authorship policy** patterns).
 - Scan the staged diff and every ship-output draft for credential-shaped values: private-key blocks, `ghp_`/`github_pat_`/`sk-`/`AKIA` tokens, URLs with embedded passwords. A hit stops before commit or post; report path and line, never the value.
 - Never force-push or rewrite pushed history. A rejected push goes under `Needs user:`; never retry it with `--force` or `--force-with-lease`.
@@ -273,7 +298,11 @@ Both skills verify every item before reporting success; each `SKILL.md` adds its
 - [ ] The posted acceptance verdict matches that evidence: `Fully accepted` only with every criterion met by automated evidence, naming only the methods actually run
 - [ ] Required checks passed on the shipped content before push; manual checks not performed are marked pending
 - [ ] The `Status:` line says `VERIFIED` only when the verdict is `Fully accepted` and no gap is listed; its source names whether the evidence ran in this session
-- [ ] `Issue:` line present in the commit body
+- [ ] `Issue:` line present in the body of the commit this iteration created; none created → the report says the branch shipped its existing commits
+- [ ] No **Authorship policy** pattern in any commit message in `<base>..HEAD`, checked before the push
+- [ ] The QA handoff carries `Before:` / `After:` lines and a **Merge danger** block whose `Door:` matches the final diff
+- [ ] A bug-fix commit created this iteration carries a `Root cause:` line
+- [ ] `git diff <base>..HEAD` has no added `[DEBUG-` line
 - [ ] Hooks ran on the commit — no `--no-verify` in the command that made it
 - [ ] Push landed: `git ls-remote` shows the remote branch at the local commit — or the report names the deferral or rejection under `Needs user:`
 - [ ] QA comment posted and read back with the actual SHA, changed locations/paths, setup, steps with expected results, acceptance criteria, verification, and gaps; URL in the report
@@ -285,4 +314,4 @@ Both skills verify every item before reporting success; each `SKILL.md` adds its
 
 GitHub command flags checked against installed `gh` help on 2026-09-09. The [comment command](https://cli.github.com/manual/gh_pr_comment) supports body files; [closing-keyword behavior](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue) applies to default-branch PRs. Recheck current help when flags differ.
 
-End the final response with `Suggested next skills (optional)`: 1-3 advisory recommendations chosen from workflow context (for example `/release-notes`, `/handoff`, or `/triage`). Recommendation-only — never gating.
+End the final response with `Suggested next skills (optional)`: 1-3 advisory recommendations chosen from workflow context (for example `/release-notes`, `/handoff`, `/triage`, or `/retro` after a session that hit repeated mistakes). Recommendation-only — never gating.

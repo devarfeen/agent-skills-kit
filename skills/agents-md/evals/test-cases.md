@@ -29,7 +29,7 @@ proves nothing — if a query could never plausibly hit this skill, it is not te
 | # | Query | Routes to |
 | :--- | :--- | :--- |
 | 1 | Set up the design system for this project | `/design-system` |
-| 2 | Configure the issue tracker and CONTEXT.md location | `/setup-matt-pocock-skills` |
+| 2 | Configure the issue tracker and GLOSSARY.md location | `/setup-matt-pocock-skills` |
 | 3 | Seed the project ui-coding skill for ADMIN-WEB | `/design-system` |
 | 4 | Generate release notes for the workspace | `/release-notes` |
 | 5 | Trace how the workspace build pipeline works | `/feature-discovery` |

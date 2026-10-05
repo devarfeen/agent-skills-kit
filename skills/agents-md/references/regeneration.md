@@ -44,6 +44,27 @@ included. Non-artifact `docs/` content (for example a GitHub Pages site) stays.
 4. **Report** every move and rewrite. On a failed move or write, stop and report
    what moved and what did not.
 
+## Migrate CONTEXT to GLOSSARY
+
+The glossary was named `CONTEXT.md`, and its multi-context index
+`CONTEXT-MAP.md`, before `v47`. The companion skills that write it now look
+only for `GLOSSARY.md` and `GLOSSARY-MAP.md`.
+
+1. **Build the approval list.** Find both legacy names at the artifacts root
+   and at each filled placeholder path. Search the Project Matrix project
+   repositories read-only. List every planned rename, every artifacts-root file
+   that names the old file, and every project-repository file that will be
+   reported but not renamed, then ask. Declined or no response → keep the old
+   names and carry the filled placeholder over unchanged.
+2. **Rename.** On approval, `git mv` each listed file (plain `mv` when
+   untracked). A `GLOSSARY.md` already beside a `CONTEXT.md` → stop and report
+   both; never merge or overwrite.
+3. **Rewrite** the old name to the new one only in the files on the approved
+   list and in the filled placeholder path.
+4. **Report** every rename and rewrite, and print the exact `git mv` command
+   for each project-repository file left for the user. On a failed move or
+   write, stop and report what moved and what did not.
+
 ## Legacy markers
 
 Recognize pre-`v6` attribution-bearing comments as legacy markers for migration

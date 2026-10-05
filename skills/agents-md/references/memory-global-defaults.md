@@ -6,7 +6,7 @@
 
 Copy-paste snippets for **user-level** config. Merge into existing files; do not overwrite unrelated keys.
 
-This kit creates no repo `MEMORY.md`, wiki, discovery, or default knowledge-graph memory. Use each CLI's native memory only when it provides one; graph/index companion artifacts are never binding memory. Shared rules live in generated `AGENTS.md`, with `CONTEXT.md` / `specs/adr/` as binding project context when those files exist.
+This kit creates no repo `MEMORY.md`, wiki, discovery, or default knowledge-graph memory. Use each CLI's native memory only when it provides one; graph/index companion artifacts are never binding memory. Shared rules live in generated `AGENTS.md`, with `GLOSSARY.md` / `specs/adr/` as binding project context when those files exist.
 
 ---
 
@@ -50,7 +50,7 @@ Optional global reminder in `~/.claude/CLAUDE.md`:
 
 - Use Claude's native project memory for user-local recall.
 - Do not create or sync repo MEMORY.md files.
-- Shared project rules come from AGENTS.md, CONTEXT.md, and ADRs.
+- Shared project rules come from AGENTS.md, GLOSSARY.md, and ADRs.
 ```
 
 - `autoMemoryDirectory` is **user/local settings only** (not project `settings.json`).
@@ -70,7 +70,7 @@ Optional global reminder in `~/.claude/CLAUDE.md`:
 - Prefer `/memory on` in CLI sessions (`/memory show` to verify).
 - Use Copilot Memory for GitHub-hosted user/repo recall when enabled.
 - Do not create or sync repo MEMORY.md files.
-- Shared project rules come from AGENTS.md, CONTEXT.md, and ADRs.
+- Shared project rules come from AGENTS.md, GLOSSARY.md, and ADRs.
 ```
 
 - No `memory` key in `~/.copilot/settings.json`; enablement is account + `/memory` slash commands.
@@ -92,7 +92,7 @@ Optional global reminder in `~/.claude/CLAUDE.md`:
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": ["AGENTS.md", "CONTEXT.md"]
+  "instructions": ["AGENTS.md", "GLOSSARY.md"]
 }
 ```
 
@@ -110,7 +110,7 @@ Optional global reminder in `~/.claude/CLAUDE.md`:
 
 ## Quick reference
 
-Shared project context in every runtime: `AGENTS.md`, `CONTEXT.md`, ADRs.
+Shared project context in every runtime: `AGENTS.md`, `GLOSSARY.md`, ADRs.
 
 | Runtime | Native memory handling |
 | :--- | :--- |

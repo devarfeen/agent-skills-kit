@@ -12,12 +12,13 @@ for agents working *in* this repo live in [AGENTS.md](AGENTS.md).
 2. The frontmatter **description is the trigger**. Runtimes decide whether to load
    a skill by matching the request against the description — a separate
    trigger-phrases file does nothing. Spend your effort there.
-3. Run `bash tools/validate.sh` before committing. CI runs it on every PR.
+3. Run `bash tools/validate.sh` before committing. CI runs it on every PR. Enable the tracked pre-commit hook once per clone so it runs for you: `git config core.hooksPath tools/hooks`.
 4. Adding or moving a skill means updating **four places**: the skill folder, a
    row in `skills/agents-md/references/skills-manifest.md`, the skills table
    in `README.md`, and its path in exactly one plugin group in
    `.claude-plugin/marketplace.json` (the group heading `npx skills` shows).
-   The validator fails if you miss one.
+   The validator fails if you miss one. Two more it does not check: the map
+   in `skills/ask-kit/SKILL.md` and a dated `CHANGELOG.md` entry.
 5. Every skill carries its own version in frontmatter (`metadata: version: "0.0.1"`). Any change to a skill's files outside `evals/` bumps it: patch for wording or fixes that change no behaviour, minor for a new rule, step, input, or output, major for a removed or renamed input, output, marker, or refusal boundary. The validator (check 16) fails a changed skill whose version did not rise.
 6. Ship small, focused commits. Never add co-author, AI, tool, or generator
    attribution to commits, PRs, issues, or docs (zero-attribution policy).
@@ -127,6 +128,7 @@ Write for a frontier agentic model — capable, tool-using, able to plan. That m
   binds PROJECT-CODE usage, local-only orchestration, zero-attribution, and
   honest reporting. One reminder line is fine where it prevents real damage;
   three paragraphs of restated policy is drift waiting to happen.
+- **Name a setup or companion skill only where its absence makes output wrong.** A hard dependency (the skill must write to a tracker or read a label vocabulary) states the prerequisite and what to do without it. A soft one (sharper wording from a glossary, an ADR check) is mentioned in passing and degrades quietly.
 - **Keep `SKILL.md` lean; push detail to `references/`.** The skill body should
   fit the job's decision-making. Long examples, per-runtime mappings, and
   worked input/output pairs belong in `references/` where the model loads them
@@ -156,7 +158,8 @@ Write for a frontier agentic model — capable, tool-using, able to plan. That m
   root in this exact order and say so in the skill:
   1. the directory containing a `*.code-workspace` file, if one exists at or
      above cwd;
-  2. the per-context root in a multi-context repo (`CONTEXT-MAP.md` at root);
+  2. the per-context root in a multi-context repo (`GLOSSARY-MAP.md` at root; legacy
+     `CONTEXT-MAP.md`);
   3. the single repo root.
 - **Suggest, never auto-chain** — finish the requested workflow, recommend a next skill, then stop. A setup helper may return to its already-authorized caller; it does not authorize a new workflow.
 - **Local-only** — local subagents and local background only; no cloud agents.
@@ -234,7 +237,10 @@ sibling skill instead (e.g. cosmetic nit → `/polish-batch`, pixel mismatch →
 
 ## Trigger evals
 
-A skill's description is its router, so test it like one. **Every kit skill**
+A skill's description is its router, so test it like one. That holds for
+user-invoked skills too: Opencode and Antigravity ignore
+`disable-model-invocation`, so their descriptions still route there (see
+[`.out-of-scope/`](.out-of-scope/human-facing-descriptions-for-user-invoked-skills.md)). **Every kit skill**
 carries an eval set at `skills/<name>/evals/evals.json`: ~10 should-trigger
 queries (varied phrasings, several that never name the skill) and ~10 near-miss
 negatives (requests that should route to a named sibling —
@@ -277,6 +283,9 @@ eval pass.
 | Any runtime fact in `skills/orchestrate-herdr/references/` — `herdr-commands.md` CLI syntax and lifecycle states, `tracker-map.md` `gh` and Linear MCP calls | Re-verify against the *installed* surface in the same PR, not prose docs: `herdr <group> --help` plus `herdr --skill` for herdr (its binary is the stated authority for its own syntax), the live tool schema for Linear MCP, `gh <cmd> --help` for GitHub. A flag, subcommand, or enum value absent from `--help` is phantom tooling — the defect class `writing-kit-skills` names |
 | A skill's frontmatter `description` | Re-run the trigger evals, restamp that skill's `last_run`, and refresh `tools/trigger-evals/last-run-descriptions.json` (`score.py … --write-snapshot`). `validate.sh` check 10 fails until you do — a description edited after a passing run silently invalidates that run's result |
 | Any file in a skill folder outside `evals/` | That skill's `metadata.version` — patch, minor, or major per the one-minute version; `validate.sh` check 16 |
+| A step that tells the agent to run another skill | The house rule in `skills/writing-kit-skills/SKILL.md` ("Calling another skill"): name the Skill-tool call for a model-invoked target; for a user-invoked target, tell the user to run it — no skill can start one |
+| Added/removed/renamed a skill, or changed where it sits in the workflow | The map in `skills/ask-kit/SKILL.md` — a router that omits a skill, or still names a removed one, misroutes |
+| Any skill behavior change | A dated `CHANGELOG.md` entry with the skill's new version |
 | A skill's `disable-model-invocation` flag | Its `agents/openai.yaml` mirror (`allow_implicit_invocation: false`) — parity enforced by `validate.sh` check 11 |
 | A canonical one-liner (shared kit protocol wording) | `skills/writing-kit-skills/SKILL.md` (source of truth) · every SKILL.md and shared `references/` policy carrying it · the `CANON` block in `validate.sh` check 13 — all byte-identical. A file exempt from one marker needs user approval and a `CANON_EXEMPT` entry with its reason |
 | API-change vocabulary — match labels (`generated` / `normalized-route` / `name-only`) or rollout classes (`compatible` / `rollout-dependent — <order>` / `breaking`) | `skills/integration-contract/references/consumer-sweep.md` and `skills/risk-review/references/risk-rubric.md` use the same terms and definitions — skills install standalone, so neither may point at the other |
@@ -302,3 +311,16 @@ eval pass.
 Consumers install directly from `main` via `npx skills add`. Treat `main`
 as always-releasable: validator green, no half-migrated skills. Anything
 experimental stays on a branch until it meets the review rubric.
+
+Every change to a skill's behavior gets an entry in
+[CHANGELOG.md](CHANGELOG.md) under the date it lands on `main`, naming the
+skill and its new version; breaking changes go under **Breaking**. Tag that
+commit `vYYYY.MM.DD` so a consumer can diff two dates. The `skills` CLI has no
+version pin, so the changelog is how a consumer learns what an update brings.
+
+### Declined ideas
+
+An idea that was considered and declined gets one file in
+[`.out-of-scope/`](.out-of-scope/), named for the concept, with the reason and
+what would reopen it. Check there before proposing a change, and add to it
+instead of re-arguing a settled one.

@@ -3,7 +3,7 @@ name: design-system
 disable-model-invocation: true
 description: Project start-off skill, run once per UI project after /agents-md and setup; re-run `extend` as the design grows or to fold a shipped page's UI back into the library. Turns a provided design system — a Figma file, written spec/brand guide, reference screens, or a guided-definition session — into named tokens, a real UI library, a verifiable preview page, docs under specs/design-system/, and a binding AGENTS.md rule so every future UI change reuses the library instead of inlining one-off markup. Stack-adaptive — reads each project's stack from the workspace matrix that /agents-md generates. A design-system source is required — never fabricated. Never auto-chains.
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # design-system
@@ -68,7 +68,7 @@ Triggers: the design system grew (a new Figma component); a UI change needs a mi
 
 ### The `specs/design-system/` doc
 
-Write the full doc to `<docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md`, with `<docs-root>` the setup docs location; no setup decision → fall back to `<artifacts-root>/specs/`. Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`CONTEXT-MAP.md` at repo root), else the repo root. Fill the doc skeleton in [`references/registration-templates.md`](references/registration-templates.md) §1.
+Write the full doc to `<docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md`, with `<docs-root>` the setup docs location; no setup decision → `<artifacts-root>/specs/`. Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`GLOSSARY-MAP.md` at repo root; legacy `CONTEXT-MAP.md`), else the repo root. Fill the doc skeleton in [`references/registration-templates.md`](references/registration-templates.md) §1.
 
 ### The AGENTS.md reference
 

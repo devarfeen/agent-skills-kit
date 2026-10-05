@@ -3,7 +3,7 @@ name: incident-triage
 disable-model-invocation: true
 description: "Triage an incident or outage from evidence — build a timeline, rank likely causes with the evidence for and against each, propose mitigations for the owner, answer questions, and write one incident note. Use when the user says \"we have an incident\", \"the site is down\", \"triage this alert\", or pastes alerts, error spikes, or logs and asks what is going on. Read-only: works from user-supplied evidence and, with this session's approval, read-only staging inspection; never accesses production and never applies a mitigation. Fixing a known staging bug is /staging-fix; root-causing a reproducible bug locally is /diagnosing-bugs."
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # incident-triage
@@ -28,7 +28,7 @@ incident-triage turns scattered incident evidence into a ranked, checkable pictu
 - **Facts and guesses stay apart.** Timeline entries are observed facts with a source; inference goes in hypotheses.
 - Redact before anything leaves the session: replace tokens, keys, cookies, session IDs, passwords, emails, and customer identifiers in quoted evidence with `<redacted>`, keeping only the lines that show the fault.
 - **Zero attribution.** No co-author, AI, or tool attribution in the note or any output.
-- Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`CONTEXT-MAP.md` at repo root), else the repo root.
+- Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`GLOSSARY-MAP.md` at repo root; legacy `CONTEXT-MAP.md`), else the repo root.
 - Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.
 
 ## Workflow

@@ -3,7 +3,7 @@ name: agentic-qa
 disable-model-invocation: true
 description: "Agent-run functional QA before a human sees the work — for a PR or branch whose code can reach a screen, drives every acceptance criterion through the running app across states, viewports, and roles, fails on console errors and failed requests, checks neighbouring flows, and records VERIFIED, PARTIAL, or BLOCKED with evidence on the PR. Use when the user says \"QA this PR\", \"test it like QA would\", \"run agentic QA on #87\", or /factory reports a unit in QA. The tester never edits code — findings route to /tdd-loop. Pixel conformance against a design is /pixel-audit; cosmetic nits are /polish-batch; a bug human QA already found is /qa-escape."
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # agentic-qa
@@ -32,7 +32,7 @@ agentic-qa finds what a human QA pass would find, before any human runs one. It 
 - **Three re-checks per finding.** A finding that still fails on its third re-check against a new head is escalated to the engineer by name in the report; it is not re-queued again.
 - **One approval before any remote write.** Show the PR comment and wait. User away → print it and stop.
 - **Zero attribution.** No co-author, AI, or tool attribution in the comment, evidence files, or any output.
-- Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`CONTEXT-MAP.md` at repo root), else the repo root.
+- Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`GLOSSARY-MAP.md` at repo root; legacy `CONTEXT-MAP.md`), else the repo root.
 - Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
 - Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.
 

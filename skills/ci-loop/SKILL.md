@@ -3,7 +3,7 @@ name: ci-loop
 disable-model-invocation: true
 description: "Drive an open PR's failing CI to green — read the failing job's log, reproduce locally, fix within the PR's scope, push, and watch the next run, repeating up to 3 attempts under one up-front approval. Use when the user says \"fix CI on PR 87\", \"get this PR green\", \"the build is failing on my PR\", or /factory reports a unit in CI. Stops on a flaky or infrastructure failure, a fix outside the ticket's scope, or the attempt cap. Reviewer comments route to /pr-feedback; a bug with no PR or CI run is /diagnosing-bugs; setting up a CI pipeline is not this skill."
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
 # ci-loop
@@ -62,7 +62,7 @@ Present the plan from Rules and wait. User away → print the plan and stop; the
 For each attempt, up to the cap:
 
 1. Reproduce locally with the job's own command and see it fail. Passes locally → don't fix yet: diff CI against local (runtime and tool versions from the job log, env vars, service containers, test order or seed, timezone) and reproduce under CI conditions. Still green → stop as `no repro` with the differences listed.
-2. Make the smallest in-scope fix. Run the failing command, then the repo's fast check suite.
+2. Make the smallest in-scope fix. Tag temporary instrumentation `[DEBUG-<4 hex>]` and grep it out before staging. Run the failing command, then the repo's fast check suite.
 3. Stage the fix paths by name, inspect `git diff --cached`, commit with `fix(ci): <check> — <cause>`, and push.
 4. Watch the new run: `gh pr checks <pr> --required --watch --fail-fast`. Stop watching at 2× the workflow's recent run time (`gh run list --workflow <name> --limit 5`) and report `pending`.
 5. All required checks `pass` on the new head → done. Any failure → next attempt: re-read and re-classify it (Workflow steps 1–2) before fixing; a stop class ends the loop.

@@ -1,12 +1,17 @@
-# Candidate CONTEXT.md Terms — shared flow
+# Candidate GLOSSARY.md Terms — shared flow
 
 Shared between `feature-discovery` and `feature-prompt` (duplicated by design so
 each skill installs self-contained; `tools/validate.sh` enforces byte-parity —
 edit both copies together). How to surface domain terms that code evidence
-suggests are missing from or stale in `CONTEXT.md`, and how to apply approved
+suggests are missing from or stale in `GLOSSARY.md`, and how to apply approved
 updates.
 
-Zero attribution: never add or leave co-author, AI, or tool attribution in any output. Keep this rule explicit in any `CONTEXT.md` created or updated here.
+`GLOSSARY.md` was named `CONTEXT.md` before the upstream rename. Where only the
+legacy file exists, read it as the glossary, name it by its real path in every
+report line, and recommend `git mv CONTEXT.md GLOSSARY.md` — never rename it
+here.
+
+Zero attribution: never add or leave co-author, AI, or tool attribution in any output. Keep this rule explicit in any `GLOSSARY.md` created or updated here.
 
 ## What qualifies as a candidate
 
@@ -34,20 +39,20 @@ planning. For a discrepancy, quote current wording beside the code evidence
 and any approved requirement. Then ask:
 
 ```markdown
-Candidate CONTEXT.md terms:
+Candidate GLOSSARY.md terms:
 
 - `Term` — suggested action; short description; evidence; why it matters.
 
 Reply with the term names to approve, wording changes, `approve all`, or `skip context updates`.
 ```
 
-If the user is away, skip all `CONTEXT.md` updates, keep the candidate list in
+If the user is away, skip all `GLOSSARY.md` updates, keep the candidate list in
 the response, and continue with the skill's remaining output. If no candidates
 exist, say so in one line — do not pad the section.
 
 ## Applying approved updates
 
-1. Inspect the target `CONTEXT.md` first and preserve its existing structure
+1. Inspect the target `GLOSSARY.md` first and preserve its existing structure
    and style.
 2. Apply only approved additions, clarifications, renames, or deprecations.
 3. Keep descriptions short and evidence-backed; never add implementation-only
@@ -57,5 +62,5 @@ exist, say so in one line — do not pad the section.
    accurate wording before editing; do not change policy to match the code.
 5. Report exactly which terms changed and which file was edited.
 
-If no relevant `CONTEXT.md` exists, still report candidates and recommend
+If neither `GLOSSARY.md` nor a legacy `CONTEXT.md` exists, still report candidates and recommend
 creating or locating the file before editing anything.

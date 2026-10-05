@@ -411,7 +411,7 @@ echo "== 13. Canonical one-liners byte-exact where used =="
 # marker<TAB>canonical line. If a SKILL.md contains the marker, it must carry
 # the full canonical line (source of truth: skills/writing-kit-skills/SKILL.md).
 CANON=$(cat <<'EOF'
-<artifacts-root>	Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`CONTEXT-MAP.md` at repo root), else the repo root.
+<artifacts-root>	Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`GLOSSARY-MAP.md` at repo root; legacy `CONTEXT-MAP.md`), else the repo root.
 graphify-out/graph.json	Use `graphify-out/graph.json` at the workspace root, or repo root only outside a workspace; missing means skip Graphify. Query before raw search and verify hits against current source. Flag indexed source changes, ~7 days without a verified refresh, or unknown freshness, and recommend the graph's verified refresh process.
 lane count at dispatch	Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes.
 never mix one project	Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.

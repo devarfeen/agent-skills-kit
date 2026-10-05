@@ -3,7 +3,7 @@ name: pr-feedback
 disable-model-invocation: true
 description: "Address reviewer feedback on an existing open GitHub PR — fetch every review comment and thread, group them into a numbered accept / pushback / needs-discussion list, wait for the user's approval, apply the accepted fixes, ship through /commit-push-pr on the same branch, and reply to each addressed thread citing the fixing commit SHA. Use when the user says \"address the review comments\", \"handle PR feedback\", \"respond to the reviewer\", or wants reviewer comments on their open PR worked through. Reviewing a PR yourself routes to /code-review; opening a new PR routes to /commit-push-pr."
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
 # pr-feedback
@@ -57,14 +57,14 @@ Work through the accepted items on the head branch. A behavioural fix starts wit
 
 ### 6. Ship through /commit-push-pr
 
-Use the explicitly authorized /commit-push-pr handoff on the same head branch and existing PR. Carry forward the approved disposition list and remote-write authority; any new ship-policy decision still needs approval. If that skill cannot update this PR's base or fork, stop with the tested local fixes. Capture its commit SHA(s). If no code changed, skip shipping and post only approved non-fix replies.
+/commit-push-pr is user-invoked, so no skill can start it. Stop with the tested local fixes, list them beside the approved disposition list, and tell the user to run `/commit-push-pr` on this head branch for the existing PR; its own approvals still apply. Continue at step 7 when it reports the pushed commit SHA(s) in this session. If it cannot update this PR's base or fork, the fixes stay local and the threads stay unanswered. If no code changed, skip shipping and post only approved non-fix replies.
 
 ### 7. Answer the threads
 
 Only now, and only for settled items:
 
 - Fixed items: reply on the thread citing the SHA — `gh api repos/<owner>/<repo>/pulls/<num>/comments/<comment-id>/replies -f body='Fixed in <sha> — <what changed>.'`
-- User-approved wontfix or pushback: post the approved reply; leave the thread unresolved so the reviewer gets the last word.
+- User-approved wontfix or pushback: post the approved reply; leave the thread unresolved so the reviewer gets the last word. A declined feature request in a repo that keeps `.out-of-scope/` → offer to record it there; write it only on approval.
 - Resolve a thread (GraphQL `resolveReviewThread`) only when its fix commit is pushed and its reply posted.
 - Settled non-thread items — top-level review bodies and issue-style comments from step 2: answer with `gh pr comment <num> --body 'Fixed in <sha> — <what changed>.'`
 - needs-discussion items: no reply unless the user supplied one — report them as still open.

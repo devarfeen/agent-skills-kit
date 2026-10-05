@@ -3,7 +3,7 @@ name: polish-batch
 disable-model-invocation: true
 description: Batch the UI-polish tail at the verify phase — during manual QA, capture tiny cosmetic fixes (copy, spacing, alignment, wrong string) WITHOUT fixing any of them, then dispatch them per PROJECT-CODE in one bounded pass, then verify. Use when the user says "punch list" or wants cosmetic nits, including a one-off alignment or spacing nit, handled in the polish tail. Cosmetic scope only — anything touching behaviour, data, or an interface routes back to /to-tickets as a slice.
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # Polish batch
@@ -27,7 +27,7 @@ Three modes run separately — **capture**, **dispatch**, **verify** — so manu
 
 ## The punch-list artifact
 
-One punch-list per spec, at `<artifacts-root>/specs/qa/<SPEC-ID>-punchlist.md`. Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`CONTEXT-MAP.md` at repo root), else the repo root.
+One punch-list per spec, at `<artifacts-root>/specs/qa/<SPEC-ID>-punchlist.md`. Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`GLOSSARY-MAP.md` at repo root; legacy `CONTEXT-MAP.md`), else the repo root.
 
 `<SPEC-ID>` is the spec (PRD) / parent-issue identifier (e.g. `SPEC-142`). No spec → key by date: `specs/qa/qa-YYYY-MM-DD-punchlist.md`; never invent a tracker parent just to name the file.
 

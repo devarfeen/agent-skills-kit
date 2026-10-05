@@ -14,11 +14,14 @@ so precision beats volume.
 
 1. **Run `bash tools/validate.sh` before every commit.** It enforces frontmatter,
    manifest coverage, ship-policy parity, link integrity, and zero-attribution.
-   CI runs it on every PR.
+   CI runs it on every PR. `tools/hooks/pre-commit` runs it automatically once
+   `git config core.hooksPath tools/hooks` is set.
 2. **Respect the sync map** in [CONTRIBUTING.md](CONTRIBUTING.md): a new/renamed
    skill needs a `skills-manifest.md` row and a README table row; the two
    `ship-policy.md` copies stay byte-identical; template changes in `agents-md`
-   bump its version marker.
+   bump its version marker; a new or moved skill updates the `ask-kit` map; a
+   behavior change gets a dated `CHANGELOG.md` entry. Check `.out-of-scope/`
+   before proposing a change that may already be declined.
 3. **Know the audience before editing a file.** `skills/*/SKILL.md` and
    `references/` are model-facing (loaded into agent context; every sentence
    costs tokens). `README.md`, `GUIDE.md`, `BEST-PRACTICES.md`, `CONTRIBUTING.md`

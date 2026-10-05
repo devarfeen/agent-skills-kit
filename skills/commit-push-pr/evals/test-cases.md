@@ -1,7 +1,7 @@
 # Test cases — `/commit-push-pr`
 
 The routing test set for this skill lives in [`evals.json`](evals.json); this file is its readable
-form. 10 should-trigger queries and 10 near-miss negatives.
+form. 10 should-trigger queries and 11 near-miss negatives.
 
 Near-miss negatives name the sibling they *should* route to. An obviously-irrelevant negative
 proves nothing — if a query could never plausibly hit this skill, it is not testing the boundary.
@@ -21,7 +21,7 @@ proves nothing — if a query could never plausibly hit this skill, it is not te
 | 9 | Land this via pull request |
 | 10 | Raise a pull request for this fix |
 
-## Should NOT trigger (10)
+## Should NOT trigger (11)
 
 | # | Query | Routes to |
 | :--- | :--- | :--- |
@@ -35,6 +35,7 @@ proves nothing — if a query could never plausibly hit this skill, it is not te
 | 8 | Grill me about this plan before I build it | `/grill-with-docs` |
 | 9 | Diagnose why the build broke after my last commit | `/diagnosing-bugs` |
 | 10 | Why is CI failing on my pull request? | `/diagnosing-bugs` |
+| 11 | Write the PR body for this branch | `/pr` |
 
 ## Rule
 

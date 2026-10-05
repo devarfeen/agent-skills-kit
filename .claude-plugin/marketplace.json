@@ -12,6 +12,7 @@
       "description": "Human-driven workflow skills: workspace setup, discovery, test-first building, UI verification, and shipping.",
       "skills": [
         "./skills/agents-md",
+        "./skills/ask-kit",
         "./skills/commit-push-close",
         "./skills/commit-push-pr",
         "./skills/design-system",

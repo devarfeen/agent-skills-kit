@@ -3,7 +3,7 @@ name: pixel-audit
 disable-model-invocation: true
 description: Strict per-page visual-conformance audit at the verify phase — ONE page/route against a source of truth (Figma MCP nodes, or reference screens when no Figma exists). Captures a full-size pixel inventory, writes a MISSING-vs-EXTRA defect list, fixes node-by-node reusing the project's UI library (never inlining), and refuses to say "verified" until a hard element-level gate passes — served assets confirmed, getBoundingClientRect/computed-style proof, every in-scope state checked. Use when the user asks to audit a target page against legacy or reference screens, including when no Figma exists; it audits visual conformance, not feature porting. Stays inside the given SCOPE; never auto-chains; distinct from /design-system's startup preview check.
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # Pixel audit
@@ -21,7 +21,7 @@ Infer from the request; interview only for what's missing:
 
 ## Load first
 
-- The target's binding context: `CONTEXT.md` and `specs/adr/`.
+- The target's binding context: `GLOSSARY.md` (legacy name `CONTEXT.md`) and `specs/adr/`.
 - The project's `*-ui-coding` skill if it exists — it owns the component catalog, tokens, and gotchas. **Reuse its components; never inline.** If absent, discover the tokens, library, and preview from `/design-system`'s docs or the project code.
 
 ## Process
@@ -47,7 +47,7 @@ Per node/state, classify each mismatch:
 
 ## The defect list artifact
 
-Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`CONTEXT-MAP.md` at repo root), else the repo root. The filename is keyed by PROJECT-CODE so two projects' same-named pages never collide:
+Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`GLOSSARY-MAP.md` at repo root; legacy `CONTEXT-MAP.md`), else the repo root. The filename is keyed by PROJECT-CODE so two projects' same-named pages never collide:
 
 ```text
 <artifacts-root>/specs/pixel-audit/<TARGET-PROJECT-CODE>-<page-slug>-defects.md

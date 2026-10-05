@@ -1,9 +1,9 @@
 ---
 name: orchestrate-herdr
 disable-model-invocation: true
-description: "Orchestrate herdr worker tabs for a spec (PRD). Takes a spec reference — a Linear issue ID (PRWL-100, ABC-123) or a GitHub issue URL/number — finds its open sub-issues in the workspace's tracker of record (Linear or GitHub), launches one herdr-managed worker tab per issue running a chosen coding CLI, then monitors the tabs until every issue is completed with test evidence, blocked, or errored. Use when running inside herdr (HERDR_ENV=1) and the user wants to fan a spec out to per-issue workers."
+description: "Orchestrate herdr worker tabs for a spec (PRD). Takes a spec reference — a Linear issue ID (PRWL-100, ABC-123) or a GitHub issue URL/number — finds its open sub-issues in the workspace's tracker of record (Linear or GitHub), launches one herdr-managed worker tab per issue running a chosen coding CLI, then monitors the tabs until every issue is completed with test evidence, blocked, or errored. Use when running inside herdr (HERDR_ENV=1) and the user wants to fan a spec out to per-issue workers. A one-off tab action or a status check on existing tabs, with no spec to fan out, routes to the herdr companion; outside herdr, a whole-spec build with parallel implementers routes to /implement-spec."
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # Orchestrate herdr

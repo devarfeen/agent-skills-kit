@@ -38,6 +38,7 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | `/to-tickets` | external | slice | | |
 | `/triage` | external | slice | raw incoming issues and external PRs only — never /to-tickets tickets | |
 | `/implement` | external | implement | optional ticket driver — run with /tdd-loop at each seam; stop after /code-review, never commit, overriding its own text (Shipping is owned by the ship skills) | |
+| `/implement-spec` | external | implement | user-invoked whole-spec driver — parallel implementers in worktrees, merged onto one local integration branch; each drives /tdd-loop; stop after /code-review — never push, open a PR, or close tickets, overriding its own text (Shipping is owned by the ship skills) | |
 | `/tdd` | external | implement | reference only — test quality and seam choice; never use it alone as a loop | |
 | `/tdd-loop` | kit | implement | the test-first procedure — gates, completion evidence, exception protocol; stands alone | |
 | `/orchestrate-herdr` | kit | implement | inside herdr only — fan a spec (PRD) out to worker tabs | |
@@ -64,10 +65,13 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | skill | kind | phase | note | use-when |
 | ----- | ---- | ----- | ---- | -------- |
 | `/using-git-worktrees` | kit | companion | | The user asks to work in a worktree — invoke before task edits or the task skill; reuse or create the checkout under that project repo’s gitignored `.worktrees/`, verify its baseline, then return to the authorized task. Branch-only requests do not qualify. |
+| `/ask-kit` | kit | companion | | You do not know which kit skill fits, and there is no spec, ticket, or PR to point `/factory` at. Names one skill and why; never runs it. User-invoked (`/ask-kit`); do not auto-fire. |
 | `/factory` | kit | companion | | You want to know where a spec (PRD), ticket, or PR stands — CI, review, risk gate, staging deploy — and which one skill moves it next. Read-only; suggests, never runs the next skill; stops at staging. |
 | `/incident-triage` | kit | companion | | An incident or outage needs a timeline, ranked causes with evidence, and owner-run mitigations. Read-only; production is never accessed. |
 | ask-matt | companion | | | You want Matt's upstream router for choosing a user-invoked skill flow. |
-| wait-what | companion | | | The agent's last chat message did not land — re-pitch it with brief context, ASD-STE100 Simplified Technical English, and the ubiquitous language from `CONTEXT.md`. |
+| pr | companion | | | A PR body is being written — smallest visual that shows the change, before/after evidence, one-way or two-way door plus blast radius. Inside `/commit-push-pr` or a repo PR template it shapes the summary visual and wording only; mandated sections, order, and `Closes #N` stay. |
+| retro | companion | | | A session is finished — especially one that went sideways — and the agent's environment should improve: navigation pointers, automated checks, coding standards, steering files. Proposes, never edits. User-invoked (`/retro`); do not auto-fire. |
+| wait-what | companion | | | The agent's last chat message did not land — re-pitch it with brief context, ASD-STE100 Simplified Technical English, and the ubiquitous language from `GLOSSARY.md`. |
 | unslop | companion | | | Free-prose output needs AI tells removed — chat narration, and PR/issue/doc prose the agent composes freely. Never applies to text a skill mandates verbatim: generated `AGENTS.md`/shims, output templates, section names, field labels, canonical lines. |
 | blast-radius | companion | | | A change's blast radius needs proving — what it could break beyond the diff, with the one safety fact run against real code rather than a writeup. User-invoked (`/blast-radius`); do not auto-fire. |
 | show-me-your-work | companion | | | Long-running or unattended work needs a reviewable decision trail — a TSV log of what, why, evidence, and result that a human can audit after stepping away. User-invoked (`/show-me-your-work`); do not auto-fire. |

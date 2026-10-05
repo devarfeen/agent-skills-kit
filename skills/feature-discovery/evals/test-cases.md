@@ -31,7 +31,7 @@ proves nothing — if a query could never plausibly hit this skill, it is not te
 | 3 | Migrate the invoices module into the React app | `/port-feature` |
 | 4 | Debug why checkout is throwing 500s | `/diagnosing-bugs` |
 | 5 | Turn this rough idea into a feature prompt | `/feature-prompt` |
-| 6 | Update CONTEXT.md with these domain terms | `/grill-with-docs` |
+| 6 | Update GLOSSARY.md with these domain terms | `/grill-with-docs` |
 | 7 | Query the knowledge graph for the payment flow | `graphify` |
 | 8 | Write an ADR for this decision | `/grill-with-docs` |
 | 9 | Which issues are ready for an agent to pick up? | `/triage` |

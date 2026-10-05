@@ -3,7 +3,7 @@ name: agents-md
 disable-model-invocation: true
 description: "Generate or refresh the workspace-root AGENTS.md and its CLAUDE.md redirect shim for a VS Code .code-workspace root. Any request to write, create, or generate an AGENTS.md file routes here — /writing-for-agents is style guidance for authoring agent-facing documents, not the generator. It creates the Project Matrix of PROJECT-CODEs and the workspace's non-negotiable rules. Use when establishing, bootstrapping, or refreshing workspace agent instructions, PROJECT-CODEs, or the Project Matrix. Use only when a .code-workspace file exists; stop otherwise. It does not seed a project UI-coding skill or build its binding AGENTS.md rule — that is /design-system."
 metadata:
-  version: "0.1.1"
+  version: "0.2.0"
 ---
 
 # AGENTS.md generator
@@ -25,7 +25,7 @@ Generates the workspace-root `AGENTS.md` and `CLAUDE.md` redirect shim from a `.
 
 Default: generate or refresh the root pair, and synchronize existing project runtime blocks when `.devcontainer/compose.yml` exists. Read [Project runtime synchronization](references/project-runtime.md) for matching, migration, and approved edits.
 
-A request naming only project-runtime synchronization selects **runtime-only**: follow that reference and existing stack detection; skip root generation, docs migration, and setup suggestions. Never create or edit workspace-root `AGENTS.md` or `CLAUDE.md` in this mode. Root-generation rules and completion checks below apply only in the default mode.
+A request naming only project-runtime synchronization selects **runtime-only**: follow that reference and existing stack detection; skip root generation, migrations, and setup suggestions. Never create or edit workspace-root `AGENTS.md` or `CLAUDE.md` in this mode. Root-generation rules and completion checks below apply only in the default mode.
 
 ## Workspace scan
 
@@ -76,7 +76,7 @@ Fill the `[RUNTIME TOOL-CALLING …]` slot from `references/tool-calling.md`, fo
 
 ## Versioning and regeneration
 
-The skill version is `v46`. Both generated root files carry the marker `<!-- agents-md marker · v46 · re-run /agents-md to regenerate -->` as their first line (the first line of each template asset in `assets/`). Bump it here and in both template assets together whenever these rules change. Legacy pre-`v6` markers: [regeneration](references/regeneration.md#legacy-markers).
+The skill version is `v47`. Both generated root files carry the marker `<!-- agents-md marker · v47 · re-run /agents-md to regenerate -->` as their first line (the first line of each template asset in `assets/`). Bump it here and in both template assets together whenever these rules change. Legacy pre-`v6` markers: [regeneration](references/regeneration.md#legacy-markers).
 
 On run, check for an existing workspace-root `AGENTS.md`:
 
@@ -84,13 +84,16 @@ On run, check for an existing workspace-root `AGENTS.md`:
 - **Marker present** — before overwriting, show the complete diff section by section — never truncated or summarized — with customizations flagged separately, and confirm. If the user does not respond, stop without writing and say so.
 - **No marker (hand-authored)** — do not rewrite it; show what generation would add or change, merge only user-approved sections, and let the existing file win everywhere else.
 - **Keep PROJECT-CODEs stable** — keep each existing row's code, matched by `Path`. A code that would now derive differently (a renamed folder) is a separate diff item needing explicit approval; never change it silently. New folders get derived codes.
-- **Preserve user edits** — carry over user-filled placeholder values (especially the `CONTEXT.md` and `specs/adr` paths), customized rule bodies, and foreign sections, per [regeneration](references/regeneration.md).
+- **Preserve user edits** — carry over user-filled placeholder values (especially the `GLOSSARY.md` and `specs/adr` paths), customized rule bodies, and foreign sections, per [regeneration](references/regeneration.md).
 - **Write safely** — re-read each target just before writing; if it changed since approval, show the recomputed diff again. On any write or move failure, stop and report what was and was not written.
 - Regenerate the `CLAUDE.md` shim only if it is missing or its marker is stale.
 
-### Migrate docs/ → specs/ (ask first)
+### Migrations (ask first)
 
-Pre-v7 workspaces kept the artifacts tree under `docs/`. When an artifact subfolder still sits there, list every move and every file whose links would be rewritten — scanning only the artifacts root — and ask first. Declined or no response → keep the `docs/` paths; never rename unattended. Procedure: [regeneration](references/regeneration.md#migrate-docs-to-specs).
+List every move and every file whose links would be rewritten — scanning only the artifacts root — and ask first. Declined or no response → keep the existing paths; never rename unattended.
+
+- An artifact subfolder still under `docs/` (pre-v7): [docs to specs](references/regeneration.md#migrate-docs-to-specs).
+- `CONTEXT.md` or `CONTEXT-MAP.md` still in use (pre-v47): [glossary rename](references/regeneration.md#migrate-context-to-glossary).
 
 ## Output
 

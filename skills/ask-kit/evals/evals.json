@@ -1,0 +1,94 @@
+{
+  "skill": "ask-kit",
+  "kind": "trigger-eval",
+  "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
+  "queries": [
+    {
+      "q": "Which kit skill should I use for this?",
+      "expect": "trigger"
+    },
+    {
+      "q": "ask-kit: I have a rough idea and no spec yet, where do I start?",
+      "expect": "trigger"
+    },
+    {
+      "q": "What do I run next? There's no issue or PR for this yet",
+      "expect": "trigger"
+    },
+    {
+      "q": "How do the agent-skills-kit skills fit together?",
+      "expect": "trigger"
+    },
+    {
+      "q": "Which of the kit's skills handles cosmetic QA nits versus a page that must match Figma?",
+      "expect": "trigger"
+    },
+    {
+      "q": "I'm lost in this kit — route me to the right skill",
+      "expect": "trigger"
+    },
+    {
+      "q": "Which kit skill do I reach for when staging breaks versus when CI breaks?",
+      "expect": "trigger"
+    },
+    {
+      "q": "/ask-kit",
+      "expect": "trigger"
+    },
+    {
+      "q": "Give me the map of this kit's skills from setup to shipping",
+      "expect": "trigger"
+    },
+    {
+      "q": "Not sure whether I want commit-push-close or commit-push-pr — which kit skill fits?",
+      "expect": "trigger"
+    },
+    {
+      "q": "Where does SPEC-142 stand and what moves it next?",
+      "expect": "no-trigger",
+      "route": "/factory"
+    },
+    {
+      "q": "Which gate is PR 87 at?",
+      "expect": "no-trigger",
+      "route": "/factory"
+    },
+    {
+      "q": "Which of Matt's skills should I use to plan this?",
+      "expect": "no-trigger",
+      "route": "/ask-matt"
+    },
+    {
+      "q": "Is there a skill I can install for database migrations?",
+      "expect": "no-trigger",
+      "route": "none"
+    },
+    {
+      "q": "Trace how the invite-user workflow works",
+      "expect": "no-trigger",
+      "route": "/feature-discovery"
+    },
+    {
+      "q": "Commit, push, and open a PR",
+      "expect": "no-trigger",
+      "route": "/commit-push-pr"
+    },
+    {
+      "q": "Help me create a feature prompt for stock transfer approvals",
+      "expect": "no-trigger",
+      "route": "/feature-prompt"
+    },
+    {
+      "q": "Fix CI on PR 87",
+      "expect": "no-trigger",
+      "route": "/ci-loop"
+    }
+  ],
+  "last_run": {
+    "date": "2026-10-05",
+    "method": "3 independent fresh catalog-only judges over the full 511-query mixed set, deterministic shuffle; each judge had a private folder with its own copy of the judge prompt, catalog, and query list and was instructed to read nothing else, with no repository access (instruction-level isolation, not a sandbox). Third sweep of the day: the first (493 queries) scored 492/493 and led to a boundary sentence in the /orchestrate-herdr description; the second scored 493/493; this one re-ran everything after /ask-kit and its 18 queries were added.",
+    "result": "511/511 pass — majority vote passed every query; 507 unanimous, 4 passed 2/3.",
+    "judge_model": "Claude Opus 5.5 (claude-opus-5-5), 3 independent Claude Code Agent-tool subagents",
+    "catalog": "tools/trigger-evals/build-catalog.sh (live kit descriptions 2026-10-05, 27 kit skills including ask-kit) + tools/trigger-evals/catalog-externals.md snapshot dated 2026-10-05 (mattpocock/skills v1.3.1); judged tree: uncommitted working tree on 7f9b18d"
+  }
+}

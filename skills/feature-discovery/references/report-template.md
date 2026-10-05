@@ -35,10 +35,10 @@ Fill each section with ≤3 bullets; bracketed text says what belongs there.
 
 - [Recorded rationale and intended behavior, cited separately from implementation; or no reliable rationale found in the inspected sources.]
 
-## 8. Candidate CONTEXT.md terms
+## 8. Candidate GLOSSARY.md terms
 
 - [`Term` — action; description; evidence; why it matters. For discrepancies, quote context beside implementation and approved intent; do not assume context is stale.]
-- [End with: "Reply with the term names to approve, wording changes, `approve all`, or `skip context updates`." If none: "No candidate CONTEXT.md term updates found."]
+- [End with: "Reply with the term names to approve, wording changes, `approve all`, or `skip context updates`." If none: "No candidate GLOSSARY.md term updates found."]
 
 ## 9. Risks, gaps, and recommended next checks
 

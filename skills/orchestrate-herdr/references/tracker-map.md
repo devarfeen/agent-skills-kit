@@ -15,7 +15,7 @@ The workspace names the tracker once per run in **workspace-root `AGENTS.md`** o
 
 1. **Workspace root** — the directory that holds the workspace's `.code-workspace` file. Walk up from the orchestrator's working directory when needed; a Project Matrix project checkout is not workspace root.
 2. Read **workspace-root `AGENTS.md`** for the issue tracker of record.
-3. Not named there → resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`CONTEXT-MAP.md` at repo root), else the repo root; then read **`<artifacts-root>/issue-tracker.md`** when the file exists.
+3. Not named there → resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`GLOSSARY-MAP.md` at repo root; legacy `CONTEXT-MAP.md`), else the repo root; then read **`<artifacts-root>/issue-tracker.md`** when the file exists.
 4. Neither names a tracker → GitHub Issues.
 5. Named tracker → that is `TRACKER`. Set `TRACKER_TAG` from the table (`G` or `L`). One tracker for the whole run; every **Discover**, **Read issue**, **Block**, and **Verify** call uses that row's commands and identifier format.
 6. `SPEC_REF` and worker issue ids must be in that tracker's native form (GitHub URL/number or Linear identifier). If a step has no workspace mapping for a label or field, stop and ask — never fall back to `gh issue` when `TRACKER` is Linear, or the reverse.

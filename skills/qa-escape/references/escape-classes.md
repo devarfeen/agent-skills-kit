@@ -51,6 +51,8 @@ A new slug needs a one-line definition in the comment and a proposal to add it h
 
 When the class count reaches three, propose the highest rung that fits. A rung lower on the list is weaker because a person or agent can skip it.
 
+Classify the escape first. **Mechanical** — a fixed pattern a tool can detect (a banned call, a missing required prop, an unhandled enum case, a file in the wrong place): propose rung 1 or 2 only; an instruction is never the guard for a mistake a check can catch. **Judgement** — it needs a reader to decide (which states a surface owes, whether copy fits): rung 3 or 4.
+
 1. **Unwritable** — a type, schema constraint, required prop, exhaustive switch, or database constraint that makes the mistake fail to compile or save.
 2. **Automated check** — a lint rule, CI job, or test helper that fails on the mistake.
 3. **Standing grid row** — a default `/agentic-qa` row for every surface in the area, written into the `## QA escape guards` section so the tester reads it.
