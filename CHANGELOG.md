@@ -7,6 +7,23 @@ their new versions, so a workspace on an older copy can see what an update
 brings. Generated `AGENTS.md` files carry the `agents-md` marker version;
 re-run `/agents-md` after a marker bump.
 
+## 2026-10-08
+
+### Added
+
+- **`/commit-push-pr` 0.3.0** — opt-in **Merge into local** step. When the
+  request asks for the merge and the PR base is `local` (and `local` is not the
+  default branch), it merges through GitHub's own gates after the usual draft
+  approval. Every other base still ends at an open PR.
+
+### Changed
+
+- **`/risk-review` 0.3.0** offers auto-merge for a low-risk, zero-blocking PR
+  into the staging branch or `local`; it was staging only.
+- **`/factory` 0.2.0** places a PR into `local` through `MERGE` and points a
+  merged one at `/local-to-staging`.
+- **Ship policy** (`/commit-push-close` 0.2.1): names the one merge exception.
+
 ## 2026-10-05
 
 Follows Matt Pocock's skills v1.3.0 / v1.3.1.

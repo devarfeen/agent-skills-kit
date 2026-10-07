@@ -1,14 +1,14 @@
 ---
 name: commit-push-pr
 disable-model-invocation: true
-description: Ship one iteration of issue work as a pull request — commit with a structured message, push the branch, and open a PR whose `Closes #N` auto-closes the issue on merge; creates the issue inline when none exists. Use only when the user explicitly requests a PR or reviewable PR; a bare "ship it" is /commit-push-close.
+description: Ship one iteration of issue work as a pull request — commit with a structured message, push the branch, and open a PR whose `Closes #N` auto-closes the issue on merge; creates the issue inline when none exists. Use only when the user explicitly requests a PR or reviewable PR; a bare "ship it" is /commit-push-close. Stops at the open PR unless the request also asks to merge it into the `local` delivery branch.
 metadata:
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # commit-push-pr
 
-This skill ends in a PR awaiting review with a QA comment. `/commit-push-close` closes the issue directly. GitHub closing keywords take effect on merge into the repository's default branch; other targets need the workspace's issue-completion workflow.
+This skill ends in a PR awaiting review with a QA comment; **Merge into local** (step 12) is the one opt-in exception. `/commit-push-close` closes the issue directly. GitHub closing keywords take effect on merge into the repository's default branch; other targets need the workspace's issue-completion workflow.
 
 Issue commands show the GitHub default; a workspace-named tracker overrides them per **Tracker** in `references/ship-policy.md`.
 
@@ -88,6 +88,7 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
 7. **Show the user the drafts** and wait for one combined approval. Do not stage, push, or call `gh pr create` before approval:
    - Existing issue: commit message + PR title/body + QA comment + target branch.
    - Inline-created issue: also include new-issue title/body and category/state labels. After approval, create the issue first, then commit/push/PR/comment in order.
+   - Merge into local opted in: also the merge command and method.
 
    This approval is a deliberate hard gate before any remote write. If the user is away, present the drafts and stop — never stage, push, or open a PR unapproved.
 
@@ -112,7 +113,9 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
     - Read back with `gh pr view <pr-num> --json title,body,baseRefName,headRefName,url,mergeable`. Verify title, issue reference, resolved base, current head and test plan. Correct mismatches and re-read. `mergeable: CONFLICTING` → report under `Needs user:` (shipping never resolves conflicts); `UNKNOWN` → re-read once, then report it.
     - Fill the QA comment with the actual SHA, branch and PR URL. Post using `gh pr comment <pr-num> --body-file <qa-comment-file>.md`, then read back with `gh pr view <pr-num> --json comments` and verify the body and URL. Apply the shared comment retry rule. A failed comment leaves the PR created but QA handoff incomplete; report and resume the missing step.
 
-12. **Report** — `<SHA> pushed to <branch>; PR #<pr-num> opened/updated against <base>; QA: <comment URL>`. State the actual issue-completion behavior and any incomplete step. Append the **Response footer**. Stop before merge or direct issue closure.
+12. **Merge into local** — opt-in. Run it only when this request or the workspace instructions ask for the merge, the resolved base is `local`, and `local` is not the detected default branch; then follow [`references/merge-into-local.md`](references/merge-into-local.md). Otherwise skip: every other base stays an open PR for its reviewer or owner, and a merge asked for there is reported under `Needs user:`.
+
+13. **Report** — `<SHA> pushed to <branch>; PR #<pr-num> opened/updated against <base>; QA: <comment URL>; merge: <result | not requested>`. State the actual issue-completion behavior and any incomplete step. Append the **Response footer**. Stop there, before any other merge or direct issue closure.
 
 ## Example
 
@@ -122,4 +125,5 @@ A filled title and body, with every section: [`references/pr-example.md`](refere
 
 - [ ] Every item in **Ship completion criteria** in the shared policy
 - [ ] PR read back: title, permitted base, head, issue reference, test plan, **Evidence**, and **Merge danger** match the final drafts
+- [ ] Merge opted in: read-back shows `MERGED` into `local` with a `mergeCommit`, auto-merge enabled, or the blocker under `Needs user:`; not opted in: the PR is open and unmerged
 - [ ] When the test plan contains a pass/fail test or validation command, its passing output tail is quoted in the PR body

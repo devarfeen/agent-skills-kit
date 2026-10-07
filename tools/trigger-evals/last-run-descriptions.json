@@ -1,12 +1,12 @@
 {
  "_comment": "sha256 of each skill's frontmatter description as it stood at the commit recorded in that skill's evals.json last_run. tools/validate.sh check 10 fails when a live description no longer matches -- meaning the recorded eval result is stale and the evals must be re-run. Regenerate with score.py --write-snapshot after a passing run.",
- "recorded_at_commit": "7f9b18da6f8ec1a2441927c94667a722d9e55938 + uncommitted changes",
- "catalog_sha256": "901d97615e1a439d72e5f71ca44ce5b2b9479ee9a631977d1559b9f71e938e0e",
+ "recorded_at_commit": "3867389e12124849744733d7c064c02adeb228e0 + uncommitted changes",
+ "catalog_sha256": "b8ab921266ef59799536e62040aa3b0fd9f5d71a4f45058608dba6e5f0fd8fbc",
  "manifest_sha256": "e2c3b5d24ad611dc25da45cbdc89c4de42943aee99bf12b6e819128f656ace3c",
  "judge_sha256": [
   "f31d96cafe8fa03d9a5ad4858be5fd6f972a414558027ea74933bf4fa05b3878",
-  "3b47fe401310f6dc1be6ca089bfa7e14104654547258441087efcee74d96d954",
-  "8425528e9702666be167a4b36f07dc26cc8e6828aa64afd5f323e98617130b6f"
+  "bf0a5d2320eeb0863294d67745ef38f7e73eaad05caab5e64f372e79239997d3",
+  "bf0a5d2320eeb0863294d67745ef38f7e73eaad05caab5e64f372e79239997d3"
  ],
  "descriptions_sha256": {
   "agentic-qa": "43b87ff54eafc8ee0bea2ffcc1a3f20a9d8ed406bbb691523c360c5f7a904078",
@@ -14,7 +14,7 @@
   "ask-kit": "bd78cf1290be38a8ddcd4b041df5ed2275d2af46506f89fa87cb2d98439fa52c",
   "ci-loop": "af48d856cef6329bab85876c8d2194d1682c0d1e061aaff46c59ed505a53ec1d",
   "commit-push-close": "b4b584673381a3f3b37149755386c90182eef61e9cb94d979c2f7f1e6036389a",
-  "commit-push-pr": "87e45c50d03b2c18f60883bb78a97fa391eaaf46d419055762d399be0f005222",
+  "commit-push-pr": "ad051fa60628f3f9594e74bcc9526d3fa37aa733c5edbfa8733366de9f495b06",
   "deploy-watch": "ce4b9e3e4186c8722f6f9cb7fd130bc31b0a5103ac025c8ff9e277c553f35ad2",
   "design-system": "e203ceb7061259f0d126f1fb683c840c79d822870043e82c29388627ff0da2ae",
   "factory": "9c864297e4b7a5cd8562d515757cd0c73016d27dd4293aac0e597c71981556c4",
@@ -30,7 +30,7 @@
   "pr-feedback": "3480aa81d9a4165f2f8080376f97b0f15364f54636c7fb839df25cc43c1fb7d0",
   "qa-escape": "d8121b1d00da1ca90a5c3ffecd6edd28d831953f5cd19450faaa1b6f9eb2e8f7",
   "release-notes": "fa1ca3c2cb5cd7c23d8d922e3c8a80f88066ae7fd3d9c3f16c3d1bc14028cc96",
-  "risk-review": "866c3f821b790ac1947b6356b5670792346a0311c6fca5b7966cb06d70b7ae3d",
+  "risk-review": "1c726215dca4fbbab728883fc2ac6f5903815d6c6c87f9811794646a57a23cbd",
   "staging-fix": "cf82058aac247a9460920012d2d7c219f6e0fff518fd6c9e33db4989cc7fb641",
   "staging-to-production": "e914b319c5875cdd993be7594e83e37be5e041a72b40b76ab410a6f065f761ec",
   "tdd-loop": "19b65a7667fd95f1f927ebd81935b8f6fdb0ab07526b84933ddf61cbbd3c83c3",

@@ -85,10 +85,10 @@
     }
   ],
   "last_run": {
-    "date": "2026-10-05",
-    "method": "3 independent fresh catalog-only judges over the full 511-query mixed set, deterministic shuffle; each judge had a private folder with its own copy of the judge prompt, catalog, and query list and was instructed to read nothing else, with no repository access (instruction-level isolation, not a sandbox). Third sweep of the day: the first (493 queries) scored 492/493 and led to a boundary sentence in the /orchestrate-herdr description; the second scored 493/493; this one re-ran everything after /ask-kit and its 18 queries were added.",
-    "result": "511/511 pass — majority vote passed every query; 507 unanimous, 4 passed 2/3.",
+    "date": "2026-10-08",
+    "method": "3 independent fresh catalog-only judges over the full 511-query mixed set, deterministic shuffle; each judge had a private folder with its own copy of the judge prompt, catalog, and query list and was instructed to read nothing else, with no repository access (instruction-level isolation, not a sandbox; transcripts not inspected). Judges 2 and 3 returned byte-identical ballots from separate folders. Re-run after the /commit-push-pr and /risk-review descriptions gained the merge-into-local wording.",
+    "result": "511/511 pass — majority vote passed every query; 508 unanimous, 3 passed 2/3.",
     "judge_model": "Claude Opus 5.5 (claude-opus-5-5), 3 independent Claude Code Agent-tool subagents",
-    "catalog": "tools/trigger-evals/build-catalog.sh (live kit descriptions 2026-10-05, 27 kit skills including ask-kit) + tools/trigger-evals/catalog-externals.md snapshot dated 2026-10-05 (mattpocock/skills v1.3.1); judged tree: uncommitted working tree on 7f9b18d"
+    "catalog": "tools/trigger-evals/build-catalog.sh (live kit descriptions 2026-10-08, 27 kit skills including ask-kit) + tools/trigger-evals/catalog-externals.md snapshot dated 2026-10-05 (mattpocock/skills v1.3.1); judged tree: uncommitted working tree on 3867389"
   }
 }

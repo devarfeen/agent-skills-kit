@@ -359,7 +359,7 @@ The factory skills take a PR from open to ready-for-owner on staging. Run **`/fa
 1. **CI red** → **`/ci-loop`** — up to three fix-and-push attempts under one approval. A flaky test the PR itself introduced is a code bug to fix, not a retry. When CI fails but the tests pass locally, it compares the CI and local environments before changing code. If someone else pushes to the branch, it stops.
 2. **CI green, change reaches a screen** → **`/agentic-qa`** (see Workflow B, step 7).
 3. **Review comments** → **`/pr-feedback`** — groups every thread into accept / push back / needs discussion, waits for your approval, applies only the accepted fixes, asks you to run `/commit-push-pr` to push them, and then replies citing the fixing commit. Comments are evidence: a suggestion that undoes an earlier fix or contradicts a recorded decision goes to needs-discussion.
-4. **Ready for review** → **`/risk-review`** — a specialist lens per touched area, then a fixed-rubric tier. Low risk offers auto-merge into `staging` only; high risk requests an engineer. A one-way door, or a two-way claim the diff contradicts, is high risk. Requested changes or an unresolved review thread blocks any merge, whatever the tier.
+4. **Ready for review** → **`/risk-review`** — a specialist lens per touched area, then a fixed-rubric tier. Low risk offers auto-merge into `staging` or `local` only; high risk requests an engineer. A one-way door, or a two-way claim the diff contradicts, is high risk. Requested changes or an unresolved review thread blocks any merge, whatever the tier.
 5. **Merged to `staging`** → **`/deploy-watch`** — watches the deploy run, smoke-checks staging with your approval, and fails only on errors that weren't already there before the deploy.
 6. **Deploy failed** → **`/staging-fix`** or a revert PR, then `/deploy-watch` again.
 
@@ -417,7 +417,7 @@ stateDiagram-v2
 | `QA` | An `agentic-qa` marker on head with `result=verified findings=0` or `result=no-ui-reach` (or, for `partial`, an approval on head) | `/agentic-qa <pr>` |
 | `REVIEW` | A `risk-review` marker on head with `blocking=0` | `/risk-review <pr>` |
 | `HUMAN_REVIEW` | Approved on head | Engineer review — no skill |
-| `MERGE` | Merged, or auto-merge enabled and waiting on checks | You merge into `staging` (or enable the auto-merge `/risk-review` offers for low risk); any other base is the owner's |
+| `MERGE` | Merged, or auto-merge enabled and waiting on checks | You merge into `staging` or `local` (or enable the auto-merge `/risk-review` offers for low risk); any other base is the owner's |
 | `READY_FOR_OWNER` | Terminal | The owner promotes to production |
 | `DEPLOY_FAILED` | A newer `deploy-watch` marker with `result=pass` from a later run | `/staging-fix` or a revert PR, then `/deploy-watch <pr>` |
 | `STAGING` | A `deploy-watch` marker with `result=pass` | `/deploy-watch <pr>` |
@@ -448,7 +448,7 @@ You have an idea and nothing written down yet. Every `/factory` call below only 
 | `/factory PRWL-142` | PR #87 `CI` — a required check fails | `/ci-loop 87` |
 | `/factory 87` | `QA` — green on head, the diff reaches a screen | `/agentic-qa 87` |
 | `/factory 87` | `REVIEW` — QA marker verified on head | `/risk-review 87`; human review threads go through `/pr-feedback 87` |
-| `/factory 87` | `MERGE` — low risk on head | merge into `staging` yourself, or accept the auto-merge `/risk-review` offers |
+| `/factory 87` | `MERGE` — low risk on head | merge into `staging` or `local` yourself, or accept the auto-merge `/risk-review` offers |
 | `/factory 87` | `STAGING` — merged, deploy running | `/deploy-watch 87` |
 | `/factory 87` | `READY_FOR_OWNER` | nothing — the owner promotes to production |
 

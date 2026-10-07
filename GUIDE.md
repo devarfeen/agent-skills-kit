@@ -393,7 +393,7 @@ After the fix passes its checks, choose the shipping result you want:
 
 | Skill | Result | What remains |
 | :--- | :--- | :--- |
-| `/commit-push-pr` | Commit and push `fix-checkout`; open or update its PR against the permitted base | Review and merge. A default-branch PR with `Closes #42` closes the issue on merge. |
+| `/commit-push-pr` | Commit and push `fix-checkout`; open or update its PR against the permitted base | Review and merge. A default-branch PR with `Closes #42` closes the issue on merge. Ask for the merge in the same request and a PR into `local` is merged for you; every other base stays open. |
 | `/commit-push-close` | Commit and push `fix-checkout`; post QA instructions and close issue 42 directly | The branch can still be unmerged. Confirm direct closure versus a PR when it is not the default branch. |
 
 For this task branch, prefer `/commit-push-pr`. Both skills retain their

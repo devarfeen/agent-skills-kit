@@ -1,9 +1,9 @@
 ---
 name: risk-review
 disable-model-invocation: true
-description: "Specialist review plus risk gate for an open PR with green CI — runs a parallel lens per touched area (data and migrations, API contracts and their consumers, infra and config, cloud and IaC, security and auth), classifies the change low or high risk against a fixed rubric, and records the verdict on the PR. Low risk offers auto-merge only into the staging branch; high risk requests an engineer and stops. Use when the user says \"risk-review PR 87\", \"is this PR safe to auto-merge\", or /factory reports a unit in REVIEW. Never approves its own PR and never merges past a human gate. A standards-and-spec review is /code-review; replying to reviewer threads is /pr-feedback."
+description: "Specialist review plus risk gate for an open PR with green CI — runs a parallel lens per touched area (data and migrations, API contracts and their consumers, infra and config, cloud and IaC, security and auth), classifies the change low or high risk against a fixed rubric, and records the verdict on the PR. Low risk offers auto-merge only into the staging branch or the `local` delivery branch; high risk requests an engineer and stops. Use when the user says \"risk-review PR 87\", \"is this PR safe to auto-merge\", or /factory reports a unit in REVIEW. Never approves its own PR and never merges past a human gate. A standards-and-spec review is /code-review; replying to reviewer threads is /pr-feedback."
 metadata:
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # risk-review
@@ -30,7 +30,7 @@ risk-review answers one question for the factory: may this PR merge without an e
 - A failed or erroring `gh` query is unknown — never an empty result, a pass, or green; report the command and its error.
 - **A failed lane is not a clean lane.** A lane that fails, times out, or returns malformed output is `not assessed` and counts as a fired trigger.
 - **Blocking findings send the PR back.** A finding that would break correctness, data, or security is `blocking`; the verdict records the count, and the PR returns to the author whatever the tier.
-- **Never approve, never merge past a human, never toward production.** Do not submit a GitHub approval and do not merge. Low tier with zero blocking may get auto-merge enabled only when the PR's base is the staging branch (default `staging`, confirmed with `git ls-remote --heads origin <branch>`); any other base gets no merge action and the owner is named. High tier gets reviewers requested and stops. `reviewDecision: CHANGES_REQUESTED` or an unresolved review thread (`gh api graphql`, `reviewThreads.isResolved`) → no merge action whatever the tier; suggest `/pr-feedback`.
+- **Never approve, never merge past a human, never toward production.** Do not submit a GitHub approval and do not merge. Low tier with zero blocking may get auto-merge enabled only when the PR's base is a **mergeable base**: the staging branch (default `staging`) or the delivery branch `local`, confirmed with `git ls-remote --heads origin <branch>`; `local` counts only when it is not the repository's default branch (`gh repo view --json defaultBranchRef`). Any other base gets no merge action and the owner is named. High tier gets reviewers requested and stops. `reviewDecision: CHANGES_REQUESTED` or an unresolved review thread (`gh api graphql`, `reviewThreads.isResolved`) → no merge action whatever the tier; suggest `/pr-feedback`.
 - **One approval before any remote write.** Show the verdict comment and the single follow-up action (enable auto-merge, or request reviewers) and wait for one combined approval. User away → print both and stop.
 - **Zero attribution.** No co-author, AI, or tool attribution in the PR comment or any other output.
 - Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes.
@@ -74,7 +74,7 @@ Blocking: 1
 
 The marker line is required and exact; `/factory` reads it. Then, with the comment, propose one action:
 
-- `low`, blocking 0, base is the staging branch → `gh pr merge <pr> --auto <repo-merge-flag> --match-head-commit <head-sha>`; pick the flag from repository policy. Any other base → no merge action; name the owner.
+- `low`, blocking 0, mergeable base → `gh pr merge <pr> --auto <repo-merge-flag> --match-head-commit <head-sha>`; pick the flag from repository policy. Any other base → no merge action; name the owner.
 - `high` → `gh pr edit <pr> --add-reviewer <logins>`, using CODEOWNERS for the touched paths, else ask the user who.
 - blocking above 0 → no merge action; suggest the fix path.
 - changes requested or an unresolved thread → no merge action; suggest `/pr-feedback`.
@@ -88,7 +88,7 @@ risk-review — PR #87 @ <head-sha>: tier <low|high>, blocking <n>
 Action: auto-merge enabled | reviewers requested: <logins> | none (blocking findings)
 ```
 
-Then at most 3 bullets naming the deciding trigger or findings. Close with the `Suggested next skills (optional)` footer, 1–3 items: blocking → fix then `/ci-loop`; high → wait for review, then `/factory`; low → `/deploy-watch <pr>` after merge.
+Then at most 3 bullets naming the deciding trigger or findings. Close with the `Suggested next skills (optional)` footer, 1–3 items: blocking → fix then `/ci-loop`; high → wait for review, then `/factory`; low → after merge, `/deploy-watch <pr>` for a staging base or `/local-to-staging` for a `local` base.
 
 ## Completion criteria
 
