@@ -477,6 +477,7 @@ subject to the same preservation checks.
 | Greenfield Build | `/wayfinder` | No code to discover; chart the destination and its decisions first. |
 | Delegable Reading Legwork | `/research` | Background agent reads primary sources into a cited Markdown doc. |
 | Spec With Many Sub-issues, Inside herdr | `/orchestrate-herdr` | One worker tab per open sub-issue; sub-issues blocked by another open one wait for their blocker; workers report a fixed `Status:` line. |
+| Many Issues, T3 Code Connected | `/orchestrate-t3` | One T3 Code thread per group of issues, each bound to a worktree under `.worktrees/`; issues that block one another or touch the same surface share a group. Needs the T3 Code MCP server signed in above read-only. |
 | Incident Or Outage | `/incident-triage` | Read-only timeline and ranked causes from the evidence you paste. |
 | Session Pause | `/handoff` | Continuation doc for the next agent. |
 | Session Went Sideways | `/retro` | User-invoked look back over the session; proposes environment changes (checks, coding standards, steering files), never code changes. Run it before clearing context. |
@@ -519,6 +520,8 @@ Variations branch off this line:
 ## Factory Workflow
 
 The factory group (`factory-workflow` in `npx skills`) covers what happens after a PR opens. It runs as a state machine: `/factory` works out where each unit stands from the tracker, the PR, CI, review comments, and deploy runs, then names the one skill that moves it forward. It has no state file, so you can re-run it at any point. Its table carries a `Since` column — the time of the signal that placed each unit — orders healthy units oldest first, and flags a unit sitting more than 3 days in one state as `stalled`.
+
+**Run mode.** `/factory run <label or reference>` — for example `/factory run automate` — makes the factory follow its own advice. It triages every open issue carrying the label (an issue with no checkable outcome becomes `needs-info` and goes back to its author), builds the rest through `/orchestrate-t3`, `/orchestrate-herdr`, or local sub-agents, runs `/agentic-qa` with before and after screenshots, opens the PRs, and carries each through CI and `/risk-review`. It asks you four things and has no default for any of them: which agent does the full code review, how to merge (GitHub then local, GitHub only, or a local trial), whether to close the issues with full notes, and whether to remove the merged worktrees and branches. Starting the run is the approval for the draft and comment gates inside the stage skills; their safety stops still park that issue. It merges only into `local` or the staging branch, and plain `/factory` stays read-only.
 
 ```text
 BUILDING -> CI -> QA -> REVIEW -> risk gate --low--> MERGE -> STAGING -> READY_FOR_OWNER
@@ -605,6 +608,7 @@ One sign per skill that you can check without opening its `SKILL.md`. If you do 
 | `/feature-prompt` | A saved prompt file that separates what you said from what it inferred. |
 | `/tdd-loop` | A quoted failing test before the fix, then the same test passing. |
 | `/orchestrate-herdr` | One tab per open sub-issue, each ending in a `Status:` line with quoted test output. |
+| `/orchestrate-t3` | A group map (issues, worktree, branch, thread) and, per issue, a `Status:` line with quoted test output. |
 | `/using-git-worktrees` | The checkout path, branch, starting commit, and baseline result reported before the first edit. |
 | `/pixel-audit` | A defect list where every `verified` row carries element-level evidence. |
 | `/polish-batch` | Every nit you reported is a row in the punch-list, and nothing was fixed until you said dispatch. |
@@ -621,7 +625,7 @@ One sign per skill that you can check without opening its `SKILL.md`. If you do 
 | `/local-to-staging` | A table with every project and a run URL for each merge commit. |
 | `/staging-to-production` | A readiness table and commands printed for you; nothing opened or merged. |
 | `/release-notes` | A file under `specs/release-notes/` with QA steps and an "Action needed" line. |
-| `/factory` | A table with every unit of the spec, a gate, and the one skill that moves each forward. |
+| `/factory` | A table with every unit of the spec, a gate, and the one skill that moves each forward. In `run` mode: the same table, each pause's answer, and why any issue was parked. |
 | `/incident-triage` | A timeline where every line names its source, and at least one cause that is not a recent change. |
 
 The kit has no filed issues yet, so there is no "common questions" list here; one will be added from real questions, not invented ones.

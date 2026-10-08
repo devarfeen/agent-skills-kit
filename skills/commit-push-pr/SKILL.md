@@ -3,7 +3,7 @@ name: commit-push-pr
 disable-model-invocation: true
 description: Ship one iteration of issue work as a pull request — commit with a structured message, push the branch, and open a PR whose `Closes #N` auto-closes the issue on merge; creates the issue inline when none exists. Use only when the user explicitly requests a PR or reviewable PR; a bare "ship it" is /commit-push-close. Stops at the open PR unless the request also asks to merge it into the `local` delivery branch.
 metadata:
-  version: "0.3.0"
+  version: "0.4.0"
 ---
 
 # commit-push-pr
@@ -90,7 +90,7 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
    - Inline-created issue: also include new-issue title/body and category/state labels. After approval, create the issue first, then commit/push/PR/comment in order.
    - Merge into local opted in: also the merge command and method.
 
-   This approval is a deliberate hard gate before any remote write. If the user is away, present the drafts and stop — never stage, push, or open a PR unapproved.
+   This approval is a deliberate hard gate before any remote write. If the user is away, present the drafts and stop — never stage, push, or open a PR unapproved. Under `/factory run`, **Run authorization** in the shared policy is this approval.
 
 8. **Pre-commit safety** — apply every check in **Pre-commit safety** before staging.
 

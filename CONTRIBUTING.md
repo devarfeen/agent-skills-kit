@@ -161,7 +161,7 @@ Write for a frontier agentic model — capable, tool-using, able to plan. That m
   2. the per-context root in a multi-context repo (`GLOSSARY-MAP.md` at root; legacy
      `CONTEXT-MAP.md`);
   3. the single repo root.
-- **Suggest, never auto-chain** — finish the requested workflow, recommend a next skill, then stop. A setup helper may return to its already-authorized caller; it does not authorize a new workflow.
+- **Suggest, never auto-chain** — finish the requested workflow, recommend a next skill, then stop. A setup helper may return to its already-authorized caller; it does not authorize a new workflow. The one chain is `/factory run`, started by the user; a stage skill it may load says what that start approves in a **Run authorization** line.
 - **Local-only** — local subagents and local background only; no cloud agents.
 - **Decisions are artifacts** — durable output goes to disk or the tracker, with
   the path stated; discovery reports are the chat-only exception.
@@ -283,6 +283,7 @@ eval pass.
 | Any runtime fact in `skills/orchestrate-herdr/references/` — `herdr-commands.md` CLI syntax and lifecycle states, `tracker-map.md` `gh` and Linear MCP calls | Re-verify against the *installed* surface in the same PR, not prose docs: `herdr <group> --help` plus `herdr --skill` for herdr (its binary is the stated authority for its own syntax), the live tool schema for Linear MCP, `gh <cmd> --help` for GitHub. A flag, subcommand, or enum value absent from `--help` is phantom tooling — the defect class `writing-kit-skills` names |
 | A skill's frontmatter `description` | Re-run the trigger evals, restamp that skill's `last_run`, and refresh `tools/trigger-evals/last-run-descriptions.json` (`score.py … --write-snapshot`). `validate.sh` check 10 fails until you do — a description edited after a passing run silently invalidates that run's result |
 | Any file in a skill folder outside `evals/` | That skill's `metadata.version` — patch, minor, or major per the one-minute version; `validate.sh` check 16 |
+| A stage `/factory run` loads, or a stage skill's approval gate | `skills/factory/references/run.md` (stage map) and that skill's **Run authorization** line stay in agreement; a ship-policy change moves both copies |
 | A step that tells the agent to run another skill | The house rule in `skills/writing-kit-skills/SKILL.md` ("Calling another skill"): name the Skill-tool call for a model-invoked target; for a user-invoked target, tell the user to run it — no skill can start one |
 | Added/removed/renamed a skill, or changed where it sits in the workflow | The map in `skills/ask-kit/SKILL.md` — a router that omits a skill, or still names a removed one, misroutes |
 | Any skill behavior change | A dated `CHANGELOG.md` entry with the skill's new version |

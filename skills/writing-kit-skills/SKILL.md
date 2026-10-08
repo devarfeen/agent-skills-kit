@@ -3,12 +3,12 @@ name: writing-kit-skills
 disable-model-invocation: true
 description: "House style for authoring and editing skills in this kit — the skeleton, word budget, canonical one-liners, output caps, and eval gates every SKILL.md follows. Use when creating a new skill in agent-skills-kit or editing an existing kit skill's body, references, or description; generic skill creation elsewhere is skill-creator, and running the kit's eval harness is a maintainer procedure, not this skill."
 metadata:
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # writing-kit-skills
 
-A kit skill exists to make an agent take the same process every run. Every rule here serves that predictability at the lowest token cost that still binds weaker CLIs — this kit installs standalone into many runtimes, so redundancy is spent deliberately, never by accident.
+A kit skill exists to make an agent take the same process every run. Every rule here serves that predictability at the lowest token cost that still binds weaker CLIs — this kit installs standalone into many runtimes, so redundancy is spent deliberately.
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issues, docs, settings, or comments. State this rule explicitly in every generated or updated agent-facing Markdown/settings file.
 
@@ -26,7 +26,7 @@ Every SKILL.md follows this order, skipping sections it genuinely doesn't need:
 
 ## Word budget
 
-A SKILL.md typically needs **1,000–1,300 words**; shorter is fine when the workflow is complete. The body ceiling is 1,500 words, enforced by the validator. Move excess mechanics and examples to `references/`; preserve refusal and safety language. Link every reference from SKILL.md, one level deep; a reference over 100 lines opens with a contents list.
+A SKILL.md needs **1,000–1,300 words**; shorter is fine when the workflow is complete. The validator enforces a 1,500-word ceiling. Move excess mechanics and examples to `references/`; preserve refusal and safety language. Link every reference from SKILL.md, one level deep; a reference over 100 lines opens with a contents list.
 
 ## Voice and language
 
@@ -39,7 +39,7 @@ A SKILL.md typically needs **1,000–1,300 words**; shorter is fine when the wor
 
 ### Calling another skill
 
-A step that needs another skill names the call: `Call the Skill tool with "<name>"` where the runtime has one, one call per skill. A bare `/name` in prose is only a label. Only for a model-invoked target. A user-invoked skill (`disable-model-invocation: true`) cannot be started by any skill: tell the user to run `/<name>` and stop. Footer suggestions keep the `/name` label.
+A step that needs another skill names the call: `Call the Skill tool with "<name>"` where the runtime has one, one call per skill. A bare `/name` in prose is only a label. Only for a model-invoked target. A user-invoked skill (`disable-model-invocation: true`) cannot be started by any skill: tell the user to run `/<name>` and stop. Except `/factory run`, which follows each stage skill's `SKILL.md`. Footer suggestions keep the `/name` label.
 
 ### Form follows the failure
 

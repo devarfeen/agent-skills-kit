@@ -3,7 +3,7 @@ name: agentic-qa
 disable-model-invocation: true
 description: "Agent-run functional QA before a human sees the work — for a PR or branch whose code can reach a screen, drives every acceptance criterion through the running app across states, viewports, and roles, fails on console errors and failed requests, checks neighbouring flows, and records VERIFIED, PARTIAL, or BLOCKED with evidence on the PR. Use when the user says \"QA this PR\", \"test it like QA would\", \"run agentic QA on #87\", or /factory reports a unit in QA. The tester never edits code — findings route to /tdd-loop. Pixel conformance against a design is /pixel-audit; cosmetic nits are /polish-batch; a bug human QA already found is /qa-escape."
 metadata:
-  version: "0.1.1"
+  version: "0.2.0"
 ---
 
 # agentic-qa
@@ -31,6 +31,7 @@ agentic-qa finds what a human QA pass would find, before any human runs one. It 
 - **Status is earned.** `VERIFIED` only when every cell passed and no gap remains. Any failed cell or gap → `PARTIAL`. App not runnable, no criteria, or no login for a required role → `BLOCKED`. Never the word "fixed".
 - **Three re-checks per finding.** A finding that still fails on its third re-check against a new head is escalated to the engineer by name in the report; it is not re-queued again.
 - **One approval before any remote write.** Show the PR comment and wait. User away → print it and stop.
+- **Run authorization.** Loaded by `/factory run`, the run's start approves posting the comment. Staging, and any mutating step there, keeps its own approval.
 - **Zero attribution.** No co-author, AI, or tool attribution in the comment, evidence files, or any output.
 - Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`GLOSSARY-MAP.md` at repo root; legacy `CONTEXT-MAP.md`), else the repo root.
 - Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
@@ -48,7 +49,7 @@ Rows: each acceptance criterion and each path it owes, each escape class for the
 
 ### 3. Baseline
 
-Where a second checkout of the base commit can run, drive the same routes there once and keep its console, error, and failed-request output. No base run → every captured error counts and the report says so.
+Where a second checkout of the base commit can run, drive the same routes there once and keep its console, error, and failed-request output. Screenshot each route once on the base run as its `before` image; the head run's screenshot is its `after`. No base run → every captured error counts and the report says so, with `before: not captured`.
 
 ### 4. Drive each cell
 

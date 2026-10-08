@@ -16,7 +16,7 @@ The guiding idea: **Agentic Coding is not Vibe Coding.** You stay strategic — 
 
 Every skill is installed globally and is always available. The agent treats them all the same — **there is no "local skill" vs "third-party skill" distinction at use time.** The only place the distinction matters is maintenance: to *update* a skill, update it from its original source repo.
 
-Skills have no required order. You pick the skill that fits the step in front of you. `/factory` reads where a unit of work stands and suggests the next skill; it never runs one for you.
+Skills have no required order. You pick the skill that fits the step in front of you. `/factory` reads where a unit of work stands and suggests the next skill; it never runs one for you unless you start it as `/factory run`.
 
 ### The gradient
 
@@ -65,7 +65,7 @@ Not every skill lives on the discover→ship line:
 - **Project start-off:** `/design-system` runs once per project (see Workflow A) to turn a design system into a real UI library + a preview you verify + a binding `AGENTS.md` rule, and seeds a project-local `<project-slug>-ui-coding` skill. Re-run it to extend the library or, after a page ships, to fold its emergent UI back in.
 - **Porting:** `/port-feature` is a discover→plan variant for bringing a feature that already exists in a reference implementation into a target stack (see Workflow D). It writes a gap map and hands off to `/grill-with-docs`.
 - **Router:** `/ask-kit` names the one kit skill that fits a situation you describe and never runs it. Use it before there is anything to point `/factory` at.
-- **Factory conductor:** `/factory` reads where a spec, ticket, or PR stands from the tracker, the PR, CI, review, and deploy state, names the one gate it is at, and suggests the single skill that moves it forward. It holds no state file, so you can re-run it any time (see Workflow F).
+- **Factory conductor:** `/factory` reads where a spec, ticket, or PR stands from the tracker, the PR, CI, review, and deploy state, names the one gate it is at, and suggests the single skill that moves it forward. It holds no state file, so you can re-run it any time (see Workflow F). `/factory run <label or reference>` carries the chain out instead, pausing for review, merge, issue close, and cleanup.
 - **Parallel workers:** `/orchestrate-herdr` fans a spec's open sub-issues out to herdr worker tabs and monitors them. Sub-issues blocked by another open sub-issue are not parallel work; it asks before dispatching them after their blocker. A worktree isolates files, not ports, databases, or `.env*` files, so workers that share those are serialized or given separate ports.
 - **Looking back:** `/retro` (Matt's, user-invoked) reviews a finished session and proposes changes to the agent's environment rather than the code. A mechanical mistake gets a deterministic check — a lint rule, a pre-commit hook, a CI job; a judgement call gets a coding standard for `/code-review` to enforce. Run it in the session it looks back on, before clearing context.
 - **PR-body shape:** `/pr` (Matt's, model-invoked) shapes a PR body as a visual summary, before/after evidence, and a merge-danger call. `/commit-push-pr` mandates its own body — which now carries the same ideas as **Evidence** and **Merge danger** sections — so inside the ship skill its headings and order win, and `/pr` shapes the visual and wording.
@@ -427,7 +427,7 @@ How to read it:
 
 - **First matching row wins.** `/factory` checks the states in the table's order, top to bottom, and the first whose condition holds is the unit's state. Order matters: a reopened issue is `QA_RETURNED` even though its old PR is merged, and a stuck CI is `CI_STUCK` before it is `CI`.
 - **A new push resets the gates.** Markers and approvals count only for the commit they name. Push again and the PR goes back to `CI`; old approvals and markers no longer pass anything. `reviewDecision` alone never counts as an approval, because it survives pushes.
-- **Stateless, and it only suggests.** `/factory` keeps no state file, so re-running it from any point gives the same answer. It names one skill per unit and stops; it never runs that skill, never auto-chains, and never merges or suggests merging toward production.
+- **Stateless, and it only suggests.** `/factory` keeps no state file, so re-running it from any point gives the same answer. It names one skill per unit and stops; it never runs that skill, never auto-chains, and never merges or suggests merging toward production. The single exception is a run you start yourself with `/factory run`, which still never merges toward production.
 - **`READY_FOR_OWNER` is the end.** Staging is the ceiling. Production promotion and feature-flag rollout belong to the owner.
 - **Blocked units come first.** For a spec with several units, `QA_RETURNED`, `DEPLOY_FAILED`, `CI_STUCK`, `QA_STUCK`, `CHANGES`, and `UNKNOWN` are listed before healthy ones. Healthy units follow oldest first, and one that has sat in a state for more than 3 days is flagged `stalled`.
 - **Incidents sit outside the path.** Use `/incident-triage`, then re-enter at `BUILDING` with the fix ticket it proposes.

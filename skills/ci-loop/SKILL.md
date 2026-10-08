@@ -3,7 +3,7 @@ name: ci-loop
 disable-model-invocation: true
 description: "Drive an open PR's failing CI to green — read the failing job's log, reproduce locally, fix within the PR's scope, push, and watch the next run, repeating up to 3 attempts under one up-front approval. Use when the user says \"fix CI on PR 87\", \"get this PR green\", \"the build is failing on my PR\", or /factory reports a unit in CI. Stops on a flaky or infrastructure failure, a fix outside the ticket's scope, or the attempt cap. Reviewer comments route to /pr-feedback; a bug with no PR or CI run is /diagnosing-bugs; setting up a CI pipeline is not this skill."
 metadata:
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # ci-loop
@@ -20,6 +20,7 @@ ci-loop turns one PR's red checks green by fixing the code, not the checks. It i
 ## Rules
 
 - **One approval covers the loop.** Before the first push, show the plan: PR, failing checks, attempt cap, and the commit-subject pattern `fix(ci): <check> — <cause>`. After the user approves, each attempt may commit and push to this PR's head branch without asking again. Approval never covers another branch, a force-push, or a base-branch change.
+- **Run authorization.** Loaded by `/factory run`, the run's start is that approval: print the plan and begin. Every other stop here stops the run for this PR.
 - **Fix the code, never the gate.** Never skip, delete, mark `xfail`, loosen assertions, raise timeouts, disable lint rules, or edit workflow files to make a check pass. When the check itself is wrong, stop and report it as a finding.
 - **Stay in scope.** A fix belongs to this ticket only when the failure is caused by the PR's diff. Failures that also occur on the base branch, or whose fix needs files unrelated to the ticket, stop the loop with the evidence.
 - **Flaky and infrastructure failures stop.** Runner timeouts, network or registry errors, missing secrets, and quota limits are not code faults. Offer one `gh run rerun <run-id> --failed`; if the rerun fails the same way, stop. A flake in a test or code path this PR added or changed is a **Code** failure: fix the race by waiting on the real condition, never by retry or sleep.

@@ -21,6 +21,7 @@
         "./skills/integration-contract",
         "./skills/local-to-staging",
         "./skills/orchestrate-herdr",
+        "./skills/orchestrate-t3",
         "./skills/pixel-audit",
         "./skills/polish-batch",
         "./skills/port-feature",
