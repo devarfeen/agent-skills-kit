@@ -3,7 +3,7 @@ name: ask-kit
 disable-model-invocation: true
 description: "Ask which agent-skills-kit skill fits your situation — a router over this kit's skills from workspace setup through shipping. Names one skill, why it fits, and what it needs; never runs it. Use when the user asks which kit skill to use, what to run next with no spec or PR to point at, or how the kit's skills fit together. A spec, ticket, or PR that already exists routes to /factory; choosing among Matt Pocock's planning and build skills routes to ask-matt."
 metadata:
-  version: "0.0.1"
+  version: "0.0.2"
 ---
 
 # ask-kit
@@ -32,6 +32,7 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 | Rough idea, decisions still gate the scope | `/wayfinder` (Matt) |
 | Build one ticket or fix a bug test-first | `/tdd-loop` |
 | Fan a spec's sub-issues out to worker tabs, inside herdr | `/orchestrate-herdr` |
+| Fan a spec's sub-issues or a list of issues out to T3 Code threads | `/orchestrate-t3` |
 | The work must happen in a worktree | `/using-git-worktrees`, then the task skill |
 | A page must match Figma or reference screens | `/pixel-audit` |
 | Small copy, spacing, or alignment nits from QA | `/polish-batch` |
@@ -50,6 +51,7 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 | Production incident or outage | `/incident-triage` |
 | Notes for PMs and QA on what shipped | `/release-notes` |
 | A spec, ticket, or PR exists and its next gate is unclear | `/factory <reference>` |
+| Work every issue carrying a label end to end, pausing for review and merge | `/factory run <label>` |
 | Editing this kit's own skills | `/writing-kit-skills` |
 
 ## Output

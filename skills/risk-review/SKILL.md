@@ -3,7 +3,7 @@ name: risk-review
 disable-model-invocation: true
 description: "Specialist review plus risk gate for an open PR with green CI — runs a parallel lens per touched area (data and migrations, API contracts and their consumers, infra and config, cloud and IaC, security and auth), classifies the change low or high risk against a fixed rubric, and records the verdict on the PR. Low risk offers auto-merge only into the staging branch or the `local` delivery branch; high risk requests an engineer and stops. Use when the user says \"risk-review PR 87\", \"is this PR safe to auto-merge\", or /factory reports a unit in REVIEW. Never approves its own PR and never merges past a human gate. A standards-and-spec review is /code-review; replying to reviewer threads is /pr-feedback."
 metadata:
-  version: "0.3.0"
+  version: "0.4.0"
 ---
 
 # risk-review
@@ -32,6 +32,7 @@ risk-review answers one question for the factory: may this PR merge without an e
 - **Blocking findings send the PR back.** A finding that would break correctness, data, or security is `blocking`; the verdict records the count, and the PR returns to the author whatever the tier.
 - **Never approve, never merge past a human, never toward production.** Do not submit a GitHub approval and do not merge. Low tier with zero blocking may get auto-merge enabled only when the PR's base is a **mergeable base**: the staging branch (default `staging`) or the delivery branch `local`, confirmed with `git ls-remote --heads origin <branch>`; `local` counts only when it is not the repository's default branch (`gh repo view --json defaultBranchRef`). Any other base gets no merge action and the owner is named. High tier gets reviewers requested and stops. `reviewDecision: CHANGES_REQUESTED` or an unresolved review thread (`gh api graphql`, `reviewThreads.isResolved`) → no merge action whatever the tier; suggest `/pr-feedback`.
 - **One approval before any remote write.** Show the verdict comment and the single follow-up action (enable auto-merge, or request reviewers) and wait for one combined approval. User away → print both and stop.
+- **Run authorization.** Loaded by `/factory run`, the run's start approves posting the verdict and requesting reviewers. Auto-merge is left to the run's merge pause and never enabled here.
 - **Zero attribution.** No co-author, AI, or tool attribution in the PR comment or any other output.
 - Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes.
 - Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.

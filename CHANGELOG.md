@@ -11,10 +11,34 @@ re-run `/agents-md` after a marker bump.
 
 ### Added
 
+- **`/orchestrate-t3` 0.0.1** — fans a spec's open sub-issues, or a list of
+  issues, out to T3 Code threads through the T3 Code MCP server. Issues that
+  block one another or touch the same surface share one worktree and thread;
+  the rest get their own. The kit creates each worktree under `.worktrees/`
+  and binds the thread to it. Needs a one-time `mcp add` and sign-in above
+  read-only. `/ask-kit` 0.0.2 lists it.
 - **`/commit-push-pr` 0.3.0** — opt-in **Merge into local** step. When the
   request asks for the merge and the PR base is `local` (and `local` is not the
   default branch), it merges through GitHub's own gates after the usual draft
   approval. Every other base still ends at an open PR.
+
+- **`/factory` 0.3.0 — run mode.** `/factory run <label or reference>`
+  (`/factory run automate`) carries the chain out: triages every open issue
+  carrying the label, builds through `/orchestrate-t3`, `/orchestrate-herdr`,
+  or local sub-agents, runs `/agentic-qa`, opens PRs, and drives CI and
+  `/risk-review`. It pauses for code review, merge (GitHub then local, GitHub
+  only, or a local trial), issue close, and cleanup. An issue with no checkable
+  outcome becomes `needs-info` and is assigned back to its author. Plain
+  `/factory` is unchanged and read-only.
+- **Run authorization.** `/ci-loop` 0.3.0, `/agentic-qa` 0.2.0,
+  `/risk-review` 0.4.0, `/deploy-watch` 0.2.0, and the ship policy
+  (`/commit-push-pr` 0.4.0, `/commit-push-close` 0.2.2) treat the start of a
+  `/factory run` as their draft or comment approval. Run directly, each keeps
+  its gate; under a run every safety stop still stops that issue.
+- **`/agentic-qa` 0.2.0** saves a `before` screenshot per route from the base
+  run and an `after` from the head run.
+- **`/writing-kit-skills` 0.3.0** names `/factory run` as the one skill that
+  may follow a user-invoked skill's `SKILL.md`.
 
 ### Changed
 

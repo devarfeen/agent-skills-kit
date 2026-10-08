@@ -1,12 +1,12 @@
 {
  "_comment": "sha256 of each skill's frontmatter description as it stood at the commit recorded in that skill's evals.json last_run. tools/validate.sh check 10 fails when a live description no longer matches -- meaning the recorded eval result is stale and the evals must be re-run. Regenerate with score.py --write-snapshot after a passing run.",
- "recorded_at_commit": "3867389e12124849744733d7c064c02adeb228e0 + uncommitted changes",
- "catalog_sha256": "b8ab921266ef59799536e62040aa3b0fd9f5d71a4f45058608dba6e5f0fd8fbc",
- "manifest_sha256": "e2c3b5d24ad611dc25da45cbdc89c4de42943aee99bf12b6e819128f656ace3c",
+ "recorded_at_commit": "f2da61631685a312101ddb43495d4d4e095e93f2 + uncommitted changes",
+ "catalog_sha256": "73f8fddd032ecdc00d1802dc61017824309b9bd4913c028024d7d73685367367",
+ "manifest_sha256": "4574c8a09ee769a108f57ba5ec8ad7587f9317c421ad9ab35c0f82b6ff020a95",
  "judge_sha256": [
-  "f31d96cafe8fa03d9a5ad4858be5fd6f972a414558027ea74933bf4fa05b3878",
-  "bf0a5d2320eeb0863294d67745ef38f7e73eaad05caab5e64f372e79239997d3",
-  "bf0a5d2320eeb0863294d67745ef38f7e73eaad05caab5e64f372e79239997d3"
+  "3caa2f56b22a3c83d5b40e65ab1eee5d11182b4cd6004946dbe397c2eeaca0dd",
+  "fd75702b75c109255cfbc4f9069d453bf80b48578afeffd298ed82adb486742b",
+  "99a23135e33e5d050df797f347a8aba5f732ef7ca138676c5eac1e9a923da89b"
  ],
  "descriptions_sha256": {
   "agentic-qa": "43b87ff54eafc8ee0bea2ffcc1a3f20a9d8ed406bbb691523c360c5f7a904078",
@@ -17,13 +17,14 @@
   "commit-push-pr": "ad051fa60628f3f9594e74bcc9526d3fa37aa733c5edbfa8733366de9f495b06",
   "deploy-watch": "ce4b9e3e4186c8722f6f9cb7fd130bc31b0a5103ac025c8ff9e277c553f35ad2",
   "design-system": "e203ceb7061259f0d126f1fb683c840c79d822870043e82c29388627ff0da2ae",
-  "factory": "9c864297e4b7a5cd8562d515757cd0c73016d27dd4293aac0e597c71981556c4",
+  "factory": "7bca061ab08452d8767df8fd7c58f6cbf9730d330a51460308ba6f4b97854d70",
   "feature-discovery": "522a70869c4591feba11cfaa0e766a26d8d293ea17a3a76d1a950136443fd812",
   "feature-prompt": "6f9eaef781f1faed886f3801bf69ab6776c51e1ac0517b458e575f0ae036502a",
   "incident-triage": "7786f43d43ca7de188315b9641b60534e68221de23623475db080b59f5827fa1",
   "integration-contract": "1f551e4c9020a6125143e27e8ac72d7bf954c143d4682fa206f83ba40ec31995",
   "local-to-staging": "e5b1c23d515af218e1c9f8f9a9a874d17e6929838ca8a2689f5d52cc9f2140cb",
   "orchestrate-herdr": "5e3cb89c5cd1d4141931eaca7e2d6bcb8157d7faec77019bed5d0a2b7cb9a2e5",
+  "orchestrate-t3": "bc9d83d06fe6c02d510410a0f055a8bb96b294c310a61bc9d4cc554a46634742",
   "pixel-audit": "cb9ca035623e4190ba8b2ee0cf9b79e1f09b43eb2776780ab19c1eb31f0f81db",
   "polish-batch": "711486d597a13f9f7eae20a45905813d5402fa398c35cc832dc651187f82ed32",
   "port-feature": "f131c0357d4a9a3234a6b698cae456e21cfa5319332d350fdabf99db6eefc58d",

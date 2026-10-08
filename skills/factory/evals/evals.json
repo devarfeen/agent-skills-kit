@@ -64,13 +64,44 @@
       "q": "Write release notes for what shipped this week",
       "expect": "no-trigger",
       "route": "/release-notes"
+    },
+    {
+      "q": "/factory run automate",
+      "expect": "trigger"
+    },
+    {
+      "q": "Run the factory end to end on every issue labelled automate",
+      "expect": "trigger"
+    },
+    {
+      "q": "factory run PRWL-142 — carry it through to the merge pause",
+      "expect": "trigger"
+    },
+    {
+      "q": "Pick up all issues tagged automate, build them, open PRs and pause for my review",
+      "expect": "trigger"
+    },
+    {
+      "q": "Fan issues 41, 44 and 52 out to T3 Code threads",
+      "expect": "no-trigger",
+      "route": "/orchestrate-t3"
+    },
+    {
+      "q": "Triage this incoming bug report and label it",
+      "expect": "no-trigger",
+      "route": "/triage"
+    },
+    {
+      "q": "Remove the worktree for ticket 42",
+      "expect": "no-trigger",
+      "route": "none"
     }
   ],
   "last_run": {
     "date": "2026-10-08",
-    "method": "3 independent fresh catalog-only judges over the full 511-query mixed set, deterministic shuffle; each judge had a private folder with its own copy of the judge prompt, catalog, and query list and was instructed to read nothing else, with no repository access (instruction-level isolation, not a sandbox; transcripts not inspected). Judges 2 and 3 returned byte-identical ballots from separate folders. Re-run after the /commit-push-pr and /risk-review descriptions gained the merge-into-local wording.",
-    "result": "511/511 pass — majority vote passed every query; 508 unanimous, 3 passed 2/3.",
+    "method": "3 independent fresh catalog-only judges over the full 540-query mixed set, deterministic shuffle; each judge had a private folder with its own copy of the judge prompt, catalog, and query list and was instructed to read nothing else, with no repository access (instruction-level isolation, not a sandbox; transcripts not inspected). Run after /orchestrate-t3 was added and the /factory description gained run mode. A first sweep on identical inputs scored 539/540: one /polish-batch no-trigger query (\"The save button doesn't actually save — log it\") drew three different picks, none of them /polish-batch, which the scorer counts as no majority. No description or query was changed; this is the second sweep, with three new judges.",
+    "result": "540/540 pass — majority vote passed every query; 532 unanimous, 8 passed 2/3.",
     "judge_model": "Claude Opus 5.5 (claude-opus-5-5), 3 independent Claude Code Agent-tool subagents",
-    "catalog": "tools/trigger-evals/build-catalog.sh (live kit descriptions 2026-10-08, 27 kit skills including ask-kit) + tools/trigger-evals/catalog-externals.md snapshot dated 2026-10-05 (mattpocock/skills v1.3.1); judged tree: uncommitted working tree on 3867389"
+    "catalog": "tools/trigger-evals/build-catalog.sh (live kit descriptions 2026-10-08, 28 kit skills including orchestrate-t3) + tools/trigger-evals/catalog-externals.md snapshot dated 2026-10-05 (mattpocock/skills v1.3.1); judged tree: uncommitted working tree on f2da616"
   }
 }

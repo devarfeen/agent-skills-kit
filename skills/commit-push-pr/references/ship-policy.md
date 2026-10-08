@@ -18,6 +18,18 @@ If setup added `/.worktrees/` to the owning repo's `.gitignore`, ensure the task
 
 Keep each project's commit and remote tied to its own repository. Existing draft approvals and each skill's direct-close versus PR behavior still apply. Neither shipping skill removes the worktree, and neither merges, except `/commit-push-pr`'s opt-in **Merge into local** step. User-requested worktrees remain until cleanup is authorized, integration is verified, needed tracked/untracked/ignored files are preserved, and no worker or process still needs the checkout. A pushed branch or closed issue alone is not integration proof. Keep the ignore rule and report any pending source-only setup edit; remote branch deletion is outside shipping.
 
+## Run authorization
+
+Applies only when `/factory run` loaded the ship skill; a ship skill the user ran directly keeps every approval below.
+
+The user's start of the run is the combined draft approval. Prepare the drafts, print them, then commit, push, open the PR, and post the QA comment without waiting. It also settles three questions asked elsewhere in this policy:
+
+- **Code review** — not asked. The run holds its own review pause after the PR opens; record `Review: deferred to the run's review pause`.
+- **Optional Composer test run** — run it.
+- **Branch name** — use the proposed name.
+
+It approves nothing else. Each of these still stops shipping for that issue, and the run parks it: **Pre-commit safety**, **Authorship policy**, **Env parity policy**, **Label validation**, a failing check, an unmet **Acceptance criteria** item, a conflict, a rejected push, or a prohibited target. **Inline issue creation** does not happen inside a run — an issue with no tracker entry is not part of it. **Merge into local** is not part of it either; the run's merge pause owns every merge.
+
 ## Read state
 
 Run in parallel:

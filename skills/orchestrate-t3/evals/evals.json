@@ -1,87 +1,106 @@
 {
-  "skill": "ask-kit",
+  "skill": "orchestrate-t3",
   "kind": "trigger-eval",
   "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
   "queries": [
     {
-      "q": "Which kit skill should I use for this?",
+      "q": "orchestrate-t3 for https://github.com/org/repo/issues/42 using codex",
       "expect": "trigger"
     },
     {
-      "q": "ask-kit: I have a rough idea and no spec yet, where do I start?",
+      "q": "Fan this PRD's sub-issues out to T3 Code threads",
       "expect": "trigger"
     },
     {
-      "q": "What do I run next? There's no issue or PR for this yet",
+      "q": "Launch a T3 Code thread for each of issues 41, 44 and 52 with Claude",
       "expect": "trigger"
     },
     {
-      "q": "How do the agent-skills-kit skills fit together?",
+      "q": "Use T3 Code to work all open sub-issues of PRWL-100 in parallel",
       "expect": "trigger"
     },
     {
-      "q": "Which of the kit's skills handles cosmetic QA nits versus a page that must match Figma?",
+      "q": "Spin up T3 threads for these five GitHub issues and monitor them until they have test evidence",
       "expect": "trigger"
     },
     {
-      "q": "I'm lost in this kit — route me to the right skill",
+      "q": "Start one T3 Code thread per open child issue of ABC-123 using Cursor",
       "expect": "trigger"
     },
     {
-      "q": "Which kit skill do I reach for when staging breaks versus when CI breaks?",
+      "q": "Dispatch issues 12, 13 and 19 to T3 Code workers, each in its own worktree",
       "expect": "trigger"
     },
     {
-      "q": "/ask-kit",
+      "q": "Run the spec fan-out through the T3 Code MCP server",
       "expect": "trigger"
     },
     {
-      "q": "Give me the map of this kit's skills from setup to shipping",
+      "q": "Open new T3 Code threads for these tickets and decide which ones can share a worktree",
       "expect": "trigger"
     },
     {
-      "q": "Not sure whether I want commit-push-close or commit-push-pr — which kit skill fits?",
+      "q": "Re-run the T3 orchestrator for PRWL-100 — some threads from the last run are still there",
       "expect": "trigger"
     },
     {
-      "q": "Where does SPEC-142 stand and what moves it next?",
+      "q": "T3 Code is connected — give every open sub-issue of this parent issue its own Codex thread",
+      "expect": "trigger"
+    },
+    {
+      "q": "Orchestrate the PRD's sub-issues in herdr with codex workers",
+      "expect": "no-trigger",
+      "route": "/orchestrate-herdr"
+    },
+    {
+      "q": "HERDR_ENV=1 — one worker tab per open sub-issue of PRWL-100",
+      "expect": "no-trigger",
+      "route": "/orchestrate-herdr"
+    },
+    {
+      "q": "Implement this whole spec in one run with parallel implementer subagents",
+      "expect": "no-trigger",
+      "route": "/implement-spec"
+    },
+    {
+      "q": "Work this single issue test-first",
+      "expect": "no-trigger",
+      "route": "/tdd-loop"
+    },
+    {
+      "q": "Set up a worktree for ticket 42 and implement it there",
+      "expect": "no-trigger",
+      "route": "/using-git-worktrees"
+    },
+    {
+      "q": "Slice the PRD into sub-issues first",
+      "expect": "no-trigger",
+      "route": "/to-tickets"
+    },
+    {
+      "q": "Review the diff that T3 thread produced",
+      "expect": "no-trigger",
+      "route": "/code-review"
+    },
+    {
+      "q": "Where does PRWL-100 stand and what is its next gate",
       "expect": "no-trigger",
       "route": "/factory"
     },
     {
-      "q": "Which gate is PR 87 at?",
-      "expect": "no-trigger",
-      "route": "/factory"
-    },
-    {
-      "q": "Which of Matt's skills should I use to plan this?",
-      "expect": "no-trigger",
-      "route": "/ask-matt"
-    },
-    {
-      "q": "Is there a skill I can install for database migrations?",
+      "q": "How do I connect Claude Code to the T3 Code MCP server?",
       "expect": "no-trigger",
       "route": "none"
     },
     {
-      "q": "Trace how the invite-user workflow works",
-      "expect": "no-trigger",
-      "route": "/feature-discovery"
-    },
-    {
-      "q": "Commit, push, and open a PR",
+      "q": "Open a PR for the branch the worker finished",
       "expect": "no-trigger",
       "route": "/commit-push-pr"
     },
     {
-      "q": "Help me create a feature prompt for stock transfer approvals",
+      "q": "QA the PR from issue 41 like a tester would",
       "expect": "no-trigger",
-      "route": "/feature-prompt"
-    },
-    {
-      "q": "Fix CI on PR 87",
-      "expect": "no-trigger",
-      "route": "/ci-loop"
+      "route": "/agentic-qa"
     }
   ],
   "last_run": {
