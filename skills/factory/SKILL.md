@@ -69,7 +69,7 @@ The user's `/factory run <reference>` approves the whole chain. Read [`reference
 
    User away → stop. After this batch the run asks nothing more.
 2. **Loop.** One unit at a time, in the order **One unit at a time** gives: place it (steps 2–4), carry out its `Next` per **Stage map**, and place it again; log it and apply **Lessons**. Per unit: status In Progress, its own worktree and **Task stack**, a builder thread, agentic QA, a PR, CI, the **Review loop** between the reviewer and the builder, risk review, **Merge**, **Handover** with status In Review, **Cleanup**. A stage skill is read and followed per **Loading a stage skill**; its stops still stop that unit.
-3. **Parks.** A unit whose next actor is a person — a high risk tier, a spent cap, a fact only the reporter holds — is parked with its evidence and the run moves to the next unit. No tracked compose file is edited and no issue is closed.
+3. **Parks.** A unit whose next actor is a person — a high risk tier, a spent cap, a fact only the reporter holds — is parked with its evidence; the run moves on. No tracked compose file is edited and no issue is closed.
 4. **Run report.** The output table, each parked unit's reason, the criteria drafted, and **Lessons** report.
 
 ## Output
