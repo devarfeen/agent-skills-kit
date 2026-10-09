@@ -14,7 +14,7 @@ Evaluate rows top to bottom; the first row whose condition holds is the unit's s
 | ----- | ------------------------- | ---------------------- | ---- |
 | `OUTCOME` | Reference is `start`, or no spec (PRD) issue exists | A spec issue exists with acceptance criteria | `/feature-prompt` → `/grill-with-docs` → `/to-spec` |
 | `TICKETS` | Spec exists; zero sub-issues | At least one sub-issue | `/to-tickets`; add `/integration-contract` when the spec touches more than one PROJECT-CODE |
-| `QA_RETURNED` | The issue was reopened after its PR merged, or the user reports a QA finding, and no `qa-escape` marker on the issue is newer than that reopen or report | A `<!-- qa-escape: … -->` comment newer than the reopen or report | `/qa-escape <issue>` |
+| `QA_RETURNED` | The issue was reopened after its PR merged, or the user reports a QA finding, or a person commented a finding on it after its `factory-delivered` marker, and no `qa-escape` marker on the issue is newer than that reopen or report | A `<!-- qa-escape: … -->` comment newer than the reopen or report | `/qa-escape <issue>` |
 | `BUILDING` | Ticket open; no PR for it, or its PR is a draft | A non-draft PR whose body, or a `## QA handoff` comment on it, carries an `Acceptance criteria` verdict | `/tdd-loop` for one ticket; `/orchestrate-herdr <spec>` when several tickets are `BUILDING` inside herdr |
 | `CI_STUCK` | PR open; a required check on head is failing; three or more `fix(ci):` commits since the last green run on the PR | A green run on head | `/diagnosing-bugs` — the CI loop's cap is spent for this PR |
 | `CI` | PR open; any required check on head is failing, or pending | Every required check on head is `pass` | Failing → `/ci-loop <pr>`. Pending only → wait; re-run `/factory` later |
