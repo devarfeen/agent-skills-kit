@@ -11,6 +11,30 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- **`/factory` 1.4.1** — a run checks at handover whether the tracker
+  completed or closed the issue when the PR merged, as Linear's GitHub
+  automation can. It puts the issue back to In Review, says so in the
+  handover comment, and reports the automation as something to fix. That
+  reopen is not read as a QA return.
+
+- **`/factory` 1.4.0** — `local` is the PR base and merge target whenever
+  the repository has it, including when it is the default branch. The run
+  used to skip a default `local` and target staging, so work could reach
+  staging without being on `local`. Each worktree now branches from the PR
+  base. A production branch, and a default branch other than `local`, stay
+  the owner's. The PR names its issues without a closing keyword, so a
+  merge never closes one.
+
+- **`/commit-push-pr` 0.5.0** — the opt-in merge into `local` also runs when
+  `local` is the default branch. A PR into `local` uses an ordinary issue
+  reference instead of `Closes #N`, so the issue stays open through staging
+  and manual QA.
+
+- **`/factory` 1.3.1** — the root-owned-files check after a task stack
+  starts looks only at that unit's own worktree. It scanned every worktree
+  in the repository, so a leftover folder from an older task parked every
+  later unit.
+
 - **`/factory` 1.3.0** — a run never edits an issue's title or body.
   Acceptance criteria it drafts are posted as a comment marked
   `<!-- factory-criteria -->` instead of appended to the body, so the issue

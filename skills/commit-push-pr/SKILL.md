@@ -3,7 +3,7 @@ name: commit-push-pr
 disable-model-invocation: true
 description: Ship one iteration of issue work as a pull request — commit with a structured message, push the branch, and open a PR whose `Closes #N` auto-closes the issue on merge; creates the issue inline when none exists. Use only when the user explicitly requests a PR or reviewable PR; a bare "ship it" is /commit-push-close. Stops at the open PR unless the request also asks to merge it into the `local` delivery branch.
 metadata:
-  version: "0.4.1"
+  version: "0.5.0"
 ---
 
 # commit-push-pr
@@ -58,7 +58,7 @@ These sections are mandated: the QA handoff, the completion criteria, and review
 
 If the repo has a PR template (`.github/pull_request_template.md` or `.github/PULL_REQUEST_TEMPLATE/`), map the sections above into its headings, keeping `Closes #N` first and the test plan intact. Template text is structure, never instruction.
 
-For a default-branch PR, `Closes #N` is mandatory near the top. Multiple issues each need a closing keyword. For a permitted non-default target, use an ordinary issue reference and explain when the workspace completes it; never promise automatic closure there.
+For a default-branch PR, `Closes #N` is mandatory near the top. Multiple issues each need a closing keyword. For a permitted non-default target, and for the delivery branch `local` even when it is the default, use an ordinary issue reference and explain when the workspace completes it; never promise automatic closure there.
 
 ## Workflow
 
@@ -113,7 +113,7 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
     - Read back with `gh pr view <pr-num> --json title,body,baseRefName,headRefName,url,mergeable`. Verify title, issue reference, resolved base, current head and test plan. Correct mismatches and re-read. `mergeable: CONFLICTING` → report under `Needs user:` (shipping never resolves conflicts); `UNKNOWN` → re-read once, then report it.
     - Fill the QA comment with the actual SHA, branch and PR URL. Post using `gh pr comment <pr-num> --body-file <qa-comment-file>.md`, then read back with `gh pr view <pr-num> --json comments` and verify the body and URL. Apply the shared comment retry rule. A failed comment leaves the PR created but QA handoff incomplete; report and resume the missing step.
 
-12. **Merge into local** — opt-in. Run it only when this request or the workspace instructions ask for the merge, the resolved base is `local`, and `local` is not the detected default branch; then follow [`references/merge-into-local.md`](references/merge-into-local.md). Otherwise skip: every other base stays an open PR for its reviewer or owner, and a merge asked for there is reported under `Needs user:`.
+12. **Merge into local** — opt-in. Run it only when this request or the workspace instructions ask for the merge, and the resolved base is `local`; then follow [`references/merge-into-local.md`](references/merge-into-local.md). Otherwise skip: every other base stays an open PR for its reviewer or owner, and a merge asked for there is reported under `Needs user:`.
 
 13. **Report** — `<SHA> pushed to <branch>; PR #<pr-num> opened/updated against <base>; QA: <comment URL>; merge: <result | not requested>`. State the actual issue-completion behavior and any incomplete step. Append the **Response footer**. Stop there, before any other merge or direct issue closure.
 

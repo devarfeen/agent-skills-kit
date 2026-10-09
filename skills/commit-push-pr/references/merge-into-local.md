@@ -35,5 +35,5 @@ Merge with the flags above and nothing more: protection, required reviews, and m
 
 ## After the merge
 
-- `local` is not the default branch, so `Closes`-style keywords do not fire: the issue stays open until the workspace's issue-completion workflow closes it. Say so in the report.
+- The PR carries no closing keyword, so the merge closes nothing: the issue stays open until the workspace's issue-completion workflow closes it. Say so in the report.
 - Suggest `/local-to-staging` in the response footer.
