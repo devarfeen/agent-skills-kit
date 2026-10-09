@@ -3,7 +3,7 @@ name: agents-md
 disable-model-invocation: true
 description: "Generate or refresh the workspace-root AGENTS.md and its CLAUDE.md redirect shim for a VS Code .code-workspace root. Any request to write, create, or generate an AGENTS.md file routes here — /writing-for-agents is style guidance for authoring agent-facing documents, not the generator. It creates the Project Matrix of PROJECT-CODEs and the workspace's non-negotiable rules. Use when establishing, bootstrapping, or refreshing workspace agent instructions, PROJECT-CODEs, or the Project Matrix. Use only when a .code-workspace file exists; stop otherwise. It does not seed a project UI-coding skill or build its binding AGENTS.md rule — that is /design-system."
 metadata:
-  version: "0.2.1"
+  version: "0.3.0"
 ---
 
 # AGENTS.md generator
@@ -76,7 +76,7 @@ Fill the `[RUNTIME TOOL-CALLING …]` slot from `references/tool-calling.md`, fo
 
 ## Versioning and regeneration
 
-The skill version is `v47`. Both generated root files carry the marker `<!-- agents-md marker · v47 · re-run /agents-md to regenerate -->` as their first line (the first line of each template asset in `assets/`). Bump it here and in both template assets together whenever these rules change. Legacy pre-`v6` markers: [regeneration](references/regeneration.md#legacy-markers).
+The skill version is `v48`. Both generated root files carry the marker `<!-- agents-md marker · v48 · re-run /agents-md to regenerate -->` as their first line (the first line of each template asset in `assets/`). Bump it here and in both template assets together whenever these rules change. Legacy pre-`v6` markers: [regeneration](references/regeneration.md#legacy-markers).
 
 On run, check for an existing workspace-root `AGENTS.md`:
 

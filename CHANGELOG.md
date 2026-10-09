@@ -40,6 +40,26 @@ re-run `/agents-md` after a marker bump.
 - **`/writing-kit-skills` 0.3.0** names `/factory run` as the one skill that
   may follow a user-invoked skill's `SKILL.md`.
 
+### Fixed
+
+Found in a review of `/factory run` against the skills it loads.
+
+- **`/agents-md` 0.3.0, marker `v48`** — Rule 18 names `/factory run`. Without
+  it a generated `AGENTS.md` forbade the run's merge, issue close, and cleanup.
+  Re-run `/agents-md` in each workspace before using `/factory run`.
+- **`/factory` 0.3.1** — triage appends acceptance criteria to the issue body,
+  where the ship skills and `/agentic-qa` read them, not to a comment. A PR
+  merged into `local` ends the run for that issue instead of returning to the
+  merge pause. A fix after the PR is open is pushed through `/commit-push-pr`.
+  QA runs on a clean worktree so the tested SHA is the shipped SHA. The start
+  questions are named in `SKILL.md`. herdr runs without a spec use its harness
+  mode.
+- **Ship policy** (`/commit-push-pr` 0.4.1, `/commit-push-close` 0.2.3) — under
+  a run, several issues on one branch take the first issue's title as the
+  naming anchor, and the run's QA report counts as the agentic-qa marker.
+- **`/orchestrate-t3` 0.0.2**, **`/orchestrate-herdr` 0.1.2** — workers drive
+  each issue with `/implement` when it is installed; T3 workers never push.
+
 ### Changed
 
 - **`/risk-review` 0.3.0** offers auto-merge for a low-risk, zero-blocking PR

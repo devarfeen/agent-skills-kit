@@ -19,8 +19,9 @@ is a blocker to report, never a reason to work elsewhere.
 
 Infer project/repo context from the assigned issue.
 
-Use `/tdd-loop` for the test-first procedure when installed and `/tdd` for
-test quality guidance. If neither is installed, reproduce the failure with a
+Drive the issue with `/implement` when installed, running `/tdd-loop` at each
+seam; without it use `/tdd-loop` directly, with `/tdd` for test quality
+guidance. Commit each green step to BRANCH; never push or open a PR. If neither is installed, reproduce the failure with a
 test and make it pass; still report the command and passing output.
 
 Before coding, read the issue's acceptance criteria, any issues labelled

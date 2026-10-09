@@ -10,6 +10,7 @@ Mechanics for `run` mode. `SKILL.md` holds the loop and the four pause questions
 - Start questions
 - Triage
 - Stage map
+- After a fix
 - Build
 - Review pause
 - Merge pause
@@ -24,7 +25,8 @@ Stage skills are user-invoked, so no Skill-tool call starts them. The user start
 1. Read `<name>/SKILL.md` from the directory that holds this skill's own folder. Not there → look in the runtime's other skill directories. Not installed → park the unit and name `npx skills add devarfeen/agent-skills-kit -g --skill <name>`.
 2. Follow the whole file, and each reference it cites, for this one unit. Its **Run authorization** line says what the run's start already approved. A stage skill without that line keeps every approval it asks for.
 3. Every other stop in the skill stops that unit: a failed check, an unmet criterion, a refused merge, a missing input. Park the unit with the stop's evidence. Never retry a stop by doing the step by hand.
-4. Where the skill says to stop and suggest a next skill, return here and place the unit again.
+4. The skill's intake questions are answered from the **Start questions**; ask only what those did not cover.
+5. Where the skill says to stop, suggest a next skill, or end the transcript, return here and place the unit again.
 
 A model-invoked skill (`tdd-loop`, `using-git-worktrees`, `code-review`) is called with the Skill tool as usual.
 
@@ -49,7 +51,7 @@ Per issue, in this order:
 1. **Already triaged** — exactly one category and state `ready-for-agent` or `ready-for-human` → leave its labels alone. `ready-for-human` and `wontfix` issues leave the run, named.
 2. **Category** — `bug` when the text reports behaviour that differs from what was intended; `enhancement` for new or changed behaviour. Exactly one.
 3. **Checkable outcome** — the issue is ready only when its text states at least one result a test or a browser run could confirm. Quote that sentence as evidence.
-4. **Ready** → set the category and `ready-for-agent`, removing any other state label, and post one comment headed `## Acceptance criteria` that restates the issue's outcomes as a numbered list in the issue's own terms. Add no criterion the issue does not state. An issue that already has that heading gets no comment.
+4. **Ready** → set the category and `ready-for-agent`, removing any other state label. Later stages read criteria from the issue body, so an issue whose body has no `## Acceptance criteria` section gets one appended: `gh issue edit <n> --body-file <file>`, where the file is the existing body unchanged, followed by that heading and the issue's outcomes restated as a numbered list in its own terms. Add no criterion the issue does not state, and change nothing above the heading.
 5. **Not ready** → set the category and `needs-info`, post a comment naming each missing fact as a question, and assign the issue to its author: `gh issue edit <n> --add-assignee <author-login>`. When the assign is refused, start the comment with `@<author-login>` instead and say so. The issue leaves the run.
 
 Label names come from the workspace `AGENTS.md`; the list above is the kit's default set. A label the repository lacks → stop and ask before creating it. Read every change back with `gh issue view <n> --json labels,assignees,comments`.
@@ -62,27 +64,32 @@ Place the unit with `states.md`, then act on its state. `Next` in that table is 
 | ----- | ---------- |
 | `BUILDING` | **Build** below |
 | `CI` | Pending → `gh pr checks <pr> --watch`. Failing → load `ci-loop` |
-| `QA` | Load `agentic-qa`. Findings → back to the unit's worker with the first finding, then place again |
-| `CHANGES` | Risk or QA findings → the unit's worker with the first finding. `CHANGES_REQUESTED` from a person → park; name `/pr-feedback <pr>` |
+| `QA` | Load `agentic-qa`. Findings → **After a fix**. `blocked` or `partial` → park, naming the missing input or the gap cells |
+| `CHANGES` | Risk or QA findings → **After a fix**. `CHANGES_REQUESTED` from a person → park; name `/pr-feedback <pr>` |
 | `REVIEW` | Load `risk-review`. Low tier → `MERGE`; high tier → reviewers requested, unit parks at `HUMAN_REVIEW` |
-| `MERGE` | Wait at the **Review pause**, then the **Merge pause** |
+| `MERGE`, PR open | Wait at the **Review pause**, then the **Merge pause** |
+| `MERGE`, PR merged into `local` | Done for this run: it has not reached staging, and the run never promotes. Name `/local-to-staging`; wait at the **Close pause** |
 | `STAGING` | **Staging** below |
 | `READY_FOR_OWNER` | Done; wait at the **Close pause** |
 | `OUTCOME`, `TICKETS`, `QA_RETURNED`, `CI_STUCK`, `QA_STUCK`, `HUMAN_REVIEW`, `DEPLOY_FAILED`, `UNKNOWN` | Park with the state's evidence and its `Next` — a person decides here |
 
 A parked unit is not retried in the same run. Running `/factory run` again with the same reference places every unit afresh, so it resumes where the signals say the work stands.
 
+## After a fix
+
+A finding from QA, risk review, or code review goes to the unit's worker with the finding's reproduction, to fix through `tdd-loop` and commit on the unit's branch. A worker never pushes. Once a PR is open, load `commit-push-pr` on that branch to push the fix and update the PR, then place the unit again: the new head sends it back through `CI`, `QA`, and `REVIEW`.
+
 ## Build
 
 One pass per unit, in this order. Each step's evidence is read back before the next starts.
 
-1. **Implement.** Load the orchestrator skill chosen at the start — `orchestrate-t3` or `orchestrate-herdr` — with the run's units as its issue list and the start answers as its intake. It groups issues into worktrees, launches workers, and returns each issue's end state. For local sub-agents, apply the same grouping rule: issues that block one another or name the same file, route, component, table, or migration share one worktree and one worker, in order; every other issue gets its own. Create each worktree with the Skill tool and `using-git-worktrees`, then give each worker its issues, its checkout record, the instruction to follow `tdd-loop` and commit only to its branch, and the closing fields `Status:` / `AC map:` / `Decisions:` / `Open items:`.
+1. **Implement.** Load the orchestrator skill chosen at the start — `orchestrate-t3` or `orchestrate-herdr` — with the start answers as its intake. `orchestrate-t3` takes the run's units as its issue list. `orchestrate-herdr` takes a spec reference as it is; for a label run or a list of tickets use its harness mode, one worker per issue, each prompt filled from its worker prompt. Either returns each issue's end state. For local sub-agents, apply the same grouping rule: issues that block one another or name the same file, route, component, table, or migration share one worktree and one worker, in order; every other issue gets its own. Create each worktree with the Skill tool and `using-git-worktrees`, then give each worker its issues, its checkout record, the instruction to drive the issue with `implement` when installed, else `tdd-loop`, committing only to its branch and never pushing, and the closing fields `Status:` / `AC map:` / `Decisions:` / `Open items:`.
 
    Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes.
 
    A blocked or errored issue parks. An issue without quoted passing test output is not built.
-2. **QA with before and after.** Load `agentic-qa` on the branch head. Its base-commit baseline supplies the `before` screenshots and its head run the `after` ones, both under the run's evidence folder. `no-ui-reach` passes without screenshots. Findings go back to the worker; the third failed re-check parks the unit as `QA_STUCK`.
-3. **Ship.** Load `commit-push-pr` in the unit's worktree against the PR base from the start. Then post the agentic-qa comment for that head SHA, as that skill directs once a PR exists.
+2. **QA with before and after.** First confirm `git -C <worktree> status --porcelain` is empty; leftovers go back to the worker to commit, so the SHA that is tested is the SHA that ships. Load `agentic-qa` on the branch head. The unit's worktree is its head checkout — create no second one — and the base checkout is `<task-name>-base` beside it. Its base run supplies the `before` screenshots and its head run the `after` ones, in an evidence folder named for the branch until a PR exists. `no-ui-reach` passes without screenshots. Findings go back to the worker and QA runs again on the new head; the third failed re-check parks the unit as `QA_STUCK`.
+3. **Ship.** Load `commit-push-pr` in the unit's worktree against the PR base from the start. A group of several issues ships as one PR naming each. Confirm the pushed head is the SHA QA tested, then post the agentic-qa comment for it, as that skill directs once a PR exists. A different SHA means QA runs again.
 
 Place the unit again; it is now in `CI` or beyond.
 
@@ -91,7 +98,7 @@ Place the unit again; it is now in `CI` or beyond.
 Reached when every unit is parked or at `MERGE`. Print one line per PR — URL, issues, risk tier, QA result — then ask the question in `SKILL.md`.
 
 - **An agent named** — when it is the agent running this session, call the Skill tool with `code-review` once per PR, against the PR base. Otherwise start one worker of that agent per PR on the backend chosen at the start, bound to the PR's worktree, with the prompt `Run /code-review against <base> and report findings; edit nothing.` No `code-review` skill installed → say so and review the diff against the issue's acceptance criteria and the project's documented standards.
-- **Findings** — a finding inside the issue's scope goes to the unit's worker as a fix; the new head sends the unit back through `CI`, `QA`, and `REVIEW` before it returns here. A finding outside the issue's scope is listed under Needs user and not fixed. Ask the pause question again only for PRs whose head changed.
+- **Findings** — a finding inside the issue's scope is fixed per **After a fix** before the unit returns here. A finding outside the issue's scope is listed under Needs user and not fixed. Ask the pause question again only for PRs whose head changed.
 - **Skip** — record `Review: skipped at user request` in the run report.
 
 ## Merge pause
@@ -100,7 +107,7 @@ Offer the menu only for units at `MERGE` whose PR base is `local` or the staging
 
 Pick the merge method from repository policy (`gh repo view --json mergeCommitAllowed,squashMergeAllowed,rebaseMergeAllowed`), preferring the one the workspace names.
 
-- **B — GitHub only.** Per PR: `gh pr merge <pr> --auto <method> --match-head-commit <head-sha>`, then `gh pr view <pr> --json state,mergeCommit,autoMergeRequest`. When the repository has no auto-merge and every check is `pass` or `skipping`, run the same command without `--auto`. Never `--admin`, never `--delete-branch`. A refusal is quoted and the unit parks.
+- **B — GitHub only.** Per PR: `gh pr merge <pr> --auto --<merge|squash|rebase> --match-head-commit <head-sha>`, then `gh pr view <pr> --json state,mergeCommit,autoMergeRequest`. When the repository has no auto-merge and every check is `pass` or `skipping`, run the same command without `--auto`. Never `--admin`, never `--delete-branch`. A refusal is quoted and the unit parks.
 - **C — GitHub, then local.** Do B. For each repository with a merged PR, `git fetch origin`, then in its primary checkout: on the base branch with a clean tree → `git merge --ff-only origin/<base>`; on another branch → `git fetch origin <base>:<base>`. A dirty tree or a branch that cannot fast-forward is left as it is and reported; never stash, reset, or force.
 - **A — local trial.** Per repository: `git worktree add -b trial/<base>-<yyyymmdd> <project-repo>/.worktrees/trial-<base> origin/<base>`, then `git merge --no-ff <branch>` for each unit's branch. A conflict → `git merge --abort` and report the pair. Push nothing and leave every PR open: a trial is not a merge, so no unit advances. Report the trial path, then ask the menu again without option A.
 
@@ -147,7 +154,7 @@ When closing was chosen, then `gh issue close <n> --reason completed` and read b
 
 A unit is cleanable only when its PR is `MERGED` and its branch tip equals the PR's final `headRefOid`. Name every unit that is not, and leave it.
 
-Per cleanable unit, and for the QA base worktree (`pr-<n>-base`) and any trial worktree:
+Per cleanable unit, and for its QA base worktree and any trial worktree:
 
 1. `git -C <worktree> status --porcelain --ignored`. Modified or untracked files, or ignored files that are not dependency or build output, → name them and skip this worktree.
 2. `git worktree remove <path>` — never `--force`.

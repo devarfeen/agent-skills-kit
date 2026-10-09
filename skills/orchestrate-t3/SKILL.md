@@ -3,7 +3,7 @@ name: orchestrate-t3
 disable-model-invocation: true
 description: "Orchestrate T3 Code worker threads for a spec (PRD) or a list of issues. Takes a spec reference or issue references — Linear issue IDs (PRWL-100, ABC-123) or GitHub issue URLs/numbers — groups the issues into worktrees, launches one T3 Code thread per group through the T3 Code MCP server running a chosen coding agent, then monitors the threads until every issue is completed with test evidence, blocked, or errored. Use when the T3 Code MCP server is connected and the user wants issues fanned out to T3 Code threads. Inside herdr the same fan-out is /orchestrate-herdr; a whole-spec build with parallel implementer subagents and no T3 Code routes to /implement-spec; one issue worked test-first is /tdd-loop."
 metadata:
-  version: "0.0.1"
+  version: "0.0.2"
 ---
 
 # Orchestrate T3

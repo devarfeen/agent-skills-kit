@@ -3,7 +3,7 @@ name: factory
 disable-model-invocation: true
 description: "Conductor for the factory workflow — reads where a spec (PRD), ticket, or PR stands from the tracker, the PR, CI, review, and deploy state, names the one gate it is at, checks that gate's evidence, and suggests the single skill that moves it forward. Use when the user runs /factory, asks \"where is SPEC-142 in the factory\", \"what's next for this PR\", or wants a spec walked from outcome to staging. Started as /factory run — \"/factory run automate\" for every issue carrying a label, or \"/factory run SPEC-142\" — it carries the chain out itself, pausing for code review, merge, issue close, and cleanup. Without run it never implements and never runs the next skill; in both modes it never goes past staging — production promotion is the owner's. Running one stage directly routes to that stage's skill (/ci-loop, /risk-review, /deploy-watch, /incident-triage)."
 metadata:
-  version: "0.3.0"
+  version: "0.3.1"
 ---
 
 # factory
@@ -61,14 +61,14 @@ Print the output below. Report mode ends here: do not run the suggested skill, e
 
 ## Run mode
 
-The user's `/factory run <reference>` approves the whole chain. Read [`references/run.md`](references/run.md) first; it holds the mechanics cited by bold name.
+The user's `/factory run <reference>` approves the whole chain. Read [`references/run.md`](references/run.md) first.
 
-1. **Intake.** Resolve units as in step 1. A label reference lists the open issues carrying it and triages each per **Triage**; one with no checkable outcome becomes `needs-info`, is assigned back to its author, and leaves the run. Ask the **Start questions** once.
+1. **Intake.** Resolve units as in step 1. A label reference lists the open issues carrying it and triages each per **Triage**; one with no checkable outcome becomes `needs-info`, is assigned back to its author, and leaves the run. Ask the **Start questions** once: where workers run (T3 Code threads, herdr tabs, local sub-agents), agent and permission mode, PR base.
 2. **Loop.** Place each unit (steps 2–4), carry out its `Next` per **Stage map**, and place it again. A stage skill is read and followed per **Loading a stage skill**; its stops still stop that unit. A unit whose next actor is a person is parked with its evidence while the rest continue.
-3. **Pauses.** Ask each once for the whole run, when every unit is parked or has reached it. User away → stop there; no pause has a default.
+3. **Pauses.** Ask each once for the whole run, when every unit is parked or has reached it. User away → stop; no pause has a default.
    - **Review** — list each PR link, then: "Full code review by which agent — Codex, Claude, Cursor — or skip?" In-scope findings are fixed and re-enter the loop.
    - **Merge** — "C (recommended): merge on GitHub and fast-forward local checkouts. B: GitHub only. A: local trial merge — nothing pushed, PRs stay open."
-   - **Close** — after merges and any staging deploy result: "Close the issues with full notes, comment without closing, or leave them?"
+   - **Close** — "Close the issues with full notes, comment without closing, or leave them?"
    - **Cleanup** — "Remove merged worktrees and branches: local and remote, local only, or keep?"
 4. **Run report.** The output table, each pause's answer, and each parked unit's reason.
 
