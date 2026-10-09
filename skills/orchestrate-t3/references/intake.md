@@ -1,6 +1,8 @@
 # Intake
 
-Three decisions, asked as one batched question set after Discover and Group. Reuse choices the user already supplied. Respect the question tool's option and question limits, splitting the batch when required; free-text replies remain available. Zero attribution: omit co-author, AI, and tool attribution from all output.
+Loaded by `/factory run`, ask none of these: the run's **Start** names the agent and model, the permission mode is Full access, the proposed groups stand, groups that share a runtime resource run one after another, and leftover threads are monitored instead of launched again.
+
+Otherwise: three decisions, asked as one batched question set after Discover and Group. Reuse choices the user already supplied. Respect the question tool's option and question limits, splitting the batch when required; free-text replies remain available. Zero attribution: omit co-author, AI, and tool attribution from all output.
 
 ## Grouping rule
 

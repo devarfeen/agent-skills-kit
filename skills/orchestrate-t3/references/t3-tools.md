@@ -23,7 +23,7 @@ Call `orchestrator_capabilities` once. A permission error on it, or on the first
 
 ## Project
 
-A thread launched from outside T3 Code needs a `projectId`. Call `t3_project_list`, following its pages, and match the project whose workspace root is the repository's primary checkout. No match → report the unregistered repository under Needs user; registering a project changes the user's T3 Code setup, so ask first.
+A thread launched from outside T3 Code needs a `projectId`. Call `t3_project_list`, following its pages, and match the project whose workspace root is the repository's primary checkout. No match → report the unregistered repository under Needs user; registering a project changes the user's T3 Code setup, so ask first. Loaded by `/factory run`, register it with the project-create tool the live schema shows, titled with its PROJECT-CODE, and name it in the report instead of asking.
 
 ## Launch
 

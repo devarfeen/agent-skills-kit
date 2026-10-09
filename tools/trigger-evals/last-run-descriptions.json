@@ -1,12 +1,12 @@
 {
  "_comment": "sha256 of each skill's frontmatter description as it stood at the commit recorded in that skill's evals.json last_run. tools/validate.sh check 10 fails when a live description no longer matches -- meaning the recorded eval result is stale and the evals must be re-run. Regenerate with score.py --write-snapshot after a passing run.",
- "recorded_at_commit": "f2da61631685a312101ddb43495d4d4e095e93f2 + uncommitted changes",
- "catalog_sha256": "73f8fddd032ecdc00d1802dc61017824309b9bd4913c028024d7d73685367367",
+ "recorded_at_commit": "bfc0ffba0e401c2de36713738979c0952c73ea2b + uncommitted changes",
+ "catalog_sha256": "f7020e89da21cc8068ca14c45d60aa7e6188d86cf0225b1c25bfb7791b4a2ff7",
  "manifest_sha256": "4574c8a09ee769a108f57ba5ec8ad7587f9317c421ad9ab35c0f82b6ff020a95",
  "judge_sha256": [
-  "3caa2f56b22a3c83d5b40e65ab1eee5d11182b4cd6004946dbe397c2eeaca0dd",
-  "fd75702b75c109255cfbc4f9069d453bf80b48578afeffd298ed82adb486742b",
-  "99a23135e33e5d050df797f347a8aba5f732ef7ca138676c5eac1e9a923da89b"
+  "bf62aaeb61275604de6b607ef98a04e6cef3d6322cec719f2d54b1760110bc27",
+  "6e8ca5812259cb63491115374bb76e42b35855c32b898f42ba8d32e822c7551d",
+  "e1c5c8bd70fec28e35dc78f63ea7a168c4b7ea40e5ad03e6ed828879fb1970ca"
  ],
  "descriptions_sha256": {
   "agentic-qa": "43b87ff54eafc8ee0bea2ffcc1a3f20a9d8ed406bbb691523c360c5f7a904078",
@@ -17,7 +17,7 @@
   "commit-push-pr": "ad051fa60628f3f9594e74bcc9526d3fa37aa733c5edbfa8733366de9f495b06",
   "deploy-watch": "ce4b9e3e4186c8722f6f9cb7fd130bc31b0a5103ac025c8ff9e277c553f35ad2",
   "design-system": "e203ceb7061259f0d126f1fb683c840c79d822870043e82c29388627ff0da2ae",
-  "factory": "7bca061ab08452d8767df8fd7c58f6cbf9730d330a51460308ba6f4b97854d70",
+  "factory": "67b1ab095398de9acf2fd632bdb5b91e6389f48f49760fdff78200400c5346a3",
   "feature-discovery": "522a70869c4591feba11cfaa0e766a26d8d293ea17a3a76d1a950136443fd812",
   "feature-prompt": "6f9eaef781f1faed886f3801bf69ab6776c51e1ac0517b458e575f0ae036502a",
   "incident-triage": "7786f43d43ca7de188315b9641b60534e68221de23623475db080b59f5827fa1",

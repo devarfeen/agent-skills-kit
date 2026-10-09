@@ -3,7 +3,7 @@ name: ask-kit
 disable-model-invocation: true
 description: "Ask which agent-skills-kit skill fits your situation — a router over this kit's skills from workspace setup through shipping. Names one skill, why it fits, and what it needs; never runs it. Use when the user asks which kit skill to use, what to run next with no spec or PR to point at, or how the kit's skills fit together. A spec, ticket, or PR that already exists routes to /factory; choosing among Matt Pocock's planning and build skills routes to ask-matt."
 metadata:
-  version: "0.0.2"
+  version: "0.0.3"
 ---
 
 # ask-kit
@@ -51,7 +51,7 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 | Production incident or outage | `/incident-triage` |
 | Notes for PMs and QA on what shipped | `/release-notes` |
 | A spec, ticket, or PR exists and its next gate is unclear | `/factory <reference>` |
-| Work every issue carrying a label end to end, pausing for review and merge | `/factory run <label>` |
+| Work one issue, or every issue carrying a label, end to end with one question at the start | `/factory run <issue or label>` |
 | Editing this kit's own skills | `/writing-kit-skills` |
 
 ## Output
