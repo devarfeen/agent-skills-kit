@@ -47,7 +47,7 @@ The same batch opens with a preflight, read before asking. Per repository in the
 
 ## Triage
 
-For a label reference only; a spec, ticket, or PR reference skips this section.
+The full section is for a label reference. A spec, ticket, or PR reference changes no label and assigns nobody, but each of its units in `BUILDING` or `QA_RETURNED` whose issue has no `## Acceptance criteria` section still gets steps 3 and 4: the checkable outcome is quoted and the section is drafted for **Start questions** item 4. No checkable outcome → park that unit, naming each missing fact as a question.
 
 List the issues: `gh issue list --label <label> --state open --json number,title,body,author,labels,assignees,url --limit 200`, or the Linear label filter. State the count. Zero → stop.
 

@@ -11,6 +11,12 @@ re-run `/agents-md` after a marker bump.
 
 ### Added
 
+- **`/factory` 0.5.0** — `/factory run <issue>` drafts missing acceptance
+  criteria for a single issue too, and shows them before the build. It still
+  changes no label for a single issue.
+- **`/orchestrate-t3` 0.2.0** — a thread is titled with the issue's own
+  identifier (`PRWL-127`, `#42`) instead of the tracker tag and number.
+
 - **`/factory` 0.4.0 — a run learns from its rounds.** Each check round is
   logged in `specs/factory/rounds.md`. The same cause in three issues of one
   project becomes a line in `specs/factory/lessons.md`, written without asking

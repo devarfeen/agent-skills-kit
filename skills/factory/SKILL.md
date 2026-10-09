@@ -3,7 +3,7 @@ name: factory
 disable-model-invocation: true
 description: "Conductor for the factory workflow — reads where a spec (PRD), ticket, or PR stands from the tracker, the PR, CI, review, and deploy state, names the one gate it is at, checks that gate's evidence, and suggests the single skill that moves it forward. Use when the user runs /factory, asks \"where is SPEC-142 in the factory\", \"what's next for this PR\", or wants a spec walked from outcome to staging. Started as /factory run — \"/factory run automate\" for every issue carrying a label, or \"/factory run SPEC-142\" — it carries the chain out itself, pausing for code review, merge, issue close, and cleanup. Without run it never implements and never runs the next skill; in both modes it never goes past staging — production promotion is the owner's. Running one stage directly routes to that stage's skill (/ci-loop, /risk-review, /deploy-watch, /incident-triage)."
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
 ---
 
 # factory
