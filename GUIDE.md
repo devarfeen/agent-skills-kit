@@ -534,7 +534,9 @@ The factory group (`factory-workflow` in `npx skills`) covers what happens after
 6. runs `/risk-review` and, for a low tier, merges into `local` or the staging branch through GitHub;
 7. posts the handover comment, sets the issue In Review, and removes the app copy, the worktree, and the branches.
 
-It parks an issue, and carries on with the others, when a person is needed: a high risk tier, three failed rounds, a problem it cannot reproduce, or a fact only the reporter has. It never closes an issue, never edits a tracked compose file, and never goes past staging. Plain `/factory` stays read-only.
+With several issues — a label, or a spec with sub-issues — it works them one at a time and finishes or parks each before starting the next. Issues with an open PR go first, then issues QA sent back, then the rest, oldest first. Each issue starts from a base that already has the earlier ones, and gets the lessons they taught.
+
+It parks an issue, and moves to the next, when a person is needed: a high risk tier, three failed rounds, a problem it cannot reproduce, or a fact only the reporter has. It never closes an issue, never edits a tracked compose file, and never goes past staging. Plain `/factory` stays read-only.
 
 **Manual QA starts on staging.** The run does not assign anyone. When `/local-to-staging` or `/deploy-watch` sees the change deployed on staging, it assigns the issue to the manual QA person (the one your issue-tracker document names, otherwise the issue's reporter) and says which build to test. The status stays In Review; the tester closes the issue.
 

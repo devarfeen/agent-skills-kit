@@ -16,6 +16,9 @@ re-run `/agents-md` after a marker bump.
   pauses (review, merge, close, cleanup) and the done-list question are gone.
   Workers always run as T3 Code threads with full access; herdr tabs and local
   sub-agents are no longer offered by a run.
+- **One issue at a time.** A run over a label or a spec finishes or parks
+  each issue before starting the next: open PRs first, then issues QA sent
+  back, then the rest, oldest first.
 - **Review loop.** A second agent reviews each PR and posts its findings on the
   issue; the builder fixes or declines each, up to three rounds.
 - **Merge and handover.** A low-tier PR that passed every gate is merged into

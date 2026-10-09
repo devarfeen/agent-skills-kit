@@ -10,6 +10,7 @@ Mechanics for `run` mode. `SKILL.md` holds the loop and the one question batch; 
 - Start
 - Triage
 - Stage map
+- One unit at a time
 - Tracker status
 - Returned by QA
 - After a fix
@@ -86,6 +87,21 @@ Place the unit with `states.md`, then act on its state. `Next` in that table is 
 | `OUTCOME`, `TICKETS`, `CI_STUCK`, `QA_STUCK`, `HUMAN_REVIEW`, `DEPLOY_FAILED`, `UNKNOWN` | Park with the state's evidence and its `Next` — a person decides here |
 
 A parked unit is not retried in the same run. Running `/factory run` again with the same reference places every unit afresh, so it resumes where the signals say the work stands.
+
+## One unit at a time
+
+A run with several units works them one after another. A unit is taken through to **Cleanup**, or parked, before the next one starts. Each unit then branches from a base that already holds the units before it, each builder gets the lessons the earlier units taught, and one stack is up at a time.
+
+Order:
+
+1. Units that already have an open PR — finish what is started.
+2. Units in `QA_RETURNED`.
+3. Units that block another unit, before the units they block.
+4. The rest, oldest first.
+
+Waiting belongs to the unit's turn: a pending check or deploy is waited for, never a cue to start the next unit. A unit blocked by a parked unit, or naming the same file, route, component, table, or migration as one, parks too and names it, because its base would lack that work.
+
+After each unit print one line: `<unit> — merged | parked: <reason> — <n> of <m>`.
 
 ## Tracker status
 
@@ -176,7 +192,7 @@ Each unit runs its own copy of the app from its own worktree, so the builder's t
 
 A workspace whose instructions give their own command for running the app from a worktree → use that command instead of steps 1 and 2; the rule against editing tracked compose files still holds.
 
-**Shared database.** A unit whose diff adds or changes a migration runs alone for its project: start it only when no other unit of that project has a stack up, and start no other until it is merged or parked. A parked unit that applied a migration is named under Needs user, because the shared database now holds a migration its base does not.
+**Shared database.** Units run one at a time, so the shared database meets one unit's migration at a time. A parked unit that applied a migration is named under Needs user, because the database now holds a migration its base does not.
 
 At the end of the run `git -C <project-repo> status --porcelain` shows no compose file changed.
 
@@ -184,7 +200,7 @@ At the end of the run `git -C <project-repo> status --porcelain` shows no compos
 
 One pass per unit, in this order. Each step's evidence is read back before the next starts.
 
-1. **Implement.** Set the unit's status per **Tracker status** and start its **Task stack**. Load `orchestrate-t3` with the run's units as its issue list and **Start** as its intake: the builder agent, Full access, and its own grouping rule. It asks nothing. Each thread's prompt carries the unit's lines per **Lessons** in `LESSONS:` and its stack per **Task stack** in `STACK:`. It returns each issue's end state.
+1. **Implement.** Set the unit's status per **Tracker status** and start its **Task stack**. Load `orchestrate-t3` with this one unit as its issue list and **Start** as its intake: the builder agent and Full access. It asks nothing. Each thread's prompt carries the unit's lines per **Lessons** in `LESSONS:` and its stack per **Task stack** in `STACK:`. It returns each issue's end state.
 
    A blocked or errored issue parks. An issue without quoted passing test output is not built.
 2. **QA with before and after.** First confirm `git -C <worktree> status --porcelain` is empty; leftovers go back to the worker to commit, so the SHA that is tested is the SHA that ships. Load `agentic-qa` on the branch head, against the unit's stack URL. The unit's worktree is its head checkout — create no second one — and the base checkout is `<task-name>-base` beside it, served by a stack of its own for the base run only. Its base run supplies the `before` screenshots and its head run the `after` ones, in an evidence folder named for the branch until a PR exists. `no-ui-reach` passes without screenshots. Findings go back to the worker per **After a fix** and QA runs again on the new head; the third failed re-check parks the unit as `QA_STUCK`. Each result is a row in the **Round log**, and each round's images go on the issue per **Screenshots on the issue**.
