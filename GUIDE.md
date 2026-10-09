@@ -524,7 +524,7 @@ Variations branch off this line:
 
 The factory group (`factory-workflow` in `npx skills`) covers what happens after a PR opens. It runs as a state machine: `/factory` works out where each unit stands from the tracker, the PR, CI, review comments, and deploy runs, then names the one skill that moves it forward. It has no state file, so you can re-run it at any point. Its table carries a `Since` column — the time of the signal that placed each unit — orders healthy units oldest first, and flags a unit sitting more than 3 days in one state as `stalled`.
 
-**Run mode.** `/factory run <issue or label>` — for example `/factory run PRWL-127` or `/factory run automate` — makes the factory follow its own advice. It asks one thing at the start: which agent and model builds, and which reviews. After that it asks nothing. For each issue it:
+**Run mode.** `/factory run <issue or label>` — for example `/factory run PRWL-127` or `/factory run automate` — makes the factory follow its own advice. It asks one thing at the start: which agent and model reviews the code. The builder is the agent and model you started the run in. After that it asks nothing. For each issue it:
 
 1. sets the issue In Progress and writes any missing acceptance criteria into it;
 2. creates a worktree and starts that issue's own copy of the app from it;

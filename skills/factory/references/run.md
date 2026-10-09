@@ -2,7 +2,7 @@
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
-Mechanics for `run` mode. `SKILL.md` holds the loop and the one question batch; this file holds how each part is carried out.
+Mechanics for `run` mode. `SKILL.md` holds the loop and the one start question; this file holds how each part is carried out.
 
 ## Contents
 
@@ -43,7 +43,7 @@ After triage and before any unit is built, in this order.
 
 1. **T3 Code.** Builders and reviewers run as T3 Code threads, always. Its MCP server is not connected → stop and print the setup from `orchestrate-t3`'s `references/t3-tools.md`; never fall back to another backend. A repository with no T3 Code project is registered and named in the report. Every thread runs in the mode T3 Code calls **Full access**.
 2. **Preflight.** Per repository in the run: the focused-test command; the PR base — the one the workspace instructions name, else `local` when `origin/local` exists, else the staging branch, never the default or a production branch; and the local compose file the **Task stack** is derived from. One that cannot be found parks that repository's units, naming it.
-3. **The question batch** — the two questions in `SKILL.md`, asked together. Every option comes from `orchestrator_capabilities`, never a remembered list: one option per provider, naming the model the catalog marks as that provider's default, or its first listed model when none is marked. Never pick a model by tier or price; the user names a different one if they want it. Recommend the provider this session runs on as the builder, and a different provider as the reviewer, because a second harness is the independent check. User away → stop; the run has no default for either.
+3. **The start question** — the reviewer question in `SKILL.md`. The builder is not asked: it is the provider and model this session runs on, matched in `orchestrator_capabilities`. Every option comes from that result, never a remembered list, and only from providers it reports as authenticated; a provider that is signed out, unavailable, or absent from T3 Code is never offered or recommended. One option per provider, naming the model the catalog marks as that provider's default, or its first listed model when none is marked. Never pick a model by tier or price; the user names a different one if they want it. Recommend a different provider than the builder, because a second harness is the independent check; when the builder's provider is the only authenticated one, offer it and say the review will not be independent. No authenticated provider offers this session's model → ask the builder question too, in the same batch, with the same options. User away → stop; the run has no default reviewer.
 4. One line before work starts: the unit count, the caps — three QA re-checks, three CI attempts, three review rounds per unit — and the two agents.
 
 ### No further questions

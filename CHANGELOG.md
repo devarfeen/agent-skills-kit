@@ -11,9 +11,12 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
-- **`/factory` 1.1.1** — the start question of a run offers each provider's
-  default model instead of its most capable one. Another model is still
-  available by naming it.
+- **`/factory` 1.2.0** — a run builds with the agent and model the session
+  runs on and asks only who reviews. The builder question comes back only
+  when T3 Code has no authenticated provider offering that model. Options
+  come only from providers T3 Code reports as authenticated, and each names
+  the provider's default model instead of its most capable one. Another
+  model is still available by naming it.
 
 - **`/factory` 1.1.0** — a run started with a label removes that label from
   an issue at handover, and when it finds nothing to build. Parked and
