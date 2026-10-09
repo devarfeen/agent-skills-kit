@@ -11,6 +11,10 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- **`/factory` 1.1.1** — the start question of a run offers each provider's
+  default model instead of its most capable one. Another model is still
+  available by naming it.
+
 - **`/factory` 1.1.0** — a run started with a label removes that label from
   an issue at handover, and when it finds nothing to build. Parked and
   `needs-info` issues keep it. A finding a person comments after handover
