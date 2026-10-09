@@ -3,7 +3,7 @@ name: local-to-staging
 disable-model-invocation: true
 description: "Promote every workspace project from `origin/local` to `origin/staging` in one pass — open a local→staging PR in each repo that has both branches, merge it after its checks pass, then watch the GitHub Actions runs on the merge commit and report success or failure per project. Use when the user says \"promote local to staging\", \"open and merge local→staging PRs on all projects\", or runs /local-to-staging. Never pushes, never touches a server, never bypasses branch protection, and never goes past staging — promotion to production is /staging-to-production. A broken staging deploy routes to /staging-fix."
 metadata:
-  version: "0.0.1"
+  version: "0.1.0"
 ---
 
 # local-to-staging
@@ -49,6 +49,8 @@ Classify each repo: **skip** (branch missing, or 0 commits ahead — nothing to 
 
 ### 2. Show the plan
 
+The plan also lists, per repo, the issues step 6 would hand to manual QA and to whom, so the one approval covers those assignments and comments.
+
 ```
 local-to-staging plan — 3 promote, 1 nothing to promote, 1 skipped
 | Project      | Ahead | PR          | Note                              |
@@ -88,6 +90,21 @@ gh run watch <run-id> --repo <owner/repo> --exit-status
 ```
 
 No run yet → re-check at 30s, 60s, then every 2 minutes up to 10 minutes; still none → `no run` (the repo may have no staging workflow), reported as unverified, not passed. Watch every run on the merge commit to a conclusion, up to 2× the workflow's usual duration (read from its last 5 runs); still running → `pending`. On failure, read `gh run view <run-id> --repo <owner/repo> --log-failed` and quote the decisive tail.
+
+### 6. Hand delivered issues to manual QA
+
+Per repo whose runs all concluded `success`. An issue qualifies when it is open, a comment on it holds `<!-- factory-delivered: pr=<n> merge=<sha> … -->`, none holds `factory-qa-assigned`, and `git merge-base --is-ancestor <sha> origin/<target>` passes after the merge. Find candidates through the workspace tracker: issues in the In Review status for that project (Linear), or `gh issue list --state open --search "factory-delivered in:comments"` (GitHub).
+
+Assign each to Manual QA — the person the workspace's issue-tracker document names, else the issue's reporter — and post:
+
+```
+On staging at <merge-sha of the promotion> — ready for manual QA.
+Runs: <run URL> (success)
+
+<!-- factory-qa-assigned: staging=<merge-sha of the promotion> -->
+```
+
+Leave the status as it is and never close the issue. Read each assignee and comment back. A repo with a failed or missing run hands nothing over: nobody is asked to test a build that did not deploy.
 
 ## Output
 

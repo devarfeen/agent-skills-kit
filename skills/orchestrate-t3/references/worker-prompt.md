@@ -6,7 +6,7 @@ Fill `TRACKER` with the workspace tracker per **Resolve** in [`tracker-map.md`](
 
 `BRANCH` is the group's branch and `CHECKOUT` its verified worktree path, both from the checkout record made in **Create worktrees**.
 
-`LESSONS` is filled only by `/factory run`, with the lesson lines it passes for this issue's project. Otherwise drop the `LESSONS` line and the sentence naming it, rather than sending an empty field.
+`LESSONS` and `STACK` are filled only by `/factory run`: the lesson lines for this issue's project, and the URL and command prefix of the app stack it started for this checkout. Otherwise drop each line and the sentence naming it, rather than sending an empty field.
 
 ```md
 TRACKER: [GitHub|Linear]
@@ -15,6 +15,7 @@ ISSUE_URL: [ISSUE_URL]
 BRANCH: [BRANCH_NAME]
 CHECKOUT: [ABSOLUTE_WORKTREE_PATH]
 LESSONS: [LESSON_LINES]
+STACK: [APP_URL] · [EXEC_PREFIX]
 
 Work only on this issue, committing only to BRANCH, inside CHECKOUT. Before the
 first edit confirm `git rev-parse --show-toplevel` prints CHECKOUT; a mismatch
@@ -38,7 +39,7 @@ route, menu item, button, or form that opens it in its AC map row. Before
 changing a rule, format, or field, find every place that already reads it and
 list each under Decisions as updated or unaffected.
 
-Follow each line under LESSONS above. Never edit the issue body, its
+Follow each line under LESSONS above. Run tests and app commands through the prefix in STACK, and use its URL for this checkout's app; never start, stop, or edit another stack or a compose file. Never edit the issue body, its
 acceptance criteria, or anything under `specs/factory/`, and never delete a
 test or remove an assertion to reach green; a test whose contract must change
 is named under Decisions with the reason.

@@ -3,7 +3,7 @@ name: deploy-watch
 disable-model-invocation: true
 description: "Babysit a merged PR's staging deploy — find the GitHub Actions deploy run for the merge commit, watch it to a conclusion, run an approved agent-browser smoke check against the staging URL, and record pass or fail on the PR. Use when the user says \"watch the staging deploy for PR 87\", \"did my change make it to staging\", or /factory reports a unit in STAGING. Never touches a server, never re-runs or triggers a deploy by hand, and never promotes to production — it ends at ready for the owner. A broken staging deploy routes to /staging-fix; investigating an outage is /incident-triage."
 metadata:
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # deploy-watch
@@ -27,7 +27,7 @@ deploy-watch proves a merged change reached staging and works there, using only 
 - **The run must contain the merge commit.** A deploy run counts when its `headSha` is the PR's merge commit, or a later staging commit that contains it — proven with `git merge-base --is-ancestor <merge-sha> <run-head-sha>` and quoted. Re-run after a `/staging-fix` uses the newest such run.
 - **Smoke is read-only.** Navigate and read; never submit forms that create, change, or delete staging data unless the user approves that single step.
 - **One approval before any remote write.** Show the result comment and wait. User away → print it and stop.
-- **Run authorization.** Loaded by `/factory run`, the run's start approves posting the result comment. Smoke approval stays the user's own.
+- **Run authorization.** Loaded by `/factory run`, the run's start approves posting the result comment and the manual-QA hand-off in step 6. Smoke approval stays the user's own.
 - Redact before anything leaves the session: replace tokens, keys, cookies, session IDs, passwords, emails, and customer identifiers in quoted evidence with `<redacted>`, keeping only the lines that show the fault.
 - A failed or erroring `gh` query is unknown — never an empty result, a pass, or green; report the command and its error.
 - **Zero attribution.** No co-author, AI, or tool attribution in the PR comment or any output.
@@ -68,6 +68,19 @@ Smoke: 4/4 pass on https://staging.example.com — invoices list, credit note to
 ```
 
 `result=pass` requires a successful run and every smoke check passing; a failed run or failed check gets `result=fail`. Smoke not run → no marker; report the deploy-only result instead. After approval, post with `gh pr comment <pr> --body-file <file>` and read the comments back.
+
+### 6. Hand to manual QA
+
+Only when the deploy run concluded `success`. Find the issues this PR delivered: those in `closingIssuesReferences`, and open issues whose comments hold `<!-- factory-delivered: pr=<this PR> merge=<sha> … -->`. Skip any that already has a `factory-qa-assigned` comment. For each, in the same approval as step 5, assign it to Manual QA — the person the workspace's issue-tracker document names, else the issue's reporter — and post:
+
+```
+On staging at <deployed-sha> — ready for manual QA.
+Deploy: <run URL> (success) · Smoke: <passed>/<total> | not run
+
+<!-- factory-qa-assigned: staging=<deployed-sha> -->
+```
+
+Leave the issue's status as it is and never close it; the person testing does. Read the assignee and comment back.
 
 ## Output
 

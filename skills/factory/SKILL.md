@@ -1,9 +1,9 @@
 ---
 name: factory
 disable-model-invocation: true
-description: "Conductor for the factory workflow — reads where a spec (PRD), ticket, or PR stands from the tracker, the PR, CI, review, and deploy state, names the one gate it is at, checks that gate's evidence, and suggests the single skill that moves it forward. Use when the user runs /factory, asks \"where is SPEC-142 in the factory\", \"what's next for this PR\", or wants a spec walked from outcome to staging. Started as /factory run — \"/factory run automate\" for every issue carrying a label, or \"/factory run SPEC-142\" — it carries the chain out itself, pausing for code review, merge, issue close, and cleanup. Without run it never implements and never runs the next skill; in both modes it never goes past staging — production promotion is the owner's. Running one stage directly routes to that stage's skill (/ci-loop, /risk-review, /deploy-watch, /incident-triage)."
+description: "Conductor for the factory workflow — reads where a spec (PRD), ticket, or PR stands from the tracker, the PR, CI, review, and deploy state, names the one gate it is at, checks that gate's evidence, and suggests the single skill that moves it forward. Use when the user runs /factory, asks \"where is SPEC-142 in the factory\", \"what's next for this PR\", or wants a spec walked from outcome to staging. Started as /factory run — \"/factory run PRWL-127\" for one issue, or \"/factory run automate\" for every issue carrying a label — it carries the chain out itself after one question: builds in T3 Code threads, has a second agent review the code, merges into local or staging, and hands the issue to manual QA. Without run it never implements and never runs the next skill; in both modes it never closes an issue and never goes past staging — production promotion is the owner's. Running one stage directly routes to that stage's skill (/ci-loop, /risk-review, /deploy-watch, /incident-triage)."
 metadata:
-  version: "0.5.0"
+  version: "1.0.0"
 ---
 
 # factory
@@ -63,14 +63,14 @@ Print the output below. Report mode ends here: do not run the suggested skill, e
 
 The user's `/factory run <reference>` approves the whole chain. Read [`references/run.md`](references/run.md) first.
 
-1. **Intake.** Resolve units as in step 1. A label reference lists the open issues carrying it and triages each per **Triage**; one with no checkable outcome becomes `needs-info`, is assigned back to its author, and leaves the run. Ask the **Start questions** once: where workers run (T3 Code threads, herdr tabs, local sub-agents), agent and permission mode, PR base, and triage's drafted done-lists.
-2. **Loop.** Place each unit (steps 2–4), carry out its `Next` per **Stage map**, and place it again; log it and apply **Lessons**. A stage skill is read and followed per **Loading a stage skill**; its stops still stop that unit. A unit whose next actor is a person is parked with its evidence while the rest continue.
-3. **Pauses.** Ask each once for the whole run, when every unit is parked or has reached it. User away → stop; no pause has a default.
-   - **Review** — list each PR link, then: "Full code review by which agent — Codex, Claude, Cursor — or skip?" In-scope findings are fixed and re-enter the loop.
-   - **Merge** — "C (recommended): merge on GitHub and fast-forward local checkouts. B: GitHub only. A: local trial merge — nothing pushed, PRs stay open."
-   - **Close** — "Close the issues with full notes, comment without closing, or leave them?"
-   - **Cleanup** — "Remove merged worktrees and branches: local and remote, local only, or keep?"
-4. **Run report.** The output table, each pause's answer, each parked unit's reason, and **Lessons** report.
+1. **Intake.** Resolve units as in step 1. A label reference lists the open issues carrying it and triages each per **Triage**; one with no checkable outcome becomes `needs-info`, is assigned back to its author, and leaves the run. Missing acceptance criteria are drafted and written. Run the checks in **Start**, then ask its one batch:
+   - "Which agent and model builds?"
+   - "Which agent and model reviews the code? A different provider than the builder is recommended."
+
+   User away → stop. After this batch the run asks nothing more.
+2. **Loop.** Place each unit (steps 2–4), carry out its `Next` per **Stage map**, and place it again; log it and apply **Lessons**. Per unit: status In Progress, its own worktree and **Task stack**, a builder thread, agentic QA, a PR, CI, the **Review loop** between the reviewer and the builder, risk review, **Merge**, **Handover** with status In Review, **Cleanup**. A stage skill is read and followed per **Loading a stage skill**; its stops still stop that unit.
+3. **Parks.** A unit whose next actor is a person — a high risk tier, a spent cap, a fact only the reporter holds — is parked with its evidence while the rest continue. No tracked compose file is edited and no issue is closed.
+4. **Run report.** The output table, each parked unit's reason, the criteria drafted, and **Lessons** report.
 
 ## Output
 
@@ -94,4 +94,4 @@ At most one table row per unit; `Gate evidence` names the run, SHA, or comment �
 - [ ] Every unit in the spec appears in the table, and the printed unit count matches the total sub-issue count, open and closed, read from the tracker
 - [ ] Every `Gate evidence` cell names a run ID, SHA, or comment marker that was actually read this run
 - [ ] Report mode: `git status` and the PRs show no change made by this run, and no next skill was invoked
-- [ ] Run mode: every unit ends merged, parked with a named reason, or waiting at a named pause, and each answered pause's answer is quoted
+- [ ] Run mode: every unit ends merged with a `factory-delivered` comment read back, or parked with a named reason; no issue was closed and `git status` shows no compose file changed

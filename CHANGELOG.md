@@ -9,6 +9,29 @@ re-run `/agents-md` after a marker bump.
 
 ## 2026-10-10
 
+### Changed
+
+- **`/factory` 1.0.0 — a run is hands-off after one question.** It asks which
+  agent and model builds and which reviews, then asks nothing. The four end
+  pauses (review, merge, close, cleanup) and the done-list question are gone.
+  Workers always run as T3 Code threads with full access; herdr tabs and local
+  sub-agents are no longer offered by a run.
+- **Review loop.** A second agent reviews each PR and posts its findings on the
+  issue; the builder fixes or declines each, up to three rounds.
+- **Merge and handover.** A low-tier PR that passed every gate is merged into
+  `local` or the staging branch through GitHub. The run posts the handover
+  comment, sets the issue In Progress and then In Review, and cleans up. It
+  never closes an issue. The local trial merge is removed.
+- **One app per issue.** Each worktree gets its own copy of the app from a
+  temporary compose file under `.worktrees/`. No tracked compose file is edited.
+- **Manual QA on staging.** `/local-to-staging` 0.1.0 and `/deploy-watch`
+  0.3.0 assign a delivered issue to manual QA once staging holds its merge
+  commit and the deploy succeeded.
+- **`/orchestrate-t3` 0.3.0** asks nothing and registers a missing project
+  when a run loads it, and its worker prompt takes a `STACK:` field.
+- **`/agents-md` 0.4.0, marker v49** — the Rule 18 `/factory run` line matches
+  the above. Re-run `/agents-md` to pick it up.
+
 ### Added
 
 - **`/factory` 0.5.0** — `/factory run <issue>` drafts missing acceptance

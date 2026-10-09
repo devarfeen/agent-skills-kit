@@ -524,7 +524,21 @@ Variations branch off this line:
 
 The factory group (`factory-workflow` in `npx skills`) covers what happens after a PR opens. It runs as a state machine: `/factory` works out where each unit stands from the tracker, the PR, CI, review comments, and deploy runs, then names the one skill that moves it forward. It has no state file, so you can re-run it at any point. Its table carries a `Since` column — the time of the signal that placed each unit — orders healthy units oldest first, and flags a unit sitting more than 3 days in one state as `stalled`.
 
-**Run mode.** `/factory run <label or reference>` — for example `/factory run automate` — makes the factory follow its own advice. It triages every open issue carrying the label (an issue with no checkable outcome becomes `needs-info` and goes back to its author), builds the rest through `/orchestrate-t3`, `/orchestrate-herdr`, or local sub-agents, runs `/agentic-qa` with before and after screenshots, opens the PRs, and carries each through CI and `/risk-review`. It asks you four things and has no default for any of them: which agent does the full code review, how to merge (GitHub then local, GitHub only, or a local trial), whether to close the issues with full notes, and whether to remove the merged worktrees and branches. Starting the run is the approval for the draft and comment gates inside the stage skills; their safety stops still park that issue. It merges only into `local` or the staging branch, and plain `/factory` stays read-only.
+**Run mode.** `/factory run <issue or label>` — for example `/factory run PRWL-127` or `/factory run automate` — makes the factory follow its own advice. It asks one thing at the start: which agent and model builds, and which reviews. After that it asks nothing. For each issue it:
+
+1. sets the issue In Progress and writes any missing acceptance criteria into it;
+2. creates a worktree and starts that issue's own copy of the app from it;
+3. builds in a T3 Code thread named after the issue, with full access;
+4. runs `/agentic-qa`, opens the PR, and drives CI;
+5. has the second agent review the code and post its findings on the issue; the builder fixes or declines each one, for up to three rounds;
+6. runs `/risk-review` and, for a low tier, merges into `local` or the staging branch through GitHub;
+7. posts the handover comment, sets the issue In Review, and removes the app copy, the worktree, and the branches.
+
+It parks an issue, and carries on with the others, when a person is needed: a high risk tier, three failed rounds, a problem it cannot reproduce, or a fact only the reporter has. It never closes an issue, never edits a tracked compose file, and never goes past staging. Plain `/factory` stays read-only.
+
+**Manual QA starts on staging.** The run does not assign anyone. When `/local-to-staging` or `/deploy-watch` sees the change deployed on staging, it assigns the issue to the manual QA person (the one your issue-tracker document names, otherwise the issue's reporter) and says which build to test. The status stays In Review; the tester closes the issue.
+
+**One app per issue.** The copy of the app is described by a temporary compose file in the gitignored `.worktrees/` folder and deleted at cleanup. Dependencies and `.env` are mounted read-only from your main checkout, and the database is shared, so an issue with a migration runs alone for its project.
 
 **What a run learns.** Each check round — a QA result, a CI attempt, a risk review, a code review — is logged as one row in `specs/factory/rounds.md`: what failed, the cause, and what the worker tried. When the same cause shows up in three issues of one project, the run writes a one-line instruction into `specs/factory/lessons.md` and pastes that project's lessons into every later worker prompt, in this run and the next. It does not ask first; the run report lists each line it added, and you can edit or delete any of them. A lesson only changes how a worker works. It never changes a criterion, a test, a gate, or a cap, and a fix that deletes a test or removes an assertion parks the issue. Neither file is state: `/factory` still places every issue from the tracker and the PR alone.
 
@@ -532,7 +546,7 @@ The factory group (`factory-workflow` in `npx skills`) covers what happens after
 
 **Screenshots.** After every QA round the run puts that round's before and after screenshots on the issue. On Linear it attaches the images. On GitHub it posts a comment listing the local file paths, because `gh` cannot attach an image; drag them in yourself if you want them there. Images are never sent anywhere except the issue's own tracker.
 
-**Before a run builds.** It checks that each repository has a test command and, for work a user will see, a way to start the app, and asks about anything missing. If triage had to write an issue's acceptance criteria, it shows you those lists once and waits for your OK or edits. Issues that already had a list go straight through.
+**Before a run builds.** It checks that T3 Code is connected, and that each repository has a test command, a PR base, and a local compose file to copy the app from. A repository missing one is parked with the reason.
 
 ```text
 BUILDING -> CI -> QA -> REVIEW -> risk gate --low--> MERGE -> STAGING -> READY_FOR_OWNER
@@ -636,7 +650,7 @@ One sign per skill that you can check without opening its `SKILL.md`. If you do 
 | `/local-to-staging` | A table with every project and a run URL for each merge commit. |
 | `/staging-to-production` | A readiness table and commands printed for you; nothing opened or merged. |
 | `/release-notes` | A file under `specs/release-notes/` with QA steps and an "Action needed" line. |
-| `/factory` | A table with every unit of the spec, a gate, and the one skill that moves each forward. In `run` mode: the same table, each pause's answer, why any issue was parked, the rounds each issue needed, and any lessons added. |
+| `/factory` | A table with every unit of the spec, a gate, and the one skill that moves each forward. In `run` mode: the same table, why any issue was parked, the criteria it drafted, the rounds each issue needed, and any lessons added. |
 | `/incident-triage` | A timeline where every line names its source, and at least one cause that is not a recent change. |
 
 The kit has no filed issues yet, so there is no "common questions" list here; one will be added from real questions, not invented ones.
