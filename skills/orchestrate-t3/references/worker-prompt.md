@@ -6,12 +6,15 @@ Fill `TRACKER` with the workspace tracker per **Resolve** in [`tracker-map.md`](
 
 `BRANCH` is the group's branch and `CHECKOUT` its verified worktree path, both from the checkout record made in **Create worktrees**.
 
+`LESSONS` is filled only by `/factory run`, with the lesson lines it passes for this issue's project. Otherwise drop the `LESSONS` line and the sentence naming it, rather than sending an empty field.
+
 ```md
 TRACKER: [GitHub|Linear]
 ISSUE: [NATIVE_IDENTIFIER]
 ISSUE_URL: [ISSUE_URL]
 BRANCH: [BRANCH_NAME]
 CHECKOUT: [ABSOLUTE_WORKTREE_PATH]
+LESSONS: [LESSON_LINES]
 
 Work only on this issue, committing only to BRANCH, inside CHECKOUT. Before the
 first edit confirm `git rev-parse --show-toplevel` prints CHECKOUT; a mismatch
@@ -29,6 +32,16 @@ Before coding, read the issue's acceptance criteria, any issues labelled
 Map every criterion to a test, to `agentic-qa (<surface>)` when only a running
 app can prove it, or to a deferral with its reason. Never report UI behavior
 as verified from unit tests.
+
+A criterion a user would see is done only when a user can reach it: name the
+route, menu item, button, or form that opens it in its AC map row. Before
+changing a rule, format, or field, find every place that already reads it and
+list each under Decisions as updated or unaffected.
+
+Follow each line under LESSONS above. Never edit the issue body, its
+acceptance criteria, or anything under `specs/factory/`, and never delete a
+test or remove an assertion to reach green; a test whose contract must change
+is named under Decisions with the reason.
 
 Do not work on the full spec. Do not redo spec orchestration. Do only the
 issue-level discovery this issue needs.

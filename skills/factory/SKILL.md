@@ -3,7 +3,7 @@ name: factory
 disable-model-invocation: true
 description: "Conductor for the factory workflow — reads where a spec (PRD), ticket, or PR stands from the tracker, the PR, CI, review, and deploy state, names the one gate it is at, checks that gate's evidence, and suggests the single skill that moves it forward. Use when the user runs /factory, asks \"where is SPEC-142 in the factory\", \"what's next for this PR\", or wants a spec walked from outcome to staging. Started as /factory run — \"/factory run automate\" for every issue carrying a label, or \"/factory run SPEC-142\" — it carries the chain out itself, pausing for code review, merge, issue close, and cleanup. Without run it never implements and never runs the next skill; in both modes it never goes past staging — production promotion is the owner's. Running one stage directly routes to that stage's skill (/ci-loop, /risk-review, /deploy-watch, /incident-triage)."
 metadata:
-  version: "0.3.1"
+  version: "0.4.0"
 ---
 
 # factory
@@ -13,7 +13,7 @@ The factory is a state machine over things that already exist — tracker issues
 ## Inputs
 
 - **Mode** — `report` (default) or `run`, from the first argument. Enter `run` only when the user's own request says it; a status question never does.
-- **Reference** — one of: a spec (PRD) issue (`PRWL-100`, a GitHub issue URL or number), a ticket, a PR number or URL, or the word `start` for an idea with no spec yet. `run` also takes a label name (`/factory run automate`): every open issue carrying it. Missing → ask for it; never guess from the current branch.
+- **Reference** — one of: a spec (PRD) issue (`PRWL-100`, a GitHub issue URL or number), a ticket, a PR number or URL, or the word `start` for an idea with no spec yet. `run` also takes a label name (`/factory run automate`): every open issue carrying it. Missing → ask; never guess from the current branch.
 - **Tracker of record** — Linear (via Linear MCP) or GitHub (via `gh`), read from the workspace `AGENTS.md`. Unclear → ask.
 - **Staging branch** — default `staging`; confirm with `git ls-remote --heads origin <branch>` before any state that depends on it.
 
@@ -32,7 +32,7 @@ The factory is a state machine over things that already exist — tracker issues
 
 ### 1. Resolve the unit of work
 
-From the reference, build the list of units to place: a spec expands to all its sub-issues, open and closed (count them and say the count); a ticket or PR is one unit. For each ticket, find its PR: `gh pr list --search "<issue-id>" --state all --json number,headRefName,baseRefName,state` or the tracker's linked-PR field. Closed and merged tickets stay in the list — they may still be in `STAGING`. A ticket with a `qa-escape` marker is placed by the newest PR opened after that marker.
+From the reference, build the list of units to place: a spec expands to all its sub-issues, open and closed (state the count); a ticket or PR is one unit. For each ticket, find its PR: `gh pr list --search "<issue-id>" --state all --json number,headRefName,baseRefName,state` or the tracker's linked-PR field. Closed and merged tickets stay in the list — they may still be in `STAGING`. A ticket with a `qa-escape` marker is placed by the newest PR opened after that marker.
 
 ### 2. Read the signals
 
@@ -42,7 +42,7 @@ Per unit, read only what the state table needs:
 gh pr view <pr> --json state,isDraft,baseRefName,headRefOid,mergeCommit,mergedAt,reviewDecision,reviews,statusCheckRollup,autoMergeRequest,comments,commits
 gh pr diff <pr> --name-only
 gh run list --workflow <deploy-workflow> --branch <staging-branch> --json headSha,status,conclusion,url
-gh issue view <issue> --json state,comments   # qa-escape markers and reopen events
+gh issue view <issue> --json state,comments
 ```
 
 The risk-review marker is a PR comment containing `<!-- risk-review: tier=<low|high> sha=<sha> blocking=<n> -->`. Read it from `comments`; ignore markers for any other SHA. The agentic-qa marker `<!-- agentic-qa: sha=<sha> result=<…> findings=<n> recheck=<n> -->` and the deploy-watch marker `<!-- deploy-watch: merge=<merge-sha> deployed=<run-head-sha> result=<pass|fail> -->` are read the same way; the newest marker wins. The `Acceptance criteria` verdict that clears `BUILDING` is read from the PR body or from a `## QA handoff` comment in `comments` (where `/commit-push-pr` posts it). `qa-escape` markers (`<!-- qa-escape: class=… area=… pr=<n> tested=<sha> reproduced=… -->`) live on the issue, not the PR.
@@ -63,14 +63,14 @@ Print the output below. Report mode ends here: do not run the suggested skill, e
 
 The user's `/factory run <reference>` approves the whole chain. Read [`references/run.md`](references/run.md) first.
 
-1. **Intake.** Resolve units as in step 1. A label reference lists the open issues carrying it and triages each per **Triage**; one with no checkable outcome becomes `needs-info`, is assigned back to its author, and leaves the run. Ask the **Start questions** once: where workers run (T3 Code threads, herdr tabs, local sub-agents), agent and permission mode, PR base.
-2. **Loop.** Place each unit (steps 2–4), carry out its `Next` per **Stage map**, and place it again. A stage skill is read and followed per **Loading a stage skill**; its stops still stop that unit. A unit whose next actor is a person is parked with its evidence while the rest continue.
+1. **Intake.** Resolve units as in step 1. A label reference lists the open issues carrying it and triages each per **Triage**; one with no checkable outcome becomes `needs-info`, is assigned back to its author, and leaves the run. Ask the **Start questions** once: where workers run (T3 Code threads, herdr tabs, local sub-agents), agent and permission mode, PR base, and triage's drafted done-lists.
+2. **Loop.** Place each unit (steps 2–4), carry out its `Next` per **Stage map**, and place it again; log it and apply **Lessons**. A stage skill is read and followed per **Loading a stage skill**; its stops still stop that unit. A unit whose next actor is a person is parked with its evidence while the rest continue.
 3. **Pauses.** Ask each once for the whole run, when every unit is parked or has reached it. User away → stop; no pause has a default.
    - **Review** — list each PR link, then: "Full code review by which agent — Codex, Claude, Cursor — or skip?" In-scope findings are fixed and re-enter the loop.
    - **Merge** — "C (recommended): merge on GitHub and fast-forward local checkouts. B: GitHub only. A: local trial merge — nothing pushed, PRs stay open."
    - **Close** — "Close the issues with full notes, comment without closing, or leave them?"
    - **Cleanup** — "Remove merged worktrees and branches: local and remote, local only, or keep?"
-4. **Run report.** The output table, each pause's answer, and each parked unit's reason.
+4. **Run report.** The output table, each pause's answer, each parked unit's reason, and **Lessons** report.
 
 ## Output
 

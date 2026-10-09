@@ -7,6 +7,34 @@ their new versions, so a workspace on an older copy can see what an update
 brings. Generated `AGENTS.md` files carry the `agents-md` marker version;
 re-run `/agents-md` after a marker bump.
 
+## 2026-10-10
+
+### Added
+
+- **`/factory` 0.4.0 — a run learns from its rounds.** Each check round is
+  logged in `specs/factory/rounds.md`. The same cause in three issues of one
+  project becomes a line in `specs/factory/lessons.md`, written without asking
+  and pasted into every later worker and fix prompt. A lesson never changes a
+  criterion, test, gate, cap, or stop. Placement still reads no file.
+- **`/factory` 0.4.0 — locked checks.** A fix round that deletes a test or
+  removes an assertion parks the issue unless the worker named the contract
+  change. Acceptance criteria that changed since intake park it before the PR
+  opens.
+- **`/factory` 0.4.0 — before the build.** The start questions open with a
+  preflight (test command, app start command) and show any acceptance criteria
+  triage drafted, which are written to the issue only after your answer.
+- **`/factory` 0.4.0 — screenshots on the issue.** After every QA round a run
+  attaches the before and after screenshots to the Linear issue, or on GitHub
+  posts a comment listing their local paths. Images go nowhere else.
+- **`/agentic-qa` 0.3.0** records a `not-wired` finding instead of
+  `no-ui-reach` when a criterion describes something a user sees or does and
+  no screen reaches the change. `/qa-escape` 0.3.0 adds the `not-wired` class.
+- **`/orchestrate-t3` 0.1.0, `/orchestrate-herdr` 0.2.0** — the worker prompt
+  asks for the entry point of each user-visible criterion and a list of every
+  existing reader of a changed rule, format, or field, forbids editing the
+  issue body or removing an assertion to reach green, and takes an optional
+  `LESSONS:` field that only `/factory run` fills.
+
 ## 2026-10-08
 
 ### Added

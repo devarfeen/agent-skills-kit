@@ -414,7 +414,7 @@ stateDiagram-v2
 | `CI` | Every required check on head passes | `/ci-loop <pr>` when failing; wait and re-run `/factory` when only pending |
 | `QA_STUCK` | The engineer's decision: an approval on head or a new push | Engineer — no skill |
 | `CHANGES` | No requested changes, risk blockers, or QA findings left on head | `/pr-feedback <pr>` for human threads; `/tdd-loop` for a risk or QA finding |
-| `QA` | An `agentic-qa` marker on head with `result=verified findings=0` or `result=no-ui-reach` (or, for `partial`, an approval on head) | `/agentic-qa <pr>` |
+| `QA` | An `agentic-qa` marker on head with `result=verified findings=0` or `result=no-ui-reach` (or, for `partial`, an approval on head). A criterion a user sees with no screen to reach it is a `not-wired` finding, not `no-ui-reach` | `/agentic-qa <pr>` |
 | `REVIEW` | A `risk-review` marker on head with `blocking=0` | `/risk-review <pr>` |
 | `HUMAN_REVIEW` | Approved on head | Engineer review — no skill |
 | `MERGE` | Merged, or auto-merge enabled and waiting on checks | You merge into `staging` or `local` (or enable the auto-merge `/risk-review` offers for low risk); any other base is the owner's |
@@ -427,7 +427,7 @@ How to read it:
 
 - **First matching row wins.** `/factory` checks the states in the table's order, top to bottom, and the first whose condition holds is the unit's state. Order matters: a reopened issue is `QA_RETURNED` even though its old PR is merged, and a stuck CI is `CI_STUCK` before it is `CI`.
 - **A new push resets the gates.** Markers and approvals count only for the commit they name. Push again and the PR goes back to `CI`; old approvals and markers no longer pass anything. `reviewDecision` alone never counts as an approval, because it survives pushes.
-- **Stateless, and it only suggests.** `/factory` keeps no state file, so re-running it from any point gives the same answer. It names one skill per unit and stops; it never runs that skill, never auto-chains, and never merges or suggests merging toward production. The single exception is a run you start yourself with `/factory run`, which still never merges toward production.
+- **Stateless, and it only suggests.** `/factory` keeps no state file, so re-running it from any point gives the same answer. It names one skill per unit and stops; it never runs that skill, never auto-chains, and never merges or suggests merging toward production. The single exception is a run you start yourself with `/factory run`, which still never merges toward production. A run does keep a log of its check rounds and the lessons drawn from them under `specs/factory/`, but placing a unit never reads either file.
 - **`READY_FOR_OWNER` is the end.** Staging is the ceiling. Production promotion and feature-flag rollout belong to the owner.
 - **Blocked units come first.** For a spec with several units, `QA_RETURNED`, `DEPLOY_FAILED`, `CI_STUCK`, `QA_STUCK`, `CHANGES`, and `UNKNOWN` are listed before healthy ones. Healthy units follow oldest first, and one that has sat in a state for more than 3 days is flagged `stalled`.
 - **Incidents sit outside the path.** Use `/incident-triage`, then re-enter at `BUILDING` with the fix ticket it proposes.

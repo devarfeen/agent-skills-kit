@@ -523,6 +523,12 @@ The factory group (`factory-workflow` in `npx skills`) covers what happens after
 
 **Run mode.** `/factory run <label or reference>` — for example `/factory run automate` — makes the factory follow its own advice. It triages every open issue carrying the label (an issue with no checkable outcome becomes `needs-info` and goes back to its author), builds the rest through `/orchestrate-t3`, `/orchestrate-herdr`, or local sub-agents, runs `/agentic-qa` with before and after screenshots, opens the PRs, and carries each through CI and `/risk-review`. It asks you four things and has no default for any of them: which agent does the full code review, how to merge (GitHub then local, GitHub only, or a local trial), whether to close the issues with full notes, and whether to remove the merged worktrees and branches. Starting the run is the approval for the draft and comment gates inside the stage skills; their safety stops still park that issue. It merges only into `local` or the staging branch, and plain `/factory` stays read-only.
 
+**What a run learns.** Each check round — a QA result, a CI attempt, a risk review, a code review — is logged as one row in `specs/factory/rounds.md`: what failed, the cause, and what the worker tried. When the same cause shows up in three issues of one project, the run writes a one-line instruction into `specs/factory/lessons.md` and pastes that project's lessons into every later worker prompt, in this run and the next. It does not ask first; the run report lists each line it added, and you can edit or delete any of them. A lesson only changes how a worker works. It never changes a criterion, a test, a gate, or a cap, and a fix that deletes a test or removes an assertion parks the issue. Neither file is state: `/factory` still places every issue from the tracker and the PR alone.
+
+**Screenshots.** After every QA round the run puts that round's before and after screenshots on the issue. On Linear it attaches the images. On GitHub it posts a comment listing the local file paths, because `gh` cannot attach an image; drag them in yourself if you want them there. Images are never sent anywhere except the issue's own tracker.
+
+**Before a run builds.** It checks that each repository has a test command and, for work a user will see, a way to start the app, and asks about anything missing. If triage had to write an issue's acceptance criteria, it shows you those lists once and waits for your OK or edits. Issues that already had a list go straight through.
+
 ```text
 BUILDING -> CI -> QA -> REVIEW -> risk gate --low--> MERGE -> STAGING -> READY_FOR_OWNER
    ^         |     |                  |                          |
@@ -625,7 +631,7 @@ One sign per skill that you can check without opening its `SKILL.md`. If you do 
 | `/local-to-staging` | A table with every project and a run URL for each merge commit. |
 | `/staging-to-production` | A readiness table and commands printed for you; nothing opened or merged. |
 | `/release-notes` | A file under `specs/release-notes/` with QA steps and an "Action needed" line. |
-| `/factory` | A table with every unit of the spec, a gate, and the one skill that moves each forward. In `run` mode: the same table, each pause's answer, and why any issue was parked. |
+| `/factory` | A table with every unit of the spec, a gate, and the one skill that moves each forward. In `run` mode: the same table, each pause's answer, why any issue was parked, the rounds each issue needed, and any lessons added. |
 | `/incident-triage` | A timeline where every line names its source, and at least one cause that is not a recent change. |
 
 The kit has no filed issues yet, so there is no "common questions" list here; one will be added from real questions, not invented ones.

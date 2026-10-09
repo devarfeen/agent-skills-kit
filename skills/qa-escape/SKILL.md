@@ -3,7 +3,7 @@ name: qa-escape
 disable-model-invocation: true
 description: "Intake for a bug that human QA found after an agent called the work done — reproduce it as an evidence brief, classify the escape, trace why the agent's checks missed it to a check that can be fixed, record it as a labelled comment on the issue, and name the failing regression test /tdd-loop must write first. When the same escape class reaches three issues, proposes a durable guard and applies it only on approval. Use when the user says \"QA found a bug in #87\", \"QA bounced this ticket\", \"this was marked fixed but QA says it's broken\", or /factory reports a unit in QA_RETURNED. Never edits code. A bug with no prior agent claim is /diagnosing-bugs; a staging-only fault is /staging-fix."
 metadata:
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # qa-escape
