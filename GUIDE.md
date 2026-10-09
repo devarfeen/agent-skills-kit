@@ -526,7 +526,7 @@ The factory group (`factory-workflow` in `npx skills`) covers what happens after
 
 **Run mode.** `/factory run <issue or label>` — for example `/factory run PRWL-127` or `/factory run automate` — makes the factory follow its own advice. It asks one thing at the start: which agent and model reviews the code. The builder is the agent and model you started the run in. After that it asks nothing. For each issue it:
 
-1. sets the issue In Progress and writes any missing acceptance criteria into it;
+1. sets the issue In Progress and posts any missing acceptance criteria as a comment on it, never editing the issue itself;
 2. creates a worktree and starts that issue's own copy of the app from it;
 3. builds in a T3 Code thread named after the issue, with full access;
 4. runs `/agentic-qa`, opens the PR, and drives CI;

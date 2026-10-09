@@ -21,6 +21,10 @@ Call `orchestrator_capabilities` once. A permission error on it, or on the first
 
 `orchestrator_capabilities` lists the provider instances and their models from the same catalog as T3 Code's composer. Every agent and model offered in Intake comes from this result, never from a remembered list.
 
+- **Usable provider** — an entry of `providers` with `canRunChildTask: true`. One with `false` is disabled or not installed, says why in `constraints`, and is never offered. This is the only availability signal: the result carries no sign-in state.
+- **Default model** — for Cursor, `composer-2.5` when the result lists it. Otherwise the provider's model with id `default` when it lists one, else its first listed model. The result marks no other default.
+- **This session** — `inheritedProviderInstanceId` and `inheritedModel`; both null when the caller is not a T3 Code thread.
+
 ## Project
 
 A thread launched from outside T3 Code needs a `projectId`. Call `t3_project_list`, following its pages, and match the project whose workspace root is the repository's primary checkout. No match → report the unregistered repository under Needs user; registering a project changes the user's T3 Code setup, so ask first. Loaded by `/factory run`, register it with the project-create tool the live schema shows, titled with its PROJECT-CODE, and name it in the report instead of asking.

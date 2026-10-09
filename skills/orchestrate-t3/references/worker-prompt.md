@@ -28,7 +28,8 @@ seam; without it use `/tdd-loop` directly, with `/tdd` for test quality
 guidance. Commit each green step to BRANCH; never push or open a PR. If neither is installed, reproduce the failure with a
 test and make it pass; still report the command and passing output.
 
-Before coding, read the issue's acceptance criteria, any issues labelled
+Before coding, read the issue's acceptance criteria (in its body, else its
+newest `## Acceptance criteria` comment), any issues labelled
 `qa-escape` for this area, and the `## QA escape guards` lines in AGENTS.md.
 Map every criterion to a test, to `agentic-qa (<surface>)` when only a running
 app can prove it, or to a deferral with its reason. Never report UI behavior

@@ -3,7 +3,7 @@ name: factory
 disable-model-invocation: true
 description: "Conductor for the factory workflow — reads where a spec (PRD), ticket, or PR stands from the tracker, the PR, CI, review, and deploy state, names the one gate it is at, checks that gate's evidence, and suggests the single skill that moves it forward. Use when the user runs /factory, asks \"where is SPEC-142 in the factory\", \"what's next for this PR\", or wants a spec walked from outcome to staging. Started as /factory run — \"/factory run PRWL-127\" for one issue, or \"/factory run automate\" for every issue carrying a label — it carries the chain out itself after one question: builds in T3 Code threads, has a second agent review the code, merges into local or staging, and hands the issue to manual QA. Without run it never implements and never runs the next skill; in both modes it never closes an issue and never goes past staging — production promotion is the owner's. Running one stage directly routes to that stage's skill (/ci-loop, /risk-review, /deploy-watch, /incident-triage)."
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # factory
@@ -63,13 +63,13 @@ Print the output below. Report mode ends here: do not run the suggested skill, e
 
 The user's `/factory run <reference>` approves the whole chain. Read [`references/run.md`](references/run.md) first.
 
-1. **Intake.** Resolve units as in step 1. A label reference lists the open issues carrying it and triages each per **Triage**; one with no checkable outcome becomes `needs-info`, is assigned back to its author, and leaves the run. Missing acceptance criteria are drafted and written. Run the checks in **Start**; the builder is this session's model. Ask:
+1. **Intake.** Resolve units as in step 1. A label reference lists the open issues carrying it and triages each per **Triage**; one with no checkable outcome becomes `needs-info`, is assigned to its author, and leaves the run. Missing acceptance criteria are posted as a comment. Run the checks in **Start**; the builder is this session's model. Ask:
    - "Which agent and model reviews the code? Prefer a different provider than the builder."
    - **Start** finds no builder: "Which agent and model builds?"
 
-   User away → stop. Then the run asks nothing more.
+   User away → stop. Then it asks nothing more.
 2. **Loop.** One unit at a time, in the order **One unit at a time** gives: place it (steps 2–4), carry out its `Next` per **Stage map**, and place it again; log it and apply **Lessons**. Per unit: status In Progress, its own worktree and **Task stack**, a builder thread, agentic QA, a PR, CI, the **Review loop** between the reviewer and the builder, risk review, **Merge**, **Handover** with status In Review, **Cleanup**. A stage skill is read and followed per **Loading a stage skill**; its stops still stop that unit.
-3. **Parks.** A unit whose next actor is a person — a high risk tier, a spent cap, a fact only the reporter holds — is parked with its evidence; the run moves on. No tracked compose file is edited and no issue is closed.
+3. **Parks.** A unit whose next actor is a person — a high risk tier, a spent cap, a fact only the reporter holds — is parked with its evidence; the run continues. No tracked compose file or issue body is edited; no issue is closed.
 4. **Run report.** The output table, each parked unit's reason, the criteria drafted, and **Lessons** report.
 
 ## Output

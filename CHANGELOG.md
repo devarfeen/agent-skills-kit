@@ -11,6 +11,27 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- **`/factory` 1.3.0** — a run never edits an issue's title or body.
+  Acceptance criteria it drafts are posted as a comment marked
+  `<!-- factory-criteria -->` instead of appended to the body, so the issue
+  keeps the reporter's text and a dated chain of events. Later stages read
+  criteria from the body, else from that comment.
+
+- **`/orchestrate-t3` 0.3.2** — the worker prompt reads acceptance criteria
+  from the issue body, else from its newest criteria comment. Cursor's
+  default model is Composer 2.5 when T3 Code lists it, which is also what a
+  `/factory run` offers for Cursor.
+
+- **`/factory` 1.2.1** — the reviewer question offers every provider T3 Code
+  can run, not only the one the run started in. The catalog has no sign-in
+  field, so 1.2.0's "authenticated only" rule left one option. A disabled or
+  uninstalled provider is still never offered. The builder is read from the
+  catalog, and is asked only when the run did not start in a T3 Code thread.
+
+- **`/orchestrate-t3` 0.3.1** — the T3 tools reference names the catalog
+  fields that say which providers are usable, which model is a provider's
+  default, and which agent and model the session runs on.
+
 - **`/factory` 1.2.0** — a run builds with the agent and model the session
   runs on and asks only who reviews. The builder question comes back only
   when T3 Code has no authenticated provider offering that model. Options
