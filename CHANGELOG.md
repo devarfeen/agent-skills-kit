@@ -11,6 +11,11 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- **`/factory` 1.1.0** — a run started with a label removes that label from
+  an issue at handover, and when it finds nothing to build. Parked and
+  `needs-info` issues keep it. A finding a person comments after handover
+  places the issue in `QA_RETURNED`.
+
 - **`/factory` 1.0.1** — removes leftover close-pause text from the run
   reference, including an instruction to close issues. A run never closes one.
 

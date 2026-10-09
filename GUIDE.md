@@ -538,6 +538,8 @@ With several issues — a label, or a spec with sub-issues — it works them one
 
 It parks an issue, and moves to the next, when a person is needed: a high risk tier, three failed rounds, a problem it cannot reproduce, or a fact only the reporter has. It never closes an issue, never edits a tracked compose file, and never goes past staging. Plain `/factory` stays read-only.
 
+**The run label.** When a run was started with a label, it takes that label off each issue at handover, and off an issue where it found nothing to build. Parked and `needs-info` issues keep it and are looked at again next run. To send a delivered issue back, put the label on again, reopen it, or run `/factory run <issue>` on it.
+
 **Manual QA starts on staging.** The run does not assign anyone. When `/local-to-staging` or `/deploy-watch` sees the change deployed on staging, it assigns the issue to the manual QA person (the one your issue-tracker document names, otherwise the issue's reporter) and says which build to test. The status stays In Review; the tester closes the issue.
 
 **One app per issue.** The copy of the app is described by a temporary compose file in the gitignored `.worktrees/` folder and deleted at cleanup. Dependencies and `.env` are mounted read-only from your main checkout, and the database is shared, so an issue with a migration runs alone for its project.
