@@ -19,7 +19,7 @@ Combine skills from this kit and the wider ecosystem to move from idea to shippe
 - **Forrest Chang:** Seeding logic for `/agents-md` non-negotiable principles.
 - **Anthropic:** Source for `/skill-creator`.
 - **Vercel Labs:** Source for `/agent-browser`, `skills` CLI, and React/React Native best practices.
-- **Optional companions:** Graphify, Codex plugin for Claude Code, Impeccable, notebooklm-py, herdr, docker-expert, Laravel Boost, Figma MCP, MySQL/Postgres MCP, and Cursor plugins `unslop`, `blast-radius`, and `show-me-your-work` are separate installs used only when installed and task-fit.
+- **Optional companions:** Graphify, Codex plugin for Claude Code, Impeccable, notebooklm-py, herdr, docker-expert, Laravel Boost, Figma MCP, MySQL/Postgres MCP, Cursor plugins `unslop`, `blast-radius`, and `show-me-your-work`, and Michael Shimeles's `before-and-after`, `code-structure`, and `evidence-driven-testing` are separate installs used only when installed and task-fit.
 - **Pattern references (not vendored):** [github/awesome-copilot](https://github.com/github/awesome-copilot), [obra/superpowers](https://github.com/obra/superpowers), [ChrisTitusTech/titus-ai](https://github.com/ChrisTitusTech/titus-ai), [alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills), and [garrytan/gstack](https://github.com/garrytan/gstack). The 2026-10 hardening pass compared every kit skill against these and adapted individual rules in house style; no files were copied.
 - **Cursor:** Cursor CLI (`agent` command, `/skill-name`, `AGENTS.md` as canonical context, `Task` for subagents). Tool names and permissions: [`skills/agents-md/references/tool-calling.md`](skills/agents-md/references/tool-calling.md). https://cursor.com/docs/cli/overview
 
@@ -154,6 +154,9 @@ These are optional helpers. The kit provides `using-git-worktrees`; the other en
 | unslop | Free-prose output needs AI tells removed — chat narration, and PR/issue/doc prose the agent composes freely. Never applies to text a skill mandates verbatim: generated `AGENTS.md`/shims, output templates, section names, field labels, canonical lines. |
 | blast-radius | A change's blast radius needs proving — what it could break beyond the diff, with the one safety fact run against real code rather than a writeup. User-invoked (`/blast-radius`); do not auto-fire. |
 | show-me-your-work | Long-running or unattended work needs a reviewable decision trail — a TSV log of what, why, evidence, and result that a human can audit after stepping away. User-invoked (`/show-me-your-work`); do not auto-fire. |
+| before-and-after | A visible change needs a before and after screenshot pair, from two URLs, saved to a local folder. Images stay local: never pass `--markdown` or run its upload script, whose default host is public. |
+| code-structure | The same operational logic is repeated across two or more flows, or a change must decide what belongs in an action and what in a shared service. |
+| evidence-driven-testing | A change needs a recorded session as proof — an annotated screen recording of the app being driven, or measured numbers and output pairs for work with no screen. It adds evidence; `/agentic-qa` stays the QA gate. |
 | wizard | A procedure hits steps only a human can perform (credentials, CI secrets, third-party dashboards, one-off migrations/cutovers) — generate an interactive bash walkthrough for them; never for steps the agent can do itself. |
 | to-questionnaire | A decision needs knowledge the user lacks — turn it into a Markdown questionnaire the one person who can answer fills in async or in a meeting. |
 | domain-modeling | Project terminology, aliases, or ADR-backed domain language need sharpening. |
@@ -523,6 +526,14 @@ The factory group (`factory-workflow` in `npx skills`) covers what happens after
 
 **Run mode.** `/factory run <label or reference>` — for example `/factory run automate` — makes the factory follow its own advice. It triages every open issue carrying the label (an issue with no checkable outcome becomes `needs-info` and goes back to its author), builds the rest through `/orchestrate-t3`, `/orchestrate-herdr`, or local sub-agents, runs `/agentic-qa` with before and after screenshots, opens the PRs, and carries each through CI and `/risk-review`. It asks you four things and has no default for any of them: which agent does the full code review, how to merge (GitHub then local, GitHub only, or a local trial), whether to close the issues with full notes, and whether to remove the merged worktrees and branches. Starting the run is the approval for the draft and comment gates inside the stage skills; their safety stops still park that issue. It merges only into `local` or the staging branch, and plain `/factory` stays read-only.
 
+**What a run learns.** Each check round — a QA result, a CI attempt, a risk review, a code review — is logged as one row in `specs/factory/rounds.md`: what failed, the cause, and what the worker tried. When the same cause shows up in three issues of one project, the run writes a one-line instruction into `specs/factory/lessons.md` and pastes that project's lessons into every later worker prompt, in this run and the next. It does not ask first; the run report lists each line it added, and you can edit or delete any of them. A lesson only changes how a worker works. It never changes a criterion, a test, a gate, or a cap, and a fix that deletes a test or removes an assertion parks the issue. Neither file is state: `/factory` still places every issue from the tracker and the PR alone.
+
+**Issues QA sent back.** When a person reopens an issue or reports a problem on shipped work, the run no longer hands it straight to you. It runs `/qa-escape` first: reproduces the problem, records why the agent's checks missed it, and posts that on the issue. Then it rebuilds, starting from a failing test for that exact problem, and takes the fix through the usual gates. Three cases still come back to you: the problem cannot be reproduced, it existed before the change, or the fix was simply not on the environment QA tested (the run names `/local-to-staging` and builds nothing). Approving a durable guard also stays yours.
+
+**Screenshots.** After every QA round the run puts that round's before and after screenshots on the issue. On Linear it attaches the images. On GitHub it posts a comment listing the local file paths, because `gh` cannot attach an image; drag them in yourself if you want them there. Images are never sent anywhere except the issue's own tracker.
+
+**Before a run builds.** It checks that each repository has a test command and, for work a user will see, a way to start the app, and asks about anything missing. If triage had to write an issue's acceptance criteria, it shows you those lists once and waits for your OK or edits. Issues that already had a list go straight through.
+
 ```text
 BUILDING -> CI -> QA -> REVIEW -> risk gate --low--> MERGE -> STAGING -> READY_FOR_OWNER
    ^         |     |                  |                          |
@@ -625,7 +636,7 @@ One sign per skill that you can check without opening its `SKILL.md`. If you do 
 | `/local-to-staging` | A table with every project and a run URL for each merge commit. |
 | `/staging-to-production` | A readiness table and commands printed for you; nothing opened or merged. |
 | `/release-notes` | A file under `specs/release-notes/` with QA steps and an "Action needed" line. |
-| `/factory` | A table with every unit of the spec, a gate, and the one skill that moves each forward. In `run` mode: the same table, each pause's answer, and why any issue was parked. |
+| `/factory` | A table with every unit of the spec, a gate, and the one skill that moves each forward. In `run` mode: the same table, each pause's answer, why any issue was parked, the rounds each issue needed, and any lessons added. |
 | `/incident-triage` | A timeline where every line names its source, and at least one cause that is not a recent change. |
 
 The kit has no filed issues yet, so there is no "common questions" list here; one will be added from real questions, not invented ones.

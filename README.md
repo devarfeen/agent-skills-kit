@@ -102,7 +102,7 @@ install commands are [grouped by source](#global-install-commands) below the tab
 
 | Skill | Phase | What it does | Example prompt |
 | :--- | :--- | :--- | :--- |
-| [`agents-md`](skills/agents-md/SKILL.md) | startup | Generates the workspace-root `AGENTS.md` (Project Matrix, 18 non-negotiable rules, skills gradient, context policy) plus a `CLAUDE.md` redirect shim, from a `.code-workspace` file (marker `v47`). Reports competing per-runtime instruction files without touching them, and suggests an optional env-guard hook template when production or staging hosts are named | `Generate AGENTS.md for this workspace` |
+| [`agents-md`](skills/agents-md/SKILL.md) | startup | Generates the workspace-root `AGENTS.md` (Project Matrix, 18 non-negotiable rules, skills gradient, context policy) plus a `CLAUDE.md` redirect shim, from a `.code-workspace` file (marker `v48`). Reports competing per-runtime instruction files without touching them, and suggests an optional env-guard hook template when production or staging hosts are named | `Generate AGENTS.md for this workspace` |
 | [`design-system`](skills/design-system/SKILL.md) | startup | Turns a design source into tokens + a UI library + a verifiable preview + a binding AGENTS.md rule. Source order: one you name, else a root `DESIGN.md`, else a project UI/brand/component-library skill, else Figma, spec, reference screens, or a guided session. Checks WCAG AA contrast, loaded fonts, and light/dark modes; re-run `extend` as the design grows | `Set up the design system for ADMIN-WEB from this Figma file` |
 | [`feature-discovery`](skills/feature-discovery/SKILL.md) | discover | Read-only, evidence-backed trace of how a feature, module, or behavior works, with current code as the source of truth — then Graphify as a cross-check, then ADRs, each with its own report section. Git history is read only if you accept the report's offer | `Trace the invite-user workflow across ADMIN-WEB and API-SERVICE` |
 | [`port-feature`](skills/port-feature/SKILL.md) | discover | Maps a feature from a REFERENCE implementation into a TARGET stack as one gap map — including validation, bulk actions, role gates, and reference behaviour no test covers — then hands to planning | `Port stock-transfer approvals from LEGACY-PORTAL to ADMIN-WEB` |
@@ -175,6 +175,16 @@ npx skills add vercel-labs/skills -g --skill find-skills
 ```bash
 npx skills add cursor/plugins -g --skill blast-radius show-me-your-work unslop
 ```
+
+#### [michaelshimeles/skills](https://github.com/michaelshimeles/skills)
+
+```bash
+npx skills add michaelshimeles/skills -g --skill before-and-after code-structure evidence-driven-testing
+```
+
+`before-and-after` also needs its CLI (`npm i -g @vercel/before-and-after`).
+Left out on purpose: `new-feature`, because `/using-git-worktrees` owns
+worktree setup here, and `greploop` / `greploop-apps`, which need Greptile.
 
 #### [github/awesome-copilot](https://github.com/github/awesome-copilot)
 
@@ -408,6 +418,9 @@ skills from the wider agent-skills ecosystem.
     and `find-skills` (<https://github.com/vercel-labs/skills>).
   - Cursor (<https://github.com/cursor/plugins>): `blast-radius`,
     `show-me-your-work`, `unslop`.
+  - Michael Shimeles (<https://github.com/michaelshimeles/skills>):
+    `before-and-after` (from vercel-labs/before-and-after, PolyForm Shield
+    1.0.0), `code-structure`, `evidence-driven-testing`.
   - GitHub awesome-copilot (<https://github.com/github/awesome-copilot>):
     `boost-prompt`.
   - Google Labs Stitch skills (<https://github.com/google-labs-code/stitch-skills>):

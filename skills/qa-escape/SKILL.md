@@ -3,7 +3,7 @@ name: qa-escape
 disable-model-invocation: true
 description: "Intake for a bug that human QA found after an agent called the work done — reproduce it as an evidence brief, classify the escape, trace why the agent's checks missed it to a check that can be fixed, record it as a labelled comment on the issue, and name the failing regression test /tdd-loop must write first. When the same escape class reaches three issues, proposes a durable guard and applies it only on approval. Use when the user says \"QA found a bug in #87\", \"QA bounced this ticket\", \"this was marked fixed but QA says it's broken\", or /factory reports a unit in QA_RETURNED. Never edits code. A bug with no prior agent claim is /diagnosing-bugs; a staging-only fault is /staging-fix."
 metadata:
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # qa-escape
@@ -20,11 +20,12 @@ An escape is a bug a human found after an agent's checks said the work was done.
 ## Rules
 
 - **Never edits code.** No source or test edits. The output is a brief, a test specification, and an issue comment; `/tdd-loop` writes the test and the fix.
-- **Reproduce before anything else.** Expected and actual describe observations only — never the suspected cause. A report that cannot be reproduced locally or on approved staging is recorded with `reproduced=no`, `class=none`, and what was tried; it is never counted toward promotion.
+- **Reproduce before anything else.** Expected and actual describe observations only — never the suspected cause. A report that cannot be reproduced locally or on approved staging is recorded with `reproduced=no`, `class=none` (or `not-deployed` per step 1), and what was tried; it is never counted toward promotion.
 - **Every escape names the check that missed it.** The why-chain must answer "why did the agent's checks pass?" from the actual evidence — the grid cell that was marked `pass` or `not reachable`, the missing matrix row, the absent run. It ends at a check that can change. "Be more careful" or "the agent missed it" is not an end.
 - **Classes come from the fixed list** in [`references/escape-classes.md`](references/escape-classes.md). A new class needs a slug and one-line definition added to the comment and proposed for the list.
 - **Promotion waits for three and for approval.** When this escape makes three issues with the same class and area, propose one durable guard. Apply nothing until the user approves that guard; declined → record the decline in the comment.
 - **One approval before any remote write.** Show the issue comment and the label change together and wait. User away → print both and stop.
+- **Run authorization.** Loaded by `/factory run`, the run's start approves posting the comment and adding the `qa-escape` label. Creating a missing label, applying a guard, and any staging access keep their own approval.
 - Redact before anything leaves the session: replace tokens, keys, cookies, session IDs, passwords, emails, and customer identifiers in quoted evidence with `<redacted>`, keeping only the lines that show the fault.
 - **Zero attribution.** No co-author, AI, or tool attribution in the comment or any output.
 - Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
@@ -34,7 +35,7 @@ An escape is a bug a human found after an agent's checks said the work was done.
 
 ### 1. Write the reproduction brief
 
-State expected and actual as observations. Reproduce on the same revision QA tested. Shrink the case: remove one condition at a time, restore the last one whose removal makes the bug disappear, and record it as required. Run the final case twice; record `reproduced: yes | intermittent (n of m) | no`. On `no`, skip to step 6 and record what was tried. Then run the minimal case once on the PR's base commit, from `.worktrees/qa-escape-<issue>-base`. Reproduces there → class `not-a-regression`.
+First check the fix was there to test: `git merge-base --is-ancestor <pr-merge-sha> <tested-sha>`. It was not → class `not-deployed`; skip to step 6 and record `reproduced=no` with both SHAs, since nothing was tested. Otherwise state expected and actual as observations. Reproduce on the same revision QA tested. Shrink the case: remove one condition at a time, restore the last one whose removal makes the bug disappear, and record it as required. Run the final case twice; record `reproduced: yes | intermittent (n of m) | no`. On `no`, skip to step 6 and record what was tried. Then run the minimal case once on the PR's base commit, from `.worktrees/qa-escape-<issue>-base`. Reproduces there → class `not-a-regression`.
 
 ### 2. Read the agent's claim
 

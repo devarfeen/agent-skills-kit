@@ -22,11 +22,13 @@ Keep each project's commit and remote tied to its own repository. Existing draft
 
 Applies only when `/factory run` loaded the ship skill; a ship skill the user ran directly keeps every approval below.
 
-The user's start of the run is the combined draft approval. Prepare the drafts, print them, then commit, push, open the PR, and post the QA comment without waiting. It also settles three questions asked elsewhere in this policy:
+The user's start of the run is the combined draft approval. Prepare the drafts, print them, then commit, push, open the PR, and post the QA comment without waiting. It also settles these points raised elsewhere in this policy:
 
 - **Code review** — not asked. The run holds its own review pause after the PR opens; record `Review: deferred to the run's review pause`.
 - **Optional Composer test run** — run it.
 - **Branch name** — use the proposed name.
+- **Naming anchor** for several issues on one branch with no spec issue — the title of the first issue in the group.
+- **Agentic QA marker** — the run's QA ran before the PR existed, so the marker line in its `report.md` for the shipped SHA counts as the PR's marker; cite that file.
 
 It approves nothing else. Each of these still stops shipping for that issue, and the run parks it: **Pre-commit safety**, **Authorship policy**, **Env parity policy**, **Label validation**, a failing check, an unmet **Acceptance criteria** item, a conflict, a rejected push, or a prohibited target. **Inline issue creation** does not happen inside a run — an issue with no tracker entry is not part of it. **Merge into local** is not part of it either; the run's merge pause owns every merge.
 

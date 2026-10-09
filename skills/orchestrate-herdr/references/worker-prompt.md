@@ -6,18 +6,22 @@ Fill `TRACKER` with the workspace tracker per **Resolve** in [`tracker-map.md`](
 
 `BRANCH` follows `ISOLATION`. In `worktree` and `branch` mode it is that issue's branch — Linear supplies `gitBranchName`, GitHub has no native name so use `<issue-number>-<slug>`. In `shared` mode there is no per-issue branch: drop the `BRANCH` line and the clause naming it, rather than sending an empty field.
 
+`LESSONS` is filled only by `/factory run`, with the lesson lines it passes for this issue's project. Otherwise drop the `LESSONS` line and the sentence naming it.
+
 ```md
 TRACKER: [GitHub|Linear]
 ISSUE: [NATIVE_IDENTIFIER]
 ISSUE_URL: [ISSUE_URL]
 BRANCH: [BRANCH_NAME]
+LESSONS: [LESSON_LINES]
 
 Work only on this issue, committing only to BRANCH.
 
 Infer project/repo context from the assigned issue.
 
-Use `/tdd-loop` for the test-first procedure when installed and `/tdd` for
-test quality guidance. If neither is installed, reproduce the failure with a
+Drive the issue with `/implement` when installed, running `/tdd-loop` at each
+seam; without it use `/tdd-loop` directly, with `/tdd` for test quality
+guidance. If neither is installed, reproduce the failure with a
 test and make it pass; still report the command and passing output.
 
 Before coding, read the issue's acceptance criteria, any issues labelled
@@ -25,6 +29,16 @@ Before coding, read the issue's acceptance criteria, any issues labelled
 Map every criterion to a test, to `agentic-qa (<surface>)` when only a running
 app can prove it, or to a deferral with its reason. Never report UI behavior
 as verified from unit tests.
+
+A criterion a user would see is done only when a user can reach it: name the
+route, menu item, button, or form that opens it in its AC map row. Before
+changing a rule, format, or field, find every place that already reads it and
+list each under Decisions as updated or unaffected.
+
+Follow each line under LESSONS above. Never edit the issue body, its
+acceptance criteria, or anything under `specs/factory/`, and never delete a
+test or remove an assertion to reach green; a test whose contract must change
+is named under Decisions with the reason.
 
 Do not work on the full spec. Do not redo spec orchestration. Do only the
 issue-level discovery this issue needs.

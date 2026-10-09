@@ -4,9 +4,9 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 
 Evaluate rows top to bottom; the first row whose condition holds is the unit's state. Terms:
 
-- **Head** — the unit's PR's current `headRefOid`. The unit's PR is the newest PR for the ticket; after a `qa-escape` marker, only PRs opened after that marker count, and none means `BUILDING`.
+- **Head** — the unit's PR's current `headRefOid`. The unit's PR is the newest PR for the ticket; after a `qa-escape` marker, only PRs opened after that marker count, and none means `BUILDING`. A marker with `class=not-deployed` changes nothing: the unit keeps its PR and is placed by it.
 - **Approved on head** — a `reviews` entry with state `APPROVED` whose `commit.oid` equals head. `reviewDecision` alone never counts; it survives pushes.
-- **Reaches a screen** — any changed file (`gh pr diff <pr> --name-only`) on a path that ends at something a user sees: a component, view, template, page, style, translation, or store; or an API, model, policy, job, mail, or migration whose output a screen shows. Unsure → it reaches. `/agentic-qa` makes the final call and records `no-ui-reach` with its trace.
+- **Reaches a screen** — any changed file (`gh pr diff <pr> --name-only`) on a path that ends at something a user sees: a component, view, template, page, style, translation, or store; or an API, model, policy, job, mail, or migration whose output a screen shows. A change whose issue has an acceptance criterion describing something a user sees or does also reaches, whatever its paths. Unsure → it reaches. `/agentic-qa` makes the final call and records `no-ui-reach` with its trace, or a `not-wired` finding.
 - **Staging branch** — defaults to `staging`.
 - **Deploy run** — a run of the workflow whose trigger is a push to the staging branch, never any other workflow on that branch.
 

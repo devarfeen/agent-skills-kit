@@ -16,6 +16,7 @@ Pick the one that names the gap in the checks, not the symptom. When two fit, pi
 | `console-error` | The console and page-error capture on every flow |
 | `failed-request` | The 4xx/5xx capture on every flow |
 | `stale-contract` | The risk-review contract lens: a consumer reads a field, route, or status the producer changed |
+| `not-wired` | A reach trace from each criterion a user sees to an entry point a user can open — a route, menu item, button, or form |
 | `adjacent-flow` | A neighbour row for other screens and entry points that use the changed code |
 | `persistence` | A write-then-reload round trip through the owner path |
 | `keyboard-focus` | A keyboard-only row: Tab reaches the control, Enter/Space activates it, Escape closes overlays, and focus stays visible |
@@ -23,6 +24,7 @@ Pick the one that names the gap in the checks, not the symptom. When two fit, pi
 | `concurrency` | A repeated concurrent trigger |
 | `copy-i18n` | Text checked against the source strings in each shipped locale |
 | `environment-config` | A check that the setting, env var, or migration exists in the environment QA used |
+| `not-deployed` | A check that the fix's merge commit is on the branch the tested environment deploys, before the issue goes to QA. Always `reproduced=no`; never counted |
 | `not-a-regression` | Pre-existing on the base commit — record it, but it is not counted as an escape of this change |
 
 A new slug needs a one-line definition in the comment and a proposal to add it here.

@@ -3,7 +3,7 @@ name: agentic-qa
 disable-model-invocation: true
 description: "Agent-run functional QA before a human sees the work — for a PR or branch whose code can reach a screen, drives every acceptance criterion through the running app across states, viewports, and roles, fails on console errors and failed requests, checks neighbouring flows, and records VERIFIED, PARTIAL, or BLOCKED with evidence on the PR. Use when the user says \"QA this PR\", \"test it like QA would\", \"run agentic QA on #87\", or /factory reports a unit in QA. The tester never edits code — findings route to /tdd-loop. Pixel conformance against a design is /pixel-audit; cosmetic nits are /polish-batch; a bug human QA already found is /qa-escape."
 metadata:
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # agentic-qa
@@ -23,6 +23,7 @@ agentic-qa finds what a human QA pass would find, before any human runs one. It 
 
 - **The tester never edits code.** No source, test, fixture, or config edits, even for a one-character fix. Every failure becomes a finding with reproduction steps, routed to `/tdd-loop`. A tester that fixes stops being an independent check.
 - **Reach is decided by the code, not the label.** The change needs this skill when any changed file is reachable from a route, page, component, template, translation, or style, or is an API whose response a screen renders. Trace it per [`references/qa-grid.md`](references/qa-grid.md) and quote the path. No reach → record `no-ui-reach` with that trace and stop.
+- **A criterion a user sees must be reachable.** When no changed file reaches a screen but an acceptance criterion describes something a user sees or does, the feature is built and not connected. Record a finding with class `not-wired` naming that criterion and the missing entry point; the result is `partial`, never `no-ui-reach`.
 - **A blank cell is not done.** Every grid cell is `pass`, `fail`, or `not reachable — <reason>`. A reason names why the state cannot occur, not why it was inconvenient.
 - **Browser errors fail the cell.** Capture console, page errors, and XHR/fetch responses for every flow. A new `error`-level message, unhandled rejection, or 4xx/5xx response fails the cell, unless the cell expects it (a 403 for a forbidden role) or the same signal appears on the base commit run.
 - **Success is a visible change.** Capture the relevant state before acting and assert the expected change after. A success message with no changed state is a fail. For a write, the change also survives a reload.
@@ -41,7 +42,7 @@ agentic-qa finds what a human QA pass would find, before any human runs one. It 
 
 ### 1. Decide reach
 
-Trace each changed file to a screen per the reference. Quote one path per reachable surface (`app/Billing/Invoice.php → InvoiceResource → /invoices/{id}`). No reach → step 6 with `no-ui-reach`.
+Trace each changed file to a screen per the reference. Quote one path per reachable surface (`app/Billing/Invoice.php → InvoiceResource → /invoices/{id}`). No reach → step 6 with `no-ui-reach`, or with the `not-wired` finding when a criterion describes something a user sees or does.
 
 ### 2. Build the grid
 
