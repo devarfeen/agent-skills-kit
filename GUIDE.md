@@ -19,7 +19,7 @@ Combine skills from this kit and the wider ecosystem to move from idea to shippe
 - **Forrest Chang:** Seeding logic for `/agents-md` non-negotiable principles.
 - **Anthropic:** Source for `/skill-creator`.
 - **Vercel Labs:** Source for `/agent-browser`, `skills` CLI, and React/React Native best practices.
-- **Optional companions:** Graphify, Codex plugin for Claude Code, Impeccable, notebooklm-py, herdr, docker-expert, Laravel Boost, Figma MCP, MySQL/Postgres MCP, and Cursor plugins `unslop`, `blast-radius`, and `show-me-your-work` are separate installs used only when installed and task-fit.
+- **Optional companions:** Graphify, Codex plugin for Claude Code, Impeccable, notebooklm-py, herdr, docker-expert, Laravel Boost, Figma MCP, MySQL/Postgres MCP, Cursor plugins `unslop`, `blast-radius`, and `show-me-your-work`, and Michael Shimeles's `before-and-after`, `code-structure`, and `evidence-driven-testing` are separate installs used only when installed and task-fit.
 - **Pattern references (not vendored):** [github/awesome-copilot](https://github.com/github/awesome-copilot), [obra/superpowers](https://github.com/obra/superpowers), [ChrisTitusTech/titus-ai](https://github.com/ChrisTitusTech/titus-ai), [alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills), and [garrytan/gstack](https://github.com/garrytan/gstack). The 2026-10 hardening pass compared every kit skill against these and adapted individual rules in house style; no files were copied.
 - **Cursor:** Cursor CLI (`agent` command, `/skill-name`, `AGENTS.md` as canonical context, `Task` for subagents). Tool names and permissions: [`skills/agents-md/references/tool-calling.md`](skills/agents-md/references/tool-calling.md). https://cursor.com/docs/cli/overview
 
@@ -154,6 +154,9 @@ These are optional helpers. The kit provides `using-git-worktrees`; the other en
 | unslop | Free-prose output needs AI tells removed — chat narration, and PR/issue/doc prose the agent composes freely. Never applies to text a skill mandates verbatim: generated `AGENTS.md`/shims, output templates, section names, field labels, canonical lines. |
 | blast-radius | A change's blast radius needs proving — what it could break beyond the diff, with the one safety fact run against real code rather than a writeup. User-invoked (`/blast-radius`); do not auto-fire. |
 | show-me-your-work | Long-running or unattended work needs a reviewable decision trail — a TSV log of what, why, evidence, and result that a human can audit after stepping away. User-invoked (`/show-me-your-work`); do not auto-fire. |
+| before-and-after | A visible change needs a before and after screenshot pair, from two URLs, saved to a local folder. Images stay local: never pass `--markdown` or run its upload script, whose default host is public. |
+| code-structure | The same operational logic is repeated across two or more flows, or a change must decide what belongs in an action and what in a shared service. |
+| evidence-driven-testing | A change needs a recorded session as proof — an annotated screen recording of the app being driven, or measured numbers and output pairs for work with no screen. It adds evidence; `/agentic-qa` stays the QA gate. |
 | wizard | A procedure hits steps only a human can perform (credentials, CI secrets, third-party dashboards, one-off migrations/cutovers) — generate an interactive bash walkthrough for them; never for steps the agent can do itself. |
 | to-questionnaire | A decision needs knowledge the user lacks — turn it into a Markdown questionnaire the one person who can answer fills in async or in a meeting. |
 | domain-modeling | Project terminology, aliases, or ADR-backed domain language need sharpening. |

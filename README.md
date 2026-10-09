@@ -176,6 +176,16 @@ npx skills add vercel-labs/skills -g --skill find-skills
 npx skills add cursor/plugins -g --skill blast-radius show-me-your-work unslop
 ```
 
+#### [michaelshimeles/skills](https://github.com/michaelshimeles/skills)
+
+```bash
+npx skills add michaelshimeles/skills -g --skill before-and-after code-structure evidence-driven-testing
+```
+
+`before-and-after` also needs its CLI (`npm i -g @vercel/before-and-after`).
+Left out on purpose: `new-feature`, because `/using-git-worktrees` owns
+worktree setup here, and `greploop` / `greploop-apps`, which need Greptile.
+
 #### [github/awesome-copilot](https://github.com/github/awesome-copilot)
 
 ```bash
@@ -408,6 +418,9 @@ skills from the wider agent-skills ecosystem.
     and `find-skills` (<https://github.com/vercel-labs/skills>).
   - Cursor (<https://github.com/cursor/plugins>): `blast-radius`,
     `show-me-your-work`, `unslop`.
+  - Michael Shimeles (<https://github.com/michaelshimeles/skills>):
+    `before-and-after` (from vercel-labs/before-and-after, PolyForm Shield
+    1.0.0), `code-structure`, `evidence-driven-testing`.
   - GitHub awesome-copilot (<https://github.com/github/awesome-copilot>):
     `boost-prompt`.
   - Google Labs Stitch skills (<https://github.com/google-labs-code/stitch-skills>):

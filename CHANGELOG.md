@@ -34,6 +34,11 @@ re-run `/agents-md` after a marker bump.
   existing reader of a changed rule, format, or field, forbids editing the
   issue body or removing an assertion to reach green, and takes an optional
   `LESSONS:` field that only `/factory run` fills.
+- **Companions.** `before-and-after`, `code-structure`, and
+  `evidence-driven-testing` from michaelshimeles/skills are listed as optional
+  companions (`/agents-md` 0.3.1). They stay separate installs and no kit
+  skill calls them. `before-and-after` is listed for local capture only;
+  screenshots are never uploaded.
 
 ## 2026-10-08
 
