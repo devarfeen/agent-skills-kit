@@ -320,32 +320,6 @@ Then set **In Review** per **Tracker status**. Assign nobody: manual QA is assig
 
 Issues of parked or unmerged units get no handover.
 
-## Delivered
-
-PR: <url> — merged into `<base>` at <merge-sha>
-Deploy: <deploy-watch result and run URL | not on staging yet>
-
-## Acceptance criteria
-
-1. <criterion> — <met | deferred> — <test name, or agentic-qa cell and evidence path>
-
-## QA
-
-agentic-qa: <result> on <head-sha> — before/after: <evidence folder>
-Risk review: tier <low|high>, blocking <n>
-Code review: <agent and outcome | skipped at user request>
-
-## Manual QA handoff
-
-<the PR's How to test steps, with setup>
-
-## Notes
-
-<gaps, deferred criteria, follow-ups; omit when none>
-```
-
-When closing was chosen, then `gh issue close <n> --reason completed` and read back `state`. An issue GitHub already closed gets the comment only. Issues of parked or unmerged units get neither.
-
 ## Cleanup
 
 Automatic after **Handover**. A unit is cleanable only when its PR is `MERGED` and its branch tip equals the PR's final `headRefOid`. Every other unit keeps its stack, worktree, and branches, and is named.

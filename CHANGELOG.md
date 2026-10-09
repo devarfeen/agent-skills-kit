@@ -11,6 +11,9 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- **`/factory` 1.0.1** — removes leftover close-pause text from the run
+  reference, including an instruction to close issues. A run never closes one.
+
 - **`/factory` 1.0.0 — a run is hands-off after one question.** It asks which
   agent and model builds and which reviews, then asks nothing. The four end
   pauses (review, merge, close, cleanup) and the done-list question are gone.
