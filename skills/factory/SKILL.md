@@ -32,7 +32,7 @@ The factory is a state machine over things that already exist — tracker issues
 
 ### 1. Resolve the unit of work
 
-From the reference, build the list of units to place: a spec expands to all its sub-issues, open and closed (state the count); a ticket or PR is one unit. For each ticket, find its PR: `gh pr list --search "<issue-id>" --state all --json number,headRefName,baseRefName,state` or the tracker's linked-PR field. Closed and merged tickets stay in the list — they may still be in `STAGING`. A ticket with a `qa-escape` marker is placed by the newest PR opened after that marker.
+From the reference, build the list of units to place: a spec expands to all its sub-issues, open and closed (state the count); a ticket or PR is one unit. For each ticket, find its PR: `gh pr list --search "<issue-id>" --state all --json number,headRefName,baseRefName,state` or the tracker's linked-PR field. Closed and merged tickets stay in the list — they may still be in `STAGING`. A `qa-escape` marker other than `not-deployed` places its ticket by the newest later PR.
 
 ### 2. Read the signals
 

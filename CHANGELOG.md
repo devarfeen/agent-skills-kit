@@ -23,6 +23,12 @@ re-run `/agents-md` after a marker bump.
 - **`/factory` 0.4.0 — before the build.** The start questions open with a
   preflight (test command, app start command) and show any acceptance criteria
   triage drafted, which are written to the issue only after your answer.
+- **`/factory` 0.4.0 — a run works issues QA sent back.** A `QA_RETURNED`
+  issue is no longer parked: the run follows `/qa-escape`, then rebuilds from
+  the regression test it names. `/qa-escape` 0.3.0 gains a Run authorization
+  for its comment and label, and a `not-deployed` class for a report made on an
+  environment the fix had not reached. Guards, staging access, and promotion
+  stay with the user.
 - **`/factory` 0.4.0 — screenshots on the issue.** After every QA round a run
   attaches the before and after screenshots to the Linear issue, or on GitHub
   posts a comment listing their local paths. Images go nowhere else.

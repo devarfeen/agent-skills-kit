@@ -10,6 +10,7 @@ Mechanics for `run` mode. `SKILL.md` holds the loop and the four pause questions
 - Start questions
 - Triage
 - Stage map
+- Returned by QA
 - After a fix
 - Round log
 - Lessons
@@ -68,6 +69,7 @@ Place the unit with `states.md`, then act on its state. `Next` in that table is 
 
 | State | Run action |
 | ----- | ---------- |
+| `QA_RETURNED` | **Returned by QA** below |
 | `BUILDING` | **Build** below |
 | `CI` | Pending → `gh pr checks <pr> --watch`. Failing → load `ci-loop` |
 | `QA` | Load `agentic-qa`, then **Screenshots on the issue**. Findings → **After a fix**. `blocked` or `partial` → park, naming the missing input or the gap cells |
@@ -77,9 +79,23 @@ Place the unit with `states.md`, then act on its state. `Next` in that table is 
 | `MERGE`, PR merged into `local` | Done for this run: it has not reached staging, and the run never promotes. Name `/local-to-staging`; wait at the **Close pause** |
 | `STAGING` | **Staging** below |
 | `READY_FOR_OWNER` | Done; wait at the **Close pause** |
-| `OUTCOME`, `TICKETS`, `QA_RETURNED`, `CI_STUCK`, `QA_STUCK`, `HUMAN_REVIEW`, `DEPLOY_FAILED`, `UNKNOWN` | Park with the state's evidence and its `Next` — a person decides here |
+| `OUTCOME`, `TICKETS`, `CI_STUCK`, `QA_STUCK`, `HUMAN_REVIEW`, `DEPLOY_FAILED`, `UNKNOWN` | Park with the state's evidence and its `Next` — a person decides here |
 
 A parked unit is not retried in the same run. Running `/factory run` again with the same reference places every unit afresh, so it resumes where the signals say the work stands.
+
+## Returned by QA
+
+A person found a problem in work an agent called done. The run takes it through `qa-escape` and back into the build; it never fixes a returned issue without that record.
+
+1. **Record.** Load `qa-escape` for the unit. Its QA report is what the reporter wrote on the issue since the reopen, with their screenshots. Expected or actual missing → park the unit, naming that field as a question for the reporter. Reproduce locally; staging only with the user's own approval in this session.
+2. **Act on the marker it posts.**
+   - `class=not-deployed` → build nothing. The unit keeps its PR; when that PR is merged into `local`, name `/local-to-staging` and say the reporter tested a build without the fix. The run never promotes.
+   - `reproduced=no` → park with what was tried.
+   - `class=not-a-regression` → park: the fault predates this PR and needs its own issue.
+   - Any other class → **Build**, in a new worktree from the PR base. The worker's first Red is the regression test `qa-escape` named, and its prompt carries the reproduction brief. The unit then follows the usual path to a new PR.
+3. **Log** one **Round log** row with Check `qa-escape` and the class as Cause, so a person's findings count toward **Lessons** too.
+
+A guard that `qa-escape` proposes at three issues is listed under Needs user in the run report. The run never applies one.
 
 ## After a fix
 
@@ -102,9 +118,9 @@ Missing file → create it with the zero-attribution line from the top of this f
 | 2026-10-10 | #418 | BILLING-WEB | #87 | 2 | agentic-qa | pass | - | feat: add order form and route |
 ```
 
-Append when a check returns for a unit — an `agentic-qa` result, a `ci-loop` attempt, a `risk-review` marker, a code review at the **Review pause**. A passing round is one row; a failing round is one row per distinct cause.
+Append when a check returns for a unit — an `agentic-qa` result, a `ci-loop` attempt, a `risk-review` marker, a code review at the **Review pause**, a `qa-escape` marker. A passing round is one row; a failing round is one row per distinct cause.
 
-- **Check** — `agentic-qa`, `ci`, `risk-review`, or `code-review`.
+- **Check** — `agentic-qa`, `ci`, `risk-review`, `code-review`, or `qa-escape`.
 - **Cause** — for `ci`, the failing check's name. Otherwise one slug from the class list in the `qa-escape` skill's `references/escape-classes.md`, chosen by that file's rule; no slug fits → `other:<two-word-slug>`. `-` on a pass.
 - **Tried** — the subjects of the commits made since the unit's previous round; `first build` on round 1.
 
