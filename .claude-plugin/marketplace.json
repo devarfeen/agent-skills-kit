@@ -7,31 +7,66 @@
   "description": "Agent skills for workspace setup, discovery, building, verifying, and shipping.",
   "plugins": [
     {
-      "name": "manual-workflow",
+      "name": "workspace-setup",
       "source": "./",
-      "description": "Human-driven workflow skills: workspace setup, discovery, test-first building, UI verification, and shipping.",
+      "description": "Set up a workspace and find your way around the kit: generated agent instructions, a skill router, and the kit's own authoring style.",
       "skills": [
         "./skills/agents-md",
         "./skills/ask-kit",
-        "./skills/commit-push-close",
-        "./skills/commit-push-pr",
-        "./skills/design-system",
+        "./skills/writing-kit-skills"
+      ]
+    },
+    {
+      "name": "discover-plan",
+      "source": "./",
+      "description": "Understand existing behaviour and shape the work before building: read-only discovery, feature prompts, port gap maps, and cross-project contracts.",
+      "skills": [
         "./skills/feature-discovery",
         "./skills/feature-prompt",
-        "./skills/integration-contract",
-        "./skills/local-to-staging",
-        "./skills/orchestrate-herdr",
-        "./skills/orchestrate-t3",
-        "./skills/pixel-audit",
-        "./skills/polish-batch",
         "./skills/port-feature",
-        "./skills/pr-feedback",
-        "./skills/release-notes",
-        "./skills/staging-fix",
-        "./skills/staging-to-production",
+        "./skills/integration-contract"
+      ]
+    },
+    {
+      "name": "build",
+      "source": "./",
+      "description": "Build the work: a test-first loop, worktree setup, and fan-out of a spec's issues to herdr tabs or T3 Code threads.",
+      "skills": [
         "./skills/tdd-loop",
         "./skills/using-git-worktrees",
-        "./skills/writing-kit-skills"
+        "./skills/orchestrate-herdr",
+        "./skills/orchestrate-t3"
+      ]
+    },
+    {
+      "name": "visual-design",
+      "source": "./",
+      "description": "Build and verify UI against a design source: design-system setup, per-page pixel audit, and the cosmetic polish tail.",
+      "skills": [
+        "./skills/design-system",
+        "./skills/pixel-audit",
+        "./skills/polish-batch"
+      ]
+    },
+    {
+      "name": "ship",
+      "source": "./",
+      "description": "Ship issue work: commit and close, commit and open a PR, work through reviewer feedback, and write release notes.",
+      "skills": [
+        "./skills/commit-push-close",
+        "./skills/commit-push-pr",
+        "./skills/pr-feedback",
+        "./skills/release-notes"
+      ]
+    },
+    {
+      "name": "staging-promotion",
+      "source": "./",
+      "description": "Move work through staging: promote local to staging, fix a staging bug through a PR, and check readiness for the owner's production promotion.",
+      "skills": [
+        "./skills/local-to-staging",
+        "./skills/staging-fix",
+        "./skills/staging-to-production"
       ]
     },
     {

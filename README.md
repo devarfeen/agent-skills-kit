@@ -31,7 +31,7 @@ agent-skills-kit/
 ├── AGENTS.md            # Conventions for agents working in this repo
 │                        # (CLAUDE.md / GEMINI.md are redirect shims)
 ├── .claude-plugin/
-│   └── marketplace.json # Plugin groups (manual-workflow, factory-workflow)
+│   └── marketplace.json # Plugin groups (one per workflow phase, plus factory-workflow)
 ├── .github/workflows/   # CI: runs tools/validate.sh on every PR
 ├── tools/
 │   ├── validate.sh      # Repo invariant checks — run before every commit

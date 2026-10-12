@@ -269,7 +269,7 @@ eval pass.
 
 | You changed | Also update |
 | :--- | :--- |
-| Added/removed/renamed a skill folder | `skills-manifest.md` row · README skills table · its path in one `.claude-plugin/marketplace.json` plugin group (`manual-workflow` or `factory-workflow`) · `GUIDE.md` usage/tables for its gradient or companion role |
+| Added/removed/renamed a skill folder | `skills-manifest.md` row · README skills table · its path in one `.claude-plugin/marketplace.json` plugin group (`workspace-setup`, `discover-plan`, `build`, `visual-design`, `ship`, `staging-promotion`, or `factory-workflow`) · `GUIDE.md` usage/tables for its gradient or companion role |
 | A skill's phase or gradient position | `skills-manifest.md` (single source for generated AGENTS.md tables) |
 | `ship-policy.md` in either ship skill | The other copy, byte-identical |
 | An issue-title species or its grammar (`Spec:`, `Ticket NNNN of …`, `Way:`, non-spec) | `agents-md-template.md` "Issue titles" (tracker-neutral) · both `ship-policy.md` copies (the title is the commit-subject anchor) · `GUIDE.md` issue-preflight gate · add a "predates this naming, do not retitle" clause for the old form |

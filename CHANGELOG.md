@@ -7,6 +7,16 @@ their new versions, so a workspace on an older copy can see what an update
 brings. Generated `AGENTS.md` files carry the `agents-md` marker version;
 re-run `/agents-md` after a marker bump.
 
+## 2026-10-12
+
+### Changed
+
+- **Plugin groups** — the `manual-workflow` group in
+  `.claude-plugin/marketplace.json` is split into six groups by workflow
+  phase: `workspace-setup`, `discover-plan`, `build`, `visual-design`, `ship`,
+  and `staging-promotion`. `factory-workflow` is unchanged. `npx skills`
+  shows the new headings; no skill's behavior or version changed.
+
 ## 2026-10-10
 
 ### Changed
