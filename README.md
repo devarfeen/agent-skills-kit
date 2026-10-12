@@ -98,7 +98,8 @@ Skills sit on a workflow gradient — discover → sharpen → plan → slice �
 implement → verify → ship — plus two startup skills that run once per
 workspace/project and an on-demand worktree companion. Full behavior, modes,
 and rules live in each skill's `SKILL.md`; this table is the index. Global
-install commands are [grouped by source](#global-install-commands) below the table.
+install commands are [grouped by source](#global-install-commands) below the table,
+with the [groups `npx skills` shows](#skill-groups) under this repo's command.
 
 | Skill | Phase | What it does | Example prompt |
 | :--- | :--- | :--- | :--- |
@@ -142,6 +143,23 @@ repo without naming them: `--skill '*'`.
 ```bash
 npx skills add devarfeen/agent-skills-kit -g
 ```
+
+#### Skill groups
+
+The `npx skills` picker lists this kit's skills under seven headings, sorted
+alphabetically. The groups come from `.claude-plugin/marketplace.json`; each
+skill sits in exactly one. They only organize the picker — every skill still
+installs on its own with `--skill <name>`.
+
+| Group | Heading in `npx skills` | Skills |
+| :--- | :--- | :--- |
+| `build` | Build | `orchestrate-herdr`, `orchestrate-t3`, `tdd-loop`, `using-git-worktrees` |
+| `discover-plan` | Discover Plan | `feature-discovery`, `feature-prompt`, `integration-contract`, `port-feature` |
+| `factory-workflow` | Factory Workflow | `agentic-qa`, `ci-loop`, `deploy-watch`, `factory`, `incident-triage`, `qa-escape`, `risk-review` |
+| `ship` | Ship | `commit-push-close`, `commit-push-pr`, `pr-feedback`, `release-notes` |
+| `staging-promotion` | Staging Promotion | `local-to-staging`, `staging-fix`, `staging-to-production` |
+| `visual-design` | Visual Design | `design-system`, `pixel-audit`, `polish-batch` |
+| `workspace-setup` | Workspace Setup | `agents-md`, `ask-kit`, `writing-kit-skills` |
 
 ### Companion install commands (global)
 

@@ -17,6 +17,9 @@ for agents working *in* this repo live in [AGENTS.md](AGENTS.md).
    row in `skills/agents-md/references/skills-manifest.md`, the skills table
    in `README.md`, and its path in exactly one plugin group in
    `.claude-plugin/marketplace.json` (the group heading `npx skills` shows).
+   Pick the group by where the skill is used — `workspace-setup`,
+   `discover-plan`, `build`, `visual-design`, `ship`, `staging-promotion`, or
+   `factory-workflow` — and add it to the group table in `README.md`.
    The validator fails if you miss one. Two more it does not check: the map
    in `skills/ask-kit/SKILL.md` and a dated `CHANGELOG.md` entry.
 5. Every skill carries its own version in frontmatter (`metadata: version: "0.0.1"`). Any change to a skill's files outside `evals/` bumps it: patch for wording or fixes that change no behaviour, minor for a new rule, step, input, or output, major for a removed or renamed input, output, marker, or refusal boundary. The validator (check 16) fails a changed skill whose version did not rise.
@@ -269,7 +272,7 @@ eval pass.
 
 | You changed | Also update |
 | :--- | :--- |
-| Added/removed/renamed a skill folder | `skills-manifest.md` row · README skills table · its path in one `.claude-plugin/marketplace.json` plugin group (`workspace-setup`, `discover-plan`, `build`, `visual-design`, `ship`, `staging-promotion`, or `factory-workflow`) · `GUIDE.md` usage/tables for its gradient or companion role |
+| Added/removed/renamed a skill folder | `skills-manifest.md` row · README skills table and skill-groups table · its path in one `.claude-plugin/marketplace.json` plugin group (`workspace-setup`, `discover-plan`, `build`, `visual-design`, `ship`, `staging-promotion`, or `factory-workflow`) · `GUIDE.md` usage/tables for its gradient or companion role |
 | A skill's phase or gradient position | `skills-manifest.md` (single source for generated AGENTS.md tables) |
 | `ship-policy.md` in either ship skill | The other copy, byte-identical |
 | An issue-title species or its grammar (`Spec:`, `Ticket NNNN of …`, `Way:`, non-spec) | `agents-md-template.md` "Issue titles" (tracker-neutral) · both `ship-policy.md` copies (the title is the commit-subject anchor) · `GUIDE.md` issue-preflight gate · add a "predates this naming, do not retitle" clause for the old form |

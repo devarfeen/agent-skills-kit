@@ -485,6 +485,10 @@ subject to the same preservation checks.
 | Session Pause | `/handoff` | Continuation doc for the next agent. |
 | Session Went Sideways | `/retro` | User-invoked look back over the session; proposes environment changes (checks, coding standards, steering files), never code changes. Run it before clearing context. |
 
+## Skill Groups
+
+`npx skills` lists the kit's skills under seven headings: Workspace Setup, Discover Plan, Build, Visual Design, Ship, Staging Promotion, and Factory Workflow. The first six cover the human-driven path below; Factory Workflow covers what happens after a PR opens. The groups only organize the picker — the phase a skill belongs to is still the gradient in [Core Progression](#core-progression). Which skill sits in which group: [README](README.md#skill-groups).
+
 ## Core Progression
 
 ```text

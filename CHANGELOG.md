@@ -15,7 +15,8 @@ re-run `/agents-md` after a marker bump.
   `.claude-plugin/marketplace.json` is split into six groups by workflow
   phase: `workspace-setup`, `discover-plan`, `build`, `visual-design`, `ship`,
   and `staging-promotion`. `factory-workflow` is unchanged. `npx skills`
-  shows the new headings; no skill's behavior or version changed.
+  shows the new headings; no skill's behavior or version changed. `README.md`
+  lists which skill sits in which group.
 
 ## 2026-10-10
 
