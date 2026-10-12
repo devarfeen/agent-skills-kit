@@ -1,0 +1,19 @@
+{
+  "zero_attribution_rule": "Never add or leave co-author, AI, or tool attribution in any output.",
+  "date": "2026-10-13",
+  "verification": "Independent local instruction simulations; no live workflow execution, GitHub writes, remote hosts, deployment, browser assertions, or container actions.",
+  "initial_cases": 38,
+  "follow_up_checks": 4,
+  "initial_report_files": [
+    "delivery-results.json",
+    "core-results.json",
+    "runtime-results.json"
+  ],
+  "repair_checks": {
+    "X1": "Factory authorized local-base merge and handover boundary",
+    "X2": "Proved no-UI/no-visible-criterion QA branch",
+    "X3": "Deployment-job success permits explicit-issue manual assignment without live smoke proof",
+    "X4": "Manual handoff distinguishes job proof from missing live identity/smoke"
+  },
+  "preserved_history": "Initial reports retain the pre-correction ambiguity findings; recheck-results.json records decisions against corrected instructions. These outputs are raw traces rather than executable integration tests."
+}

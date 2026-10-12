@@ -29,7 +29,8 @@
     },
     {
       "q": "Make the CLAUDE.md shim and AGENTS.md for this workspace root",
-      "expect": "trigger"
+      "expect": "no-trigger",
+      "route": "/writing-for-agents"
     },
     {
       "q": "New workspace — establish the PROJECT-CODEs",
@@ -37,7 +38,8 @@
     },
     {
       "q": "Write an AGENTS.md for this repo",
-      "expect": "trigger"
+      "expect": "no-trigger",
+      "route": "/writing-for-agents"
     },
     {
       "q": "Set up the design system for this project",
@@ -76,7 +78,8 @@
     },
     {
       "q": "Add the CLAUDE.md shim that forwards Claude to AGENTS.md in this workspace",
-      "expect": "trigger"
+      "expect": "no-trigger",
+      "route": "/writing-for-agents"
     },
     {
       "q": "We added another repo to the code-workspace — refresh the workspace agent rules",
@@ -86,6 +89,19 @@
       "q": "Add a binding AGENTS.md rule so UI changes reuse the component library",
       "expect": "no-trigger",
       "route": "/design-system"
+    },
+    {
+      "q": "Synchronize existing project-runtime blocks from this code-workspace and local Compose file; leave workspace-root instructions unchanged",
+      "expect": "trigger"
+    },
+    {
+      "q": "Edit this hand-authored repo AGENTS.md; there is no code-workspace file and no workspace generation is requested",
+      "expect": "no-trigger",
+      "route": "/writing-for-agents"
+    },
+    {
+      "q": "Generate workspace-root AGENTS.md from .code-workspace and report any existing competing CLAUDE.md shim",
+      "expect": "trigger"
     }
   ],
   "last_run": {

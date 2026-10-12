@@ -3,7 +3,7 @@ name: ci-loop
 disable-model-invocation: true
 description: "Drive an open PR's failing CI to green: read the log, reproduce, fix in scope, push, up to 3 attempts under one approval. Reviewer comments are /pr-feedback; no PR or CI run is /diagnosing-bugs."
 metadata:
-  version: "0.3.1"
+  version: "0.4.0"
 ---
 
 # ci-loop
@@ -13,8 +13,8 @@ ci-loop turns one PR's red checks green by fixing the code, not the checks. It i
 ## Inputs
 
 - **PR** — number or URL. Read `gh pr view <pr> --json number,headRefName,headRefOid,baseRefName,state,isCrossRepository,closingIssuesReferences`. Not open, or a fork you can't push to → stop and say so.
-- **Ticket scope** — the linked issue's acceptance criteria. No linked issue → the PR body's stated scope; neither → ask.
-- **Isolated worktree** — the PR's worktree at `<project-repo>/.worktrees/pr-<n>` on its head branch: reuse it when it exists, else create it through `/using-git-worktrees` when installed, otherwise with `git worktree add`, per the workspace `AGENTS.md` worktree rules. Before the first command there, verify and report the checkout record the workspace `AGENTS.md` requires: path, owning repository and common Git directory, branch or detached state, starting commit, and baseline. Setup failure or a mismatch blocks the run; never fall back to the main checkout. Leave the worktree in place and report its path; cleanup follows the workspace rules. A dirty worktree on another branch → stop and ask; never stash or switch silently.
+- **Ticket scope** — the linked issue's body criteria/checklist, otherwise its newest `<!-- factory-criteria -->` comment. No linked issue → the PR body's stated scope; neither → ask.
+- **Isolated worktree** — the PR's worktree at `<project-repo>/.worktrees/pr-<n>` on its head branch: reuse its verified task checkout; otherwise use `git worktree add` per workspace policy. Only an explicitly started `/factory run` or `/orchestrate-t3` may read/follow `using-git-worktrees` for its task setup; direct skill use requires the user's invocation. Before the first command there, verify and report the checkout record the workspace `AGENTS.md` requires: path, owning repository and common Git directory, branch or detached state, starting commit, and baseline. Setup failure or a mismatch blocks the run; never fall back to the main checkout. Leave the worktree in place and report its path; cleanup follows the workspace rules. A dirty worktree on another branch → stop and ask; never stash or switch silently.
 - **Attempt cap** — default 3 per PR, not per run: `fix(ci):` commits already on the head branch since its last green run count against it. The user may lower it, not remove it.
 
 ## Rules
@@ -43,7 +43,7 @@ gh run list --branch <head-branch> --commit <head-sha> --json databaseId,workflo
 gh run view <run-id> --log-failed
 ```
 
-Only `bucket: fail` checks count; a `cancel` bucket is not a pass. A repo without required checks makes `--required` exit 1 with `no required checks reported` — fall back to all checks without `--required` and say so in the report. Record the starting set — each failing check with its decisive error line — as the baseline every attempt is measured against. All `pending` → there is nothing to fix; report the pending checks and stop. Quote the shortest decisive log tail per failing check: the assertion or error line and the step name.
+Only `bucket: fail` checks count; a `cancel` bucket is not a pass. A repo without required checks makes `--required` exit 1 with `no required checks reported` — fall back to all checks without `--required` and say so. Keep that selected mode for every read, watch, and success check in this loop. Record the starting set — each failing check with its decisive error line — as the baseline every attempt is measured against. All `pending` → there is nothing to fix; report the pending checks and stop. Quote the shortest decisive log tail per failing check: the assertion or error line and the step name.
 
 ### 2. Classify
 
@@ -65,8 +65,8 @@ For each attempt, up to the cap:
 1. Reproduce locally with the job's own command and see it fail. Passes locally → don't fix yet: diff CI against local (runtime and tool versions from the job log, env vars, service containers, test order or seed, timezone) and reproduce under CI conditions. Still green → stop as `no repro` with the differences listed.
 2. Make the smallest in-scope fix. Tag temporary instrumentation `[DEBUG-<4 hex>]` and grep it out before staging. Run the failing command, then the repo's fast check suite.
 3. Stage the fix paths by name, inspect `git diff --cached`, commit with `fix(ci): <check> — <cause>`, and push.
-4. Watch the new run: `gh pr checks <pr> --required --watch --fail-fast`. Stop watching at 2× the workflow's recent run time (`gh run list --workflow <name> --limit 5`) and report `pending`.
-5. All required checks `pass` on the new head → done. Any failure → next attempt: re-read and re-classify it (Workflow steps 1–2) before fixing; a stop class ends the loop.
+4. Watch the new run: `gh pr checks <pr> [--required] --watch --fail-fast`, using the selected mode from step 1. Stop watching at 2× the workflow's recent run time (`gh run list --workflow <name> --limit 5`) and report `pending`.
+5. Every check in the selected mode `pass` on the new head → done. Any failure → next attempt: re-read and re-classify it (Workflow steps 1–2) before fixing; a stop class ends the loop.
 
 ### 5. Stop
 

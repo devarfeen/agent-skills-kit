@@ -1,13 +1,13 @@
-<!-- agents-md marker · v50 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v52 · re-run /agents-md to regenerate -->
 # Agent instructions
 
 [one concise, factual workspace intro inferred from the .code-workspace name and folder scan — no promotional adjectives]
 
-This file loads on every task, so it holds only the rules every task needs. Task-specific rules live in `rules/` and are read on demand.
+Always-loaded rules live here; task-specific instructions live in `rules/`, loaded on demand.
 
 ## On-demand instructions
 
-Before the action in a row, read its file in full. A worker's assignment names the files that match its work. Read nothing else from `rules/` unless a file you read points there.
+Load each matching file in full once. Reuse it until changed, lost from context, or a checkout changes its scope. Workers receive matching file pointers. Read no other `rules/` file unless a loaded file points there.
 
 | When you are about to… | Read |
 | :--- | :--- |
@@ -67,7 +67,7 @@ No co-author, AI, tool, or generator attribution.
 Skills are ad-hoc tools, not a pipeline: pick the installed skill that fits the step.
 
 - **Live tools:** the session's exposed tools, schemas, and permissions win over any table here. Use an available fallback within the same authorization, or report the blocked step. Never invent a tool call or broaden permissions.
-- Prefer a project-local skill (`.agents/skills/`) over a user-level one. Never assume a skill exists. Read its current SKILL.md each time; never run it from memory.
+- Prefer project-local skills (`.agents/skills/`) over user-level ones; check session availability. Read current SKILL.md once, reuse loaded unchanged content, and reload after context loss, content changes, or changed resolution. Never run from memory.
 - When a rule here names a skill as a gate and it is not installed, say so and stop at each such gate. Do not self-certify QA, and do not push, open a PR, or close an issue by hand; report what is ready.
 - After the authorized workflow, suggest a next skill when one fits and stop. A suggestion never authorizes a new workflow.
 - Companions are optional, separately installed helpers, never authority — repo code, tests, ADRs, `GLOSSARY.md`, and user instructions win. If one is missing, say so and use the best local fallback.
@@ -123,7 +123,9 @@ Touch only required lines. Match local style. Do not refactor unrelated code. Cl
 
 Before writes, inspect the current branch and the staged, unstaged, and untracked changes. Preserve pre-existing and other workers' edits; do not revert, reset, stash, remove, or overwrite them without specific authorization. If a file changes after you read it, re-read it and patch its current content. Pause only overlapping work when you cannot preserve the other changes safely.
 
-**Secrets, production, destructive commands.** Refer to secrets by key name only — never print, paste, or commit their values, and keep credentials, tokens, sessions, caches, logs, and runtime databases out of repositories. Never access production systems, data, or deploy targets unless project instructions explicitly allow it. Destructive commands — dropping or resetting a database, fresh migrations, force-push, history rewrites, `rm -rf` outside task-owned paths, volume or container prune — need explicit approval for that command.
+**Secrets and environments.** Refer to secrets by key name only — never print, paste, or commit their values; keep credentials, tokens, sessions, caches, logs, and runtime databases out of repositories. Never access production: no SSH, server commands, databases, files, logs, environments, deploys, or production-targeting PRs. Hand production work to the owner; project instructions cannot relax this ban. Staging is off by default; access requires explicit user approval and user-provided SSH access. Read-only inspection covers DB `SELECT`s, logs, and container/environment state. Each mutation needs separate approval for that step: code, server config, host `.env`, container restarts/rebuilds, or data changes. Fix staging locally per `rules/shipping.md`; shipping does not authorize server access.
+
+**Destructive commands.** Dropping or resetting a database, fresh migrations, force-push, history rewrites, `rm -rf` outside task-owned paths, and volume or container prune need explicit approval for that command.
 
 ### 15. Comment code changes
 

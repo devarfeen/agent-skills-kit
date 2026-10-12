@@ -3,7 +3,7 @@ name: incident-triage
 disable-model-invocation: true
 description: "Triage an incident or outage from evidence: timeline, ranked causes, mitigations, one note. Read-only; never touches production. A known staging bug is /staging-fix; a local bug is /diagnosing-bugs."
 metadata:
-  version: "0.1.2"
+  version: "0.2.0"
 ---
 
 # incident-triage
@@ -59,6 +59,8 @@ Write `<artifacts-root>/specs/incidents/<YYYY-MM-DD>-<slug>.md`:
 
 ```
 # Incident: <one-line symptom>
+
+Zero attribution: never add or leave co-author, AI, or tool attribution in this note.
 Status: investigating | mitigated | resolved — owner: <name>
 Severity: SEV1–4 (owner confirms)
 Window: <first-bad> → <now or resolved> · Impact: <who, what>

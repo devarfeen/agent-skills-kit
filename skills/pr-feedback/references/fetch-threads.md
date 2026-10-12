@@ -1,5 +1,7 @@
 # Fetching review threads
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
+
 Review threads — with thread IDs and resolved state — exist only in GraphQL:
 
 ```bash

@@ -1,0 +1,216 @@
+{
+  "encoding": "o200k_base",
+  "scope": "entrypoint bodies only; conditional references excluded",
+  "repo": {
+    "before_words": 37616,
+    "after_words": 36088,
+    "before_tokens": 56667,
+    "after_tokens": 54283
+  },
+  "skills": [
+    {
+      "skill": "agentic-qa",
+      "before_words": 1487,
+      "after_words": 1496,
+      "before_tokens": 2194,
+      "after_tokens": 2240
+    },
+    {
+      "skill": "agents-md",
+      "before_words": 1500,
+      "after_words": 1492,
+      "before_tokens": 2415,
+      "after_tokens": 2387
+    },
+    {
+      "skill": "ask-kit",
+      "before_words": 610,
+      "after_words": 615,
+      "before_tokens": 861,
+      "after_tokens": 871
+    },
+    {
+      "skill": "ci-loop",
+      "before_words": 1399,
+      "after_words": 1439,
+      "before_tokens": 2005,
+      "after_tokens": 2065
+    },
+    {
+      "skill": "commit-push-close",
+      "before_words": 1278,
+      "after_words": 1271,
+      "before_tokens": 1908,
+      "after_tokens": 1899
+    },
+    {
+      "skill": "commit-push-pr",
+      "before_words": 1493,
+      "after_words": 1488,
+      "before_tokens": 2250,
+      "after_tokens": 2246
+    },
+    {
+      "skill": "deploy-watch",
+      "before_words": 1224,
+      "after_words": 1351,
+      "before_tokens": 1820,
+      "after_tokens": 1987
+    },
+    {
+      "skill": "design-system",
+      "before_words": 1499,
+      "after_words": 1366,
+      "before_tokens": 2314,
+      "after_tokens": 2123
+    },
+    {
+      "skill": "factory",
+      "before_words": 1500,
+      "after_words": 1479,
+      "before_tokens": 2382,
+      "after_tokens": 2376
+    },
+    {
+      "skill": "feature-discovery",
+      "before_words": 1364,
+      "after_words": 1385,
+      "before_tokens": 1973,
+      "after_tokens": 1997
+    },
+    {
+      "skill": "feature-prompt",
+      "before_words": 1288,
+      "after_words": 1287,
+      "before_tokens": 1990,
+      "after_tokens": 1983
+    },
+    {
+      "skill": "incident-triage",
+      "before_words": 1026,
+      "after_words": 1040,
+      "before_tokens": 1516,
+      "after_tokens": 1535
+    },
+    {
+      "skill": "integration-contract",
+      "before_words": 1443,
+      "after_words": 1077,
+      "before_tokens": 2304,
+      "after_tokens": 1674
+    },
+    {
+      "skill": "local-to-staging",
+      "before_words": 1363,
+      "after_words": 1446,
+      "before_tokens": 2174,
+      "after_tokens": 2269
+    },
+    {
+      "skill": "orchestrate-herdr",
+      "before_words": 1493,
+      "after_words": 1480,
+      "before_tokens": 2356,
+      "after_tokens": 2334
+    },
+    {
+      "skill": "orchestrate-t3",
+      "before_words": 1340,
+      "after_words": 1331,
+      "before_tokens": 1966,
+      "after_tokens": 1958
+    },
+    {
+      "skill": "pixel-audit",
+      "before_words": 1372,
+      "after_words": 1421,
+      "before_tokens": 2223,
+      "after_tokens": 2273
+    },
+    {
+      "skill": "polish-batch",
+      "before_words": 1451,
+      "after_words": 873,
+      "before_tokens": 2221,
+      "after_tokens": 1342
+    },
+    {
+      "skill": "port-feature",
+      "before_words": 1403,
+      "after_words": 1407,
+      "before_tokens": 2130,
+      "after_tokens": 2121
+    },
+    {
+      "skill": "pr-feedback",
+      "before_words": 1420,
+      "after_words": 1434,
+      "before_tokens": 2035,
+      "after_tokens": 2057
+    },
+    {
+      "skill": "qa-escape",
+      "before_words": 1348,
+      "after_words": 1404,
+      "before_tokens": 1963,
+      "after_tokens": 2065
+    },
+    {
+      "skill": "release-notes",
+      "before_words": 1470,
+      "after_words": 1221,
+      "before_tokens": 2302,
+      "after_tokens": 1889
+    },
+    {
+      "skill": "risk-review",
+      "before_words": 1289,
+      "after_words": 1416,
+      "before_tokens": 1966,
+      "after_tokens": 2115
+    },
+    {
+      "skill": "staging-fix",
+      "before_words": 1178,
+      "after_words": 1197,
+      "before_tokens": 1585,
+      "after_tokens": 1613
+    },
+    {
+      "skill": "staging-to-production",
+      "before_words": 959,
+      "after_words": 974,
+      "before_tokens": 1543,
+      "after_tokens": 1560
+    },
+    {
+      "skill": "tdd-loop",
+      "before_words": 1490,
+      "after_words": 1306,
+      "before_tokens": 2160,
+      "after_tokens": 1914
+    },
+    {
+      "skill": "using-git-worktrees",
+      "before_words": 1478,
+      "after_words": 1492,
+      "before_tokens": 1991,
+      "after_tokens": 2012
+    },
+    {
+      "skill": "writing-kit-skills",
+      "before_words": 1451,
+      "after_words": 900,
+      "before_tokens": 2120,
+      "after_tokens": 1378
+    }
+  ],
+  "creator": {
+    "before_words": 5151,
+    "after_words": 452,
+    "before_tokens": 7171,
+    "after_tokens": 598
+  },
+  "interpretation": "Encoding-based entrypoint comparison, not measured runtime token usage. Moved conditional references are excluded and add context when loaded. Required safety additions are included.",
+  "zero_attribution_rule": "Never add or leave co-author, AI, or tool attribution in any output."
+}

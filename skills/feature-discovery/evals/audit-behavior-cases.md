@@ -140,3 +140,13 @@ or application commands have run.
 but mark current runtime enablement unresolved. Identify the missing effective
 configuration/runtime evidence; do not call inspected test assertions executed
 passes or infer deployment state from a source default.
+
+## Forward regression cases — not executed
+
+These fixtures cover the current edit. They are expected decisions, not live
+execution results or replacements for the catalog-only trigger evals.
+
+| Case | Input and fixture | Required observable behavior |
+| :--- | :--- | :--- |
+| Quick trace without candidates | One project, one unbranched config lookup; glossary already covers its terms. | Use eligible Quick trace sections; do not load the full report template or candidate-approval reference. Preserve the read-only boundary. |
+| Candidate term discovered | A targeted trace finds a renamed business status in code and an old glossary definition. | Load the candidate reference, distinguish implementation from approved intent, show proposed text, and await approval before editing. |

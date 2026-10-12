@@ -1,14 +1,14 @@
 # Test cases — `/agents-md`
 
 The routing test set for this skill lives in [`evals.json`](evals.json); this file is its readable
-form. 11 should-trigger queries and 8 near-miss negatives.
+form. 10 should-trigger queries and 11 near-miss negatives.
 
 Zero attribution: omit co-author, AI, and tool attribution from evaluation artifacts and publications.
 
 Near-miss negatives name the sibling they *should* route to. An obviously-irrelevant negative
 proves nothing — if a query could never plausibly hit this skill, it is not testing the boundary.
 
-## Should trigger (11)
+## Should trigger (10)
 
 | # | Query |
 | :--- | :--- |
@@ -20,11 +20,10 @@ proves nothing — if a query could never plausibly hit this skill, it is not te
 | 6 | Bootstrap agent rules for my multi-repo VS Code workspace |
 | 7 | Make the CLAUDE.md shim and AGENTS.md for this workspace root |
 | 8 | New workspace — establish the PROJECT-CODEs |
-| 9 | Write an AGENTS.md for this repo |
-| 10 | Add the CLAUDE.md shim that forwards Claude to AGENTS.md in this workspace |
-| 11 | We added another repo to the code-workspace — refresh the workspace agent rules |
+| 9 | We added another repo to the code-workspace — refresh the workspace agent rules |
+| 10 | Synchronize existing project-runtime blocks from this code-workspace and local Compose file; leave workspace-root instructions unchanged |
 
-## Should NOT trigger (8)
+## Should NOT trigger (11)
 
 | # | Query | Routes to |
 | :--- | :--- | :--- |
@@ -36,9 +35,31 @@ proves nothing — if a query could never plausibly hit this skill, it is not te
 | 6 | Sharpen the project's domain terminology | `domain-modeling` |
 | 7 | Create a new skill for our deploy process | `skill-creator` |
 | 8 | Add a binding AGENTS.md rule so UI changes reuse the component library | `/design-system` |
+| 9 | Write an AGENTS.md for this repo | `/writing-for-agents` |
+| 10 | Add the CLAUDE.md shim that forwards Claude to AGENTS.md in this workspace | `/writing-for-agents` |
+| 11 | Edit this hand-authored repo AGENTS.md; there is no code-workspace file and no workspace generation is requested | `/writing-for-agents` |
+
+## Scope correction
+
+The 2026-10-13 audit narrowed this generator to workspace-root generation and
+existing project-runtime synchronization. The repo-only and shim-only queries
+are retained, with expectations corrected to hand-authored instruction editing;
+the generator explicitly never creates `CLAUDE.md`. Added cases cover runtime-only
+synchronization and no-workspace editing. This changes the supported boundary,
+not the query wording to improve a score. A new real trigger sweep is required;
+historical `last_run` evidence is not a result for this revised set.
 
 ## Rule
 
 Fix descriptions, not queries. A missed should-trigger means the description lacks that phrasing.
 A captured near-miss means the boundary sentence is missing, or the sibling's description is weaker
 than this one's. Never delete a query to make the eval pass.
+
+## 2026-10-13 legacy combined-output correction
+
+Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
+
+The combined shim-plus-AGENTS request is retained as a negative: since v50
+the generator explicitly never writes CLAUDE.md or GEMINI.md. A new positive
+requests the supported workspace generation plus reporting of an existing shim.
+The requested-output boundary is tested rather than promising the removed output.

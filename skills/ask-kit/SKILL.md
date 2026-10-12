@@ -1,9 +1,9 @@
 ---
 name: ask-kit
 disable-model-invocation: true
-description: "Ask which agent-skills-kit skill fits a situation: names one skill and why, never runs it. An existing spec, ticket, or PR goes to /factory; choosing among Matt Pocock's skills goes to ask-matt."
+description: "Route kit skill-map and workflow questions or pick the next agent-skills-kit skill; names one recommendation, never runs it. Existing work: /factory. Matt-only routing: ask-matt."
 metadata:
-  version: "0.0.4"
+  version: "0.1.0"
 ---
 
 # ask-kit
@@ -24,7 +24,7 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 
 | Situation | Skill |
 | :--- | :--- |
-| New workspace, or the Project Matrix is stale | `/agents-md` |
+| Generate workspace-root rules from `.code-workspace`, refresh its matrix, or sync project runtime blocks | `/agents-md` |
 | A UI project has no tokens or component library | `/design-system` |
 | How does this existing feature work, or what uses it | `/feature-discovery` |
 | Rebuild a feature from one stack in another | `/port-feature` |

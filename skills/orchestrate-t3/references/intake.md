@@ -8,11 +8,11 @@ Otherwise: three decisions, asked as one batched question set after Discover and
 
 Grouping happens before Intake, so the questions can show it.
 
-- **Share one worktree and one thread, worked in order,** when one issue is blocked by another in the set, or when two issues name the same file, route, component, table, or migration in their body or acceptance criteria. Two threads editing the same lines produce a conflict nobody asked for.
+- **Share one worktree and one thread within a repository, worked in order,** when one issue is blocked by another in the set, or when two issues name the same file, route, component, table, or migration in their body or acceptance criteria. Two threads editing the same lines produce a conflict nobody asked for.
 - **Own worktree and own thread** for every other issue.
-- **One worktree per repository.** An issue that spans repositories gets one worktree in each and still one thread; name the repositories in its prompt.
+- **One repository per thread.** Split an issue spanning repositories into linked repository-specific assignments, with an acceptance boundary for each and a combined completion row. Preserve cross-repository blocking relations between groups. A missing repository mapping, acceptance split, or dependency order blocks the affected group until resolved; never let a single-checkout thread write another repository.
 
-Give each group a one-clause reason drawn from the issue text (`#41 + #44 — both change InvoiceTotal.vue`). An issue whose surface cannot be told from its text stays on its own, and the reason says so. A blocking relation that could not be read is stated as a gap, never treated as independence.
+Give each group a one-clause reason drawn from the issue text (`#41 + #44 — both change InvoiceTotal.vue`). Record repository-qualified issue references and the group's assigned acceptance criteria. An issue whose surface cannot be told from its text stays on its own, and the reason says so. A blocking relation that could not be read is stated as a gap, never treated as independence.
 
 ## 1. Which coding agent
 

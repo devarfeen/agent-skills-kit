@@ -1,0 +1,3 @@
+# Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
+policy:
+  allow_implicit_invocation: false

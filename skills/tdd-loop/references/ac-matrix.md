@@ -36,7 +36,7 @@ A test only proves the layer it runs in. Close a row with the proof its surface 
 | Pure logic | Unit test |
 | API or job | Test through the real handler, asserting status, body, and side effect |
 | Persistence | Write, then read back through the owner path (reload, re-query) |
-| UI | A browser test in the project's end-to-end runner, and `agentic-qa` — real interaction plus console and network observation |
+| UI | A browser test through real interaction in the project's E2E runner; otherwise proof remains owed to `agentic-qa` with console/network observation |
 | Concurrency | Repeated concurrent trigger; exactly the allowed number of successes |
 
 ## Test-quality check

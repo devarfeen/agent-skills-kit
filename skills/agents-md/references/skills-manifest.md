@@ -78,7 +78,7 @@ Every folder under this repo's `skills/` must have a `kit` row here
 
 | skill | kind | phase | note | use-when |
 | ----- | ---- | ----- | ---- | -------- |
-| `/using-git-worktrees` | kit | companion | | The user asks to work in a worktree — invoke before task edits or the task skill; reuse or create the checkout under that project repo’s gitignored `.worktrees/`, verify its baseline, then return to the authorized task. Branch-only requests do not qualify. |
+| `/using-git-worktrees` | kit | companion | | User-invoked; explicitly user-started `/orchestrate-t3` and `/factory run` may load and follow it for checkout setup only. Keep implicit discovery disabled. Verify the project-owned `.worktrees/` checkout and baseline before returning to the authorized task. Branch-only requests do not qualify. |
 | `/ask-kit` | kit | companion | | You do not know which kit skill fits, and there is no spec, ticket, or PR to point `/factory` at. Names one skill and why; never runs it. User-invoked (`/ask-kit`); do not auto-fire. |
 | `/factory` | kit | companion | | You want to know where a spec (PRD), ticket, or PR stands — CI, review, risk gate, staging deploy — and which one skill moves it next. Read-only; suggests, never runs the next skill; stops at staging. Only the user's own `/factory run <label or reference>` makes it carry the chain out after one question — build, QA, a second agent's code review, merge into `local` or staging, handover to manual QA; it never closes an issue. |
 | `/incident-triage` | kit | companion | | An incident or outage needs a timeline, ranked causes with evidence, and owner-run mitigations. Read-only; production is never accessed. |

@@ -12,6 +12,7 @@ Maintainer-only fixtures. Zero attribution: never add co-author, AI, or tool att
 | No Matt install | Worktree companion installed; Matt skill probes fail | Omit Matt subsection, retain worktree rule; render kit companion once, outside gradient/startup |
 | Git edge cases | API is a submodule; desired branch belongs to unrelated worktree; tracked destination content exists | Inspect actual repo ownership; .git file alone is not isolation; no force/reset/untracking |
 | Shipping | Ignore rule was added in the source and task work is on a worktree branch | Add only the missing ignore entry in the task checkout; both ship skills operate there; source edits preserved; merge and removal remain outside shipping |
+| Invocation policy | Implicit discovery is disabled; compare direct explicit use, explicitly started T3, explicitly started factory run, plain factory, and another workflow | Direct user invocation runs setup; T3/factory run may read and follow setup instructions only; plain factory writes nothing; other workflows do not auto-invoke the skill; no runtime Skill-tool call bypasses explicit-only metadata |
 
 ## Checkout gate regression cases
 

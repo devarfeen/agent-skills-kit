@@ -36,3 +36,12 @@ A `none` route means no kit skill should claim the query at all.
 Fix descriptions, not queries. A missed should-trigger means the description lacks that phrasing.
 A captured near-miss means the boundary sentence is missing, or the sibling's description is weaker
 than this one's. Never delete a query to make the eval pass.
+
+## 2026-10-13 catalog scope correction
+
+Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
+
+The original unqualified examples query is retained as a generic skill-creator
+negative: a catalog-only judge receives no cwd and cannot infer kit ownership.
+A separate positive supplies agent-skills-kit explicitly. This preserves both
+scopes instead of broadening the house skill into other projects.

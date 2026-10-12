@@ -7,6 +7,62 @@ their new versions, so a workspace on an older copy can see what an update
 brings. Generated `AGENTS.md` files carry the `agents-md` marker version;
 re-run `/agents-md` after a marker bump.
 
+## 2026-10-13
+
+### Changed
+
+- **Delivery contracts** — `/factory` 1.5.0, `/commit-push-pr` 0.6.0,
+  `/commit-push-close` 0.3.0, `/risk-review` 0.5.0, `/ci-loop` 0.4.0,
+  `/deploy-watch` 0.4.0, `/local-to-staging` 0.2.0, `/agentic-qa` 0.4.0,
+  and `/qa-escape` 0.4.0 share body/comment criteria and head-bound acceptance
+  evidence. Factory blocks unresolved threads, refreshes existing PR handoffs,
+  supplies delivered issues explicitly and reuses the exact Compose configuration
+  for shutdown. Deployment passes require live revision proof; manual-QA
+  assignment records deployment-job success separately from unverified smoke.
+  Returned fixes receive delivery-scoped assignment markers; CI retains its
+  all-check fallback and completion requirements follow each result branch.
+- **`/using-git-worktrees` 0.3.0** — direct use is user-invoked only, with
+  implicit selection disabled in both metadata formats. Explicitly started
+  `/orchestrate-t3` and `/factory run` may read and follow its checkout setup
+  automatically. These exceptions authorize neither another workflow nor
+  unrelated cleanup.
+- **`/agents-md` 0.6.0, marker `v52`** — generated rules carry the absolute
+  production ban and explicit staging access/mutation boundaries. Unchanged
+  loaded instructions are reused. Routing distinguishes workspace generation
+  and runtime synchronization from hand-authored files and shim-only requests.
+  Managed Markdown/TOML output carries attribution policy; strict JSON without
+  a supported representation is an owner-applied patch. Host-text hooks are
+  documented as best effort. `/ask-kit` 0.1.0 follows that scope.
+- **Orchestration** — `/orchestrate-herdr` 0.3.0 binds instructions, baseline
+  and canonical checkout identity to workers and verifies native placement.
+  `/orchestrate-t3` 0.4.0 uses repository-specific threads with dependency gates.
+  Workers use permitted `/tdd-loop` instructions rather than invoking user-only
+  `/implement` automatically.
+- **Core contracts and loading** — `/feature-discovery` and `/feature-prompt`
+  0.3.0, plus `/port-feature`, `/integration-contract`, `/design-system`,
+  `/polish-batch`, `/release-notes` and `/tdd-loop` 0.2.0, use targeted context
+  and conditional examples/mode procedures. Fixes cover zero-consumer contracts,
+  mapped release-note roots, pre-dispatch console baselines, UI proof and honest
+  numbering guarantees. `/writing-kit-skills` 0.4.0 targets 500–900 words while
+  preserving the 1,500-word ceiling and safety gates.
+- **Boundary corrections** — `/incident-triage` 0.2.0, `/staging-fix` 0.3.0,
+  `/staging-to-production` 0.1.0 and `/pr-feedback` 0.2.2 retain environment and
+  attribution constraints. Canonical standalone-install copies remain identical.
+- **Local Codex profile** — disable overlapping `new-feature`, user-level
+  `skill-creator`, and `tdd` entries; preserve their installed files. The kit
+  retains checkout setup, the built-in creator, and `tdd-loop` respectively.
+- **Evaluation** — strict YAML parsing is required locally and in CI.
+  Provenance now covers query content, complete catalog and invocation policy,
+  rejects missing eval files and records scored runs. A separate native Codex
+  catalog captures the actual exposed competition. New behavioral cases are
+  distinguished from catalog routing and live workflow execution.
+
+### Breaking
+
+- **`/pixel-audit` 1.0.0** — the intermediate `fixed` row status is now
+  `awaiting verification`; legacy rows receive that interpretation on rerun.
+  A final fixed/verified claim still requires served-element proof.
+
 ## 2026-10-12
 
 ### Changed

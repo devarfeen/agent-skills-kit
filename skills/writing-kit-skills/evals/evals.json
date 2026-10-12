@@ -29,7 +29,8 @@
     },
     {
       "q": "Move this skill's long examples out of SKILL.md properly",
-      "expect": "trigger"
+      "expect": "no-trigger",
+      "route": "skill-creator"
     },
     {
       "q": "Write release notes for last week",
@@ -65,6 +66,10 @@
       "q": "Run the trigger evals for the kit",
       "expect": "no-trigger",
       "route": "none"
+    },
+    {
+      "q": "In agent-skills-kit, move this skill's long examples out of SKILL.md properly",
+      "expect": "trigger"
     }
   ],
   "last_run": {

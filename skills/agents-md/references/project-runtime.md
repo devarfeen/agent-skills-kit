@@ -6,7 +6,7 @@ files. Derive every project, path, service, and container value from workspace
 evidence. No project-specific defaults or name-based service guesses.
 
 Zero attribution: never add or leave co-author, AI, tool, or generator attribution
-in output. Preserve existing zero-attribution rules. The required neutral source
+in output. Preserve existing zero-attribution rules and include the explicit rule in each managed block. The required neutral source
 comment below describes the data source, not authorship.
 
 Contents: [1. Resolve the local model](#1-resolve-the-local-model) · [2. Match projects to services](#2-match-projects-to-services) · [3. Prepare the managed block](#3-prepare-the-managed-block) · [4. Show the diff, then apply approved changes](#4-show-the-diff-then-apply-approved-changes) · [Completion checks](#completion-checks)
@@ -58,6 +58,7 @@ Fill exactly these three facts from the matched service and bind mount:
 ```markdown
 <!-- agents-md:project-runtime:start -->
 <!-- Source: resolved local Compose model. -->
+<!-- Zero attribution: never add or leave co-author, AI, or tool attribution in output. -->
 - Compose service: `<service key>`.
 - Container name: `<resolved container_name>`.
 - Application path inside container: `<bind-mount target>`.
@@ -68,7 +69,7 @@ When `container_name` is absent (`null` in the filtered model), use the service 
 Compose-generated container name. The application path is always the matching
 mount's `target`, even if the service has a different `working_dir`. The mount
 alone does not establish a working directory; only explicit Compose `working_dir`
-can support that claim. Keep the managed block to the three facts above.
+can support that claim. Keep the managed block to the three facts and policy comment above.
 
 **First synchronization, no markers:** insert under an existing local-runtime or
 local-app heading, allowing case, spacing, and hyphen variants. The section ends

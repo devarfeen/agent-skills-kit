@@ -16,12 +16,17 @@ class ScoreTests(unittest.TestCase):
         self.harness = self.root / "tools" / "trigger-evals"
         self.harness.mkdir(parents=True)
         shutil.copy(Path(__file__).with_name("score.py"), self.harness / "score.py")
+        shutil.copy(Path(__file__).with_name("build-catalog.sh"), self.harness / "build-catalog.sh")
         self.skill = self.root / "skills" / "alpha" / "SKILL.md"
         self.skill.parent.mkdir(parents=True)
         self.skill.write_text("---\nname: alpha\ndescription: Original description.\n---\n")
         self.catalog = self.root / "catalog.md"
         self.catalog.write_text("## Kit skills\n- **/alpha** — Original description.\n"
                                 "## External skills\n- **/beta** — Other task.\n")
+        self.external = self.harness / "catalog-externals.md"
+        self.external.write_text("## External skills\n- **/beta** — Other task.\n")
+        self.catalog.write_bytes(subprocess.run(["bash", str(self.harness / "build-catalog.sh")],
+                                                check=True, capture_output=True).stdout)
         self.manifest = self.root / "query-manifest.json"
         self.manifest.write_text(json.dumps([
             {"n": 1, "skill": "/alpha", "expect": "trigger", "q": "alpha"},
@@ -145,6 +150,55 @@ class ScoreTests(unittest.TestCase):
             self.write_judge(path, [(1, "/alpha"), (2, "/alpha")])
         self.assertEqual(self.run_score().returncode, 0)
         self.assert_rejected(self.run_score("--write-snapshot"))
+
+    def check_provenance(self):
+        return subprocess.run([sys.executable, str(self.harness / "score.py"),
+                               "--check-provenance"], text=True, capture_output=True)
+
+    def test_unchanged_inputs_validate(self):
+        self.assertEqual(self.run_score("--write-snapshot").returncode, 0)
+        self.assertEqual(self.check_provenance().returncode, 0)
+
+    def test_changed_query_inputs_invalidate_snapshot(self):
+        for field, value in [("q", "new wording"), ("expect", "no-trigger"), ("route", "/beta")]:
+            with self.subTest(field=field):
+                path = self.skill.parent / "evals" / "evals.json"
+                original = path.read_text()
+                self.assertEqual(self.run_score("--write-snapshot").returncode, 0)
+                data = json.loads(original)
+                data["queries"][0][field] = value
+                path.write_text(json.dumps(data))
+                self.assertNotEqual(self.check_provenance().returncode, 0)
+                path.write_text(original)
+
+    def test_external_catalog_change_invalidates_snapshot(self):
+        self.assertEqual(self.run_score("--write-snapshot").returncode, 0)
+        self.external.write_text("## External skills\n- **/beta** — Changed task.\n")
+        self.assertNotEqual(self.check_provenance().returncode, 0)
+        self.assert_rejected_after_existing_snapshot()
+
+    def assert_rejected_after_existing_snapshot(self):
+        before = self.snapshot.read_bytes()
+        self.assertNotEqual(self.run_score("--write-snapshot").returncode, 0)
+        self.assertEqual(self.snapshot.read_bytes(), before)
+
+    def test_missing_skill_evals_invalidates_snapshot(self):
+        self.assertEqual(self.run_score("--write-snapshot").returncode, 0)
+        (self.skill.parent / "evals" / "evals.json").unlink()
+        self.assertNotEqual(self.check_provenance().returncode, 0)
+        self.assert_rejected_after_existing_snapshot()
+
+    def test_catalog_context_change_invalidates_snapshot(self):
+        self.assertEqual(self.run_score("--write-snapshot").returncode, 0)
+        self.external.write_text("Routing context changed.\n" + self.external.read_text())
+        self.assertNotEqual(self.check_provenance().returncode, 0)
+        self.assert_rejected_after_existing_snapshot()
+
+    def test_invocation_policy_change_invalidates_snapshot(self):
+        self.assertEqual(self.run_score("--write-snapshot").returncode, 0)
+        self.skill.write_text(self.skill.read_text().replace("name: alpha\n",
+                                                            "name: alpha\ndisable-model-invocation: true\n"))
+        self.assertNotEqual(self.check_provenance().returncode, 0)
 
 
 if __name__ == "__main__":

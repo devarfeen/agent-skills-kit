@@ -3,7 +3,7 @@
 #
 # Run from anywhere: bash tools/validate.sh
 # Exits non-zero on any failure. Requires git, coreutils, grep, and Python 3.
-# PyYAML enables strict frontmatter parsing; without it, report heuristic coverage.
+# PyYAML is required for strict frontmatter parsing; install tools/requirements.txt.
 # Zero attribution: never add co-author, AI, or tool attribution to outputs.
 #
 # What it enforces (see CONTRIBUTING.md for the why):
@@ -23,9 +23,8 @@
 #      version; the AGENTS.md template stays within TEMPLATE_BUDGET bytes.
 #   8. Manifest gradient rows carry a valid phase.
 #   9. Every skills/*/evals/evals.json parses and carries queries + last_run.
-#  10. Eval provenance: each live description still matches the one that was
-#      actually judged in the run its last_run records. A description edited
-#      after a passing run silently invalidates that run's result.
+#  10. Eval provenance: descriptions, complete query content, external catalog,
+#      and invocation policies match the actual recorded sweep.
 #  11. Invocation parity: `disable-model-invocation: true` in SKILL.md
 #      frontmatter ⇔ an `agents/openai.yaml` with
 #      `allow_implicit_invocation: false` (the Codex-side mirror of the flag).
@@ -58,6 +57,9 @@ set -u
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
+if [[ -x "$ROOT/.venv/bin/python3" ]]; then
+  export PATH="$ROOT/.venv/bin:$PATH"
+fi
 FAIL=0
 
 fail() { printf 'FAIL: %s\n' "$*"; FAIL=1; }
@@ -104,15 +106,16 @@ note "frontmatter checked for $(ls -d skills/*/ | wc -l | tr -d ' ') skills"
 # fields are present; a regex misses YAML hazards a strict parser (the one the
 # skills CLI uses) rejects — most notably an unquoted description containing
 # ': ' (colon-space), which the CLI reports as "mapping values are not allowed
-# here" and refuses to install. Prefer PyYAML; fall back to a stdlib heuristic.
+# here" and refuses to install. Require PyYAML so a green check means parsed YAML.
 if command -v python3 >/dev/null 2>&1; then
   yaml_out="$(python3 - <<'PYEOF'
 import glob
 try:
     import yaml
     have = True
-except Exception:
-    have = False
+except ImportError:
+    print("PyYAML is required; run python3 -m pip install -r tools/requirements.txt")
+    raise SystemExit(1)
 
 def frontmatter(t):
     if not t.startswith("---"):
@@ -130,18 +133,6 @@ for f in sorted(glob.glob("skills/*/SKILL.md")):
             yaml.safe_load(fm)
         except Exception as e:
             bad.append(f + ": " + str(e).splitlines()[0])
-    else:
-        import re
-        for ln in fm.splitlines():
-            m = re.match(r'^(name|description):\s*(.*)$', ln)
-            if not m:
-                continue
-            v = m.group(2).strip()
-            if v[:1] == '"':
-                if not (len(v) >= 2 and v.endswith('"')):
-                    bad.append(f + ": " + m.group(1) + " has an unbalanced opening quote")
-            elif ": " in v:
-                bad.append(f + ": " + m.group(1) + " is unquoted and contains ': ' (quote the value)")
 for b in bad:
     print(b)
 PYEOF
@@ -151,11 +142,7 @@ PYEOF
       [[ -n "$line" ]] && fail "frontmatter YAML — $line"
     done <<< "$yaml_out"
   else
-    if python3 -c 'import yaml' >/dev/null 2>&1; then
-      note "frontmatter parses as strict YAML"
-    else
-      note "frontmatter passes quote/colon heuristic only; PyYAML unavailable, strict YAML not checked"
-    fi
+    note "frontmatter parses as strict YAML"
   fi
 fi
 
@@ -320,8 +307,12 @@ done < <(grep -E '^\|[[:space:]]*`/' "$MANIFEST")
 
 echo "== 9. Trigger-eval sets parse =="
 EV_COUNT=0
-for ev in skills/*/evals/evals.json; do
-  [[ -e "$ev" ]] || continue
+for skill_md in skills/*/SKILL.md; do
+  ev="${skill_md%SKILL.md}evals/evals.json"
+  if [[ ! -f "$ev" ]]; then
+    fail "$ev is missing — every skill requires an eval set"
+    continue
+  fi
   EV_COUNT=$((EV_COUNT+1))
   if ! python3 - "$ev" <<'PYEOF'
 import json, sys
@@ -340,56 +331,13 @@ PYEOF
 done
 note "eval sets parsed ($EV_COUNT files)"
 
-echo "== 10. Eval provenance: descriptions match their recorded run =="
-# The frontmatter description IS the router, and last_run records the result of
-# judging *that* text. Edit a description after a passing run and the recorded
-# result becomes a claim about a string that no longer exists. This check makes
-# that drift loud instead of silent. (It once let the kit carry a 280/280 claim
-# while actually scoring 277/280.)
-SNAP="tools/trigger-evals/last-run-descriptions.json"
-if [[ ! -f "$SNAP" ]]; then
-  fail "$SNAP is missing — cannot verify that eval results match the judged descriptions"
-elif command -v python3 >/dev/null 2>&1; then
-  prov_out="$(python3 - "$SNAP" <<'PYEOF'
-import glob, hashlib, json, os, re, sys
-
-snap = json.load(open(sys.argv[1]))
-want = snap["descriptions_sha256"]
-ref  = snap.get("recorded_at_commit", "the recorded run")
-
-def parse_desc(text):
-    m = re.match(r"^---\n(.*?)\n---", text, re.S)
-    if not m:
-        return None
-    for line in m.group(1).splitlines():
-        if line.startswith("description:"):
-            v = line[len("description:"):].strip()
-            if len(v) >= 2 and v[0] == '"' and v[-1] == '"':
-                v = v[1:-1]
-            return v
-    return None
-
-for f in sorted(glob.glob("skills/*/SKILL.md")):
-    name = os.path.basename(os.path.dirname(f))
-    desc = parse_desc(open(f, encoding="utf-8").read())
-    if desc is None:
-        print(f"{name}: no description to verify"); continue
-    if name not in want:
-        print(f"{name}: no recorded description for it — add one by re-running the evals"); continue
-    if hashlib.sha256(desc.encode()).hexdigest() != want[name]:
-        print(f"{name}: description changed since the eval run recorded in its last_run "
-              f"(snapshot @ {ref}) — re-run the trigger evals and restamp last_run")
-PYEOF
-)"
-  if [[ -n "$prov_out" ]]; then
-    while IFS= read -r line; do
-      [[ -n "$line" ]] && fail "eval provenance — $line"
-    done <<< "$prov_out"
-    printf '  remedy: bash tools/trigger-evals/build-catalog.sh, run 3 judges, then\n'
-    printf '          python3 tools/trigger-evals/score.py … --write-snapshot\n'
-  else
-    note "every description matches the run its last_run records"
-  fi
+echo "== 10. Eval provenance: live inputs match their recorded run =="
+if prov_out="$(PYTHONDONTWRITEBYTECODE=1 python3 tools/trigger-evals/score.py --check-provenance 2>&1)"; then
+  note "$prov_out"
+else
+  fail "eval provenance — $prov_out"
+  printf '  remedy: rebuild the catalog/queryset, run three judges, then score --write-snapshot --record-run
+'
 fi
 
 echo "== 11. Invocation parity: frontmatter flag ⇔ agents/openai.yaml =="

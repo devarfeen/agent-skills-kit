@@ -1,0 +1,307 @@
+{
+  "method": "Independent instruction simulation. Read only current SKILL.md files and relevant references for factory, agentic-qa, deploy-watch, local-to-staging. No evals, diffs, prior reports, other agents' results, network calls, delegation, repository mutations, or actual workflow actions.",
+  "global_constraints": [
+    "No production access or production PRs.",
+    "Staging browsing requires explicit session approval and user-provided SSH access; staging mutations require separate approval per step.",
+    "No attribution in generated outputs."
+  ],
+  "cases": [
+    {
+      "id": "X1",
+      "input": "Explicit /factory run; local is the repository default and explicitly authorized by workspace policy as a non-production delivery branch; all current-head merge gates clear.",
+      "decision": "The default-branch designation does not block this explicitly authorized delivery-local exception. Assuming 'risk gates clear' includes tier=low/blocking=0 and settled code review, factory may merge the PR itself under the run authorization after immediately re-reading head/base/checks/paginated threads.",
+      "may_claim_or_post": [
+        "Before merge: MERGE with the actual current-head evidence. After confirmed merge: merged into local, not yet on staging.",
+        "Post the evidence-based factory-delivered issue comment, keep/reopen the issue for manual QA, set In Review when the tracker supports it, and read writes back. Existing run authorization covers the chain.",
+        "Perform the specified safe local synchronization and eligible task cleanup after handover."
+      ],
+      "must_hold": [
+        "No staging deployment, deploy-watch pass, READY_FOR_OWNER, or manual-QA assignment merely from a local merge.",
+        "Do not automatically run local-to-staging: factory never promotes.",
+        "No merge if risk is high, head moves, a gate is unreadable, threads remain unresolved, or repository protection refuses; no bypass flags, reset/stash/force, or production work."
+      ],
+      "authorized_follow_up": [
+        "Use repository merge policy and --match-head-commit; verify MERGED/mergeCommit. Synchronize only safely.",
+        "Handover then eligible cleanup. Name /local-to-staging for separately authorized promotion; end this run for the merged-local unit."
+      ],
+      "citations": [
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/factory/SKILL.md",
+          "lines": [
+            24,
+            26
+          ],
+          "supports": "Current-head evidence and explicit default-local exception"
+        },
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/factory/references/states.md",
+          "lines": [
+            11,
+            11
+          ],
+          "supports": "Default local requires explicit non-production workspace delivery designation"
+        },
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/factory/references/run.md",
+          "lines": [
+            45,
+            45
+          ],
+          "supports": "Preflight permits explicitly designated delivery-local default"
+        },
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/factory/references/run.md",
+          "lines": [
+            283,
+            288
+          ],
+          "supports": "Low-risk current-head merge gates and pinned merge/safe synchronization"
+        },
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/factory/references/run.md",
+          "lines": [
+            88,
+            88
+          ],
+          "supports": "Merged-local run goes to handover/cleanup and never promotes"
+        },
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/factory/references/run.md",
+          "lines": [
+            294,
+            294
+          ],
+          "supports": "Say not on staging and name local-to-staging"
+        },
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/factory/references/run.md",
+          "lines": [
+            298,
+            343
+          ],
+          "supports": "Evidence handover, issue remains open, and conditional cleanup"
+        }
+      ]
+    },
+    {
+      "id": "X2",
+      "input": "Internal pure-calculation diff; fully traced to no screen and no user-visible acceptance criterion; no grid and no PR.",
+      "decision": "Record no-ui-reach, not VERIFIED and not blocked merely because there is no grid or PR. The proved absence of screen reach and visible criteria satisfies the no-UI route.",
+      "may_claim_or_post": [
+        "Write report.md with the negative reach trace and current head SHA, plus the explicit zero-attribution rule.",
+        "Keep <!-- agentic-qa: sha=<head-sha> result=no-ui-reach findings=0 recheck=0 --> at the end of report.md. No PR means no PR comment can be posted yet.",
+        "Report that no grid/browser screenshot coverage applies to this no-ui-reach determination."
+      ],
+      "must_hold": [
+        "Do not invent a screen path, run a UI grid solely for an internal calculation, label the result VERIFIED, or claim visible behavior was tested.",
+        "Do not create a PR merely to post QA evidence or post a stale-head marker later.",
+        "The tester edits no source/test/fixture/config. Later remote posting still needs applicable approval; a factory run can supply its explicit posting authorization."
+      ],
+      "authorized_follow_up": [
+        "Retain the report. Once a PR exists for exactly this head SHA, post/read back the marker under the applicable remote-write authorization.",
+        "If head changes, run QA reach evaluation again; if any visible criterion or screen chain appears, use the reachable/not-wired workflow instead."
+      ],
+      "citations": [
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/agentic-qa/references/qa-grid.md",
+          "lines": [
+            7,
+            18
+          ],
+          "supports": "Screen trace and proved no-UI absence exception"
+        },
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/agentic-qa/SKILL.md",
+          "lines": [
+            24,
+            26
+          ],
+          "supports": "Tester never edits code; visible criteria prohibit no-ui-reach"
+        },
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/agentic-qa/SKILL.md",
+          "lines": [
+            43,
+            49
+          ],
+          "supports": "No reach goes straight to record, bypassing grid"
+        },
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/agentic-qa/SKILL.md",
+          "lines": [
+            65,
+            71
+          ],
+          "supports": "No grid needed; report marker retained until same-head PR exists"
+        },
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/agentic-qa/SKILL.md",
+          "lines": [
+            34,
+            36
+          ],
+          "supports": "Remote-write approval and factory run authorization"
+        },
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/agentic-qa/SKILL.md",
+          "lines": [
+            86,
+            89
+          ],
+          "supports": "No-UI report and no-PR completion requirements"
+        }
+      ]
+    },
+    {
+      "id": "X3",
+      "input": "Factory PR merged into staging; staging deploy job succeeded for requested commit; explicit issue supplied; no closing keywords or delivery comment yet; no staging approval/SSH access.",
+      "decision": "Watch GitHub only and report deploy-only success with live build/smoke unverified. The explicit factory issue identifier is sufficient to resolve manual-QA handoff before factory's delivery comment exists. The factory run authorizes the result comment and assignment/comment.",
+      "may_claim_or_post": [
+        "Post an honest PR result comment giving staging deployment-job success, run URL/SHA/merge containment, and 'Smoke: not run (missing session approval and user-provided SSH access)'; do not include a pass marker.",
+        "After confirmed successful staging deploy containing the merge, assign the explicit delivered issue to workspace Manual QA person, else reporter, unless the same delivered PR/merge assignment marker already exists.",
+        "Post 'Staging deployment job succeeded for <deployed-sha> — assigned for manual QA', live build/smoke unverified/not run with reason, run URL, and <!-- factory-qa-assigned: pr=<pr> merge=<merge-sha> staging=<deployed-sha> -->; read assignee/comment back and leave status unchanged in deploy-watch.",
+        "Factory can then post evidence-based Delivered handover, set In Review/reopen if merge automation closed it, and perform eligible cleanup."
+      ],
+      "must_hold": [
+        "No staging URL browsing, SSH/server commands, staging mutation, or workflow dispatch/re-run/cancel.",
+        "No result=pass marker or READY_FOR_OWNER without confirmed live run-head identity and every smoke check passing; job success alone is insufficient.",
+        "No issue closure, no invented closing references, and no wait for a factory-delivered comment solely to identify the explicitly supplied issue.",
+        "No repeated loop on the same missing staging approval/access."
+      ],
+      "authorized_follow_up": [
+        "Verify the workflow is the staging deployment route and run head equals/contains the merge with quoted ancestry.",
+        "Complete manual-QA assignment using run authorization, handover and conditional cleanup; then park with smoke/build-identity proof pending.",
+        "Resume smoke only after explicit session staging approval plus user-provided SSH access; any write flow separately needs approval for that single staging step and restoration."
+      ],
+      "citations": [
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/deploy-watch/SKILL.md",
+          "lines": [
+            16,
+            21
+          ],
+          "supports": "Routing/identity inputs, smoke permission, explicit factory identifiers"
+        },
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/deploy-watch/SKILL.md",
+          "lines": [
+            25,
+            31
+          ],
+          "supports": "No server/deploy actions; factory posting/QA handoff authorization"
+        },
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/deploy-watch/SKILL.md",
+          "lines": [
+            57,
+            71
+          ],
+          "supports": "Live build/smoke proof required for pass; otherwise deploy-only result"
+        },
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/deploy-watch/SKILL.md",
+          "lines": [
+            75,
+            85
+          ],
+          "supports": "Explicit IDs work before handover; assignment on successful containing deploy; open issue and readback"
+        },
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/factory/references/run.md",
+          "lines": [
+            292,
+            294
+          ],
+          "supports": "Watch GitHub only, handover/cleanup then park and never claim ready"
+        },
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/factory/references/run.md",
+          "lines": [
+            298,
+            329
+          ],
+          "supports": "Factory handover, In Review, no close"
+        },
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/agentic-qa/SKILL.md",
+          "lines": [
+            31,
+            31
+          ],
+          "supports": "Staging mutation and restoration require separate approval"
+        }
+      ]
+    },
+    {
+      "id": "X4",
+      "input": "Promotion deployment job successful at SHA; runtime build identity/smoke not observed; issue needs manual QA.",
+      "decision": "A confirmed staging deployment job on the promotion SHA can justify a qualified job-success claim and manual-QA assignment without live build/smoke proof. It does not justify a deploy-watch pass or a claim that the live runtime is verified. local-to-staging full deployment success additionally requires every run on the merge green.",
+      "may_claim_or_post": [
+        "Report staging deployment-job success at the observed SHA with run URL; explicitly report live build/smoke unverified/not run.",
+        "Under an approved promotion plan covering issue assignments/comments, assign a qualifying open issue to Manual QA person, else reporter, and post the assignment marker with the delivered PR/merge and promotion staging SHA.",
+        "The qualifying issue's newest factory-delivered merge must be contained in refreshed staging, with no assignment marker already naming that same delivered PR/merge; read assignment/comment back and preserve issue status."
+      ],
+      "must_hold": [
+        "No live-runtime verified claim, deploy-watch pass marker, or READY_FOR_OWNER with identity/smoke unobserved.",
+        "If deploy routing is ambiguous/test-only, another run failed/missing, or delivery ancestry/identity is unproved, hold full deployment-success/manual-QA handoff until proof exists.",
+        "If the promotion plan approval did not cover this issue/assignee/comment, show the concrete plan and hold remote writes; a successful job alone is not posting authorization.",
+        "No staging browser activity without session approval and user-provided SSH access, no staging mutations without single-step approval, no server commands or workflow re-run/dispatch/cancel, and no production actions or PRs."
+      ],
+      "authorized_follow_up": [
+        "Read Actions routing/results and refresh target ancestry using local git/GitHub evidence.",
+        "Complete the manual-QA assignment covered by the plan when all containing-deploy/delivery/other-run gates hold; do not wait for runtime smoke merely to hand to a human.",
+        "Name /deploy-watch as optional separately invoked smoke follow-up; its staging approval/access and remote-comment approval remain distinct. Until then retain the qualified job-only result."
+      ],
+      "citations": [
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/local-to-staging/SKILL.md",
+          "lines": [
+            21,
+            26
+          ],
+          "supports": "No production/default promotion, no server work, plan approval, no deploy triggering"
+        },
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/local-to-staging/SKILL.md",
+          "lines": [
+            48,
+            54
+          ],
+          "supports": "Confirmed deployment routing and plan includes handoff issues/assignees"
+        },
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/local-to-staging/SKILL.md",
+          "lines": [
+            98,
+            110
+          ],
+          "supports": "Refresh ancestry, successful runs, latest delivery and same-delivery dedup; qualified assignment comment"
+        },
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/local-to-staging/SKILL.md",
+          "lines": [
+            124,
+            129
+          ],
+          "supports": "Full deployment success requires confirmed deploy/every run green; optional smoke follow-up"
+        },
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/deploy-watch/SKILL.md",
+          "lines": [
+            20,
+            20
+          ],
+          "supports": "Smoke needs explicit session approval and user-provided SSH access"
+        },
+        {
+          "path": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/deploy-watch/SKILL.md",
+          "lines": [
+            57,
+            71
+          ],
+          "supports": "Unobserved live identity/smoke cannot produce pass marker"
+        }
+      ]
+    }
+  ]
+}

@@ -6,7 +6,7 @@ Zero attribution: omit co-author, AI, and tool attribution from all output.
 > only when the user asks to enable a CLI's native memory. Re-verify a snippet
 > against its linked docs on touch (CONTRIBUTING sync map).
 
-Copy-paste snippets for **user-level** config. Merge into existing files; do not overwrite unrelated keys.
+Owner-applied snippets for **user-level** config. Merge into existing files; do not overwrite unrelated keys. Agent-written Markdown and settings must explicitly state zero attribution. TOML supports a policy comment; for strict JSON with no schema-supported policy field, show the settings patch for the owner instead of writing an invalid key or comment. Instruction-file snippets below carry the rule themselves.
 
 This kit creates no repo `MEMORY.md`, wiki, or discovery memory. Use each CLI's native memory only when it provides one. Shared rules live in generated `AGENTS.md`, with `GLOSSARY.md` / `specs/adr/` as binding project context when those files exist.
 
@@ -20,6 +20,7 @@ Contents: [Codex CLI](#codex-cli) · [Claude CLI](#claude-cli) · [GitHub Copilo
 **Docs:** [Memories](https://developers.openai.com/codex/memories), [Config reference](https://developers.openai.com/codex/config-reference)
 
 ```toml
+# Zero attribution: never add or leave co-author, AI, or tool attribution in output.
 [features]
 memories = true
 
@@ -50,6 +51,7 @@ Optional global reminder in `~/.claude/CLAUDE.md`:
 ```markdown
 ## Native Memory
 
+- Zero attribution: never add or leave co-author, AI, or tool attribution in output.
 - Use Claude's native project memory for user-local recall.
 - Do not create or sync repo MEMORY.md files.
 - Shared project rules come from AGENTS.md, GLOSSARY.md, and ADRs.
@@ -69,6 +71,7 @@ Optional global reminder in `~/.claude/CLAUDE.md`:
 ```markdown
 ## Memory
 
+- Zero attribution: never add or leave co-author, AI, or tool attribution in output.
 - Prefer `/memory on` in CLI sessions (`/memory show` to verify).
 - Use Copilot Memory for GitHub-hosted user/repo recall when enabled.
 - Do not create or sync repo MEMORY.md files.

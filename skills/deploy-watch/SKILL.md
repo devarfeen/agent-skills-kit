@@ -3,7 +3,7 @@ name: deploy-watch
 disable-model-invocation: true
 description: "Watch a merged PR's staging deploy run, run an approved smoke check on staging, and record pass or fail on the PR. Never touches a server or triggers a deploy. A broken deploy is /staging-fix."
 metadata:
-  version: "0.3.1"
+  version: "0.4.0"
 ---
 
 # deploy-watch
@@ -13,11 +13,12 @@ deploy-watch proves a merged change reached staging and works there, using only 
 ## Inputs
 
 - **PR** — number or URL; read `gh pr view <pr> --json number,state,baseRefName,mergeCommit,mergedAt,closingIssuesReferences`. Not merged → stop and suggest `/factory`.
-- **Staging branch** — default `staging`; the PR's `baseRefName` must match it, confirmed with `git ls-remote --heads origin <branch>`. Mismatch → stop and name both.
-- **Deploy workflow** — the workflow file under `.github/workflows/` whose trigger includes a push to the staging branch. Read it; zero or several candidates → stop and ask which.
-- **Staging URL** — from the workspace `AGENTS.md`, the deploy workflow's environment URL, or the user. Missing → ask.
-- **Smoke checklist** — the spec's integration-contract smoke gate when one exists; otherwise the linked ticket's acceptance criteria turned into 1–5 browser checks. Add one check per `qa-escape` class recorded for the touched area. Show the checklist before running it.
-- **Smoke approval** — the user's explicit approval in this session to browse the staging URL. No approval → watch the deploy only and report smoke as not run.
+- **Staging branch** — default `staging`, confirmed by `git ls-remote`. Accept a staging-base PR, or an authorized delivery-`local` PR when refreshed staging contains its merge SHA. Quote the ancestry check; other bases or absent ancestry stop. Production branches are forbidden.
+- **Deploy workflow** — read its staging push trigger, deployment job, checkout revision and staging destination. A test-only workflow is not a deploy. Zero or ambiguous candidates → stop and name the missing routing evidence.
+- **Staging URL** — from workspace instructions, the workflow environment URL, or the user; needed only for smoke. Missing → deploy-only result, smoke not run.
+- **Smoke checklist** — the spec's integration-contract smoke gate when one exists; otherwise issue body criteria/checklist, or its newest factory-criteria comment, turned into 1–5 browser checks. Add checks for reproduced escape classes in the area, excluding not-a-regression; show missing criteria as smoke blocked. Show the checklist before running it.
+- **Smoke approval** — explicit user approval this session plus user-provided SSH access, as the global staging rule requires; this skill uses neither SSH nor server commands. Missing either → watch GitHub only, smoke not run.
+- **Delivered issues** — explicit tracker identifiers supplied by factory, otherwise closing references and newest `factory-delivered` comments naming this PR. Ordinary PR references can be checked against the tracker; ambiguity leaves handoff pending.
 
 ## Rules
 
@@ -37,7 +38,7 @@ deploy-watch proves a merged change reached staging and works there, using only 
 
 ### 1. Declare the expected signals
 
-Before watching anything, write the pass and fail criteria: the run must conclude `success` within the workflow's usual duration (read from its last 5 runs); the deployed build must report the merge SHA; each smoke check names its URL, expected value, and that it must show no new console error and no 4xx/5xx request. A result is judged only against this list, never against an impression.
+Before watching anything, write the pass and fail criteria: the run must conclude `success` within the workflow's usual duration (read from its last 5 runs); the observed deployed build must identify the selected run's `headSha`, which contains the merge SHA; each smoke check names its URL, expected value, and that it must show no new console error and no 4xx/5xx request. A result is judged only against this list, never against an impression.
 
 ### 2. Find the deploy run
 
@@ -53,7 +54,7 @@ No run yet → wait and re-check with a back-off (30s, 60s, then every 2 minutes
 
 ### 4. Smoke the change
 
-With smoke approval, first load one page the diff doesn't reach and record its console and failed-request lines as ambient; an ambient entry, matched by message and URL, is reported, not failed. Then run the checklist through agent-browser against the staging URL: open each page, confirm the expected element, text, or response, and take a screenshot per check. Clear and then read `console`, `errors`, and `network requests --type xhr,fetch --status 400-599` on every check; any new entry fails that check. A failing check is retried once after 60s and fails only if it repeats; record both observations. Record each check as pass or fail with what was observed. Confirm the deployed build when the app exposes one (a version endpoint, a footer SHA, a response header); a stale build means the deploy did not land, so report `result=fail` with that evidence. No build identifier exposed → report `build unconfirmed`; a 200 proves reachability, not which release is live.
+With smoke approval, first load one page the diff doesn't reach and record its console and failed-request lines as ambient; an ambient entry, matched by message and URL, is reported, not failed. Then run the checklist through agent-browser against the staging URL: open each page, confirm the expected element, text, or response, and take a screenshot per check. Clear and then read `console`, `errors`, and `network requests --type xhr,fetch --status 400-599` on every check; any new entry fails that check. A failing check is retried once after 60s and fails only if it repeats; record both observations. Record each check as pass or fail with what was observed. Confirm the build from a version endpoint, footer SHA or response header against the selected run's `headSha`; a stale or different build gets `result=fail`. No identifier → `unverified (build unconfirmed)`, no pass marker: a 200 proves reachability only.
 
 ### 5. Record
 
@@ -67,17 +68,18 @@ Smoke: 4/4 pass on https://staging.example.com — invoices list, credit note to
 <!-- deploy-watch: merge=<merge-sha> deployed=<run-head-sha> result=pass -->
 ```
 
-`result=pass` requires a successful run and every smoke check passing; a failed run or failed check gets `result=fail`. Smoke not run → no marker; report the deploy-only result instead. After approval, post with `gh pr comment <pr> --body-file <file>` and read the comments back.
+`result=pass` requires a successful staging deploy, confirmed live run-head identity with quoted merge ancestry, and every smoke check passing; a failed run or failed check gets `result=fail`. Smoke not run or build unconfirmed → no pass marker; report the deploy-only result instead. After approval, post with `gh pr comment <pr> --body-file <file>` and read the comments back.
 
 ### 6. Hand to manual QA
 
-Only when the deploy run concluded `success`. Find the issues this PR delivered: those in `closingIssuesReferences`, and open issues whose comments hold `<!-- factory-delivered: pr=<this PR> merge=<sha> … -->`. Skip any that already has a `factory-qa-assigned` comment. For each, in the same approval as step 5, assign it to Manual QA — the person the workspace's issue-tracker document names, else the issue's reporter — and post:
+Only after a confirmed staging deploy run succeeded and contains this change. Resolve the delivered issues from Inputs and read their latest delivery; factory's explicit identifiers work before its handover comment exists. Skip only an assignment marker for the same delivered PR and merge; older deliveries do not suppress a returned fix. Missing or ambiguous issue identity leaves handoff pending. In step 5's approval, assign each to the workspace's Manual QA person, else its reporter, and post:
 
 ```
-On staging at <deployed-sha> — ready for manual QA.
+Staging deployment job succeeded for <deployed-sha> — assigned for manual QA.
+Live build / smoke: <confirmed evidence, or unverified/not run with reason>.
 Deploy: <run URL> (success) · Smoke: <passed>/<total> | not run
 
-<!-- factory-qa-assigned: staging=<deployed-sha> -->
+<!-- factory-qa-assigned: pr=<delivered-pr> merge=<delivered-merge-sha> staging=<deployed-sha> -->
 ```
 
 Leave the issue's status as it is and never close it; the person testing does. Read the assignee and comment back.
@@ -96,6 +98,6 @@ At most 3 bullets for failing checks, each with the observed value. Close with t
 ## Completion criteria
 
 - [ ] The run URL's `headSha` is the merge commit or a quoted ancestry check shows it contains the merge commit
-- [ ] Each smoke check names its URL and observed value, and has a screenshot path
-- [ ] A `result=pass` marker exists only when the run succeeded and every smoke check passed; a failed run or check posts `result=fail`; either is read back after posting
+- [ ] Smoke run: each check names URL, observed value and screenshot. Smoke not run: missing approval/access, URL or checklist is reported; no pass marker
+- [ ] Pass requires confirmed live run-head identity, successful staging deploy, merge ancestry and all smoke checks passing. Failure gets `result=fail`; pending/unconfirmed proof gets no pass marker. Approved comments are read back; pending approval prints the draft
 - [ ] No workflow was dispatched, re-run, or cancelled, and nothing was pushed by this run

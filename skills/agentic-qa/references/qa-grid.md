@@ -15,12 +15,14 @@ A change reaches a screen when any changed file sits on a path that ends at some
 | Model, query, policy, job, mail | Its output reaches one of the rows above — a policy that hides a button, a job that changes a listed status |
 | Migration | A screen lists or edits the changed column |
 
-Only tooling, CI, docs, or test-only changes with no such chain are `no-ui-reach`. When unsure, the change reaches.
+A proved absence of any screen chain is `no-ui-reach`, regardless of file type, only when no acceptance criterion requires user-visible behavior. A visible criterion with no wired entry point is `not-wired`/`partial`. When unsure, the change reaches.
 
 ## Grid template
 
 ```markdown
 # QA grid — PR #87 @ a1b2c3d (BILLING-WEB)
+
+Zero attribution: never add or leave co-author, AI, or tool attribution in this artifact.
 
 Surfaces: /invoices/{id} (InvoiceShow.vue), /invoices (InvoiceList.vue — neighbour)
 Roles: admin (QA_ADMIN_EMAIL / QA_ADMIN_PASSWORD), viewer (QA_VIEWER_EMAIL / QA_VIEWER_PASSWORD)
@@ -76,6 +78,8 @@ console · errors · network requests --type xhr,fetch --status 400-599 · scree
 
 ```markdown
 # agentic-qa report — PR #87 @ a1b2c3d
+
+Zero attribution: never add or leave co-author, AI, or tool attribution in this artifact.
 Status: PARTIAL — 2 failed cells (findings), 0 gaps
 Base-run baseline: yes (main @ 9f8e7d6)
 

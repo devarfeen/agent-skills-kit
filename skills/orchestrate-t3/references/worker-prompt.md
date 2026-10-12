@@ -6,6 +6,8 @@ Fill `TRACKER` with the workspace tracker per **Resolve** in [`tracker-map.md`](
 
 `BRANCH` is the group's branch and `CHECKOUT` its verified worktree path, both from the checkout record made in **Create worktrees**.
 
+Fill the repository/common-directory identity, starting commit, baseline evidence, and applicable instruction pointers from that record. `AC_SCOPE` lists this repository assignment's criteria; for a split issue, other repository assignments remain outside the thread's write scope.
+
 `LESSONS` and `STACK` are filled only by `/factory run`: the lesson lines for this issue's project, and the URL and command prefix of the app stack it started for this checkout. Otherwise drop each line and the sentence naming it, rather than sending an empty field.
 
 ```md
@@ -14,24 +16,34 @@ ISSUE: [NATIVE_IDENTIFIER]
 ISSUE_URL: [ISSUE_URL]
 BRANCH: [BRANCH_NAME]
 CHECKOUT: [ABSOLUTE_WORKTREE_PATH]
+REPOSITORY: [OWNING_PRIMARY_REPO]
+COMMON_GIT_DIR: [CANONICAL_COMMON_GIT_DIR]
+STARTING_COMMIT: [COMMIT]
+BASELINE: [COMMAND_AND_RESULT]
+INSTRUCTIONS: [WORKSPACE_AND_PROJECT_INSTRUCTION_POINTERS]
+AC_SCOPE: [ASSIGNED_CRITERIA]
 LESSONS: [LESSON_LINES]
 STACK: [APP_URL] · [EXEC_PREFIX]
 
-Work only on this issue, committing only to BRANCH, inside CHECKOUT. Before the
-first edit confirm `git rev-parse --show-toplevel` prints CHECKOUT; a mismatch
-is a blocker to report, never a reason to work elsewhere.
+Work only on this repository assignment, committing only to BRANCH, inside
+CHECKOUT. Read INSTRUCTIONS before edits. Verify canonical root, common Git
+directory, branch, and worktree-list entry against the record before the first
+write and after handoffs, restarts, or checkout changes. Confirm baseline
+evidence belongs to this checkout; a mismatch or unapproved failed baseline is
+a blocker, never a reason to work elsewhere. Bind command working directories
+and edit paths to CHECKOUT; never write another repository.
 
-Infer project/repo context from the assigned issue.
+Use the supplied checkout record and instructions for project/repository context.
 
-Drive the issue with `/implement` when installed, running `/tdd-loop` at each
-seam; without it use `/tdd-loop` directly, with `/tdd` for test quality
-guidance. Commit each green step to BRANCH; never push or open a PR. If neither is installed, reproduce the failure with a
-test and make it pass; still report the command and passing output.
+Drive each seam with `/tdd-loop` directly when available; use `/tdd` only as
+test-quality reference. Never auto-invoke user-only `/implement`. Commit each
+green step to BRANCH; never push or open a PR. Without `/tdd-loop`, reproduce
+the failure with a test and make it pass; still report the command and passing output.
 
 Before coding, read the issue's acceptance criteria (in its body, else its
 newest `## Acceptance criteria` comment), any issues labelled
 `qa-escape` for this area, and the `## QA escape guards` lines in AGENTS.md.
-Map every criterion to a test, to `agentic-qa (<surface>)` when only a running
+Map every assigned criterion in AC_SCOPE to a test, to `agentic-qa (<surface>)` when only a running
 app can prove it, or to a deferral with its reason. Never report UI behavior
 as verified from unit tests.
 
@@ -71,7 +83,7 @@ Report back when completed, errored, or blocked.
 Completion requires test evidence: the test command and its passing output.
 End the report with four fields, one line each:
 Status: <completed | blocked — decision needed | errored — cause>
-AC map: <AC-n → test name | agentic-qa (surface) | deferred — why; every criterion listed>
+AC map: <AC-n → test name | agentic-qa (surface) | deferred — why; every assigned criterion listed>
 Decisions: <choices made that the issue didn't dictate, or "none">
 Open items: <what a next session must resolve, or "none">
 ```

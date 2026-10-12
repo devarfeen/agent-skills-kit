@@ -1,9 +1,9 @@
 ---
 name: qa-escape
 disable-model-invocation: true
-description: "Intake for a bug human QA found after an agent called the work done: reproduce, classify the escape, record it, name the test /tdd-loop writes. Never edits code. No agent claim: /diagnosing-bugs."
+description: "Record a bug human QA found after delivery, including factory QA_RETURNED: reproduce it and identify the missed check. No prior delivery: /diagnosing-bugs."
 metadata:
-  version: "0.3.1"
+  version: "0.4.0"
 ---
 
 # qa-escape
@@ -14,15 +14,15 @@ An escape is a bug a human found after an agent's checks said the work was done.
 
 - **QA report** — steps, expected, actual, environment, screenshots or logs. Missing expected or actual → ask for that one field.
 - **The issue and its PR** — the ticket QA tested and the PR that shipped it. Read the PR's `agentic-qa` and `risk-review` marker comments and the `/tdd-loop` summary if present: they are the agent's claim.
-- **Isolated worktree** — reproduce in `<project-repo>/.worktrees/qa-escape-<issue>` detached at the revision QA tested: create it through `/using-git-worktrees` when installed, otherwise with `git worktree add --detach`, per the workspace `AGENTS.md` worktree rules. Before the first command there, verify and report the checkout record the workspace `AGENTS.md` requires: path, owning repository and common Git directory, branch or detached state, starting commit, and baseline. Setup failure or a mismatch blocks the run; never fall back to the main checkout. Leave the worktree in place and report its path; cleanup follows the workspace rules.
-- **Environment** — where QA saw it: local, staging, or production. Production evidence is used as pasted; the agent never reaches production.
+- **Isolated worktree** — only when reproduction is needed, use `<project-repo>/.worktrees/qa-escape-<issue>` detached at the revision QA tested: use `git worktree add --detach` per workspace policy. Only an explicitly started `/factory run` or `/orchestrate-t3` may read/follow `using-git-worktrees` for its task setup; direct skill use requires the user's invocation. Before the first command there, verify and report the checkout record the workspace `AGENTS.md` requires: path, owning repository and common Git directory, branch or detached state, starting commit, and baseline. Setup failure or a mismatch blocks the run; never fall back to the main checkout. Leave the worktree in place and report its path; cleanup follows the workspace rules.
+- **Environment** — local, staging or production. Production evidence is pasted only. Staging needs this session's explicit user approval and user-provided SSH access; each mutation requires separate approval.
 
 ## Rules
 
 - **Never edits code.** No source or test edits. The output is a brief, a test specification, and an issue comment; `/tdd-loop` writes the test and the fix.
 - **Reproduce before anything else.** Expected and actual describe observations only — never the suspected cause. A report that cannot be reproduced locally or on approved staging is recorded with `reproduced=no`, `class=none` (or `not-deployed` per step 1), and what was tried; it is never counted toward promotion.
 - **Every escape names the check that missed it.** The why-chain must answer "why did the agent's checks pass?" from the actual evidence — the grid cell that was marked `pass` or `not reachable`, the missing matrix row, the absent run. It ends at a check that can change. "Be more careful" or "the agent missed it" is not an end.
-- **Classes come from the fixed list** in [`references/escape-classes.md`](references/escape-classes.md). A new class needs a slug and one-line definition added to the comment and proposed for the list.
+- **Classes come from the fixed list** in [`references/escape-classes.md`](references/escape-classes.md). A new class needs a slug and one-line definition added to the comment and proposed for the list; load that reference only when classifying or drafting the comment.
 - **Promotion waits for three and for approval.** When this escape makes three issues with the same class and area, propose one durable guard. Apply nothing until the user approves that guard; declined → record the decline in the comment.
 - **One approval before any remote write.** Show the issue comment and the label change together and wait. User away → print both and stop.
 - **Run authorization.** Loaded by `/factory run`, the run's start approves posting the comment and adding the `qa-escape` label. Creating a missing label, applying a guard, and any staging access keep their own approval.
@@ -51,7 +51,7 @@ Name the lowest layer that can show the bug: a unit test for logic; a handler te
 
 ### 5. Count the class
 
-`gh issue list --label qa-escape --state all --json number,title,body,comments` (or the tracker's label filter), then count distinct issues with a marker of the same `class` and `area`, excluding `reproduced=no` and `not-a-regression`. Three or more issues including this one → draft one guard from the reference's ladder, highest rung first: a type, constraint, or lint rule that makes the mistake unwritable; a check in CI or `validate`-style tooling; a standing grid row for the area; a rule line in the workspace `AGENTS.md` section `## QA escape guards`.
+`gh issue list --label qa-escape --state all --json number,title,body,comments` (or the tracker's label filter), read all matching issues (a truncated list cannot establish the count), then count distinct issues with a marker of the same `class` and `area`, excluding `reproduced=no` and `not-a-regression`. Three or more issues including this one → draft one guard from the reference's ladder, highest rung first: a type, constraint, or lint rule that makes the mistake unwritable; a check in CI or `validate`-style tooling; a standing grid row for the area; a rule line in the workspace `AGENTS.md` section `## QA escape guards`.
 
 ### 6. Record
 
@@ -75,8 +75,8 @@ At most 3 bullets beyond this. Close with the `Suggested next skills (optional)`
 
 ## Completion criteria
 
-- [ ] The brief states expected, actual, the minimal conditions, and the reproduced result with run count
-- [ ] The why-chain ends at a named check, quoting the claim it overturns (cell, row, or missing run)
+- [ ] Reproduced: brief names expected, actual, minimal conditions and run count. Unreproduced/not-deployed: brief names observations, attempts or ancestry evidence, and `reproduced=no`
+- [ ] Reproduced: why-chain ends at a named missed check and quotes its claim. Unreproduced: no inferred cause or invented regression test
 - [ ] The issue comment with its marker and the `qa-escape` label are on the issue, read back after writing — or both drafts are printed when approval is pending
-- [ ] The printed class count lists the issue numbers it counted
-- [ ] The checkout record was reported before reproducing, and `git status` in that worktree shows no code or test change from this run
+- [ ] Reproduced eligible class: printed count lists counted issues. Excluded/no-reproduction result: count not performed and exclusion stated
+- [ ] Reproduction attempted: checkout record precedes it and worktree status shows no code/test changes. An ancestry-only not-deployed result needs no reproduction checkout

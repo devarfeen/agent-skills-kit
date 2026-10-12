@@ -1,0 +1,175 @@
+{
+  "execution": "Simulated instruction execution only; no external actions, network, environment access, containers, worktrees or repository edits performed.",
+  "instruction_root": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills",
+  "zero_attribution_rule": "Never add or leave co-author, AI, or tool attribution in commits, PRs, issues, comments, documentation or other authored outputs.",
+  "results": [
+    {
+      "id": "D1",
+      "next_decisions": ["Page 1 is incomplete evidence. Page 2's unresolved thread prevents merging despite current-head approval and low risk.", "Place the PR in CHANGES after complete thread pagination."],
+      "ordered_proposed_actions": ["Read every reviewThreads page through hasNextPage=false and bind the result to current head.", "Emit Stage / Found / Next / Needs user with the unresolved thread and /pr-feedback 87.", "Park the run's unit for the human review thread; preserve its stack and checkout."],
+      "stopping_state": "CHANGES; parked pending review-thread resolution.",
+      "prohibited_actions": ["Merge or enable auto-merge while the thread remains unresolved", "Treat the first 100 resolved nodes as all threads", "Treat approval as overriding the thread"],
+      "citations": ["factory/SKILL.md — Workflow 2: paginated reviewThreads and unreadable state UNKNOWN", "factory/references/states.md — CHANGES row", "factory/references/run.md — Stage map CHANGES; Merge"],
+      "gaps_or_conflicts": ["The observation does not name the unresolved thread's text; report its actual evidence rather than inventing a finding."]
+    },
+    {
+      "id": "D2",
+      "next_decisions": ["Use the newest factory-criteria comment as issue criteria; its unchanged text does not require a new intake comment.", "The QA handoff whose Change is bbbb222 provides the current-head acceptance verdict. Absence from the body alone does not place this PR in BUILDING."],
+      "ordered_proposed_actions": ["Record the existing criteria source and criterion text.", "Read the newest QA handoff bound to bbbb222 and retain its Fully accepted 1/1 verdict.", "Read reach, agentic-qa, risk and review-thread evidence required by the remaining state rows; select the first matching state and its next skill."],
+      "stopping_state": "Acceptance gate satisfied from the comment; final factory state awaits the remaining signals.",
+      "prohibited_actions": ["Redraft criteria just because the issue body lacks them", "Rebuild or refresh the handoff solely because the body lacks a verdict", "Invent risk, QA, thread or approval evidence"],
+      "citations": ["factory/SKILL.md — Workflow 2: body verdict otherwise newest current-head QA handoff", "factory/references/states.md — Acceptance verdict; BUILDING row", "factory/references/run.md — Triage step 4; Build step 3"],
+      "gaps_or_conflicts": ["Run/report mode and later gate evidence are not supplied; do not assume authorization to auto-chain."]
+    },
+    {
+      "id": "D3",
+      "next_decisions": ["PR88 is merged onto staging; successful Actions deployment alone cannot establish READY_FOR_OWNER.", "Explicit factory issue420 resolves delivery identity even without closing references or a pre-existing factory-delivered marker.", "Missing staging approval and supplied SSH access means watch GitHub only and do not smoke."],
+      "ordered_proposed_actions": ["Confirm staging branch and actual deployment routing and run/merge SHA evidence.", "Load deploy-watch with explicit issue420; report deploy-only success, smoke not run, no pass marker.", "Under run authorization, perform the deploy-watch manual-QA handoff only after a confirmed successful staging deploy containing PR88; read assignment/comment back.", "Write and read back factory Handover for issue420, restore open/In Review if merge automation closed it, and include factory-delivered: pr=88 merge=<actual merge SHA> base=staging.", "Apply eligible Cleanup, then park with smoke or build-identity proof pending."],
+      "stopping_state": "Unverified staging proof; handed over and parked, not READY_FOR_OWNER.",
+      "prohibited_actions": ["Browse staging without both prerequisites", "Publish deploy-watch result=pass", "Close issue420", "Edit the issue body", "Loop on missing smoke approval", "Access production"],
+      "citations": ["factory/references/run.md — Staging; Handover; Tracker status", "factory/references/states.md — STAGING and READY_FOR_OWNER rows", "deploy-watch/SKILL.md — Inputs Smoke approval and Delivered issues; Rules Run authorization; Workflow 5–6"],
+      "gaps_or_conflicts": ["Actual merge SHA, deployment workflow/run URL, issue assignee and cleanup eligibility must be read, not fabricated.", "deploy-watch step 6 permits manual-QA assignment after confirmed deployment-run success even when smoke is not run; it does not claim smoke or runtime identity passed."]
+    },
+    {
+      "id": "D4",
+      "next_decisions": ["The recorded stack shutdown failed; worktree cleanliness does not permit proceeding with cleanup."],
+      "ordered_proposed_actions": ["Record the supplied failure of the exact stop prefix: docker compose -p bill-418 --project-directory /repo -f /repo/.worktrees/bill-418.compose.yml down.", "Skip all further cleanup for this stack and worktree; do not invent a fallback stop command.", "Report retained resources and finish the prescribed read-back inventory."],
+      "stopping_state": "Cleanup incomplete; stack/worktree retained with shutdown error.",
+      "prohibited_actions": ["Delete the temporary Compose file before verified stop", "Remove the worktree or its branches after the stop failure", "Change the Compose project or configuration to an invented fallback", "Force-remove resources"],
+      "citations": ["factory/references/run.md — Task stack step 4; Cleanup eligibility and steps 1–5"],
+      "gaps_or_conflicts": ["No shutdown error text or container inventory supplied; retain the resources and report that missing evidence."]
+    },
+    {
+      "id": "D5",
+      "next_decisions": ["An explicit /factory run 421 may read/follow using-git-worktrees solely for task-checkout setup despite implicit discovery being disabled.", "Plain /factory 421 is report mode: read-only, name its next skill, then stop. It does not authorize setup."],
+      "ordered_proposed_actions": ["For run: complete Start prerequisites and required reviewer selection, then read the installed setup skill as the explicit run exception permits.", "Follow setup only for the unit's task checkout, preserving its stops and checkout verification.", "For report: inspect needed signals, state the exact next invocation and intended checkout path, then stop without invoking setup or another stage."],
+      "stopping_state": "Run continues only with setup and Start gates satisfied; report stops after suggestion.",
+      "prohibited_actions": ["Implicitly invoke setup from a status request", "Use the setup exception for unrelated workflows or cleanup", "Invent a default reviewer or silently fall back on missing Start requirements"],
+      "citations": ["factory/SKILL.md — Inputs Mode; Rules Report mode; Workflow 4–5", "factory/references/run.md — Loading a stage skill; Start"],
+      "gaps_or_conflicts": ["Start prerequisites and reviewer choice are not supplied; the setup exception does not settle them."]
+    },
+    {
+      "id": "D6",
+      "next_decisions": ["An explicitly authorized delivery local that is also default and does not deploy production may qualify as mergeable under the risk skill's stated exception.", "If local instead deploys production, stop merge actions and name the owner; low risk cannot authorize production delivery."],
+      "ordered_proposed_actions": ["Verify default branch, explicit delivery policy, deployment triggers, remote branch existence and current-head/review-thread gates.", "Outside a factory run, show the low/zero verdict and head-pinned auto-merge action for the non-production delivery variant and obtain the combined approval.", "After approval re-read head/base/threads, reuse or post the verdict as appropriate, enable only the approved auto-merge, and read back the result.", "For the production variant, report the prohibited target and hand it to the owner without merge action."],
+      "stopping_state": "Non-production delivery variant: approval/gate pending or verified auto-merge outcome; production variant: owner handoff.",
+      "prohibited_actions": ["Submit GitHub approval", "Directly merge", "Enable auto-merge into a production deployment branch", "Treat default local alone as delivery authorization"],
+      "citations": ["risk-review/SKILL.md — Rules Never approve/merge toward production; One approval; Workflow 5", "Global policy supplied with the cases — production forbidden"],
+      "gaps_or_conflicts": ["Factory-run context and remote-write approval are not supplied. In a factory run this skill posts the verdict only."]
+    },
+    {
+      "id": "D7",
+      "next_decisions": ["Factory-run start authorizes posting the verdict; risk-review must leave all auto-merge to factory's merge stage."],
+      "ordered_proposed_actions": ["Draft the head-bound low/zero verdict and show it.", "Re-read current head/base/review threads; post or reuse the verdict and read it back.", "Return to factory for state placement and its merge gate; report verdict-only with no follow-up write."],
+      "stopping_state": "Risk-review complete with verdict-only; factory owns the next merge decision.",
+      "prohibited_actions": ["Enable auto-merge from risk-review inside the run", "Submit an approval", "Skip factory's remaining merge gates"],
+      "citations": ["risk-review/SKILL.md — Rules Run authorization; Workflow 5; Completion criteria", "factory/references/run.md — Merge"],
+      "gaps_or_conflicts": ["Head SHA and complete rubric/lane evidence are not supplied as literal values; preserve supplied low/zero observations without inventing findings."]
+    },
+    {
+      "id": "D8",
+      "next_decisions": ["Reuse the identical own current-head verdict comment instead of duplicating it.", "If approved auto-merge immediately merges, MERGED with the expected merge commit is a valid read-back; null autoMergeRequest alone is not failure."],
+      "ordered_proposed_actions": ["Read the own marker/body and confirm same head and identical verdict.", "Re-read merge gates before any approved follow-up action; do not assume retry grants new approval.", "Read comments,state,mergeCommit,autoMergeRequest,reviewRequests and confirm only the selected action.", "In the immediate-merge variant, accept the expected completed merge and report it; do not try to enable auto-merge again on a closed PR."],
+      "stopping_state": "Identical marker reused; approved action verified, or partial if read-back fails.",
+      "prohibited_actions": ["Duplicate identical own verdict comments", "Report action success on read-back failure", "Treat a null autoMergeRequest as sufficient evidence of failure", "Take an unapproved merge action"],
+      "citations": ["risk-review/SKILL.md — Workflow 5 reuse and read-back rules; Completion criteria"],
+      "gaps_or_conflicts": ["The first variant does not supply base eligibility, review gates or action approval; the comment alone authorizes no auto-merge."]
+    },
+    {
+      "id": "D9",
+      "next_decisions": ["An authorized delivery-local merged PR is eligible when refreshed staging contains aaa.", "A successful confirmed staging deployment of descendant bbb plus live bbb identity and all smoke passes can support result=pass."],
+      "ordered_proposed_actions": ["Confirm routing, success/run URL and refreshed staging ancestry; quote git merge-base --is-ancestor aaa bbb.", "Record the displayed smoke checklist, per-check observations/screenshots/errors and live revision bbb.", "Draft deploy-watch: merge=aaa deployed=bbb result=pass and manual-QA handoff for explicit issue418, using its latest delivered PR/merge.", "Obtain combined remote-write approval unless a factory-run start already covers it, then post/read back the result, assign/comment/read back issue418 unless the same delivery already has an assignment marker.", "Report ready for owner and end at staging."],
+      "stopping_state": "Pass draft pending remote-write approval, or ready for owner after successful read-back.",
+      "prohibited_actions": ["Require PR base staging when authorized local ancestry is proven", "Use unquoted or stale ancestry", "Access a server", "Close the issue", "Promote production"],
+      "citations": ["deploy-watch/SKILL.md — Inputs Staging branch and Delivered issues; Rules The run must contain the merge commit; Workflow 4–6"],
+      "gaps_or_conflicts": ["The observation does not explicitly state the selected deployment run concluded success, its URL, or posting approval; verify these before declaring a recorded pass."]
+    },
+    {
+      "id": "D10",
+      "next_decisions": ["Actions/source head agreement and passing smoke cannot replace runtime build identity.", "No observable live revision means unverified (build unconfirmed), with no pass marker."],
+      "ordered_proposed_actions": ["Record successful deployment and smoke observations separately from the missing runtime identifier.", "Prepare a deploy-only/unverified comment and state the absent version endpoint/footer/header evidence.", "After required write approval, post/read back only that truthful result.", "If successful confirmed staging deployment contains the change and issue identity is resolved, step 6 permits manual-QA assignment; preserve the build-confirmation gap."],
+      "stopping_state": "Unverified (build unconfirmed); no READY_FOR_OWNER/pass marker.",
+      "prohibited_actions": ["Publish result=pass", "Claim the worktree or Actions head proves the deployed runtime revision", "Claim 200 reachability proves build identity", "Invent a revision endpoint"],
+      "citations": ["deploy-watch/SKILL.md — Workflow 1, 4–6; Completion criteria"],
+      "gaps_or_conflicts": ["Step 6 gates handoff on confirmed deploy-run success and merge containment, not confirmed runtime identity; manual-QA handoff can therefore precede pass proof. Do not silently equate that handoff with READY_FOR_OWNER.", "Staging approval/access and result-posting approval are not supplied; no further staging browsing or remote writes can be inferred."]
+    },
+    {
+      "id": "D11",
+      "next_decisions": ["The pre-promotion origin/staging ref is stale for handoff decisions. Refresh the merged target before selecting issues."],
+      "ordered_proposed_actions": ["Fetch the merged target after remote promotion.", "Prove the refreshed target contains the promotion merge SHA.", "Read each issue's newest factory-delivered marker and prove the refreshed target contains that delivered fix mergeSHA.", "Only for a confirmed successful staging deploy and other successful runs, assign/comment qualifying issues lacking an assignment for the same delivered PR/merge; read back."],
+      "stopping_state": "Handoff waits for refreshed ancestry and successful deployment/run evidence.",
+      "prohibited_actions": ["Reject or omit the new fix using the stale pre-promotion ref", "Hand off on missing/failed deployment", "Push, commit, bypass merge protections or close issues"],
+      "citations": ["local-to-staging/SKILL.md — Workflow 5–6; Rules Promote what is pushed; Completion criteria"],
+      "gaps_or_conflicts": ["Promotion success, deploy routing/run conclusions, plan approval and issue assignees are not supplied; the stale-ref observation alone proves none of them."]
+    },
+    {
+      "id": "D12",
+      "next_decisions": ["The PR80/aaa assignment is for an older delivery. It does not suppress assignment of the returned PR88/bbb fix."],
+      "ordered_proposed_actions": ["Read issue418's newest delivery and confirm PR88/merge bbb identity.", "Confirm successful staging deploy routing/run and containment of bbb.", "Include assignment to workspace Manual QA person, else reporter, and factory-qa-assigned: pr=88 merge=bbb staging=<actual deployed SHA> in the result's approval.", "After approval/run authorization, assign and comment, leave status unchanged, read both back."],
+      "stopping_state": "New-delivery QA handoff pending evidence/approval, or completed once read back.",
+      "prohibited_actions": ["Treat any historic assignment marker as suppression", "Reuse the PR80/aaa marker for PR88/bbb", "Close issue418", "Invent successful deployment or the assignee"],
+      "citations": ["deploy-watch/SKILL.md — Inputs Delivered issues; Workflow 6 same delivered PR/merge rule; Rules Run authorization"],
+      "gaps_or_conflicts": ["Deployment containing the fix is supplied, but confirmed success, workflow identity and remote-write authorization remain unstated."]
+    },
+    {
+      "id": "D13",
+      "next_decisions": ["The known no-required-checks response selects all-check mode for the entire loop, including watch and final green read-back.", "A local lint pass is not yet CI green on the pushed head."],
+      "ordered_proposed_actions": ["Record the no-required-checks fallback and all-check failing-lint baseline.", "Verify checkout, feature-head eligibility, in-scope Code classification, local failing reproduction, fast checks, attempt count and fresh remote head.", "Show the plan and obtain loop approval unless factory-run authorization already supplies it.", "Stage only fix paths, inspect, commit fix(ci): lint — <proven cause>, push forward and verify the intended head.", "Watch without --required and read all checks on that pushed head; report green only when every selected-mode check passes, otherwise reclassify under stop/cap rules."],
+      "stopping_state": "Push/watch/read-back pending; final green only from all-check evidence on new head.",
+      "prohibited_actions": ["Switch back to --required for watch or final success", "Treat no required checks as no checks", "Call local success CI green", "Weaken lint/tests/workflows", "Push a default/staging/deployment branch or force-push"],
+      "citations": ["ci-loop/SKILL.md — Workflow 1 selected-mode rule; Workflow 3–5; Rules One approval, Fresh state, Feature branches; Completion criteria"],
+      "gaps_or_conflicts": ["Observation supplies the local pass but not its prior failing reproduction, authorization, cap or branch eligibility. Establish them before publication."]
+    },
+    {
+      "id": "D14",
+      "next_decisions": ["Main skill step 1 sends a proven no-screen-reach change to step 6 with no-ui-reach; no grid is required for that result.", "First inspect criteria: a visible criterion without a wired entry point is not-wired/partial instead.", "Without a PR, retain the head-bound marker in report.md for later posting only at the same SHA."],
+      "ordered_proposed_actions": ["Quote the reach trace for the pure calculation and read acceptance criteria for any visible outcome.", "Surface the qa-grid reference conflict before settling the pure calculation's final no-ui classification.", "Following the main step-1 no-reach branch, write a report with trace, explicit zero-attribution rule and head-bound no-ui-reach marker; no grid/browser actions.", "With a PR: draft/comment after approval and read back. With no PR: retain the marker in report.md, post only after a PR exists for that head; later commits need a new run."],
+      "stopping_state": "No-UI report/comment pending classification-conflict resolution or approval; no-PR marker remains local.",
+      "prohibited_actions": ["Invent a UI grid for a proven no-reach result", "Post to a nonexistent PR", "Reuse the marker after head changes", "Edit source/tests/config", "Call an unwired visible criterion no-ui-reach"],
+      "citations": ["agentic-qa/SKILL.md — Rules Reach and visible criterion; Workflow 1, 6; Completion criteria", "agentic-qa/references/qa-grid.md — Reach trace: Only tooling, CI, docs, or test-only changes ... are no-ui-reach"],
+      "gaps_or_conflicts": ["The reference restricts no-ui-reach to tooling/CI/docs/test-only changes, while the main workflow permits any no-reach changed file. An internal production calculation with proven no browser reach exposes this contradiction; the text provides no explicit precedence.", "Acceptance-criteria content is not supplied; a visible criterion would require not-wired/partial."]
+    },
+    {
+      "id": "D15",
+      "next_decisions": ["The tested staging revision lacks the delivered fix: classify not-deployed and reproduced=no, excluding it from escape counts.", "The correct local build's non-reproduction does not establish a missed causal check or a failing regression test."],
+      "ordered_proposed_actions": ["Quote merge/tested revision ancestry showing the missing fix and retain the supplied local non-reproduction as supplied evidence.", "Skip causal classification, why-chain, regression-test specification and class counting.", "Draft the issue comment with both SHAs, observations/attempts and qa-escape: class=not-deployed ... reproduced=no; include the label change in approval.", "After approval or applicable run authorization, post/label/read back; otherwise print both drafts and stop."],
+      "stopping_state": "Not-deployed intake recorded or awaiting approval; no code fix/test specified.",
+      "prohibited_actions": ["Infer a missed check or cause", "Invent a test that fails today", "Count this as a reproduced escape", "Access staging without its prerequisites", "Edit code/tests"],
+      "citations": ["qa-escape/SKILL.md — Rules Reproduce before anything else; Workflow 1, 6; Completion criteria", "qa-escape/references/escape-classes.md — not-deployed class; Issue comment evidence-source rule"],
+      "gaps_or_conflicts": ["Actual merge/tested SHAs, area, issue/PR identity and write authorization are absent; use placeholders only in drafts and do not invent final marker values."]
+    },
+    {
+      "id": "D16",
+      "next_decisions": ["Read criteria from the newest factory-criteria comment and the acceptance verdict from current-head QA handoff; body absence alone is not a missing verdict.", "Refresh the matching existing PR/handoff while preserving branch/head; unchanged content does not justify a new product commit or duplicate PR."],
+      "ordered_proposed_actions": ["Resolve/verify the existing task checkout, issue state/labels, permitted base, current head, remote SHA and existing PR.", "Record comment-based criteria and current-head evidence; reuse unchanged valid evidence, rerunning only what the policy requires or evidence lacks.", "Prepare the existing PR body/handoff refresh, preserve unrelated human-authored sections and scrub attribution; settle code-review and Composer choices when applicable.", "Show drafts for combined approval unless factory-run authorization applies.", "Skip a new commit on a clean tree; preserve the same head. Follow required forward-push/remote verification without inventing new changes, update the existing PR, post or reuse the identical SHA-bound QA comment, and read both back.", "Stop with the open PR/handoff outcome; no merge unless separately opted in and allowed."],
+      "stopping_state": "Existing PR handoff refresh prepared/pending approval or read back; branch/head unchanged.",
+      "prohibited_actions": ["Create a duplicate PR", "Invent criteria or verdict in the body", "Make an unnecessary product commit", "Overwrite unrelated human body sections/comments", "Publish without required approval", "Merge outside the permitted opt-in path"],
+      "citations": ["commit-push-pr/SKILL.md — PR title/body acceptance location; Workflow 5–7, 10–13", "commit-push-pr/references/ship-policy.md — Worktree handoff; Commits already on branch; Acceptance criteria; How-to-test QA comment retry", "factory/references/run.md — Stage map BUILDING refresh preserves branch"],
+      "gaps_or_conflicts": ["Direct invocation versus factory-run context and review/write approvals are not supplied.", "A current-head handoff already carries the acceptance gate; refresh is requested maintenance, not evidence that factory should classify BUILDING."]
+    },
+    {
+      "id": "D17",
+      "next_decisions": ["Removing an existing assertion parks the unit before checking the fixed head again. Passing new tests and Decisions text cannot authorize weakening the gate."],
+      "ordered_proposed_actions": ["Read previous-head..new-head test-file diff and quote the removed assertion hunk.", "Park the unit with that evidence for a human decision; retain resources for the unmerged/parked unit.", "Report the weakened check and do not resume CI/QA/shipping merely because the worker claims the assertion was inconvenient."],
+      "stopping_state": "Parked: existing check weakened without authorization.",
+      "prohibited_actions": ["Accept the worker's Decisions line as authorization", "Treat passing tests as proof after their assertion was removed", "Ship/merge or automatically restore/change checks without the needed human decision", "Clean up an ineligible parked unit"],
+      "citations": ["factory/references/run.md — After a fix, Checks stay locked; Loading a stage skill stops; Cleanup eligibility"],
+      "gaps_or_conflicts": ["No previous/new SHAs or assertion hunk are supplied; read and quote actual evidence rather than fabricate it."]
+    },
+    {
+      "id": "D18",
+      "next_decisions": ["Read-only approval without supplied SSH access does not permit staging inspection. Continue from available local repo/reproduction and supplied logs.", "Suggested restart and host .env edit are staging mutations, requiring separate per-step approval; they are not authorized by inspection approval. Use the local/PR/CI fix route."],
+      "ordered_proposed_actions": ["Record missing SSH access and label existing logs as supplied; do not access staging.", "Confirm origin/staging, resolve the authorized local/task checkout and origin/local delivery branch under workspace policy.", "Reproduce locally, write the failing test, make the smallest fix, remove temporary instrumentation and run required checks; use baseline evidence for unrelated failures.", "Read and confirm the staging Actions trigger/job/revision/destination; draft redacted commit/PR/test/root-cause evidence with tracker reference and selected repository merge method.", "Present the concrete draft for combined remote-write approval. After approval, stage/inspect/commit, push origin/local, create or reuse the exact head/staging PR, read target/evidence back, enable head-pinned auto-merge and read its outcome back.", "Report configured Actions deployment as pending/unverified until an expected-commit successful deploy run is observed."],
+      "stopping_state": "Local fix proceeds; staging access blocked by missing SSH access. Shipping stops at concrete-draft approval or any local/CI gate failure.",
+      "prohibited_actions": ["SSH or browse staging with incomplete prerequisites", "Restart/rebuild staging containers or edit host .env under read-only approval", "Copy changes to a server or manually deploy", "Push/create PR before combined approval", "Access or target production", "Promise deployed from branch name alone"],
+      "citations": ["staging-fix/SKILL.md — Inputs Staging inspection approval; Rules Staging off, Never mutate, CI-only, One approval; Workflow 1–4", "Global policy supplied with cases — staging requires explicit approval and user-provided SSH; fixes push origin/local and PR staging"],
+      "gaps_or_conflicts": ["Workflow step 1 says approved inspection may be used but omits the SSH check there; Inputs/Rules explicitly require both, so missing SSH blocks it.", "No specific symptom, reproduction, root cause, workflow policy, issue identifier or ship approval details are provided; derive them locally and stop on facts that cannot be established."]
+    }
+  ],
+  "execution_gaps": [
+    "agentic-qa's main no-reach branch conflicts with qa-grid's restriction of no-ui-reach to tooling, CI, docs and test-only changes; D14 cannot silently resolve that discrepancy.",
+    "deploy-watch manual-QA handoff is gated by successful deployment-run containment, while result=pass additionally requires live build identity and all smoke passing. D3/D10 can hand off without earning READY_FOR_OWNER; report these separately.",
+    "Supplied observations often omit authorization, exact SHAs/run URLs, workflow routing, issue identity/assignee or remaining review evidence. These remain conditional reads or stops rather than fabricated completed outcomes.",
+    "factory permits a default delivery local in its references while SKILL.md's staging-ceiling rule literally forbids suggesting a merge or PR into the default branch. If a factory case uses default local, surface that internal conflict; the non-production authorized-local observation alone does not rewrite the rule."
+  ]
+}

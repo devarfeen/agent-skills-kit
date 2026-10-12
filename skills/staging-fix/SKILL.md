@@ -3,12 +3,12 @@ name: staging-fix
 disable-model-invocation: true
 description: "Fix a staging bug without touching a server: fix locally with a test, then a PR to the staging branch with auto-merge. Use for staging is broken. Inspecting staging alone is not this skill."
 metadata:
-  version: "0.2.1"
+  version: "0.3.0"
 ---
 
 # staging-fix
 
-Staging bugs are fixed locally and reach staging only through CI — this skill drives that path: evidence, local fix with a test, PR targeting `staging` with auto-merge, Actions deploys. The boundary against the ship skills: they target the default branch; this one exists because a remote environment is broken and the only permitted way to change it is a CI deploy.
+Staging bugs are fixed locally and reach staging only through CI — this skill drives that path: evidence, local fix with a test, PR targeting `staging` with auto-merge, Actions deploys. This skill diagnoses and fixes a staging fault locally, then uses its confirmed staging CI route; the ship skills publish already-finished issue work to a permitted base.
 
 ## Inputs
 
@@ -39,7 +39,7 @@ If read-only staging inspection was explicitly approved this session, use it wit
 
 ### 2. Fix locally with a test
 
-On the workspace's required delivery branch (`local` when it mandates `origin/local`), never directly on `staging` or the default branch, shrink the reproduction to the smallest case that still fails, write a failing test that captures it, then make it pass. Tag temporary instrumentation with one unique prefix (`[DEBUG-<4 hex>]`) and grep every tagged line out before shipping. Where a test is impractical, say so and name the substitute verification. Run the repo's check suite before shipping. Compare suspected baseline failures in a clean checkout of the pre-fix commit, preserving unrelated changes; record confirmed baseline failures in the PR. Failures introduced by the fix stop the workflow.
+On the workspace's required delivery branch (`local` when it mandates `origin/local`), otherwise a task branch, never directly on `staging` or production. A default `local` is permitted only when explicitly designated for delivery and not a production deployment branch. In the workspace-authorized task checkout, shrink the reproduction to the smallest case that still fails, write a failing test that captures it, then make it pass. Tag temporary instrumentation with one unique prefix (`[DEBUG-<4 hex>]`) and grep every tagged line out before shipping. Where a test is impractical, say so and name the substitute verification. Run the repo's check suite before shipping. Compare suspected baseline failures in a clean checkout of the pre-fix commit, preserving unrelated changes; record confirmed baseline failures in the PR. Failures introduced by the fix stop the workflow.
 
 ### 3. Ship
 

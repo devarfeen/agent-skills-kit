@@ -12,7 +12,7 @@ For each changed shape, route, status, or enum, search every Project Matrix repo
 2. **Normalized route** — normalize before matching: `${id}`, `:id`, and concatenated segments → `{id}`; resolve base-URL concatenation (`${API_BASE}/v2/orders`) to the full path. A literal search for the route string misses template-built URLs.
 3. **Field name** — map the field through the serializer's naming policy (`idempotency_key` ↔ `idempotencyKey`) and search both forms.
 
-Label each Section 3 row `generated`, `normalized-route`, or `name-only` in Notes / Risk, so a weak match is visible. A consumer that reads a field, status, or route the producer no longer returns is a `RISK` row. No consumer found → `NO CONSUMER LOCATED` with the searches run; never assume none exists.
+Label each Section 3 row `generated`, `normalized-route`, or `name-only` in Notes / Risk, so a weak match is visible. A consumer that reads a field, status, or route the producer no longer returns is a `RISK` row. For a cross-project contract, no consumer found → `NO CONSUMER LOCATED` with the searches run; never assume none exists. A completed single-project sweep follows the no-contract branch in SKILL.md.
 
 ## Rollout class (Section 2 `Change`)
 

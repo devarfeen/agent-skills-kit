@@ -3,7 +3,7 @@ name: port-feature
 disable-model-invocation: true
 description: "Use only to port, migrate, or rebuild a complete feature from a reference implementation into a target stack. Writes one gap map, suggests /grill-with-docs, stops. Never implements or auto-chains."
 metadata:
-  version: "0.1.2"
+  version: "0.2.0"
 ---
 
 # Port feature
@@ -31,19 +31,18 @@ Carry this through every gap-map section:
 ## Rules
 
 - **Zero attribution.** Never add or leave co-author, AI, or tool attribution in any output; include this rule in the gap map.
-- **Suggest, never auto-chain.** End by suggesting `/grill-with-docs` on the gap map, then stop. Do not run planning, do not open issues, do not implement.
+- **Suggest, never auto-chain.** End by suggesting `/grill-with-docs` on the gap map, then stop. Planning and issue creation wait for a separate request.
 - **Never implement here.** No product code, config, or migration edits; the only write is the gap map file.
 - Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
 - **Narrow retrieval only.** Trace the reference and survey the target with targeted, evidence-backed search (`rg`/`git grep` for the exact route/path/symbol/state), `/feature-discovery`-style. **Never** bulk-read a repo or its `specs/` tree to "find everything".
 - **Read context before deciding.** `GLOSSARY.md` and relevant ADRs describe recorded decisions; current code and tests show implemented behavior. Follow the current user's explicit decisions, record conflicts with older context, and treat native CLI memory as a lead to verify.
 - **Decisions are artifacts.** The output is the durable gap map file, not a chat summary; chat reports only what was written and the phase update.
-- **Don't fabricate an issue before coding.** Issues come later, from `/to-tickets` after `/grill-with-docs`.
 - Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes.
 
 ## Process
 
 ### 1. Read the target's binding context
-`GLOSSARY.md` (legacy name `CONTEXT.md`) and `specs/adr/` in the target's `<artifacts-root>`, plus the target's `AGENTS.md` and UI-coding skill for stack/DS rules. Done when the binding rules are in hand or each absence is noted for Open questions.
+Read `GLOSSARY.md` (legacy `CONTEXT.md`), `AGENTS.md`, and the UI-coding skill for stack/DS rules. Locate relevant ADRs by topic or linked decision; read only those, not the `specs/adr/` tree. Done when binding rules are in hand or each absence is noted for Open questions.
 
 ### 2. Discover the reference
 Trace the real behaviour, workflow, navigation, permissions, states, and data effects, `/feature-discovery`-style. Include field validation and defaults, field interdependencies, row and bulk actions, import/export, auto-refresh, and role-gated controls. A path backed by mock, fixture, or stubbed data is not behaviour truth: mark it as inference and list it under Open questions. Done when every claim carries a concrete ref (`file:symbol`, route, migration, test).
@@ -72,6 +71,8 @@ Nine sections, in order, **≤3 bullets each** — link or cite evidence (`file:
 
 ```markdown
 # Port Gap Map — <feature> (<REFERENCE-CODE> → <TARGET-CODE>)
+
+Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
 ## 1. Reference behaviour / workflow
 - <behaviour/permission/state/data-effect> — evidence: `file:symbol`, route, migration, test.

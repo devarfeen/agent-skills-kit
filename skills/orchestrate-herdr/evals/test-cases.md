@@ -49,3 +49,12 @@ proves nothing — if a query could never plausibly hit this skill, it is not te
 Fix descriptions, not queries. A missed should-trigger means the description lacks that phrasing.
 A captured near-miss means the boundary sentence is missing, or the sibling's description is weaker
 than this one's. Never delete a query to make the eval pass.
+
+## Backend selection boundary — 2026-10-13
+
+The original unqualified "Fan this PRD out to per-issue workers" query remains
+in the routing suite as a no-trigger: it supplies neither Herdr nor its required
+`HERDR_ENV=1` context. A new positive names both. Generic fan-out needs the backend
+resolved before Herdr is selected; a description-only router cannot infer the
+current environment. This corrects an unsupported historical expectation rather
+than making Herdr the default over T3.

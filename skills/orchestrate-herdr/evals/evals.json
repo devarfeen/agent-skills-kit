@@ -9,7 +9,8 @@
     },
     {
       "q": "Fan this PRD out to per-issue workers",
-      "expect": "trigger"
+      "expect": "no-trigger",
+      "route": "/ask-kit"
     },
     {
       "q": "Spin up one worker tab per open sub-issue of PRD-142 using claude",
@@ -128,6 +129,10 @@
       "q": "Implement this whole spec in one run with parallel implementer subagents",
       "expect": "no-trigger",
       "route": "/implement-spec"
+    },
+    {
+      "q": "Fan this PRD out to per-issue workers in herdr; HERDR_ENV=1",
+      "expect": "trigger"
     }
   ],
   "last_run": {

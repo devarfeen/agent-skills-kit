@@ -3,7 +3,7 @@ name: pixel-audit
 disable-model-invocation: true
 description: "Audit ONE page or route for visual conformance against Figma or reference screens, fix gaps with the UI library, and verify at element level. Not feature porting; never auto-chains."
 metadata:
-  version: "0.1.2"
+  version: "1.0.0"
 ---
 
 # Pixel audit
@@ -21,8 +21,8 @@ Infer from the request; interview only for what's missing:
 
 ## Load first
 
-- The target's binding context: `GLOSSARY.md` (legacy name `CONTEXT.md`) and `specs/adr/`.
-- The project's `*-ui-coding` skill if it exists — it owns the component catalog, tokens, and gotchas. **Reuse its components; never inline.** If absent, discover the tokens, library, and preview from `/design-system`'s docs or the project code.
+- The target's binding context: `GLOSSARY.md` (legacy `CONTEXT.md`) and ADRs located by page/topic or linked decision; read only relevant ADRs.
+- The project UI skill named in its design-system doc or `AGENTS.md`; fall back to detecting a `*-ui-coding` skill when unregistered. **Reuse its components; never inline.** If absent, discover tokens, library, and preview from the design-system docs or project code.
 
 ## Process
 
@@ -53,12 +53,14 @@ Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else
 <artifacts-root>/specs/pixel-audit/<TARGET-PROJECT-CODE>-<page-slug>-defects.md
 ```
 
-Inventory and screenshots sit beside it: `<TARGET-PROJECT-CODE>-<page-slug>-inventory.md` and `shots/<TARGET-PROJECT-CODE>-<page-slug>/`.
+Inventory and screenshots sit beside it: `<TARGET-PROJECT-CODE>-<page-slug>-inventory.md` and `shots/<TARGET-PROJECT-CODE>-<page-slug>/`. Include the zero-attribution rule in both Markdown artifacts.
 
 One row per defect:
 
 ```markdown
 # Pixel Audit — <page-slug> (<TARGET-PROJECT-CODE>)
+
+Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
 Source of truth: <Figma node(s) URL | reference screens/impl — name it>
 Scope: <route + states audited>
@@ -69,14 +71,14 @@ Scope: <route + states audited>
 | 2 | Row actions, extra "Delete" | /assets · list | pages/assets/index | not in source | — | delete icon present | EXTRA | ref=…, screenshot | open |
 ```
 
-**Evidence** is element-level per the verification gate — not "looks off". **Status** runs `open` → `fixed` → `verified`, or `reopened` when the gate fails.
+**Evidence** is element-level per the verification gate. **Status** runs `open` → `awaiting verification` → `verified`, or `reopened` when the gate fails. On reruns, treat legacy `fixed` rows as awaiting verification; they need the full gate.
 
 ## Fixing
 
 - **One node/page/state at a time.** Do not batch unrelated fixes.
 - **A MISSING defect that needs behaviour, data, or interface work is a slice, not a style fix.** Record the row, route it to `/to-tickets`, and do not build it here (the boundary `/polish-batch` draws).
-- **Reuse the project UI library's components.** No one-off UI unless justified and documented (per the `*-ui-coding` reuse-vs-new rule).
-- **If a shared component must change, suggest `/design-system` extend for the library, preview, and project `*-ui-coding` skill; never patch it page-local or auto-chain.** Confirm with the user first. Other pages consume it, and this page's frame may be the outlier. Until separately authorized, leave the row `open` under Needs user and continue; never rewrite a shared component unattended.
+- **Reuse the project UI library's components.** No one-off UI unless justified and documented (per the registered project UI skill's reuse-vs-new rule).
+- **If a shared component must change, suggest `/design-system` extend for the library, preview, and registered project UI skill; never patch it page-local or auto-chain.** Confirm with the user first. Other pages consume it, and this page's frame may be the outlier. Until separately authorized, leave the row `open` under Needs user and continue; never rewrite a shared component unattended.
 - **Stay strictly inside SCOPE.** Cosmetic nits on other pages or flows are captured with `/polish-batch`, never fixed here.
 - **Report, don't decide, on EXTRA:** any icon/button/field/action present in the app but absent from the source is surfaced for a user decision, not silently kept, removed, or restyled.
 
@@ -123,5 +125,5 @@ Do not proceed past the suggestion.
 
 - [ ] Defect list exists at `<artifacts-root>/specs/pixel-audit/<TARGET-PROJECT-CODE>-<page-slug>-defects.md`, names its source of truth and scope, one row per defect
 - [ ] `<TARGET-PROJECT-CODE>-<page-slug>-inventory.md` and `shots/<TARGET-PROJECT-CODE>-<page-slug>/` exist beside it
-- [ ] Every row's Status is `verified`, `open`, or `reopened` — none left `fixed` — and each `verified` row's Evidence cell holds element-level proof
+- [ ] Every row's Status is `verified`, `open`, or `reopened` — none awaiting verification — and each `verified` row's Evidence cell holds element-level proof
 - [ ] The reply ends at the `Suggested next skills (optional)` footer — nothing after it

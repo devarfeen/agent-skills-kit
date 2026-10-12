@@ -1,0 +1,326 @@
+[
+  {
+    "id": "C1",
+    "next_decisions": [
+      "The complete single-project consumer sweep establishes the explicit no-contract branch, including when no consumer is located anywhere."
+    ],
+    "ordered_proposed_actions": [
+      "Report Stage: single project — no contract needed (matrix swept; no external call-sites).",
+      "Report API-SVC changed surfaces and the complete sweep; recommend proceeding per slice with no integration gate."
+    ],
+    "stopping_state": "Stop build without creating a contract file.",
+    "prohibited_actions": [
+      "Create a contract merely to record NO CONSUMER LOCATED.",
+      "Auto-run gate, commit/push, or PM handoff."
+    ],
+    "citations": [
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/integration-contract/SKILL.md — Rules: Single project is a sweep, not trust; Completion criteria",
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/integration-contract/references/consumer-sweep.md:9-15"
+    ],
+    "unresolved_contradictions": []
+  },
+  {
+    "id": "C2",
+    "next_decisions": [
+      "The same no-contract branch applies on rerun; historical user edits and gate log must remain intact."
+    ],
+    "ordered_proposed_actions": [
+      "Identify and report the existing historical contract and gate log.",
+      "Report the complete matrix sweep and single project — no contract needed.",
+      "Recommend per-slice continuation, with no new integration gate required for the described sweep."
+    ],
+    "stopping_state": "Stop without creating, deleting, or rewriting the historical contract.",
+    "prohibited_actions": [
+      "Delete historical contract or gate log.",
+      "Reset historical flow statuses solely because the no-contract branch applies.",
+      "Edit source code or auto-chain another workflow."
+    ],
+    "citations": [
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/integration-contract/SKILL.md — Rules: Single project is a sweep, not trust; The contract artifact; Completion criteria"
+    ],
+    "unresolved_contradictions": []
+  },
+  {
+    "id": "C3",
+    "next_decisions": [
+      "Use the existing contract directly; structure/coverage repair is unnecessary, so do not load the build schema.",
+      "The given verified local artifact and successful smoke observations support pass for all described flows."
+    ],
+    "ordered_proposed_actions": [
+      "Confirm local authority, reachability, data preconditions, and running-artifact proof; compare surfaces/coverage with current implementation.",
+      "Record concrete smoke evidence and pass statuses in the existing contract, preserving prior edits and log.",
+      "Append a new gate-log entry with verified local environment and zero pending/fail counts.",
+      "Emit the gate report and suggest code-review then commit-push-close / commit-push-pr, or PM handoff."
+    ],
+    "stopping_state": "Gate report complete; stop at suggestions.",
+    "prohibited_actions": [
+      "Load build schema merely because gate runs.",
+      "Auto-ship, commit/push, or hand off to PM.",
+      "Claim runtime evidence from this simulation itself."
+    ],
+    "citations": [
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/integration-contract/SKILL.md — The contract artifact: gate mode schema loading; Modes: gate steps 1-5"
+    ],
+    "unresolved_contradictions": [],
+    "limits": [
+      "Specific evidence values and contract path are not supplied; proposal assumes the stated smoke passes are backed by recordable observations."
+    ]
+  },
+  {
+    "id": "C4",
+    "next_decisions": [
+      "The unavailable matrix repo makes the sweep incomplete; accessible no-consumer results cannot establish no contract needed.",
+      "Record the unavailable repository and unlocated consumer as risks/unknowns; continue permitted local contract preparation with pending flows.",
+      "Unapproved staging cannot be accessed. Seed is a mutation requiring separate approval even after staging access is approved."
+    ],
+    "ordered_proposed_actions": [
+      "Document searches of accessible repos and the unavailable repo risk; do not claim a complete sweep.",
+      "Resolve SPEC-ID/artifact root from available task context, asking once if required identity is missing; prepare/update the four-section contract with unknown environment facts and pending coverage rather than inventing consumers.",
+      "At the staging gate, stop affected driving before staging access; record missing explicit approval and user-provided SSH access, plus missing separate seed approval.",
+      "Leave affected flows pending; append/report pending counts and reasons.",
+      "Report missing consumer/environment proof and block spec-level ship and PM handoff."
+    ],
+    "stopping_state": "Local artifact preparation may proceed; staging gate and dependent flows remain pending awaiting authority/access and mutation approval.",
+    "prohibited_actions": [
+      "Conclude single project — no contract needed from accessible repos alone.",
+      "Access staging without explicit approval and user-provided SSH access.",
+      "Seed staging without separate mutation approval.",
+      "Access production, mark pending flows pass, or auto-chain ship."
+    ],
+    "citations": [
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/integration-contract/SKILL.md — Rules: Environment authority; Narrow retrieval only; Modes: gate steps 1,5",
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/integration-contract/references/consumer-sweep.md:9-15",
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/integration-contract/references/build-contract.md:46-49"
+    ],
+    "unresolved_contradictions": [],
+    "limits": [
+      "Skill allows continued building with unknowns but does not spell out every incomplete-single-project artifact row; retain explicit risk/unknowns rather than claiming cross-project consumers as fact."
+    ]
+  },
+  {
+    "id": "C5",
+    "next_decisions": [
+      "Use the mapped context root /meta/payments despite the multi-repo layout and absent .code-workspace file.",
+      "The per-repo fallback applies only when neither workspace nor mapped context exists."
+    ],
+    "ordered_proposed_actions": [
+      "Confirm the task-to-context mapping and restrict notes to confirmed changes in that context.",
+      "Resolve generation mode/date from task context; if feature-summary release date is absent and current-session intent is unclear, ask or use the stated away fallback.",
+      "Load only the selected mode's template and any necessary git-collection reference, collect supported evidence without fetching, then propose one notes file under /meta/payments/specs/release-notes/<resolved-date-or-range>.md.",
+      "Preserve existing entries/hand edits, include zero attribution, reopen the saved artifact, and report its path plus advisory next skills."
+    ],
+    "stopping_state": "Resolved output directory is /meta/payments/specs/release-notes; actual generation awaits evidence and mode/date not supplied in this case.",
+    "prohibited_actions": [
+      "Replace the mapped root with one file per repo.",
+      "Fetch or pull.",
+      "Invent delivery status, user-visible changes, filenames with prompt/ADR numbering, or overwrite unconfirmed hand edits."
+    ],
+    "citations": [
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/release-notes/SKILL.md — File output: root precedence and mapped-context exception; Filenames; Conflict handling; Evidence collection"
+    ],
+    "unresolved_contradictions": [],
+    "limits": [
+      "No change evidence, generation mode, release date, or existing-file content is provided; the exact filename and note content cannot be determined."
+    ]
+  },
+  {
+    "id": "C6",
+    "next_decisions": [
+      "Explicit dispatch authorization exists, but console baseline must be observed before handing off while the authorized local route is observable.",
+      "In the unavailable-console variant, record the missing baseline and allow bounded dispatch; console-dependent verification remains pending until comparable pre-change evidence is available."
+    ],
+    "ordered_proposed_actions": [
+      "Retain the pre-dispatch git status/diff baseline; confirm PROJECT-CODE and search for the Wrong copy string.",
+      "If the string is shared or occurs elsewhere, list occurrences; a shared key waits for user confirmation and other shipped locales remain Needs user.",
+      "For the reachable-local case, capture per-route console errors in the punch-list before handoff.",
+      "For the unavailable-console variant, explicitly record inability to observe and missing pre-change evidence.",
+      "Hand off one bounded cosmetic copy task per non-overlapping file group, passing Where and Wrong → Right verbatim.",
+      "Mark handed-off rows dispatched, quote the user's dispatch instruction, and report verify as the next requested mode."
+    ],
+    "stopping_state": "Dispatch ends after bounded handoff/status update; no verification or shipment yet. Unavailable-console variant retains pending console verification.",
+    "prohibited_actions": [
+      "Handoff first when an observable route's baseline has not yet been captured.",
+      "Call an unavailable console baseline clean or treat it as green.",
+      "Auto-verify/ship, edit built output, make behavioral changes, refactor, or silently change shared keys/locales."
+    ],
+    "citations": [
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/polish-batch/SKILL.md:17-25",
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/polish-batch/SKILL.md:54-59",
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/polish-batch/references/dispatch.md:7-11"
+    ],
+    "unresolved_contradictions": [],
+    "limits": [
+      "The Wrong string, PROJECT-CODE, shared-key/locales findings, and console values are not supplied; scope confirmation remains conditional."
+    ]
+  },
+  {
+    "id": "C7",
+    "next_decisions": [
+      "Close the UI AC row using the passing project E2E browser test that asserts actual interaction.",
+      "No agentic-qa run is required to close that already-proven criterion; later QA remains an advisory suggestion because the change can reach a screen."
+    ],
+    "ordered_proposed_actions": [
+      "Name the E2E test in Proof and record the criterion row green, with its relevant path.",
+      "Check remaining acceptance paths, span check, touched guards, test quality, and ordinary TDD red/focused/widened/full-check evidence without assuming them from this one pass.",
+      "Emit the TDD summary with the test-backed AC map.",
+      "Suggest code-review, eligible commit-push next steps subject to full-check gate, then agentic-qa on the shipped revision; stop."
+    ],
+    "stopping_state": "The described UI criterion is proven; overall TDD completion remains conditional on remaining required evidence. No live QA or shipment starts.",
+    "prohibited_actions": [
+      "Require agentic-qa as duplicate criterion proof solely because the criterion is UI.",
+      "Treat no QA run as a failed E2E criterion.",
+      "Invent red/green or full-suite evidence; auto-chain QA or shipment."
+    ],
+    "citations": [
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/tdd-loop/SKILL.md:38-42",
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/tdd-loop/SKILL.md:108-110",
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/tdd-loop/SKILL.md:119-134",
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/tdd-loop/references/ac-matrix.md:20",
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/tdd-loop/references/ac-matrix.md:32-39"
+    ],
+    "unresolved_contradictions": []
+  },
+  {
+    "id": "C8",
+    "next_decisions": [
+      "Backend tests do not prove running-app UI behavior.",
+      "Record the UI row as owed to agentic-qa with the exact surface and console/network proof needed; no E2E runner exists.",
+      "A TDD slice may complete with explicitly owed QA proof if remaining TDD gates are satisfied; owed QA is not silently closed."
+    ],
+    "ordered_proposed_actions": [
+      "Keep backend AC rows green only where their actual handler/side-effect tests prove them.",
+      "Add/retain the UI AC row with Proof: agentic-qa (<surface>) and Status: owed to /agentic-qa; answer the span check.",
+      "Complete remaining focused/widened/test-quality/docs/red evidence and record any valid deferrals.",
+      "End with a truthful slice summary naming backend proof and outstanding UI proof; suggest later QA and review/ship only as advisory, with full-check conditions when suggesting ship."
+    ],
+    "stopping_state": "Stop at the TDD slice summary and suggestions; UI proof remains owed and no shipment is performed.",
+    "prohibited_actions": [
+      "Mark UI row green using backend tests.",
+      "Invent a browser interaction, silently omit UI criteria, create speculative E2E infrastructure solely to force closure, or auto-run shipment/QA."
+    ],
+    "citations": [
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/tdd-loop/SKILL.md:38-42",
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/tdd-loop/SKILL.md:108-110",
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/tdd-loop/SKILL.md:124-132",
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/tdd-loop/references/ac-matrix.md:20",
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/tdd-loop/references/ac-matrix.md:32-39"
+    ],
+    "unresolved_contradictions": [],
+    "limits": [
+      "Remaining acceptance paths and TDD completion evidence are not supplied; green backend tests alone do not establish the whole loop completed."
+    ]
+  },
+  {
+    "id": "C9",
+    "next_decisions": [
+      "Highest current number across ADRs/prompts is 0011, so the new prompt uses 0012.",
+      "The guarantee is uniqueness when the prompt is created, not perpetual uniqueness across independently allocated later ADRs."
+    ],
+    "ordered_proposed_actions": [
+      "Resolve artifact root and scan current four-digit ADR/prompt filenames immediately before save.",
+      "Choose specs/prompts/0012-<feature-slug>-prompt.md, with a kebab-case ASCII slug of at most four words derived from the actual feature.",
+      "Check the required prompt sections and zero-attribution Known limits, preserve hand edits, save the approved or explicitly unconfirmed-away draft, and reopen it.",
+      "Record the prompt path as the future ADR link; stop at the grill-with-docs suggestion."
+    ],
+    "stopping_state": "New prompt number is 0012; actual feature slug cannot be invented from numbering observations.",
+    "prohibited_actions": [
+      "Use 0011 now, overwrite an occupied artifact, claim a shared permanently reserved sequence, or edit/create ADRs as part of feature-prompt."
+    ],
+    "citations": [
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/feature-prompt/SKILL.md:105-108",
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/feature-prompt/SKILL.md:155-176",
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/feature-prompt/SKILL.md:183-191"
+    ],
+    "unresolved_contradictions": [],
+    "limits": [
+      "A later ADR-only scan can allocate 0011 next and eventually reuse 0012; skill expressly allows this. Feature name and drafted content are absent."
+    ]
+  },
+  {
+    "id": "C10",
+    "next_decisions": [
+      "Normalize legacy fixed to awaiting verification; the worker report and source CSS cannot establish verified/fixed.",
+      "Main agent must run the full served-element gate before final status; only mapping is delegated under this skill."
+    ],
+    "ordered_proposed_actions": [
+      "Retain the defect and worker/source observations; transition legacy fixed to awaiting verification.",
+      "State authorized local environment/viewport/session; verify the source inventory was captured full-size and baseline console exists, or record missing evidence.",
+      "Cross build/refresh pipeline and prove loaded assets contain the change.",
+      "Capture selector/ref, geometry, relevant computed styles, DOM, clipped alignment screenshot, and expected-versus-actual comparison for every in-scope state.",
+      "Falsify stale asset, wrong breakpoint, override, hidden/zero-size/clipping cases; compare console to baseline.",
+      "Mark verified only after all conditions pass and repeat element proof on the final build. Failed changed rows become reopened; unavailable evidence is named as manual/pending and no awaiting-verification row remains in a final completion report."
+    ],
+    "stopping_state": "Currently awaiting verification, not fixed. Final completion requires verified/open/reopened statuses backed by evidence; affected changed row remains reopened if the gate cannot be satisfied.",
+    "prohibited_actions": [
+      "Accept legacy fixed or worker assurance as proof.",
+      "Declare fixed/verified from correct-looking CSS.",
+      "Delegate fixing or final gate to mapping lanes, ignore missing geometry, or auto-ship."
+    ],
+    "citations": [
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/pixel-audit/SKILL.md:74",
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/pixel-audit/SKILL.md:85-95",
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/pixel-audit/SKILL.md:103-105",
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/pixel-audit/SKILL.md:124-129",
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/pixel-audit/references/evidence-capture.md:19-38",
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/pixel-audit/references/evidence-capture.md:62-70"
+    ],
+    "unresolved_contradictions": [
+      "If the worker was dispatched by this pixel-audit workflow to apply the fix, that conflicts with the rule limiting lanes to Map the page. The observation does not establish who authorized that worker.",
+      "Intermediate awaiting verification is explicitly allowed, but final completion forbids it. An unavailable gate must be reported incomplete with a non-verified final row rather than leaving a legacy fixed claim."
+    ]
+  },
+  {
+    "id": "C11",
+    "next_decisions": [
+      "Read relevant accepted DS ADR plus target binding context/UI skill; the 200 unrelated ADRs do not expand retrieval scope.",
+      "Reference establishes behavior; target DS establishes UI. User requested only the gap map."
+    ],
+    "ordered_proposed_actions": [
+      "Confirm feature and REFERENCE/TARGET codes from request/cheap evidence; stop before discovery only if those required identities cannot be inferred.",
+      "Locate/read the relevant DS ADR, GLOSSARY.md, AGENTS.md, and registered UI-coding skill using topic/linked decisions.",
+      "Trace only the named reference feature and survey matching target routes/symbols/states; inspect authorized local component preview if available, otherwise inventory source and record limitation.",
+      "Write one gap map with all nine sections, evidence in sections 1-4, relevant tests/risks/open questions, zero attribution, and explicit DS deviations.",
+      "Preserve any existing map/user edits, verify only the gap map changed, report its path, suggest grill-with-docs, and stop."
+    ],
+    "stopping_state": "Gap-map artifact only; no implementation, planning, issues, or ADR allocation.",
+    "prohibited_actions": [
+      "Bulk-read all ADRs or specs to find everything.",
+      "Copy reference UI against accepted target DS rules without recording chosen DS deviation.",
+      "Edit product code/config/migrations, auto-chain planning/grilling, or access production/staging without authority."
+    ],
+    "citations": [
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/port-feature/SKILL.md — Source-of-truth framing; Rules: Never implement here, Narrow retrieval only; Process 1-3; Gap map artifact; Completion criteria"
+    ],
+    "unresolved_contradictions": [],
+    "limits": [
+      "Feature identities and evidence refs are not supplied; actual gap-map claims require targeted discovery, not this simulation."
+    ]
+  },
+  {
+    "id": "C12",
+    "next_decisions": [
+      "A complete 600-word body satisfies the 500–900 target and does not need expansion.",
+      "A complex 1300-word orchestrator is within the 1500-word hard ceiling; retain it when required gates justify exceeding target.",
+      "Permission/refusal/proof constraints must survive compression; there is no authority or evidence to remove them."
+    ],
+    "ordered_proposed_actions": [
+      "Check skeleton completeness, connected reference conditions, and whether any duplication can be removed without changing behavior.",
+      "Keep the complete 600-word skill body.",
+      "For the complex 1300-word orchestrator, preserve necessary gates; move only branch-specific mechanics/examples to directly linked conditionally loaded references if useful.",
+      "Before any real landing, verify body word count, prior refusal/stop lines by diff, unchanged invocation/router unless explicitly authorized, version/sync requirements, and required validator checks."
+    ],
+    "stopping_state": "Both lengths can be acceptable; no forced shortening or expansion. Actual landing validation remains unexecuted in this simulation.",
+    "prohibited_actions": [
+      "Treat 900 words as a hard limit.",
+      "Pad complete 600-word instructions.",
+      "Remove safety/permission/proof gates to reach target, add canon exemptions without approval, or invent validator/trigger-sweep results."
+    ],
+    "citations": [
+      "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/writing-kit-skills/SKILL.md — Word budget; The auto-clarity valve; Frontmatter and gates; Completion criteria"
+    ],
+    "unresolved_contradictions": [],
+    "limits": [
+      "No actual authored body or prior-version diff is supplied; preservation/completeness are taken from the observations, not independently proved."
+    ]
+  }
+]

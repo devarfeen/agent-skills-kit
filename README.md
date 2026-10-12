@@ -76,7 +76,7 @@ The `skills` CLI fetches the named subfolder from this repo and installs it
 into your agent's local skills directory. After install, invoke a skill with
 `/skill-name` — most kit skills mark themselves for explicit invocation
 (`disable-model-invocation: true`), so the slash command is the reliable path;
-`feature-discovery`, `tdd-loop`, and `using-git-worktrees` also trigger
+`feature-discovery` and `tdd-loop` also trigger
 automatically when a request matches their description. Opencode and
 Antigravity ignore that flag (they read only `name` and `description`), so
 there any kit skill can load when a request matches. Every description is
@@ -125,7 +125,7 @@ with the [groups `npx skills` shows](#skill-groups) under this repo's command.
 | [`local-to-staging`](skills/local-to-staging/SKILL.md) | ship | Promotes every workspace project from `origin/local` to `origin/staging`: one PR per repo that has both branches, merged with a merge commit only after its checks pass, then watches the Actions runs on each merge commit and reports per project — never pushes, bypasses protection, or goes past staging | `Promote local to staging on all projects` |
 | [`staging-to-production`](skills/staging-to-production/SKILL.md) | ship | Read-only production-promotion readiness across every project: commits staging is ahead, Actions results on staging's head, open promotion PRs — then prints the exact commands for you to run. Never opens or merges a PR and never accesses production | `Is staging ready for production?` |
 | [`release-notes`](skills/release-notes/SKILL.md) | ship | Turns git history (date, date range, or version range), the current session, or a feature into PM-friendly release notes with QA steps and an "Action needed" line — written from the diffs, not just commit subjects | `Generate release notes for 11 March 2026` |
-| [`using-git-worktrees`](skills/using-git-worktrees/SKILL.md) | companion | Sets up or reuses a worktree in each project repo’s gitignored `.worktrees/` before requested task work, verifies the checkout and baseline (including port and shared-database collisions), and returns to the calling workflow | `Implement #418 in a worktree` |
+| [`using-git-worktrees`](skills/using-git-worktrees/SKILL.md) | companion | Sets up or reuses a worktree in each project repo’s gitignored `.worktrees/` before requested task work, verifies the checkout and baseline (including port and shared-database collisions), and returns to the calling workflow | `/using-git-worktrees` with `Implement #418 in a worktree` |
 | [`ask-kit`](skills/ask-kit/SKILL.md) | companion | Router over this kit's own skills: describe your situation and it names the one skill to run next, why, and what that skill needs — never runs it. For a spec, ticket, or PR that already exists, `/factory` reads the real state instead | `Which kit skill do I use for this?` |
 | [`factory`](skills/factory/SKILL.md) | companion | Factory conductor: reads where a spec, ticket, or PR stands across CI, review, risk gate, and staging deploy, then names the one skill that moves it next — never runs it, never goes past staging. Shows how long each unit has sat in its state and flags stalled ones. Started as `/factory run <label or reference>` it carries the chain out itself after one question (which agent builds, which reviews): build in T3 Code threads, QA with before/after screenshots, PR, a second agent's code review, merge into `local` or staging, and handover to manual QA. It never closes an issue | `/factory SPEC-142` · `/factory run PRWL-127` · `/factory run automate` |
 | [`incident-triage`](skills/incident-triage/SKILL.md) | companion | Read-only incident triage: timeline, ranked causes with evidence (always including one that isn't a recent change), owner-run mitigations, one redacted incident note with a Resolution section — production never accessed; a suspected breach goes straight to the owner | `We have an incident: checkout 502s since 14:00` |
@@ -201,7 +201,11 @@ npx skills add michaelshimeles/skills -g --skill before-and-after code-structure
 
 `before-and-after` also needs its CLI (`npm i -g @vercel/before-and-after`).
 Left out on purpose: `new-feature`, because `/using-git-worktrees` owns
-worktree setup here, and `greploop` / `greploop-apps`, which need Greptile.
+worktree setup here. In Codex, disable a previously installed `new-feature`
+with `[[skills.config]]`, its `SKILL.md` path, and `enabled = false`; also disable
+the user-level `skill-creator` when the built-in creator is available, and
+`/tdd` when `/tdd-loop` is selected as the test-first workflow. Preserve
+the installed files. `greploop` / `greploop-apps` are omitted because they need Greptile.
 
 #### [github/awesome-copilot](https://github.com/github/awesome-copilot)
 
@@ -241,13 +245,14 @@ Install the companion with:
 npx skills add devarfeen/agent-skills-kit -g --skill using-git-worktrees
 ```
 
-Then ask: **“Fix checkout in SHOP in a worktree.”** You can also invoke
-`/using-git-worktrees` directly for setup only. The companion creates or reuses
+Invoke **`/using-git-worktrees`** with the task, for example “Fix checkout in
+SHOP in a worktree,” or request setup only. The companion creates or reuses
 `<shop-repo>/.worktrees/<task-name>`, adds `/.worktrees/` to the repo's `.gitignore`,
 and checks the checkout before returning to the requested task. Each affected
 project gets its own worktree. A request for a branch alone does not trigger it.
 
-The model can invoke this skill automatically. Before task writes, it reports
+Direct use is user-invoked only. An explicitly started `/orchestrate-t3` or
+`/factory run` may follow it automatically for checkout setup. Before task writes, it reports
 the verified checkout, branch, starting commit, and baseline. Commands and edit
 paths stay bound to that checkout; handoffs and restarts require a fresh check.
 This is an instruction gate, not a harness-level write blocker.
@@ -278,9 +283,10 @@ sequence in [GUIDE.md](GUIDE.md)) before using them.
 
 These interlocks use optional upstream skills alongside the kit:
 
-- **Worktrees** are request-driven. Ask to do work in a worktree and
-  `/using-git-worktrees` runs before the task skill, using that project repo’s
+- **Worktrees** are user-invoked. Run `/using-git-worktrees` before the
+  task skill, using that project repo’s
   `.worktrees/<task-name>` and adding `/.worktrees/` to its `.gitignore`.
+  User-started `/orchestrate-t3` and `/factory run` may load this setup helper automatically.
   The generated workspace rules (`rules/orchestration.md` and `rules/skills.md`) route Matt’s implementation, debugging, prototype, and review skills through
   that setup and pass them the verified checkout. Third-party installations
   stay untouched.

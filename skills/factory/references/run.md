@@ -30,19 +30,19 @@ Mechanics for `run` mode. `SKILL.md` holds the loop and the one start question; 
 Stage skills are user-invoked, so no Skill-tool call starts them. The user started the run to chain them, which is the one case the kit allows: read the stage skill's `SKILL.md` and follow it.
 
 1. Read `<name>/SKILL.md` from the directory that holds this skill's own folder. Not there → look in the runtime's other skill directories. Not installed → park the unit and name `npx skills add devarfeen/agent-skills-kit -g --skill <name>`.
-2. Follow the whole file, and each reference it cites, for this one unit. Its **Run authorization** line says what the run's start already approved. A stage skill without that line keeps every approval it asks for.
+2. Follow the stage file for this unit. Load only references needed by the active step; optional examples and unrelated branches stay unloaded. Reuse already-read, unchanged sections; retain every safety gate. Its **Run authorization** line says what the run's start already approved. A stage skill without that line keeps every approval it asks for.
 3. Every other stop in the skill stops that unit: a failed check, an unmet criterion, a refused merge, a missing input. Park the unit with the stop's evidence. Never retry a stop by doing the step by hand.
 4. The skill's intake questions are answered from **Start**. It asks the user nothing: a question **Start** does not answer is settled by **No further questions**.
 5. Where the skill says to stop, suggest a next skill, or end the transcript, return here and place the unit again.
 
-A model-invoked skill (`tdd-loop`, `using-git-worktrees`, `code-review`) is called with the Skill tool as usual.
+A model-invoked skill (`tdd-loop`, `code-review`) is called with the Skill tool as usual. `using-git-worktrees` is user-invoked directly. An explicitly started `/factory run` may read and follow it solely for its task-checkout setup, without a Skill-tool invocation; this exception grants no cleanup or unrelated workflow authorization.
 
 ## Start
 
 After triage and before any unit is built, in this order.
 
 1. **T3 Code.** Builders and reviewers run as T3 Code threads, always. Its MCP server is not connected → stop and print the setup from `orchestrate-t3`'s `references/t3-tools.md`; never fall back to another backend. A repository with no T3 Code project is registered and named in the report. Every thread runs in the mode T3 Code calls **Full access**.
-2. **Preflight.** Per repository in the run: the focused-test command; the PR base — the one the workspace instructions name, else `local` when `origin/local` exists, even when it is the default branch, else the staging branch. A production branch is never the base, and neither is a default branch other than `local`. Each unit's worktree branches from `origin/<base>`; and the local compose file the **Task stack** is derived from. One that cannot be found parks that repository's units, naming it.
+2. **Preflight.** Per repository in the run: the focused-test command; the PR base — the one the workspace instructions name, else `local` when `origin/local` exists, even when it is the default branch, else the staging branch. A production deployment branch is never the base. A default `local` is allowed only when workspace policy explicitly designates it for delivery; other defaults are forbidden. Each unit's worktree branches from `origin/<base>`; and the local compose file the **Task stack** is derived from. One that cannot be found parks that repository's units, naming it.
 3. **The start question** — the reviewer question in `SKILL.md`. The builder is not asked: it is `inheritedProviderInstanceId` and `inheritedModel` from `orchestrator_capabilities`. Every option comes from that result, never a remembered list, read per **Capabilities** in `orchestrate-t3`'s `references/t3-tools.md`: one option for every usable provider, and none for an unusable one. The result has no sign-in field, so never drop a usable provider because its sign-in cannot be confirmed. Each option names the provider's default model as **Capabilities** defines it. Never pick a model by tier or price; the user names a different one if they want it. Recommend a different provider than the builder, because a second harness is the independent check; when the builder's provider is the only usable one, offer it and say the review will not be independent. Both inherited fields null, or the builder's provider unusable → ask the builder question too, in the same batch, with the same options. User away → stop; the run has no default reviewer.
 4. One line before work starts: the unit count, the caps — three QA re-checks, three CI attempts, three review rounds per unit — and the two agents.
 
@@ -79,7 +79,7 @@ Place the unit with `states.md`, then act on its state. `Next` in that table is 
 | State | Run action |
 | ----- | ---------- |
 | `QA_RETURNED` | **Returned by QA** below |
-| `BUILDING` | **Build** below |
+| `BUILDING` | Existing non-draft PR lacking only the current-head acceptance verdict → load `commit-push-pr` in its verified PR checkout to check criteria and refresh the handoff; preserve its branch and create no duplicate PR. Otherwise **Build** below |
 | `CI` | Pending → `gh pr checks <pr> --watch`. Failing → load `ci-loop` |
 | `QA` | Load `agentic-qa`, then **Screenshots on the issue**. Findings → **After a fix**. `blocked` or `partial` → park, naming the missing input or the gap cells |
 | `CHANGES` | Risk, QA, or code-review findings → **After a fix**. `CHANGES_REQUESTED` from a person → park; name `/pr-feedback <pr>` |
@@ -140,7 +140,7 @@ A guard that `qa-escape` proposes at three issues is listed under Needs user in 
 
 A finding from QA, risk review, or code review goes to the unit's worker with the finding's reproduction, to fix through `tdd-loop` and commit on the unit's branch. A worker never pushes. Once a PR is open, load `commit-push-pr` on that branch to push the fix and update the PR, then place the unit again: the new head sends it back through `CI`, `QA`, and `REVIEW`.
 
-**Checks stay locked.** Before the fixed head is checked again, read `git diff <previous-head>..<new-head>` for the project's test files. A deleted test, or an assertion removed from a test that existed on the previous head, parks the unit with the hunk quoted: a round that passes by changing its checks proves nothing. The one exception is a change the worker's report names under `Decisions:` with a reason tied to the finding; that unit continues and the change is named in the reviewer's next prompt and in the run report.
+**Checks stay locked.** Before the fixed head is checked again, read `git diff <previous-head>..<new-head>` for the project's test files. A deleted test, or an assertion removed from a test that existed on the previous head, parks the unit with the hunk quoted: a round that passes by changing its checks proves nothing. A claimed incorrect test is parked for a human decision; a worker's `Decisions:` line cannot authorize weakening the gate. New regression coverage may be added without removing existing assertions.
 
 ## Round log
 
@@ -195,10 +195,10 @@ Each unit runs its own copy of the app from its own worktree, so the builder's t
    - give paths the app writes at run time (logs, caches) volumes of their own;
    - rename the service's container and take a host port nothing is listening on.
 2. **Start.** Every bind-mount source must exist first: Docker creates a missing one owned by root. Then `docker compose -p <task-name> --project-directory <project-repo> -f <file> up -d`.
-3. **Prove.** The stack's URL answers, and a marker only this worktree holds (its head SHA in a file, or a string from its diff) is served from it. `find <worktree> -maxdepth 2 -user root` prints nothing; run it for this unit's worktree and its `-base` checkout only. A root-owned path under another task's folder is named in the run report and never parks this unit. Either check failing → `docker compose -p <task-name> down`, then park the unit with the output.
-4. **Hand over.** `STACK:` in the worker prompt is the URL and the command prefix that runs a command inside the stack (`docker compose -p <task-name> -f <file> exec <service>`).
+3. **Prove.** The stack's URL answers, and a marker only this worktree holds (its head SHA in a file, or a string from its diff) is served from it. `find <worktree> -maxdepth 2 -user root` prints nothing; run it for this unit's worktree and its `-base` checkout only. A root-owned path under another task's folder is named in the run report and never parks this unit. Either check failing → stop with the same Compose prefix from step 2 plus `down`, verify its containers stopped, then park the unit with the output.
+4. **Hand over.** Record its exact start/stop prefix. `STACK:` gives the URL and command prefix (`docker compose -p <task-name> --project-directory <project-repo> -f <file> exec <service>`).
 
-A workspace whose instructions give their own command for running the app from a worktree → use that command instead of steps 1 and 2; the rule against editing tracked compose files still holds.
+A workspace with its own worktree-app command → record its start and safe stop commands and use them instead of steps 1–2 and Compose cleanup. Missing stop procedure parks before starting. Preserve the rule against editing tracked compose files.
 
 **Shared database.** Units run one at a time, so the shared database meets one unit's migration at a time. A parked unit that applied a migration is named under Needs user, because the database now holds a migration its base does not.
 
@@ -280,7 +280,7 @@ Three rounds. Findings still open after the third park the unit, quoting them. E
 
 ## Merge
 
-The run merges a PR itself, through GitHub, when all of these hold for head: CI green; agentic-qa `verified` or `no-ui-reach`; the **Review loop** settled; risk-review `tier=low` with `blocking=0`; and the PR base is `local` or the staging branch. A PR on any other base is the owner's. A high tier waits at `HUMAN_REVIEW` for a person to approve and merge.
+The run merges a PR itself, through GitHub, when all of these hold for head: CI green; agentic-qa `verified` or `no-ui-reach`; the **Review loop** settled; risk-review `tier=low` with `blocking=0`; and no review thread is unresolved or changes requested; and the PR base is an authorized delivery `local` or the staging branch. Re-read head, base, checks and paginated threads immediately before merging; a moved head re-enters CI, and an unreadable gate parks. A PR on any other base is the owner's. A high tier waits at `HUMAN_REVIEW` for a person to approve and merge.
 
 Pick the merge method from repository policy (`gh repo view --json mergeCommitAllowed,squashMergeAllowed,rebaseMergeAllowed`), preferring the one the workspace names.
 
@@ -289,7 +289,7 @@ Pick the merge method from repository policy (`gh repo view --json mergeCommitAl
 
 ## Staging
 
-A PR merged into the staging branch → load `deploy-watch` for it and report the run's conclusion. Browsing the staging URL needs the user's own approval in this session; without it the deploy is watched and smoke is reported as not run. A failed deploy parks the unit as `DEPLOY_FAILED`. `deploy-watch` assigns manual QA once the deploy succeeds.
+A PR on staging, including an authorized `local` PR whose merge is in staging → load `deploy-watch` with the unit's explicit tracker issue identifiers and report its conclusion. Staging browsing needs this session's user approval and user-provided SSH access; without both, watch GitHub only. Deploy-watch assigns manual QA after a proven deploy containing the change. A failure parks at `DEPLOY_FAILED`. Deploy-only success without a pass marker → **Handover**, **Cleanup**, then park with smoke or build-identity proof pending; never loop on the same missing approval or claim `READY_FOR_OWNER`.
 
 A PR merged into `local` has not reached staging. Say so and name `/local-to-staging`, which assigns manual QA when it promotes the change; the run never promotes.
 
@@ -311,7 +311,7 @@ Staging: <deploy run URL and result | not on staging yet — manual QA starts on
 
 agentic-qa: <result> on <head-sha> — before/after: <the round's comment on this issue>
 Code review: <n> rounds — <n> fixed, <n> declined
-Risk review: tier low, blocking 0
+Risk review: tier <actual tier>, blocking <actual count> — <marker URL>
 
 ## Manual QA handoff
 
@@ -324,7 +324,7 @@ Risk review: tier low, blocking 0
 <!-- factory-delivered: pr=<n> merge=<merge-sha> base=<base> -->
 ```
 
-First apply **Closed by the merge** in **Tracker status**; after the comment, set **In Review** per that section. A run started with a label then removes that label from the issue — `gh issue edit <n> --remove-label <label>`, or the Linear label removal — and reads the labels back: the label means an agent should work the issue now, and that is no longer true. A parked unit and a `needs-info` issue keep it, so the next run looks at them again. A run started with an issue reference removes no label. Assign nobody: manual QA is assigned by `/local-to-staging` or `deploy-watch` when the staging branch holds `<merge-sha>` and its deploy succeeded, so nobody tests a build without the change. The run never closes the issue.
+First apply **Closed by the merge** in **Tracker status**; after the comment, set **In Review** per that section. A run started with a label then removes that label from the issue — `gh issue edit <n> --remove-label <label>`, or the Linear label removal — and reads the labels back: the label means an agent should work the issue now, and that is no longer true. A parked unit and a `needs-info` issue keep it, so the next run looks at them again. A run started with an issue reference removes no label. Assign nobody here: pass issue identifiers to `deploy-watch`, or let `/local-to-staging` discover this delivery comment. Their handoff requires a proven staging deploy containing `<merge-sha>`. The run never closes the issue.
 
 Issues of parked or unmerged units get no handover.
 
@@ -334,7 +334,7 @@ Automatic after **Handover**. A unit is cleanable only when its PR is `MERGED` a
 
 Per cleanable unit, and for its QA base worktree:
 
-1. `docker compose -p <task-name> down` for each of its stacks, then delete the temporary compose file.
+1. Stop each stack with its recorded start prefix: `docker compose -p <task-name> --project-directory <project-repo> -f <compose-file> down`. Verify no containers remain for that task project before deleting its temporary file. A failed stop skips further cleanup for that stack and worktree; report it.
 2. `git -C <worktree> status --porcelain --ignored`. Modified or untracked files, or ignored files that are not dependency or build output, → name them and skip this worktree.
 3. `git worktree remove <path>` — never `--force`.
 4. `git branch -d <branch>`. After a squash or rebase merge `-d` refuses; `-D` is allowed only for a branch whose tip is the merged PR's `headRefOid`.

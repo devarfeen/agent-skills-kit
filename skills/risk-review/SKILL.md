@@ -3,7 +3,7 @@ name: risk-review
 disable-model-invocation: true
 description: "Risk gate for an open PR with green CI: specialist lenses, a low or high tier, verdict on the PR. Low may auto-merge to staging or local only. Not /code-review; reviewer threads are /pr-feedback."
 metadata:
-  version: "0.4.1"
+  version: "0.5.0"
 ---
 
 # risk-review
@@ -12,11 +12,11 @@ risk-review answers one question for the factory: may this PR merge without an e
 
 ## Inputs
 
-- **PR** — number or URL; read `gh pr view <pr> --json number,headRefOid,baseRefName,state,isDraft,files,body,closingIssuesReferences,statusCheckRollup,reviewDecision,latestReviews`. Draft or closed → stop.
-- **Green checks on head** — every required check `pass` on `headRefOid` (`gh pr checks <pr> --required`). Anything failing or pending → stop and suggest `/ci-loop <pr>`.
+- **PR** — number or URL; read `gh pr view <pr> --json number,headRefOid,baseRefName,state,isDraft,files,body,closingIssuesReferences,statusCheckRollup,reviewDecision,latestReviews,comments`. Draft or closed → stop.
+- **Green checks on head** — every required check `pass` on `headRefOid` (`gh pr checks <pr> --required`). No required checks reported → inspect all checks and record that fallback. A failed lookup is unknown. Anything failing or pending → stop and suggest `/ci-loop <pr>`.
 - **Diff** — `gh pr diff <pr>` and `gh pr diff <pr> --name-only`. Lanes read surrounding code at head from the PR's worktree (`<project-repo>/.worktrees/pr-<n>`) when it exists, else with `git show <head-sha>:<path>`; this read-only review never creates a worktree and never reads the main checkout as if it were head.
-- **Ticket scope** — linked issue's acceptance criteria, used to judge whether changes are in scope.
-- **Acceptance and QA evidence** — the PR body's `Acceptance criteria` verdict and any `<!-- agentic-qa: sha=… -->` marker for the head SHA.
+- **Ticket scope** — the linked issue's `## Acceptance criteria` body section/checklist, otherwise its newest `<!-- factory-criteria -->` comment. No criteria → acceptance remains unproven.
+- **Acceptance and QA evidence** — the `Acceptance criteria` verdict in a body explicitly naming head, otherwise the newest `## QA handoff` comment whose `Change:` SHA is head. Read the newest agentic-qa marker for that SHA; stale acceptance and QA evidence never count.
 - **Merge danger** — the `Door:` and `Blast radius:` lines in the PR body or QA comment, read as the author's claim.
 
 ## Rules
@@ -30,9 +30,9 @@ risk-review answers one question for the factory: may this PR merge without an e
 - A failed or erroring `gh` query is unknown — never an empty result, a pass, or green; report the command and its error.
 - **A failed lane is not a clean lane.** A lane that fails, times out, or returns malformed output is `not assessed` and counts as a fired trigger.
 - **Blocking findings send the PR back.** A finding that would break correctness, data, or security is `blocking`; the verdict records the count, and the PR returns to the author whatever the tier.
-- **Never approve, never merge past a human, never toward production.** Do not submit a GitHub approval and do not merge. Low tier with zero blocking may get auto-merge enabled only when the PR's base is a **mergeable base**: the staging branch (default `staging`) or the delivery branch `local`, confirmed with `git ls-remote --heads origin <branch>`; `local` counts only when it is not the repository's default branch (`gh repo view --json defaultBranchRef`). Any other base gets no merge action and the owner is named. High tier gets reviewers requested and stops. `reviewDecision: CHANGES_REQUESTED` or an unresolved review thread (`gh api graphql`, `reviewThreads.isResolved`) → no merge action whatever the tier; suggest `/pr-feedback`.
+- **Never approve, never merge past a human, never toward production.** Do not submit a GitHub approval and do not merge. Low tier with zero blocking may get auto-merge enabled only when the PR's base is a **mergeable base**: the staging branch (default `staging`) or the delivery branch `local`, confirmed with `git ls-remote --heads origin <branch>`; a default `local` counts only when workspace policy explicitly designates it for delivery and no workflow deploys production from it; resolve default and deployment triggers before acting. Any other base gets no merge action and the owner is named. High tier with no blocking findings gets reviewers requested and stops. `reviewDecision: CHANGES_REQUESTED` or an unresolved review thread (`gh api graphql`, `reviewThreads.isResolved`) → no merge action whatever the tier; suggest `/pr-feedback`.
 - **One approval before any remote write.** Show the verdict comment and the single follow-up action (enable auto-merge, or request reviewers) and wait for one combined approval. User away → print both and stop.
-- **Run authorization.** Loaded by `/factory run`, the run's start approves posting the verdict and requesting reviewers. Auto-merge is left to the run's merge pause and never enabled here.
+- **Run authorization.** Loaded by `/factory run`, the run's start approves posting the verdict and requesting reviewers. Auto-merge is left to the run's merge stage and never enabled here.
 - **Zero attribution.** No co-author, AI, or tool attribution in the PR comment or any other output.
 - Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes.
 - Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.
@@ -73,14 +73,14 @@ Blocking: 1
 <!-- risk-review: tier=high sha=<head-sha> blocking=1 -->
 ```
 
-The marker line is required and exact; `/factory` reads it. Then, with the comment, propose one action:
+The marker is required; `/factory` uses the newest for head. Reuse an identical own comment on retry; a revised verdict is a new comment. Then propose the first applicable action:
 
-- `low`, blocking 0, mergeable base → `gh pr merge <pr> --auto <repo-merge-flag> --match-head-commit <head-sha>`; pick the flag from repository policy. Any other base → no merge action; name the owner.
-- `high` → `gh pr edit <pr> --add-reviewer <logins>`, using CODEOWNERS for the touched paths, else ask the user who.
-- blocking above 0 → no merge action; suggest the fix path.
-- changes requested or an unresolved thread → no merge action; suggest `/pr-feedback`.
+- Blocking above 0 → no follow-up write; suggest the fix path.
+- Changes requested or an unresolved thread → no merge action; suggest `/pr-feedback`.
+- `high` → request reviewers with `gh pr edit <pr> --add-reviewer <logins>`, from CODEOWNERS, else ask who.
+- `low`, mergeable base, outside a factory run → enable auto-merge pinned to head using repository policy. Other base → name the owner. Inside a run → verdict only; the run owns merging.
 
-After approval, post with `gh pr comment <pr> --body-file <file>`, run the action, and read back `gh pr view <pr> --json comments,autoMergeRequest,reviewRequests`.
+After approval, re-read head, base and review threads; a changed or unreadable gate stops the action. Post with `gh pr comment <pr> --body-file <file>`, run only the approved action, and read back `comments,state,mergeCommit,autoMergeRequest,reviewRequests`. Auto-merge may merge immediately; accept an expected `MERGED` commit or a confirmed queue entry too. Read-back failure is partial, never action success.
 
 ## Output
 
@@ -93,7 +93,7 @@ Then at most 3 bullets naming the deciding trigger or findings. Close with the `
 
 ## Completion criteria
 
-- [ ] PR comments contain exactly one marker for the current head SHA, read back after posting
-- [ ] Every fired trigger and every blocking finding cites `file:line` from the current head
-- [ ] Read-back shows the approved action and nothing else: `autoMergeRequest` set for low, `reviewRequests` set for high, neither when blocking
+- [ ] The newest verdict marker for current head is read back; an identical own comment was reused on retry
+- [ ] Every diff trigger and blocking finding cites current-head `file:line`; missing-evidence or failed-lane triggers name the source, SHA and absent signal or error
+- [ ] Read-back confirms only the selected action: enabled auto-merge, verified queue entry or expected completed merge; requested reviewers; or verdict-only with no follow-up write. Existing unrelated requests are preserved
 - [ ] No GitHub approval was submitted, and any merge came only from the approved auto-merge on a low-tier, zero-blocking verdict

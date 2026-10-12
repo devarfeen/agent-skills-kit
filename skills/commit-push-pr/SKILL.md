@@ -3,7 +3,7 @@ name: commit-push-pr
 disable-model-invocation: true
 description: "Ship issue work as a pull request: structured commit, push, PR with Closes #N. Use only when the user explicitly asks for a PR; a bare ship it is /commit-push-close."
 metadata:
-  version: "0.5.1"
+  version: "0.6.0"
 ---
 
 # commit-push-pr
@@ -14,7 +14,7 @@ Issue commands show the GitHub default; a workspace-named tracker overrides them
 
 ## Shared ship policy
 
-Read [`references/ship-policy.md`](references/ship-policy.md) first — it holds every shared ship rule the steps below cite by bold section name, **Read state** through the **Response footer**. This `SKILL.md` only covers what is specific to opening a PR.
+Read [`references/ship-policy.md`](references/ship-policy.md) once, then consult its named sections for the active step; retain its safety gates. This file covers PR-specific steps.
 
 ## PR title and body
 
@@ -52,7 +52,7 @@ Blast radius: <short phrase> — checked: <search or check run>
 - <follow-ups or known gaps; omit section if none>
 ```
 
-These sections are mandated: the QA handoff, the completion criteria, and review gates read them. A PR-body skill that loads while drafting (Matt Pocock's `pr`, for example) may shape the Summary visual and the wording inside a section; keep every heading, its order, and `Closes #N`.
+Keep these sections. `Closes #N` applies only to permitted default-target PRs outside factory. Acceptance lives in the SHA-bound QA handoff; gates must read it. A PR-body skill that loads while drafting (Matt Pocock's `pr`, for example) may shape the Summary visual and the wording inside a section; keep every heading, its order, and `Closes #N`.
 
 **How to test** follows **How-to-test rules**, including setup, expected results and actual verification status. **Evidence** and **Merge danger** follow the shared policy and match the QA handoff. Also draft a separate PR comment using that policy's complete **QA handoff** template. Keep the body and comment consistent. Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issues, or comments.
 

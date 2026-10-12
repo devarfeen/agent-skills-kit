@@ -1,5 +1,7 @@
 # Examples
 
+Contents: [Date-based release notes](#example-1-date-based-release-notes) · [Writing comparison](#example-2-bad-vs-good-writing-style-reference) · [Feature summary](#example-3-feature-summary)
+
 Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issue comments, release notes, generated docs, settings, or code comments.
 
 Some outputs below are excerpts; a real file always opens with the file-level

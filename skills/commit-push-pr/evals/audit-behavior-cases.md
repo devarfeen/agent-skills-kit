@@ -32,3 +32,9 @@ Assertions:
 - Rejected push stops PR creation/edit/comment, merge and issue closure.
 - No production or staging server access, force push, reset, or unrelated-file changes are attempted.
 - Report states commit exists locally, push rejection and outstanding delivery step.
+
+## PR-3: Head-bound handoff and factory issue references
+
+Fixture: explicit factory run ships issue #522 whose criteria are in its newest factory-criteria comment. Local is the authorized default delivery branch; QA report marker verified on head abc1234, no PR yet. Required checks pass and remote read-back matches abc1234.
+
+Assertions: use the comment criteria; draft ordinary issue references, not closing keywords; put Fully accepted with Change abc1234 in the QA handoff; cite the local QA report until the same-head marker can be posted to the created PR. A hook that changes content invalidates that evidence and stops publication pending re-check.

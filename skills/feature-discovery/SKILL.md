@@ -1,8 +1,8 @@
 ---
 name: feature-discovery
-description: "Use to investigate, audit, trace, or explain how an existing feature, module, workflow, API, or config works, or what uses a symbol and why. Read-only. Porting to another stack is /port-feature."
+description: "Trace how a named feature, module, workflow, API, config, or symbol works and who uses it; read-only. Whole-repo architecture summaries: /teach. Porting: /port-feature."
 metadata:
-  version: "0.2.1"
+  version: "0.3.0"
 ---
 
 # Feature discovery
@@ -48,7 +48,7 @@ Read issues the user names or that can resolve a material gap; when no issue is 
 
 ### 5. Track candidate context terms
 
-Compare discovered domain terms with `GLOSSARY.md` — at `<artifacts-root>`, else nearby project docs — and flag missing, stale, renamed, overloaded, or ambiguous ones. What qualifies, presentation, the away-fallback, and applying approvals live in [`references/context-terms.md`](references/context-terms.md).
+Compare discovered domain terms with `GLOSSARY.md` — at `<artifacts-root>`, else nearby project docs — and flag missing, stale, renamed, overloaded, or ambiguous ones. Only when candidates exist, load [`references/context-terms.md`](references/context-terms.md) for qualification, presentation, and approval. With none, report that in one line.
 
 ### 6. Validate twice
 
@@ -64,7 +64,7 @@ For `GLOSSARY.md` or other artifact updates after the report: show each target p
 
 Use the numbered structure below, ≤3 bullets per section; aim for ~550 words without dropping answers or caveats. `Quick trace` is for simple single-project answers without material branching, context candidates, or conflicts — not merely a question naming one symbol. Declare it up front, use sections 1–3, 5, and 9 (one line for 5), and mark others N/A. Include requested usage and rationale within sections 1–3. Otherwise use the full report; never abbreviate a multi-project discovery.
 
-Sections, in order: 1 Summary · 2 What it does · 3 How it works · 4 Where it is used · 5 ADRs · 6 Why it was needed / context · 7 Candidate GLOSSARY.md terms · 8 Risks, gaps, and recommended next checks · 9 Validation performed · 10 Suggested next skills (optional, 1–3). Fill them per [`references/report-template.md`](references/report-template.md).
+Sections, in order: 1 Summary · 2 What it does · 3 How it works · 4 Where it is used · 5 ADRs · 6 Why it was needed / context · 7 Candidate GLOSSARY.md terms · 8 Risks, gaps, and recommended next checks · 9 Validation performed · 10 Suggested next skills (optional, 1–3). For the full report, load [`references/report-template.md`](references/report-template.md); Quick trace uses the eligible sections above without loading the full template.
 
 **Evidence style.** Cite `file:line` or file plus symbol and its role. In cross-project reports, qualify paths by PROJECT-CODE and issues by repository/tracker, not bare `#123`; commits need repository, short hash, and date. Distinguish inspected source, inspected tests, executed checks, runtime observations, ADR text, and inference. Source defaults do not prove deployed configuration. Quote only decisive output from commands actually run; name skipped checks and searched scope for negative claims.
 

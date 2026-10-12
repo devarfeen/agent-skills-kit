@@ -1,14 +1,14 @@
 ---
 name: agents-md
 disable-model-invocation: true
-description: "Generate or refresh the workspace-root AGENTS.md from a .code-workspace file: the Project Matrix of PROJECT-CODEs and workspace rules. Any AGENTS.md request routes here. UI rules: /design-system."
+description: "Generate workspace-root AGENTS.md and rules from .code-workspace, or sync existing project runtime blocks. Never writes CLAUDE.md/GEMINI.md; hand-authored edits: writing-for-agents."
 metadata:
-  version: "0.5.0"
+  version: "0.6.0"
 ---
 
 # AGENTS.md generator
 
-Generates the workspace-root `AGENTS.md` and its on-demand `rules/` files from a `.code-workspace` scan, with optional Compose-backed runtime blocks in existing project instructions.
+Produces workspace-root instructions and on-demand rules, optionally synchronizing existing project runtime blocks from local Compose evidence.
 
 ## Inputs
 
@@ -23,7 +23,7 @@ Generates the workspace-root `AGENTS.md` and its on-demand `rules/` files from a
 
 ## Modes
 
-Default: generate or refresh the root file and its on-demand files, and synchronize existing project runtime blocks when `.devcontainer/compose.yml` exists. Read [Project runtime synchronization](references/project-runtime.md) for matching, migration, and approved edits.
+Default: generate or refresh the root file and its on-demand files. When `.devcontainer/compose.yml` exists, read [Project runtime synchronization](references/project-runtime.md) and synchronize existing project runtime blocks; otherwise report synchronization skipped without loading that reference.
 
 A request naming only project-runtime synchronization selects **runtime-only**: follow that reference and existing stack detection; skip root generation, migrations, and setup suggestions. Never create or edit the workspace-root `AGENTS.md` or `rules/` in this mode. Root-generation rules and completion checks below apply only in the default mode.
 
@@ -54,7 +54,7 @@ Sample:
 | DB           | ../db-migrations | MySQL / raw SQL migrations |
 ```
 
-`npm` comes from `application/package-lock.json`; Vite alone never implies a package manager.
+Vite alone never implies a package manager.
 
 ## Emitted skeleton
 
@@ -74,7 +74,7 @@ Fill the `[RUNTIME TOOL-CALLING …]` slot from `references/tool-calling.md`, fo
 
 ## Versioning and regeneration
 
-The skill version is `v50`. Every generated file carries the marker `<!-- agents-md marker · v50 · re-run /agents-md to regenerate -->` as its first line. Bump it here and in every asset together whenever these rules change. Legacy pre-`v6` markers: [regeneration](references/regeneration.md#legacy-markers).
+The skill version is `v52`. Every generated file carries the marker `<!-- agents-md marker · v52 · re-run /agents-md to regenerate -->` as its first line. Bump it here and in every asset together whenever these rules change. Legacy pre-`v6` markers: [regeneration](references/regeneration.md#legacy-markers).
 
 On run, check each target — the root `AGENTS.md` and every [on-demand file](references/on-demand-files.md#existing-files):
 

@@ -1,9 +1,9 @@
 ---
 name: integration-contract
 disable-model-invocation: true
-description: "After /to-tickets, map a spec's (PRD) changed producer surface and its consumers across PROJECT-CODEs into a contract plus a smoke checklist, or confirm a single-project spec needs no contract."
+description: "Build a spec/PRD's cross-project contract after /to-tickets, or run its smoke gate before spec ship/PM handoff. A single-project consumer sweep may confirm no contract needed."
 metadata:
-  version: "0.1.2"
+  version: "0.2.0"
 ---
 
 # Integration contract
@@ -18,12 +18,12 @@ Writes a spec's cross-repo seam to disk as a **contract** file and checks it wit
 
 - **Zero attribution.** Never add or leave co-author, AI, or tool attribution in any output; include this rule in the contract.
 - **Environment authority.** Use local test environments by default. Never access production. Staging requires explicit approval and user-provided access; every mutation needs separate approval. Unknown hosts or missing authority leave affected flows `pending`.
-- **Single project is a sweep, not trust.** Spec touches one PROJECT-CODE → sweep the other Project Matrix repos for call-sites of the changed surfaces (narrow retrieval, below). No call-site outside the project → report `single project — no contract needed` and **stop**; do not create a file. Any external call-site found → the seam is cross-project despite the spec: build the contract, flag each such consumer as a risk row.
+- **Single project is a sweep, not trust.** Spec touches one PROJECT-CODE → sweep the other Project Matrix repos for call-sites of the changed surfaces (narrow retrieval, below). A complete sweep with no external call-site, including no located consumer anywhere, → report `single project — no contract needed` and **stop**; do not create a file. Preserve and report any historical contract; do not delete its gate log. Any external call-site found → the seam is cross-project despite the spec: build the contract, flag each such consumer as a risk row.
 - **Narrow retrieval only.** Search each changed surface across every Project Matrix repo per [`references/consumer-sweep.md`](references/consumer-sweep.md); never bulk-read a repo or its `specs/` tree. Cite consumers as `file:symbol`. An unavailable repo makes the sweep incomplete: record the risk and do not conclude no contract is needed.
 - **Distinguish intent from implementation.** Read `GLOSSARY.md` (legacy name `CONTEXT.md`) and relevant ADRs for recorded decisions; trace current code for actual behavior. Record conflicts with the spec or current user decisions as risk rows. Native CLI memory is a lead to verify.
 - **Decisions are artifacts.** Chat reports only what was written plus the phase update.
 - Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
-- **No located consumer is a risk, not a pass.** A changed surface with no consumer call-site anywhere in the matrix, or a consumer outside the spec's slices, gets a **RISK** row — never silently assumed unused.
+- **No located consumer is a risk, not a pass.** In a cross-project contract, a changed surface with no consumer call-site anywhere in the matrix, or a consumer outside the spec's slices, gets a **RISK** row — never silently assumed unused.
 - **A flow only counts against a verified environment.** A pass with no evidence stays `pending`, not `pass`.
 - **Suggest, never auto-chain.** build does not auto-run gate; gate does not auto-run `/commit-push-*`. Recommend the next step and stop.
 - **Read-only in build.** Only the contract file is written — never product code, config, issues, or ADRs.
@@ -35,49 +35,7 @@ One per spec at `<artifacts-root>/specs/integration/<SPEC-ID>-contract.md`. Reso
 
 On reruns, read the existing contract, preserve user edits and the gate log, and reset affected flows to `pending` when their implementation or environment changes. Validate `<SPEC-ID>` as one filename component, with no path separators or `..`.
 
-```markdown
-# Integration Contract — <SPEC-ID>
-
-Touched PROJECT-CODEs: API-SVC (producer), ADMIN-WEB
-
-## 1. Environment & preconditions
-
-| PROJECT-CODE | Runs at | Change reaches it via | Data preconditions |
-|-|-|-|-|
-| API-SVC | http://localhost:8080 | `docker compose up --build api` | a `partially_shipped` order |
-
-## 2. Producer surface changed
-
-| PROJECT-CODE | Surface | Change |
-|-|-|-|
-| API-SVC | `POST /v2/orders` | added required `idempotency_key`; auth unchanged (customer session), no new personal data; `rollout-dependent — ADMIN-WEB first` |
-
-## 3. Consumers
-
-| Consumer PROJECT-CODE | Consumes surface | Call-site (file:symbol) | Notes / Risk |
-|-|-|-|-|
-| ADMIN-WEB | `POST /v2/orders` | `resources/js/checkout/submit.ts:createOrder()` | `normalized-route`; sends no `idempotency_key` yet |
-| — | `POST /v2/orders` (idempotency_key) | NO CONSUMER LOCATED | RISK: unused, or call-site missed |
-
-## 4. Smoke checklist
-
-| # | Flow | Crosses | Driver | Evidence | Status |
-|-|-|-|-|-|-|
-| 1 | ADMIN-WEB checkout → submit order → confirmation shows order number | ADMIN-WEB, API-SVC | agent-browser | | pending |
-
-## Gate log
-
-- <date> · pre-ship · 3 pass / 1 fail (#2) · env: API-SVC rebuilt, `partially_shipped` in served response
-```
-
-A fully filled example lives in [`references/contract-example.md`](references/contract-example.md).
-
-Section rules:
-
-- **1** — captured at build, verified at gate: where each PROJECT-CODE runs, how a change reaches it (build/serve/deploy step), the flows' data. Fact not cheaply discoverable → ask — never guess; user away → record `unknown — ask` under Needs user and keep building — the gate cannot pass a flow whose environment is unknown.
-- **2** — one row per surface the producer slice added or changed. `Change` also states auth/permission impact, any added or exposed personal data, and its rollout class: `compatible`, `rollout-dependent — <order>`, `breaking`, or `insufficient context` (classification in the sweep reference). A breaking auth or personal-data change is a `RISK` row and requires a smoke flow. A `RISK` row on an internet-facing or personal-data-carrying surface always gets a smoke flow, breaking or not.
-- **4** — enough end-to-end flows to cover every changed surface and required risk case, usually 3–6, phrased **navigate → act → assert a visible outcome**. **Driver**: `agent-browser` when browser-reachable, an exact `curl`/CLI assertion for API-only surfaces, else `manual` with the step spelled out. When a changed surface carries auth, include one negative flow: the unauthorized caller or role is denied.
-- **Gate log** — one appended line per run, `<date> · <pre-ship|PM handoff> · <N> pass / <M> fail (#s) · <how the environment was verified>`; `Status` shows the latest, the log keeps history.
+In build mode, fill [`references/build-contract.md`](references/build-contract.md). In gate mode, use the existing contract; load the schema only when its structure or smoke coverage needs repair. A filled example is optional when uncertain: [`references/contract-example.md`](references/contract-example.md).
 
 ## Modes
 
@@ -125,6 +83,6 @@ Suggested next skills (optional):
 
 ## Completion criteria
 
-- [ ] The contract file re-opens with all four sections plus the gate log — or the build update reads `single project — no contract needed` and no file exists
+- [ ] The contract re-opens with four sections and gate log; or the build update reads `single project — no contract needed`, no new file was written, and any historical contract is preserved and identified
 - [ ] gate: a new gate-log line is appended; every flow's `Status` is `pass`/`fail` with Evidence filled, or `pending`
 - [ ] The emitted update matches the Output template for the mode run

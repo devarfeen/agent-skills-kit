@@ -3,7 +3,7 @@ name: staging-to-production
 disable-model-invocation: true
 description: "Read-only check of whether staging is ready for production in every project, with the owner's commands. Never opens, merges, pushes, or touches production. Local to staging: /local-to-staging."
 metadata:
-  version: "0.0.2"
+  version: "0.1.0"
 ---
 
 # staging-to-production
@@ -66,7 +66,7 @@ gh run list --repo acme/shop-web --branch main --commit <merge-sha>
 gh run watch <run-id> --repo acme/shop-web --exit-status
 ```
 
-Reuse an existing open PR's number and skip its `create` line. Print each body file's contents (commit subjects from `git log --oneline origin/<production>..origin/<staging>`, first 30, then a count) under its command block; write no files.
+Reuse an existing open PR's number and skip its `create` line. Tell the owner to save each printed body at the command's named body-file path before running it. Print its contents (commit subjects from `git log --oneline origin/<production>..origin/<staging>`, first 30, then a count) under its command block; write no files.
 
 ## Output
 

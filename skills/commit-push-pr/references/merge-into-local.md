@@ -28,12 +28,12 @@ gh pr view <pr-num> --json state,baseRefName,mergeCommit,autoMergeRequest,url
 | --------- | ------ |
 | `state: MERGED` with a `mergeCommit` | `merged into local at <merge-sha>` |
 | `autoMergeRequest` set, or a confirmed merge-queue entry | `auto-merge enabled, waiting on checks` — not merged yet |
-| Auto-merge is not enabled for the repository | Read `gh pr checks <pr-num>`. Every check `pass` or `skipping`, or no checks reported → run the same command without `--auto` and read back again. Anything pending or failing → leave the PR open; suggest `/ci-loop <pr-num>` |
+| Auto-merge is not enabled for the repository | Read `gh pr checks <pr-num>`. Every check `pass` or `skipping` → run without `--auto` and read back. `no checks reported` counts only with a successful `statusCheckRollup` read returning an empty list; an error is unknown and stops the merge. Anything pending or failing → leave the PR open; suggest `/ci-loop <pr-num>` |
 | Branch protection refuses the merge | Leave the PR open and quote the refusal under `Needs user:` |
 
 Merge with the flags above and nothing more: protection, required reviews, and merge queues decide, so `--admin` and `--delete-branch` stay out of the command. The head branch, the worktree, and every local checkout stay as they are.
 
 ## After the merge
 
-- The PR carries no closing keyword, so the merge closes nothing: the issue stays open until the workspace's issue-completion workflow closes it. Say so in the report.
+- The PR carries no closing keyword. Read the issue back after the merge: tracker automation may still close it from a linked branch or PR. Report the actual state and the workspace's completion behavior; never claim it stayed open without read-back.
 - Suggest `/local-to-staging` in the response footer.

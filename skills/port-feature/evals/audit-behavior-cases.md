@@ -10,3 +10,11 @@ These cases test execution decisions after the skill body is loaded. They are se
 | Missing component preview | The target has UI component source but no preview route. | Inventory source and record the unavailable preview. Do not invent a route or start a service outside authority. |
 | User-edited gap map | A gap map exists with a hand-edited decision contradicted by new evidence; the user is away. | Preserve the decision and append the conflict under Open questions. Do not replace it or write product code. |
 
+## Forward regression cases — not executed
+
+These fixtures cover the current edit. They are expected decisions, not live
+execution results or replacements for the catalog-only trigger evals.
+
+| Case | Input and fixture | Required observable behavior |
+| :--- | :--- | :--- |
+| Unrelated ADR tree | The target has many ADRs; only one linked decision governs the ported permission. | Read the relevant decision only, preserve target/user conflicts as open questions, and write only the zero-attribution gap map. |

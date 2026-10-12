@@ -1,5 +1,7 @@
 # Filled gap-map bullets — the expected granularity
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
+
 One example bullet per load-bearing section, at the evidence level the gap map
 must have. Placeholders never ship; every claim names its evidence.
 

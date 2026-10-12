@@ -3,7 +3,7 @@ name: design-system
 disable-model-invocation: true
 description: "Once per UI project: turn a design system (Figma, spec, reference screens, or a guided definition when no designs exist) into tokens, a UI library, a preview page, and an AGENTS.md rule; extend later."
 metadata:
-  version: "0.1.2"
+  version: "0.2.0"
 ---
 
 # design-system
@@ -17,12 +17,7 @@ Builds a provided design system into named tokens, a UI library in the target st
 Infer from the request and cheap repo evidence; interview only for gaps:
 
 - **TARGET PROJECT-CODE** — the full Project Matrix code; it determines the output idiom. Project Matrix missing → stop and route to `/agents-md` first. Read the target's stack from the matrix / `AGENTS.md`, never guess it.
-- **DESIGN-SYSTEM SOURCE (required)** — a source the user names wins. Otherwise discover in order; use the first found and name it in `Found:`:
-  1. A root `DESIGN.md` (workspace or project) — link it from the doc.
-  2. A brand, UI, or UI/UX skill (surveyed per **The project UI skill**) or a component library in the codebase; read it as the written source.
-  3. A **Figma** file/URL (via the Figma MCP companion — not installed → say so and ask for exported frames/tokens or a written spec); a **written design spec / brand guide**; **reference screens or a reference app**; or, when none exists, a **guided-definition session** — open with the one thing a user should remember, then propose colours, neutrals, typography, type scale, spacing, radius, shadow, and base components, each with a reason; build only after **explicit user approval**.
-
-  A source that already holds tokens stays the single token source of truth; never create a second token set beside it. **Never fabricate a whole design system silently.** No source and no approved guided session → stop and ask.
+- **DESIGN-SYSTEM SOURCE (required)** — the named source wins. When none is named, load [`references/source-selection.md`](references/source-selection.md) and follow its ordered discovery. A source with tokens remains their single source of truth. No source or explicitly approved guided definition → stop and ask; never fabricate a system.
 
 ## Rules
 
@@ -82,7 +77,7 @@ The deep reference for real UI work; every project-specific UI rule lives in it 
 - Found one → adopt and extend it in place; **never seed a parallel skill beside it** — two UI skills compete for routing. Fold in the real paths, component inventory and states, reuse-before-new discipline, missing-component procedure, and the consume-the-library rule; sharpen its description so UI work still routes to it.
 - Preserve its hand-grown conventions and voice: show the diff, and where an existing rule contradicts the design system, surface the conflict to the user rather than silently rewriting either side.
 - Record the adopted skill's **real name** in the doc's `Project skill:` line and the AGENTS.md reference.
-- Only when no UI skill exists anywhere: seed a project-local `<project-slug>-ui-coding` (kebab-case, per target naming); location, per-runtime copies, and content: [`references/registration-templates.md`](references/registration-templates.md) §3.
+- Only when no UI skill exists anywhere: seed a project-local `<project-slug>-ui-coding` (kebab-case, per target naming); load [`references/fresh-ui-skill.md`](references/fresh-ui-skill.md) for location, per-runtime copies, and content.
 
 ## Output
 

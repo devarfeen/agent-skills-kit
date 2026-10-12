@@ -183,11 +183,13 @@ These are optional helpers. The kit provides `using-git-worktrees`; the other en
 
 ## Working In A Worktree
 
-Ask **“Implement ticket 42 in SHOP in a worktree.”** The model invokes
-`/using-git-worktrees` before the task skill, including Matt's `/implement`,
+Invoke **`/using-git-worktrees`** with “Implement ticket 42 in SHOP in a
+worktree.” The user starts setup before the task skill, including Matt's `/implement`,
 `/diagnosing-bugs`, `/prototype`, or `/code-review`. Setup returns to the task
 you already requested without asking for the same permission again. For setup
 only, invoke `/using-git-worktrees`; it prepares the checkout and stops there.
+Explicitly started `/orchestrate-t3` and `/factory run` may follow this setup
+helper automatically; other workflows require direct invocation.
 
 “Create a branch in the current checkout” stays a branch operation. If you
 only say “isolate this,” the agent asks which form you mean before editing.
@@ -389,7 +391,7 @@ subject to the same preservation checks.
 
 Variations branch off this line:
 
-- **Worktree requests** run `/using-git-worktrees` before the selected task skill. This applies to planning or implementation work when you explicitly request a worktree; it adds no default phase to the progression. See [Working in a worktree](#working-in-a-worktree).
+- **Worktree requests** use an explicit `/using-git-worktrees` invocation before the selected task skill, or checkout setup inside a user-started `/orchestrate-t3` or `/factory run`. This applies to planning or implementation work when you explicitly request a worktree; it adds no default phase to the progression. See [Working in a worktree](#working-in-a-worktree).
 
 - **Implementing** a ticket runs `/implement` when installed — it drives `/tdd-loop` at each pre-agreed seam, with `/tdd` supplying test quality and seam choice. Without `/implement`, drive `/tdd-loop` directly. `/implement` stops after `/code-review`; it never commits.
 - **Whole-spec builds** can use `/implement-spec` instead of one `/implement` per ticket. You invoke it; it treats the tickets as a task graph, runs implementer subagents in their own worktrees across the ready frontier, and merges each onto one local integration branch, ending with one `/code-review` over that branch. In a kit workspace its implementers drive `/tdd-loop`, and it stops there: its own text opens a draft PR and resolves tickets, but pushing, PRs, and closing issues belong to the ship skills. Inside herdr, `/orchestrate-herdr` does the same fan-out with one visible worker tab per sub-issue.

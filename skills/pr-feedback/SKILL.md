@@ -3,7 +3,7 @@ name: pr-feedback
 disable-model-invocation: true
 description: "Address reviewer comments on an open GitHub PR: triage them for approval, apply accepted fixes, ship via /commit-push-pr, reply with commit SHAs. Reviewing a PR yourself is /code-review."
 metadata:
-  version: "0.2.1"
+  version: "0.2.2"
 ---
 
 # pr-feedback
@@ -13,7 +13,7 @@ One iteration of working reviewer feedback on an open PR, ending in pushed fix c
 ## Inputs
 
 - **The PR** — a number or URL from the user, else detected from the current branch: `gh pr list --head "$(git branch --show-current)" --state open --json number,title,url`. No open PR found (or more than one) → stop and ask which PR this is; never guess and never create one.
-- **The head branch checked out** — fixes land on the PR's head branch. If the checkout is elsewhere, switch to it; if the working tree holds unrelated uncommitted changes, stop and ask before touching anything.
+- **Task checkout** — fixes use the verified PR-head worktree required by workspace policy. Confirm repository, common Git directory, branch, starting SHA and baseline before editing; never switch the main checkout or overwrite unrelated changes. Setup failure blocks fixes. `using-git-worktrees` is invoked only by the user in this direct workflow.
 - **`gh` authenticated** — if `gh auth status` fails, stop and report.
 
 ## Rules

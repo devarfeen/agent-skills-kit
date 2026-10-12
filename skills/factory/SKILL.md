@@ -3,12 +3,12 @@ name: factory
 disable-model-invocation: true
 description: "Shows where a spec (PRD), ticket, or PR stands in the factory workflow and names the one skill that moves it on. Read-only unless the user starts /factory run. Never closes issues or passes staging."
 metadata:
-  version: "1.4.2"
+  version: "1.5.0"
 ---
 
 # factory
 
-The factory is a state machine over things that already exist — tracker issues, PRs, CI runs, review comments, deploy runs. This skill derives the current state from them, checks the gate out of that state, and names the next skill. It holds no state file: re-running it from any point gives the same answer, so state can never drift.
+Derive each unit's state from tracker issues, PRs, checks, reviews and deploy evidence; verify its exit gate and name the next skill. Keep no state file.
 
 ## Inputs
 
@@ -23,7 +23,7 @@ The factory is a state machine over things that already exist — tracker issues
 - **Report mode suggests, never auto-chains.** Name the next skill with the exact invocation, then stop. The user runs it. Only `run` mode, started by the user, carries a suggestion out.
 - **Gates need evidence, not status words.** A gate passes only on the observable signal in [`references/states.md`](references/states.md) — a green run URL for the head SHA, an agentic-qa and a risk-review marker comment for the head SHA, a deploy-watch pass marker for the merge commit. A label, a chat claim, or "CI is fine" does not pass a gate.
 - **Head SHA binds everything.** Review, QA, and risk evidence counts only for the PR's current `headRefOid`; an approval counts only when its review's `commit.oid` is head. A new push sends the PR back to CI.
-- **Staging is the ceiling in both modes.** `READY_FOR_OWNER` is terminal. Never suggest a production deploy, a merge or PR into the default or any production branch, or feature-flag rollout; name the owner as the next actor instead.
+- **Staging is the ceiling.** `READY_FOR_OWNER` is terminal. Never suggest production deploys, production PRs/merges, or flag rollouts. Default branches are owner-only except explicitly authorized, non-production delivery `local`; name the owner otherwise.
 - **Unreadable signals stop.** A signal the table needs can't be read (tracker access denied, no deploy workflow found) → report `UNKNOWN` with what is missing. Never guess the more advanced state. A failed or erroring `gh` query is unknown — never an empty result, a pass, or green; report the command and its error.
 - **Zero attribution.** No co-author, AI, or tool attribution in any output.
 - Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.
@@ -39,13 +39,15 @@ From the reference, build the list of units to place: a spec expands to all its 
 Per unit, read only what the state table needs:
 
 ```bash
-gh pr view <pr> --json state,isDraft,baseRefName,headRefOid,mergeCommit,mergedAt,reviewDecision,reviews,statusCheckRollup,autoMergeRequest,comments,commits
+gh pr view <pr> --json state,isDraft,baseRefName,headRefOid,mergeCommit,mergedAt,reviewDecision,reviews,statusCheckRollup,autoMergeRequest,body,comments,commits
 gh pr diff <pr> --name-only
 gh run list --workflow <deploy-workflow> --branch <staging-branch> --json headSha,status,conclusion,url
 gh issue view <issue> --json state,comments
 ```
 
-The risk-review marker is a PR comment containing `<!-- risk-review: tier=<low|high> sha=<sha> blocking=<n> -->`. Read it from `comments`; ignore markers for any other SHA. The agentic-qa marker `<!-- agentic-qa: sha=<sha> result=<…> findings=<n> recheck=<n> -->` and the deploy-watch marker `<!-- deploy-watch: merge=<merge-sha> deployed=<run-head-sha> result=<pass|fail> -->` are read the same way; the newest marker wins. The `Acceptance criteria` verdict that clears `BUILDING` is read from the PR body or from a `## QA handoff` comment in `comments` (where `/commit-push-pr` posts it). `qa-escape` markers (`<!-- qa-escape: class=… area=… pr=<n> tested=<sha> reproduced=… -->`) live on the issue, not the PR.
+Read unresolved review threads with a paginated GraphQL `reviewThreads` query; unreadable thread state is `UNKNOWN` before a merge.
+
+The risk-review marker is a PR comment containing `<!-- risk-review: tier=<low|high> sha=<sha> blocking=<n> -->`. Read it from `comments`; ignore markers for any other SHA. The agentic-qa marker `<!-- agentic-qa: sha=<sha> result=<…> findings=<n> recheck=<n> -->` and the deploy-watch marker `<!-- deploy-watch: merge=<merge-sha> deployed=<run-head-sha> result=<pass|fail> -->` are read the same way; the newest marker wins. The `Acceptance criteria` verdict clearing `BUILDING` must name head: read the body, otherwise the newest `## QA handoff` whose `Change:` SHA is head. Old-head acceptance does not count. `qa-escape` markers (`<!-- qa-escape: class=… area=… pr=<n> tested=<sha> reproduced=… -->`) live on the issue, not the PR.
 
 ### 3. Place each unit
 

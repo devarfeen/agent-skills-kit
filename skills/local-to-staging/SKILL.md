@@ -3,7 +3,7 @@ name: local-to-staging
 disable-model-invocation: true
 description: "Promote every project from origin/local to origin/staging: open each PR, merge on green, watch the Actions runs. Never pushes or goes past staging. Production is /staging-to-production."
 metadata:
-  version: "0.1.1"
+  version: "0.2.0"
 ---
 
 # local-to-staging
@@ -44,6 +44,8 @@ git -C <path> rev-list --count origin/<source>..<source>
 gh pr list --repo <owner/repo> --base <target> --head <source> --state open --json number,url,headRefOid
 gh repo view <owner/repo> --json mergeCommitAllowed
 ```
+
+Read staging deployment routing: the workflow's push trigger, deploy job, checkout revision and staging destination. No or ambiguous deploy workflow → deployment unverified, no QA handoff even if test runs pass.
 
 Classify each repo: **skip** (branch missing, or 0 commits ahead — nothing to promote), **blocked** (merge commits disallowed), or **promote** (reuse the open PR when one exists for this exact head/base pair).
 
@@ -93,15 +95,16 @@ No run yet → re-check at 30s, 60s, then every 2 minutes up to 10 minutes; stil
 
 ### 6. Hand delivered issues to manual QA
 
-Per repo whose runs all concluded `success`. An issue qualifies when it is open, a comment on it holds `<!-- factory-delivered: pr=<n> merge=<sha> … -->`, none holds `factory-qa-assigned`, and `git merge-base --is-ancestor <sha> origin/<target>` passes after the merge. Find candidates through the workspace tracker: issues in the In Review status for that project (Linear), or `gh issue list --state open --search "factory-delivered in:comments"` (GitHub).
+First fetch the merged target and prove it contains the promotion merge SHA. Per repo whose confirmed staging deploy and other runs succeeded: an open issue qualifies when its newest `factory-delivered` comment names a merge now contained in that refreshed target, and no `factory-qa-assigned` marker names that same delivered PR and merge. Older assignments do not suppress a new fix. Find candidates through the workspace tracker: issues in the In Review status for that project (Linear), or `gh issue list --state open --search "factory-delivered in:comments"` (GitHub).
 
 Assign each to Manual QA — the person the workspace's issue-tracker document names, else the issue's reporter — and post:
 
 ```
-On staging at <merge-sha of the promotion> — ready for manual QA.
+Staging deployment job succeeded for <merge-sha of the promotion> — assigned for manual QA.
+Live build / smoke: <confirmed evidence, or unverified/not run with reason>.
 Runs: <run URL> (success)
 
-<!-- factory-qa-assigned: staging=<merge-sha of the promotion> -->
+<!-- factory-qa-assigned: pr=<delivered-pr> merge=<delivered-merge-sha> staging=<merge-sha of the promotion> -->
 ```
 
 Leave the status as it is and never close the issue. Read each assignee and comment back. A repo with a failed or missing run hands nothing over: nobody is asked to test a build that did not deploy.
@@ -118,11 +121,11 @@ local-to-staging — 3 merged, 1 nothing to promote, 1 skipped
 | LEGACY-CRM   | —    | —        | —                          | no origin/staging |
 ```
 
-Say `success` only for a repo whose every run on the merge commit concluded `success`. At most 3 bullets, one per failure, each with the run URL and the quoted tail. Close with the `Suggested next skills (optional)` footer, 1–3 items: failed run → `/staging-fix`; failed PR check → `/ci-loop`; all green → `/deploy-watch` for a smoke check, or `/staging-to-production` when ready.
+Say deployment `success` only with a confirmed staging deploy run and every run green on the merge commit; test-only success leaves deployment unverified. At most 3 bullets, one per failure, each with the run URL and the quoted tail. Close with the `Suggested next skills (optional)` footer, 1–3 items: failed run → `/staging-fix`; failed PR check → `/ci-loop`; all green → `/deploy-watch` for a smoke check, or `/staging-to-production` when ready.
 
 ## Completion criteria
 
 - [ ] Every Project Matrix row appears in the output table with a result
-- [ ] Every merged row has a `mergeCommit` read back and a run URL per run, or `no run` / `pending` stated
+- [ ] Every merged row has a verified mergeCommit and run URLs, or missing/pending routing or runs stated; QA assignment requires a successful staging deploy containing the latest delivery
 - [ ] No `--admin`, push, commit, re-run, cancel, or dispatch appears in the commands this run executed
 - [ ] No PR in this run targets a branch other than the confirmed target

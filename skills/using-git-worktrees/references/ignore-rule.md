@@ -1,5 +1,7 @@
 # Ignore rule
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in output.
+
 ## Owning repository (step 2)
 
 Before creation or reuse, ensure the owning repository's `.gitignore` contains `/.worktrees/`, adding that exact entry once while preserving existing content. Leave the edit uncommitted for the authorized shipping workflow. Verify the **actual destination** with `git check-ignore -v -- <path>` from the owning repository, and confirm no tracked files occupy `.worktrees/`. An ignored directory with another name or from another project is irrelevant. If existing tracked content conflicts, stop setup and report it; do not untrack or remove it automatically. Recheck the selected child path before creation.

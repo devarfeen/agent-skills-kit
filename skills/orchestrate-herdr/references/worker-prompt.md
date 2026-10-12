@@ -8,6 +8,8 @@ Fill `TRACKER` with the workspace tracker per **Resolve** in [`tracker-map.md`](
 
 `LESSONS` is filled only by `/factory run`, with the lesson lines it passes for this issue's project. Otherwise drop the `LESSONS` line and the sentence naming it.
 
+Append the verified checkout and instruction block from `checkout-binding.md`. Set the expected branch from `BRANCH`, or the recorded shared branch in shared mode; never infer checkout identity from the issue.
+
 ```md
 TRACKER: [GitHub|Linear]
 ISSUE: [NATIVE_IDENTIFIER]
@@ -17,12 +19,13 @@ LESSONS: [LESSON_LINES]
 
 Work only on this issue, committing only to BRANCH.
 
-Infer project/repo context from the assigned issue.
+Use the supplied checkout record and instructions for project/repository context.
 
-Drive the issue with `/implement` when installed, running `/tdd-loop` at each
-seam; without it use `/tdd-loop` directly, with `/tdd` for test quality
-guidance. If neither is installed, reproduce the failure with a
-test and make it pass; still report the command and passing output.
+Drive each seam with `/tdd-loop` directly when available; use `/tdd` only as
+test-quality reference. Never auto-invoke user-only `/implement`. Without
+`/tdd-loop`, reproduce the failure with a test and make it pass; still report
+the command and passing output. Commit green steps only to the assigned branch;
+never push or open a PR.
 
 Before coding, read the issue's acceptance criteria, any issues labelled
 `qa-escape` for this area, and the `## QA escape guards` lines in AGENTS.md.

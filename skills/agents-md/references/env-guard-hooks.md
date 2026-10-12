@@ -1,6 +1,6 @@
 # Environment guard hooks (optional)
 
-The generated rules forbid production access, but prose is advisory: a runtime hook enforces it before the command runs. The hook also asks before a command names a staging host — a stricter default than the generated rules, which the user may drop by leaving that list empty. This file is a template to suggest, never to install. Writing settings or scripts needs the user's explicit approval, and the user fills in the host lists.
+The generated rules forbid production access and require staging approval. This optional hook blocks literal production-host matches and asks on staging-host matches; it is a best-effort check, not enforcement of every access path. This file is a template to suggest, never to install. Writing settings or scripts needs the user's explicit approval, and the user fills in host lists. An empty list disables that check, never the underlying environment policy.
 
 Zero attribution: omit co-author, AI, and tool attribution from all output, including the hook script and settings.
 
@@ -12,7 +12,7 @@ In the run's close, when the workspace or a project names production or staging 
 
 Verified 2026-10-03 against https://code.claude.com/docs/en/hooks-guide.md: `PreToolUse` with matcher `Bash`, `$CLAUDE_PROJECT_DIR`, stdin `.tool_input.command`, and `permissionDecision` `deny` (cancels the call) or `ask`. Other runtimes: use their own permission or sandbox settings; this kit ships no tested form for them.
 
-Workspace `.claude/settings.json` (merge; never overwrite other keys):
+Owner-applied workspace `.claude/settings.json` patch (merge; never overwrite other keys). Agent-written settings require an explicit zero-attribution rule in a schema-supported field; if none exists, leave this strict JSON patch for the owner rather than inserting unsupported keys or comments:
 
 ```json
 {
@@ -33,6 +33,7 @@ Workspace `.claude/settings.json` (merge; never overwrite other keys):
 
 ```bash
 #!/usr/bin/env bash
+# Zero attribution: never add or leave co-author, AI, or tool attribution in output.
 # Deny commands that name a production host; ask before commands that name a staging host.
 PROD_HOSTS='prod\.example\.com|203\.0\.113\.10'   # user fills in (extended regex)
 STAGING_HOSTS='staging\.example\.com'              # user fills in (extended regex)
@@ -51,4 +52,4 @@ exit 0
 
 ## Limits
 
-Matching is by text, so it over-blocks (a command that only mentions a host) rather than under-blocks. It sees only Bash commands, so MCP or other tools that reach a host need their own permission rules. It complements the git-guardrails companion, which covers git commands only.
+Literal text matching has false positives and false negatives: a harmless mention can match, while SSH aliases, variables, wrappers, or encoded hosts can hide access. It sees only Bash commands; MCP and other tools need separate permission rules. The hook does not establish user-provided SSH access or per-mutation staging approval. Use runtime tool and network restrictions for a hard boundary. It complements the git-guardrails companion, which covers git commands only.

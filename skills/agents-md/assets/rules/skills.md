@@ -1,9 +1,9 @@
-<!-- agents-md marker · v50 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v52 · re-run /agents-md to regenerate -->
 # Skills and companions
 
 Zero attribution: never add co-author, AI, or tool attribution to any output.
 
-Read before choosing a skill or companion, and at a phase boundary.
+Load before choosing a skill or companion. At later phase boundaries, reuse this file while it remains loaded and unchanged; reload after context loss or a change in available skills.
 
 - **Context window:** choose at a phase boundary, never mid-phase: continue while the next phase needs this context and the window has room; `/clear` when nothing here matters next; `/handoff` only to change harness, directory, or person; a sub-agent for a scoped unattended task; otherwise `/compact`, naming the next phase.
 

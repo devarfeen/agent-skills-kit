@@ -3,7 +3,7 @@ name: commit-push-close
 disable-model-invocation: true
 description: "Ship issue work directly: structured commit, push, then close the issue with how-to-test steps. Use for commit, push, and close, or a bare ship it. A reviewable PR is /commit-push-pr."
 metadata:
-  version: "0.2.4"
+  version: "0.3.0"
 ---
 
 # commit-push-close
@@ -14,7 +14,7 @@ Issue commands show the GitHub default; a workspace-named tracker overrides them
 
 ## Shared ship policy
 
-Read [`references/ship-policy.md`](references/ship-policy.md) first — it holds every shared ship rule the steps below cite by bold section name, **Read state** through the **Response footer**. This `SKILL.md` only covers what is specific to closing the issue directly.
+Read [`references/ship-policy.md`](references/ship-policy.md) once, then consult its named sections for the active step; retain its safety gates. This file covers direct-close steps.
 
 ## Issue-close comment format
 
@@ -59,7 +59,7 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
    - Tracks a remote → `git push`.
    - No upstream → `git push -u origin <branch>`.
    - **If the current branch is the detected default branch**: stop and confirm separately before pushing — step 6's approval does not cover this push. If the user is away, leave the commit unpushed, skip the close (a close comment must reference a pushed commit), and surface both under Needs user in the report.
-   - **Confirm the push landed** before the close — non-error exit and `git status -sb` shows the branch up-to-date with its remote. A rejected push (non-fast-forward, auth expiry) stops the close.
+   - **Confirm the push landed** before the close — non-error exit and the exact destination's `git ls-remote` SHA matches the local commit, per **Read state**; local status alone is insufficient. A rejected push (non-fast-forward, auth expiry) stops the close.
 
 10. **Close the issue** — check that test evidence still covers the pushed content; rerun if content changed. A failure stops closure. Fill the QA draft with the actual SHA and branch and write it to a temp file. Post and read back the comment before closing:
     ```bash

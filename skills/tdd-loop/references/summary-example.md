@@ -1,5 +1,7 @@
 # Filled summary example
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
+
 One completed slice of a real iteration — the concreteness the end-of-loop
 summary must have. Placeholders never ship; quote your actual commands and
 output.

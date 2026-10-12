@@ -3,7 +3,7 @@ name: feature-prompt
 disable-model-invocation: true
 description: "Turn a feature idea, change request, or rough requirement into a small prompt for grill-with-docs. An ADR to a spec is /to-spec; how existing behaviour works is /feature-discovery."
 metadata:
-  version: "0.2.1"
+  version: "0.3.0"
 ---
 
 # feature-prompt
@@ -35,16 +35,15 @@ error, and recovery behavior, each role that sees it, and one thing that must
 not happen.]
 
 Known limits:
-[Conditional. Hard constraints, non-goals, compatibility needs, or exclusions
+[Hard constraints, non-goals, compatibility needs, or exclusions
 already known. When intake was split, list the deferred slices as explicit
-non-goals so the scoping decision survives in the artifact.]
+non-goals. Always include the zero-attribution rule.]
 
 Open questions:
 [Conditional. Real unresolved questions for grill-with-docs to attack.]
 ```
 
-Emit `Known limits` and `Open questions` only when useful; the other four
-sections are always present.
+The first five sections are always present; omit `Open questions` when none remain.
 
 ## Rules
 
@@ -159,9 +158,9 @@ Suggested next skills (optional):
 Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`GLOSSARY-MAP.md` at repo root; legacy `CONTEXT-MAP.md`), else the repo root.
 
 - **`NNNN`** — scan `<artifacts-root>/specs/adr/` and `specs/prompts/` for the
-  highest existing four-digit number and increment, so prompt numbers never
-  collide with ADRs. ADRs are numbered independently from `specs/adr/` alone;
-  the prompt path recorded in the ADR is the link, not the number.
+  highest existing four-digit number and increment. This avoids numbers occupied
+  when the prompt is created. ADRs have an independent sequence and may later
+  reuse a prompt number; the recorded prompt path is the link.
 - **`<feature-slug>`** — kebab-case from `What is needed`, max 4 words, ASCII.
 - **`-prompt`** — fixed suffix marking the artifact type.
 
@@ -187,7 +186,7 @@ drop-in usable as input to `grill-with-docs`.
 - [ ] `Project:` names the full Project Matrix code verbatim (when one exists)
 - [ ] For a new file, `NNNN` unique across `specs/adr/` and `specs/prompts/`; an in-place update retains its own number; slug ≤ 4 words,
       kebab-case ASCII, `-prompt` suffix
-- [ ] Split intake: deferred slices recorded under `Known limits`
+- [ ] Split intake: deferred slices recorded under `Known limits`; the zero-attribution rule is present
 - [ ] No placeholder text (`TBD`, `TODO`, `[...]`) remains, and no two sections
       contradict each other
 - [ ] File body is the prompt only — drop-in, no preface

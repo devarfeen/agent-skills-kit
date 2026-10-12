@@ -1,4 +1,4 @@
-<!-- agents-md marker · v50 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v52 · re-run /agents-md to regenerate -->
 # Shipping
 
 Zero attribution: never add co-author, AI, or tool attribution to any output.
@@ -11,7 +11,7 @@ Nothing commits, pushes, opens a PR, or closes a delivery issue outside the ship
 - `/commit-push-close` — commit, push the current branch, close the issue.
 - `/pr-feedback` — fixes on an existing PR branch, shipped through `/commit-push-pr`; never a raw push.
 - `/ci-loop` — fix commits pushed forward to an open PR's feature branch under its one approval.
-- `/staging-fix` — a PR to the staging branch only.
+- `/staging-fix` — fix locally, push `origin/local`, open a PR to `staging` with auto-merge, and let GitHub Actions deploy. This never authorizes staging server access.
 - `/local-to-staging` — merges `local` → `staging` PRs after their checks pass. `/staging-to-production` is read-only.
 - `/factory run` — only when the user starts it. It ships solely through the skills above, merges into `local` or the staging branch once its gates pass, and never closes an issue; plain `/factory` writes nothing.
 

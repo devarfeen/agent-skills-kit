@@ -1,9 +1,9 @@
 ---
 name: polish-batch
 disable-model-invocation: true
-description: "Batch cosmetic UI nits found in manual QA (copy, spacing, alignment) into a punch list, dispatch them per PROJECT-CODE in one pass, then verify. Cosmetic only; behaviour changes go to /to-tickets."
+description: "Create a cosmetic QA punch list, with or without a ticket; capture, dispatch or verify rows. Figma matching: /pixel-audit. Behavioral bug reports or QA issue-filing sessions: /to-tickets."
 metadata:
-  version: "0.1.2"
+  version: "0.2.0"
 ---
 
 # Polish batch
@@ -36,6 +36,8 @@ A single markdown table:
 ```markdown
 # Punch List — <SPEC-ID>
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
+
 | # | PROJECT-CODE | Where | Wrong → Right | Shot | Status |
 | - | ------------ | ----- | ------------- | ---- | ------ |
 | 1 | ADMIN-WEB | Settings › Billing header | "Recieve invoices" → "Receive invoices" | shots/admin-web-01.png | open |
@@ -49,28 +51,12 @@ A single markdown table:
 
 ## Modes
 
-### capture (default)
+Run only the requested mode; capture is the default. Load its procedure and
+output shape, not the other modes:
 
-1. Record initial `git status` and relevant diffs. Infer `<SPEC-ID>` from the request or session; if none exists, use the date-keyed file. Open or create the punch-list.
-2. For each nit: apply the cosmetic-scope rule — route-outs get no row. Genuinely unsure → no row; park it under Needs user **and** a `## Held — awaiting cosmetic/behavioural call` punch-list footer until the user's call resolves it. Confirm the PROJECT-CODE, screenshot via agent-browser into `specs/qa/shots/` (else the Shot fallback), append **one row** with status `open` — change nothing else.
-3. Emit the capture update with the open-row count.
-
-### dispatch (explicit only)
-
-Runs only on the user's fresh, explicit dispatch instruction — capturing a nit, even the last open one, never triggers it; neither does an upfront "fix them all later" said while capturing.
-
-1. Record pre-dispatch status and diffs. Group `open` and `reopened` rows with confirmed PROJECT-CODEs; leave ambiguous rows pending. For a copy row, search for the Wrong string first. If it renders from a shared key or appears elsewhere, list every occurrence in the row and fix at the source string, never in built output; a shared key changes other screens, so that row waits for the user's confirmation. A key that also exists in other shipped locales lists those locales under Needs user; never auto-translate. Order text/string before spacing/alignment. Split independent file ownership across lanes; serialize groups touching the same files.
-2. Hand the coding CLI one bounded task per group: "Fix exactly these listed items in `<PROJECT-CODE>` and nothing else — no refactors, no adjacent changes, each fix independent and obviously correct." Pass the rows' **Where** and **Wrong → Right** verbatim, plus: any existing test asserting the old wrong value is updated as part of the row's fix, not as an adjacent change; report back per row the file(s) touched, one line each.
-3. Mark handed-off rows `dispatched` and emit the dispatch update. Do not verify or ship yet.
-
-### verify
-
-After the dispatched tasks report back.
-
-1. Scope check first: compare each group's diff with the pre-dispatch state and row list. Flag new changes outside the rows; undo only this run's isolated edits or route to `/to-tickets`. Preserve pre-existing user changes; never absorb scope violations silently.
-2. Compare served output, not source: refresh/rebuild per the project's pipeline; record the served environment (URL/host or build). Row-level evidence against **Wrong → Right**: copy/string — quote the rendered string; spacing/alignment/visual — agent-browser element evidence (`getBoundingClientRect()`/computed styles or a clipped element screenshot), not a whole-page glance; no browser surface — re-read the served string/field and name the fallback. Never mark a row verified on assumption. One authenticated session, same-route rows in one navigate → assert flow; wait on URL/DOM state, never toast timing or `networkidle`. A row also fails on a new console error on its route compared with before dispatch.
-3. Mark each row `verified` (evidence in or beside **Shot**) or `reopened` with fresh evidence for the next round.
-4. Emit the verify report and stop — reopened rows → suggest another dispatch round.
+- **capture** — [`references/capture.md`](references/capture.md): append QA artifacts only.
+- **dispatch** — [`references/dispatch.md`](references/dispatch.md): after a fresh explicit dispatch instruction, group bounded fixes and record pre-change console evidence.
+- **verify** — [`references/verify.md`](references/verify.md): after tasks report back, compare scoped diffs and served results; missing proof stays pending.
 
 ## Cross-repo
 
@@ -78,42 +64,12 @@ A spec's nits all live in its one punch-list — never per-repo files — while 
 
 ## Output
 
-**Capture update:**
-
-```markdown
-Stage: capture — logged N nit(s), no fixes applied.
-Found: <total> open rows — <PROJECT-CODE>: x, <PROJECT-CODE>: y.
-Routed out (not nits): <item> → /to-tickets | /qa-escape #<issue> (touches <behaviour|data|interface>).  [omit if none]
-Next: keep capturing, or say "dispatch" to fix the open rows.
-Needs user: <ambiguous PROJECT-CODE or borderline-cosmetic item, or "none">.
-```
-
-**Dispatch update:**
-
-```markdown
-Stage: dispatch (user said: "<quoted instruction>") — handed off <G> group(s), rows marked dispatched.
-Found: <PROJECT-CODE>: n rows, <PROJECT-CODE>: m rows.
-Next: verify when the dispatched tasks report back. No ship yet.
-Needs user: <ambiguous group, or "none">.
-```
-
-**Verify report:**
-
-```markdown
-Stage: verify — compared served output for <N> dispatched rows.
-Environment: <PROJECT-CODE → served URL/host or build>.
-Found: <PROJECT-CODE>: v verified / r reopened; <next code…>.
-Next: ship the verified pass, or another dispatch round for reopened rows <#s or "none">.
-Needs user: <scope violations routed out, or "none">.
-
-Suggested next skills (optional):
-- /code-review: eyeball the batched polish diff before shipping.
-- /commit-push-pr (or /commit-push-close): ship the verified polish pass.
-```
+Emit the selected mode's update from its reference. Verify ends with 1–3
+advisory next-skill suggestions and stops; it never starts shipping.
 
 ## Completion criteria
 
 - [ ] Punch-list exists at `<artifacts-root>/specs/qa/<SPEC-ID>-punchlist.md` (or date-keyed); every reported item is a row, Held, or explicitly routed out
 - [ ] capture: initial versus final status and diffs show this run wrote only QA artifacts; pre-existing changes remain intact
 - [ ] dispatch: the update quotes the user's explicit instruction; every handed-off row's Status reads `dispatched`
-- [ ] verify: every dispatched row's Status reads `verified` with evidence recorded, or `reopened`
+- [ ] verify: every dispatched row is `verified` with evidence, `reopened` with a failure, or `dispatched` with the missing check named

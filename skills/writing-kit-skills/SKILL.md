@@ -1,53 +1,53 @@
 ---
 name: writing-kit-skills
 disable-model-invocation: true
-description: "House style for authoring or editing skills in agent-skills-kit: skeleton, word budget, canonical lines, eval gates. Generic skill creation elsewhere is skill-creator."
+description: "Author/edit agent-skills-kit skills or explain its canonical one-liners and word budget. Generic skills: skill-creator. Running routing evals alone is a maintainer task."
 metadata:
-  version: "0.3.1"
+  version: "0.4.0"
 ---
 
 # writing-kit-skills
 
-A kit skill exists to make an agent take the same process every run. Every rule here serves that predictability at the lowest token cost that still binds weaker CLIs — this kit installs standalone into many runtimes, so redundancy is spent deliberately.
+A kit skill makes execution predictable through branches, evidence, and refusal boundaries.
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issues, docs, settings, or comments. State this rule explicitly in every generated or updated agent-facing Markdown/settings file.
 
 ## The skeleton
 
-Every SKILL.md follows this order, skipping sections it genuinely doesn't need:
+Use this order; omit unneeded sections:
 
-1. **Definitional opener** — one or two sentences stating what the skill produces and the boundary that makes it this skill and not a neighbour. No `## Purpose` heading, no restatement of the frontmatter description.
-2. **Inputs** — what must be known before work starts, and the stop-and-ask rule for anything missing.
-3. **Rules** — the binding constraints. Each prohibition is paired with the positive action ("Dispatch fires only on explicit user say-so; until then, keep capturing"), and may carry one clause of rationale. No second section restating rules in negated form.
-4. **Process / Workflow / Modes** — `### N. Verb-phrase` steps or named modes. Each step ends where an agent can tell done from not-done.
-5. **The artifact** (when the skill writes one) — template plus two or three filled sample rows at most; full examples live in `references/`.
-6. **Output** — the exact chat surface: templates, caps, and the stop.
-7. **Completion criteria** — observable checks only (a path that exists, a command output, a read-back match, a `git status` state). Never checklist items that re-assert body rules; the body already binds them.
+1. **Opener** — output and distinguishing boundary; do not repeat the router.
+2. **Inputs** — required facts and what blocks without them.
+3. **Rules** — binding constraints; pair prohibitions with the permitted action.
+4. **Process / Workflow / Modes** — ordered actions with observable step endings.
+5. **Artifact** — skeleton and at most three sample rows; disclose full examples.
+6. **Output** — chat shape, caps, and stopping point.
+7. **Completion criteria** — evidence checks: read-back, paths, commands, or status; not restated rules.
 
 ## Word budget
 
-A SKILL.md needs **1,000–1,300 words**; shorter is fine when the workflow is complete. The validator enforces a 1,500-word ceiling. Move excess mechanics and examples to `references/`; preserve refusal and safety language. Link every reference from SKILL.md, one level deep; a reference over 100 lines opens with a contents list.
+Target **500–900 body words**, excluding frontmatter; shorter is fine when complete. Complex workflows may exceed the target when their gates require it; the hard ceiling remains 1,500. Move branch-specific mechanics/examples to `references/`, loaded only on an explicit condition. Preserve safety and refusal boundaries. Link references directly from SKILL.md; references over 100 lines open with contents.
 
 ## Voice and language
 
-- Imperative, present tense. Sentence-case headings ("Trigger discipline", not "Trigger Discipline").
-- Say each fact once per file. The description states identity; the body never re-narrates it.
-- Prefer a leading word over a restated triad ("Decisions are **artifacts**", "stop signal", "evidence") — one pretrained concept the agent thinks with.
-- One example per pattern. Good/bad pairs only where the distinction is the lesson.
-- No invented abbreviations or arrow-chain prose in agent-facing output rules; arrows as notation inside instruction text are fine.
-- One-clause rationale after a rule is house style ("dead routing rules cost every session tokens"); paragraph-length justification is not.
+Use imperative present tense and sentence-case headings. State each fact once;
+the opener adds a boundary instead of repeating the router. Pair a binding
+constraint with its permitted action and at most one clause of rationale.
 
 ### Calling another skill
 
-A step that needs another skill names the call: `Call the Skill tool with "<name>"` where the runtime has one, one call per skill. A bare `/name` in prose is only a label. Only for a model-invoked target. A user-invoked skill (`disable-model-invocation: true`) cannot be started by any skill: tell the user to run `/<name>` and stop. Except `/factory run`, which follows each stage skill's `SKILL.md`. Footer suggestions keep the `/name` label.
+For a model-invoked dependency, name the call: `Call the Skill tool with "<name>"` where available, one call per skill. A `/name` alone labels a suggestion.
 
-### Form follows the failure
-
-Classify the observed failure before writing the fix. Knows the rule, skips it under pressure → prohibition, its replacement, one-clause why. Right behavior, wrong output shape → a positive recipe: the output's parts, in order; prohibition lists invite negotiation. Omits a required element → a required slot in the template it fills. Condition-dependent → a conditional on an observable predicate. Never append nuance ("unless it matters") or exemption clauses; restructure so the rule cannot reach the exempt case.
+A user-only target normally requires the user to run it; stop at the suggestion.
+A user-started `/factory run` may follow its declared stage instructions.
+An explicitly started `/factory run` or `/orchestrate-t3` may read and follow
+`/using-git-worktrees` for checkout setup only, then return to that authorized
+workflow. This grants no implicit discovery or Skill-tool invocation of the
+user-only helper and no authority to implement or ship another workflow.
 
 ## Canonical one-liners
 
-These seven lines are shared kit protocol. Paste them **byte-exact** (validator-enforced); never paraphrase or expand them. The only exemption is a user-approved marker-and-file pair listed in `CANON_EXEMPT` in validate.sh (none at present); add none without that approval:
+Paste applicable protocol lines **byte-exact**. Only a user-approved marker/file pair in validate.sh `CANON_EXEMPT` can exempt a file; add none without approval:
 
 - Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`GLOSSARY-MAP.md` at repo root; legacy `CONTEXT-MAP.md`), else the repo root.
 - Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes.
@@ -57,17 +57,12 @@ These seven lines are shared kit protocol. Paste them **byte-exact** (validator-
 - Redact before anything leaves the session: replace tokens, keys, cookies, session IDs, passwords, emails, and customer identifiers in quoted evidence with `<redacted>`, keeping only the lines that show the fault.
 - A failed or erroring `gh` query is unknown — never an empty result, a pass, or green; report the command and its error.
 
-## Output caps
+## Output shapes
 
-Every surface where the agent emits text carries an explicit bound:
-
-- Reports: ≤3 bullets per section unless the section justifies more in its own text.
-- Evidence: quote the shortest decisive tail (the pass/fail line and counts); link or name the rest.
-- `Suggested next skills (optional)` footer: 1–3 items, advisory, never gating.
-- Phase updates: one line per field.
-- Interviews: one question at a time, leading with the recommended answer so the user can accept it in a word.
-
-Caps never omit affected behaviors, evidence, or unresolved blockers. Put longer required detail in a linked artifact.
+When defining or changing emitted text, templates, or examples, load
+[`references/language-and-output.md`](references/language-and-output.md).
+It owns output caps and example/notation rules. Required behavior, evidence,
+and unresolved blockers must survive every cap.
 
 ## The auto-clarity valve
 
@@ -78,20 +73,21 @@ Distinguish a preference from permission. Optional choices may have a stated awa
 ## Frontmatter and gates
 
 - `description:` is the router; it never summarizes the workflow, because an agent given a process summary follows it instead of the body. Model-invoked skills get identity + one trigger per genuinely distinct branch — synonym stacks are duplication; collapse them. Keep negative-routing clauses ("X routes to /other instead") and legacy aliases (the "(PRD)" spec alias) — they are branches, not synonyms.
-- Any `description:` edit or new skill invalidates the eval-provenance snapshot (validate.sh check 10) and requires a completed trigger-eval sweep plus `score.py --write-snapshot` before it can land. The maintainer may run or explicitly delegate it. Batch description work; never invent or manually restamp `last_run`.
-- User-invoked skills keep trigger descriptions too: Opencode and Antigravity ignore `disable-model-invocation`, so the description still routes there.
+- Before changing a description or invocation flag, load [`references/frontmatter-gates.md`](references/frontmatter-gates.md). Description edits require a real trigger sweep and snapshot; never invent results.
 - `metadata.version` is semver, starting at `0.0.1`. Bump it with every change outside `evals/` — patch for wording, minor for a new rule or step, major for a removed input, marker, or refusal — or validate.sh check 16 fails.
 - `disable-model-invocation: true` ⇔ `agents/openai.yaml` with `allow_implicit_invocation: false` (cross-runtime parity, validator-enforced).
-- Keep descriptions containing `: ` double-quoted. Check 1 uses strict YAML when PyYAML is available and a stated quote/colon heuristic otherwise; heuristic success is not a strict parse.
 
-## Failure modes to hunt
+## Review existing instructions
 
-**Sediment** — layers that settle because adding feels safe; prune on every edit. **Sprawl** — over budget even when every line is live; cure by disclosure to `references/`, not by thinning safety language. **Duplication** — the same meaning twice in one file (description↔body, rules↔checklist); keep one. **No-op** — a line the agent already obeys by default; delete the sentence, don't trim it. **Speculative rule** — a line added for a failure no run, transcript, or behavior case has shown; name the observed failure in the change or drop it — zero additions is a valid audit result. **Cache** — text restating what one lookup answers (a script name, a flag list, a directory layout); it goes stale silently. Keep what looking cannot find: the convention, the reason, the gotcha. **Phantom tooling** — documented commands or pointers that don't hold: a flag absent from the script's `--help`, a reference committed as placeholder scaffolding. If scripts ever land, flag↔`--help` parity becomes a validator check.
+When auditing, pruning, or repairing an observed failure, load
+[`references/authoring-review.md`](references/authoring-review.md). It covers
+failure classification and the patterns to remove; new-skill authoring does
+not require this review reference.
 
 ## Completion criteria
 
 - [ ] `bash tools/validate.sh` passes before landing; a check-10 failure is an unfinished local draft awaiting a real trigger sweep
 - [ ] Word count within budget: `awk 'NR==1&&/^---$/{f=1;next} f==1&&/^---$/{f=2;next} f==2&&NF{c+=NF} END{print c+0}' skills/<name>/SKILL.md` ≤ 1,500
 - [ ] Every refusal/stop line present in the previous version is present (or strengthened) in the new one — verified by diff, not recollection
-- [ ] Frontmatter untouched unless this is an approved description batch
+- [ ] Description and invocation flags unchanged unless explicitly authorized; metadata version bumped for skill-file edits
 - [ ] Sync map satisfied: manifest row, README row, duplicated-by-design copies edited together

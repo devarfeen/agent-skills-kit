@@ -1,5 +1,7 @@
 # Contributing
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issues, docs, settings, or comments.
+
 Human-facing guide for adding, changing, and reviewing skills in this kit. If you
 only read one doc before editing this repo, read this one. Repo-wide conventions
 for agents working *in* this repo live in [AGENTS.md](AGENTS.md).
@@ -12,7 +14,7 @@ for agents working *in* this repo live in [AGENTS.md](AGENTS.md).
 2. The frontmatter **description is the trigger**. Runtimes decide whether to load
    a skill by matching the request against the description — a separate
    trigger-phrases file does nothing. Spend your effort there.
-3. Run `bash tools/validate.sh` before committing. CI runs it on every PR. Enable the tracked pre-commit hook once per clone so it runs for you: `git config core.hooksPath tools/hooks`.
+3. Install validation dependencies in a local virtual environment (`uv venv .venv` then `uv pip install --python .venv/bin/python -r tools/requirements.txt`), then run `bash tools/validate.sh` before committing. CI runs it on every PR. Enable the tracked pre-commit hook once per clone so it runs for you: `git config core.hooksPath tools/hooks`.
 4. Adding or moving a skill means updating **four places**: the skill folder, a
    row in `skills/agents-md/references/skills-manifest.md`, the skills table
    in `README.md`, and its path in exactly one plugin group in
@@ -62,8 +64,9 @@ belong in the body. Look at `skills/polish-batch/SKILL.md` for a strong example.
 A helper shipped here still uses `kind: kit` in the manifest. Give it
 `phase: companion` and a `use-when` trigger to put it in the generated companion
 table without adding a workflow phase. External companions remain separate
-installs. `/using-git-worktrees` is the example: automatic discovery stays
-enabled, and an explicit worktree request invokes it before the task skill.
+installs. `/using-git-worktrees` is user-invoked only. An explicitly started
+`/orchestrate-t3` or `/factory run` may read and follow it for checkout setup;
+other workflows do not invoke it automatically.
 
 Keep handoffs narrow. Worktree setup returns its verified checkout to the
 already-requested task; it never authorizes a new implementation or shipping
@@ -85,12 +88,12 @@ into generated instructions.
 Runtimes load skills in tiers, so budget is a hard constraint, not a style
 preference:
 
-- **Description** — always in context, every turn. At most 200 characters of
+- **Description** — context cost when the runtime exposes it. At most 200 characters of
   pure routing signal (`validate.sh` check 19); model-invocable descriptions
   also share a 3,000-character total.
-- **SKILL.md body** — loaded on trigger. The house band is 1,000–1,300 words
-  after the frontmatter (`validate.sh` check 12 enforces a hard 1,500-word
-  ceiling); approaching it, push detail into `references/` with clear pointers.
+- **SKILL.md body** — loaded on trigger. Aim for 500–900 words after frontmatter; shorter
+  complete workflows are welcome. Complex workflows may use the hard 1,500-word
+  ceiling enforced by `validate.sh` check 12. Disclose branch-specific detail in `references/` with clear pointers.
   The full skeleton, voice, and word-budget rules live in
   `skills/writing-kit-skills/SKILL.md`.
 - **`references/` and `assets/`** — loaded only on demand. Effectively free
@@ -168,7 +171,7 @@ Write for a frontier agentic model — capable, tool-using, able to plan. That m
   2. the per-context root in a multi-context repo (`GLOSSARY-MAP.md` at root; legacy
      `CONTEXT-MAP.md`);
   3. the single repo root.
-- **Suggest, never auto-chain** — finish the requested workflow, recommend a next skill, then stop. A setup helper may return to its already-authorized caller; it does not authorize a new workflow. The one chain is `/factory run`, started by the user; a stage skill it may load says what that start approves in a **Run authorization** line.
+- **Suggest, never auto-chain** — finish the requested workflow, recommend a next skill, then stop. A setup helper may return to its already-authorized caller; it does not authorize a new workflow. The stage chain is `/factory run`, started by the user; each stage states what that start approves in a **Run authorization** line. The other helper exception is checkout setup: an explicitly started `/orchestrate-t3` or `/factory run` may read and follow `/using-git-worktrees`; this does not enable its implicit discovery or a new workflow.
 - **Local-only** — local subagents and local background only; no cloud agents.
 - **Decisions are artifacts** — durable output goes to disk or the tracker, with
   the path stated; discovery reports are the chat-only exception.
@@ -288,10 +291,10 @@ eval pass.
 | Elevated-permission presets | `skills/agents-md/references/tool-calling.md` (model-facing source) and `GUIDE.md` (human-facing copy) |
 | Any runtime fact in `tool-calling.md`, a `*-tools.md`, `memory-global-defaults.md`, or `skills/tdd-loop/references/test-commands.md` | Re-verify the claim against that tool's current official docs in the same PR — CLI flags, tool names, and test-runner syntax age fast; don't propagate a stale fact into more files |
 | Any runtime fact in `skills/orchestrate-herdr/references/` — `herdr-commands.md` CLI syntax and lifecycle states, `tracker-map.md` `gh` and Linear MCP calls | Re-verify against the *installed* surface in the same PR, not prose docs: `herdr <group> --help` plus `herdr --skill` for herdr (its binary is the stated authority for its own syntax), the live tool schema for Linear MCP, `gh <cmd> --help` for GitHub. A flag, subcommand, or enum value absent from `--help` is phantom tooling — the defect class `writing-kit-skills` names |
-| A skill's frontmatter `description` (at most 200 characters — `validate.sh` check 19; what it does in one clause, the main trigger, and the nearest sibling) | Re-run the trigger evals, restamp that skill's `last_run`, and refresh `tools/trigger-evals/last-run-descriptions.json` (`score.py … --write-snapshot`). `validate.sh` check 10 fails until you do — a description edited after a passing run silently invalidates that run's result |
+| A skill's frontmatter `description` (at most 200 characters — `validate.sh` check 19; what it does in one clause, the main trigger, and the nearest sibling) | Re-run the trigger evals, restamp that skill's `last_run`, and refresh `tools/trigger-evals/last-run-descriptions.json` (`score.py … --write-snapshot --record-run --judge-model <actual-model>`). Check 10 validates descriptions, query content, the complete catalog and invocation policies; any changed input requires a new sweep |
 | Any file in a skill folder outside `evals/` | That skill's `metadata.version` — patch, minor, or major per the one-minute version; `validate.sh` check 16 |
 | A stage `/factory run` loads, or a stage skill's approval gate | `skills/factory/references/run.md` (stage map) and that skill's **Run authorization** line stay in agreement; a ship-policy change moves both copies |
-| A step that tells the agent to run another skill | The house rule in `skills/writing-kit-skills/SKILL.md` ("Calling another skill"): name the Skill-tool call for a model-invoked target; for a user-invoked target, tell the user to run it — no skill can start one |
+| A step that tells the agent to run another skill | The house rule in `skills/writing-kit-skills/SKILL.md` ("Calling another skill"): name the Skill-tool call for a model-invoked target; for a user-invoked target, tell the user to run it, except the documented user-started factory stage chain and T3/factory checkout-helper loading |
 | Added/removed/renamed a skill, or changed where it sits in the workflow | The map in `skills/ask-kit/SKILL.md` — a router that omits a skill, or still names a removed one, misroutes |
 | Any skill behavior change | A dated `CHANGELOG.md` entry with the skill's new version |
 | A skill's `disable-model-invocation` flag | Its `agents/openai.yaml` mirror (`allow_implicit_invocation: false`) — parity enforced by `validate.sh` check 11 |

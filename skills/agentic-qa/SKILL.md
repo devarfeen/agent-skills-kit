@@ -3,33 +3,33 @@ name: agentic-qa
 disable-model-invocation: true
 description: "Agent-run functional QA of a PR or branch that can reach a screen: drives acceptance criteria through the running app and records the result on the PR. Never edits code. Pixel checks are /pixel-audit."
 metadata:
-  version: "0.3.1"
+  version: "0.4.0"
 ---
 
 # agentic-qa
 
-agentic-qa finds what a human QA pass would find, before any human runs one. It drives the change through the running app and judges it by what the app shows, logs, and requests — never by what the code or the builder claims. It is the tester, not the fixer: it writes evidence, never code.
+Drive the change through the running app; judge visible behavior, logs and requests. Write evidence and findings, never code.
 
 ## Inputs
 
 - **Change** — a PR number or branch. Read the diff, the head SHA, and the linked issue.
-- **Acceptance criteria** — from the issue, plus the `AC map` line of the `/tdd-loop` summary when one exists. Rows the builder marked `agentic-qa (<surface>)` are owed here. No criteria anywhere → stop; the work is not ready for QA.
-- **Isolated worktree** — the app runs from `<project-repo>/.worktrees/pr-<n>` at the head SHA (detached is fine; the tester commits nothing): reuse the PR's worktree when it exists, else create it through `/using-git-worktrees` when installed, otherwise with `git worktree add --detach`, per the workspace `AGENTS.md` worktree rules. Before the first command there, verify and report the checkout record the workspace `AGENTS.md` requires: path, owning repository and common Git directory, branch or detached state, starting commit, and baseline. Setup failure or a mismatch blocks the run; never fall back to the main checkout. Leave the worktree in place and report its path; cleanup follows the workspace rules. The base-commit baseline runs from its own worktree, `.worktrees/pr-<n>-base`.
-- **Running app** — a local URL served from that worktree at the head SHA. Staging only with this session's explicit approval, and read-only there. Neither → `BLOCKED`.
-- **Roles** — each role that can see the touched surfaces, with test logins referenced by env var name only, never values. A role with no login → its cells are gaps, not skips.
-- **Escape classes** — open and closed issues labelled `qa-escape` whose area matches the touched surfaces (`gh issue list --label qa-escape --state all --search "<area>"`, or the tracker's label filter). Each class, and each line for the area under the workspace `AGENTS.md` section `## QA escape guards`, becomes grid rows; skip markers with `reproduced=no`. A guard line whose surface no longer exists → report it under Needs user; never skip it silently.
+- **Acceptance criteria** — the issue's body section/checklist, otherwise its newest `<!-- factory-criteria -->` comment, plus the `AC map` line of the `/tdd-loop` summary when one exists. Cover rows marked `agentic-qa (<surface>)`. No criteria → `BLOCKED`.
+- **Isolated worktree** — the app runs from `<project-repo>/.worktrees/pr-<n>` at the head SHA (detached is fine; the tester commits nothing): reuse the verified PR or factory task worktree; before a PR exists use `.worktrees/qa-<branch-slug>`. Otherwise use `git worktree add --detach` per workspace policy. Only an explicitly started `/factory run` or `/orchestrate-t3` may read/follow `using-git-worktrees` for its task setup; direct skill use requires the user's invocation. Before commands there, report and verify path, owning repo/common Git directory, branch or detached state, starting SHA and baseline against workspace rules. Setup failure or mismatch blocks; never use the main checkout as fallback. Leave and report the worktree; cleanup follows workspace policy. The base-commit baseline runs from its own worktree, `.worktrees/pr-<n>-base`.
+- **Running app** — local URL from that worktree at head. Staging needs this session's explicit user approval and user-provided SSH access under the global rule; read-only unless each mutation is separately approved. Neither → `BLOCKED`.
+- **Roles** — each role that can see the touched surfaces, with test logins referenced by env var name only, never values. A role with no login → gap cells; if required to verify a criterion, result `BLOCKED`, otherwise `PARTIAL`.
+- **Escape classes** — open and closed issues labelled `qa-escape` whose area matches the touched surfaces (`gh issue list --label qa-escape --state all --search "<area>"`, or the tracker's label filter). Each class and matching `## QA escape guards` line becomes rows; exclude `reproduced=no` and `not-a-regression` markers. A guard line whose surface no longer exists → report it under Needs user; never skip it silently.
 
 ## Rules
 
-- **The tester never edits code.** No source, test, fixture, or config edits, even for a one-character fix. Every failure becomes a finding with reproduction steps, routed to `/tdd-loop`. A tester that fixes stops being an independent check.
-- **Reach is decided by the code, not the label.** The change needs this skill when any changed file is reachable from a route, page, component, template, translation, or style, or is an API whose response a screen renders. Trace it per [`references/qa-grid.md`](references/qa-grid.md) and quote the path. No reach → record `no-ui-reach` with that trace and stop.
+- **The tester never edits code.** No source, test, fixture, or config edits, even for a one-character fix. Every failure becomes a finding with reproduction steps, routed to `/tdd-loop`.
+- **Reach is decided by the code, not the label.** The change needs this skill when any changed file is reachable from a route, page, component, template, translation, or style, or is an API whose response a screen renders. Trace it per [`references/qa-grid.md`](references/qa-grid.md) and quote the path.
 - **A criterion a user sees must be reachable.** When no changed file reaches a screen but an acceptance criterion describes something a user sees or does, the feature is built and not connected. Record a finding with class `not-wired` naming that criterion and the missing entry point; the result is `partial`, never `no-ui-reach`.
-- **A blank cell is not done.** Every grid cell is `pass`, `fail`, or `not reachable — <reason>`. A reason names why the state cannot occur, not why it was inconvenient.
+- **A blank cell is not done.** Every grid cell is `pass`, `fail`, `gap — <missing input>`, or `not reachable — <reason>`. A reason names why the state cannot occur, not why it was inconvenient.
 - **Browser errors fail the cell.** Capture console, page errors, and XHR/fetch responses for every flow. A new `error`-level message, unhandled rejection, or 4xx/5xx response fails the cell, unless the cell expects it (a 403 for a forbidden role) or the same signal appears on the base commit run.
 - **Success is a visible change.** Capture the relevant state before acting and assert the expected change after. A success message with no changed state is a fail. For a write, the change also survives a reload.
 - **Prove presence before a negative.** Before asserting a control is rejected or hidden for a role, show it exists for a role that should see it. Otherwise "missing" passes as "denied".
-- **Production is never touched.** On staging: read-only flows only, unless the user approves that single mutating step; restore anything changed.
-- **Status is earned.** `VERIFIED` only when every cell passed and no gap remains. Any failed cell or gap → `PARTIAL`. App not runnable, no criteria, or no login for a required role → `BLOCKED`. Never the word "fixed".
+- **Production is never touched.** On staging: read-only flows only, unless each mutation and its restoration are separately approved.
+- **Status is earned.** `VERIFIED` only when every applicable cell passed, every unreachable cell has a proved reason, and no gap remains. Any failed cell or gap → `PARTIAL`. App not runnable, no criteria, or no login for a required role → `BLOCKED`. Never the word "fixed".
 - **Three re-checks per finding.** A finding that still fails on its third re-check against a new head is escalated to the engineer by name in the report; it is not re-queued again.
 - **One approval before any remote write.** Show the PR comment and wait. User away → print it and stop.
 - **Run authorization.** Loaded by `/factory run`, the run's start approves posting the comment. Staging, and any mutating step there, keeps its own approval.
@@ -46,7 +46,7 @@ Trace each changed file to a screen per the reference. Quote one path per reacha
 
 ### 2. Build the grid
 
-Rows: each acceptance criterion and each path it owes, each escape class for the area, and one row per neighbouring flow — other screens that call the changed code, sibling entry points, create vs edit. Columns: the states each row can reach (default, loading, empty, error, success, disabled, permission denied, offline, long content, keyboard-only), at 375 and 1280 widths, for each role. Write the grid to `<artifacts-root>/specs/qa/<pr>-<short-sha>/grid.md` before driving anything; template in the reference.
+Use `<change>` as the PR number or sanitized branch name before a PR exists. Rows: each acceptance criterion and each path it owes, each escape class for the area, and one row per neighbouring flow — other screens that call the changed code, sibling entry points, create vs edit. Columns: the states each row can reach (default, loading, empty, error, success, disabled, permission denied, offline, long content, keyboard-only), at 375 and 1280 widths, for each role. Write the grid to `<artifacts-root>/specs/qa/<change>-<short-sha>/grid.md` before driving anything; template in the reference.
 
 ### 3. Baseline
 
@@ -62,7 +62,7 @@ Mark each cell. Before marking a cell `fail`, replay its exact batch once from t
 
 ### 6. Record
 
-Write `report.md` beside the grid, then draft the PR comment: status, counts, findings, and the marker line exactly:
+Write `report.md` in that evidence folder (`no-ui-reach` or an early block needs no grid); include the explicit zero-attribution rule in all Markdown artifacts. Then draft the PR comment: status, counts, findings, and the marker line exactly:
 
 ```
 <!-- agentic-qa: sha=<head-sha> result=<verified|partial|blocked|no-ui-reach> findings=<n> recheck=<highest re-check count among open findings, 0 if none> -->
@@ -83,7 +83,7 @@ Then at most 3 bullets naming the highest-impact findings. Close with the `Sugge
 
 ## Completion criteria
 
-- [ ] `grid.md` exists and has no blank cell; every `not reachable` names its reason
+- [ ] Reachable runnable change: grid exists with no blank cells, proved unreachable reasons and named gaps. No-UI/early-block result: report records its reach trace or blocker; grid is not required
 - [ ] Every fail has a reproduction batch, expected, actual, and an evidence path that exists
 - [ ] The checkout record was reported before the app started, and `git status` in that worktree shows no change to source, test, or config files from this run
-- [ ] The marker for the current head SHA is on the PR, read back after posting, or the drafted comment is printed when approval is pending
+- [ ] Existing PR: current-head marker read back, or draft printed pending approval. No PR: marker retained in report for later posting only if the shipped SHA still matches

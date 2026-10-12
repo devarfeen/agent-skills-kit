@@ -3,7 +3,7 @@ name: orchestrate-herdr
 disable-model-invocation: true
 description: "Fan a spec (PRD) out to per-issue workers in herdr tabs and monitor them to done. Only inside herdr (HERDR_ENV=1). A tab action or status check with no spec to fan out goes to the herdr companion."
 metadata:
-  version: "0.2.1"
+  version: "0.3.0"
 ---
 
 # Orchestrate herdr
@@ -16,7 +16,7 @@ Fan work out to one herdr-managed worker tab per unit (tracker sub-issue or harn
 
 - **SPEC_REF** (spec mode) — parent issue whose open sub-issues become workers: Linear `PRWL-100` / `ABC-123`, or a GitHub issue URL or number. From skill args (`SPEC_REF=...`, bare reference; legacy `SPEC_URL=`/`PRD_URL=` accepted) or intake.
 - **WORKERS** (harness mode) — list of `{label, prompt}`; defined per harness reference.
-- **AGENT** — which coding agent runs the workers, named from the six supported runtimes. It yields two values that are not interchangeable: `CLI_NAME`, its launch token, used for PATH checks and tab labels; and `AGENT_KIND`, its herdr `--kind`. Both come from the roster in [`references/intake.md`](references/intake.md) — never from a command's first token, which is wrong for Cursor.
+- **AGENT** — worker runtime. Its `CLI_NAME` launch token serves PATH checks/tab labels; `AGENT_KIND` serves herdr `--kind`. Both come from [`references/intake.md`](references/intake.md), never the command's first token: Cursor's values differ.
 - **CODING_CLI** — `CLI_NAME` plus the permission-mode flags from the user's established preference or intake choice. The prompt is never a launch argument (see Rules).
 - **ISOLATION** — `worktree`, `branch`, or `shared`; it decides whether workers can run in parallel.
 - **TRACKER** / **TRACKER_TAG** — workspace tracker of record (`G` / `L`). Derived per **Resolve** in [`references/tracker-map.md`](references/tracker-map.md), which holds the per-tracker commands cited by bold section name below.
@@ -27,7 +27,7 @@ Fan work out to one herdr-managed worker tab per unit (tracker sub-issue or harn
 
 - **Never implement.** The orchestrator reads, creates tabs, submits prompts, monitors, and reports — nothing else.
 - **Herdr-managed tabs only,** created in the existing herdr workspace/session. No pane splits, no internal sub-agents, no nested coding sessions, and never launch `CODING_CLI` from inside another `CODING_CLI`.
-- **Isolation is the user's choice, and herdr's job.** Never `cd` into task, issue, or any other folder. Create a worktree only when the user picked `worktree`, and only through `herdr worktree create` — never hand-rolled `git worktree add`. In `branch` and `shared` mode every worker tab starts in the orchestrator's folder.
+- **Isolation is the user's choice, and herdr's job.** Keep the orchestrator's working directory. Create worktrees only in selected `worktree` mode through `herdr worktree create`, never hand-rolled Git. Verify project-owned placement per Intake before launch; unsupported placement blocks that worker. `branch` and `shared` tabs start in the orchestrator's folder, which must be the assigned repository's checkout.
 - **Saved IDs only.** Every submit, read, monitor, and follow-up call uses a tab ID and agent name saved at creation — never the active tab, latest tab, visual order, or a guess.
 - **Prompts are pasted and submitted into a ready CLI** — never passed as launch arguments/flags, never left staged or unsent, and **never pasted into a dead tab's shell**, where the prompt text would execute as commands.
 - **Completion requires test evidence:** the worker's test command plus its quoted passing output, read from the tab, and in spec mode an `AC map:` line covering every acceptance criterion. An unquoted "tests pass" or a criterion missing from the map stays incomplete; a worker's report is a claim until read from its tab.
@@ -63,7 +63,7 @@ Ask **one batched question set**, after Discover and never before — two of the
 
 ### 4. Create worker tabs
 
-Save the caller's workspace, tab, and folder per **Context**. One tab per worker: spec → `[CLI_NAME] - <TRACKER_TAG> #<n>`; harness → `[CLI_NAME] - <label>`. `ISOLATION` picks the command: `worktree` → **Creating worktrees**; `branch` or `shared` → **Create tab**. Save each worker's workspace, checkout path, tab ID, root pane ID, and slugified agent name per **Names**.
+Save the caller's workspace, tab, and folder per **Context**. One tab per worker: spec → `[CLI_NAME] - <TRACKER_TAG> #<n>`; harness → `[CLI_NAME] - <label>`. `ISOLATION` picks **Creating worktrees** or **Create tab**. Save each worker's context, tab/pane IDs, agent name, and verified checkout record per [`checkout binding`](references/checkout-binding.md). An unresolved repository or wrong native placement blocks launch.
 
 ### 5. Launch workers
 
@@ -74,9 +74,9 @@ Parallelize the slow parts across tabs:
 
 A worker is not launched until its tab ID and agent name are saved, its prompt is accepted, and its first response is visible.
 
-**Spec:** fill from [`references/worker-prompt.md`](references/worker-prompt.md) — one issue per worker, never the full spec. **Harness:** that worker's `prompt` from **WORKERS** (plus harness footer). Local sub-agent lanes when useful; never cloud.
+**Spec:** fill [`references/worker-prompt.md`](references/worker-prompt.md), one issue per worker. **Harness:** append its footer and checkout binding to that worker's prompt. Pass applicable instructions and the saved checkout record; workers verify identity and baseline before edits. Local lanes when useful; never cloud.
 
-Workers with neither test-first skill installed still owe test evidence; say so in the prompts-submitted phase update.
+Workers without `/tdd-loop` still owe test evidence; say so in the launch update.
 
 ### 6. Monitor
 
@@ -90,12 +90,13 @@ Wait on lifecycle state per **Watch** — it reacts the moment a worker settles,
 
 ### 7. Report
 
-Report mode, agent and isolation mode, workspace/session ID, working folder, tab map, assignments (issues or harness labels), and blocked/errored workers, plus per worker end state, decisive test tail when applicable, and `AC map` / `Decisions` / `Open items` (`AC map` in spec mode). In `worktree`/`branch` mode, list files changed by more than one worker branch (`git diff --name-only <base>...<branch>`) as merge risk.
+Report mode, agent, isolation, workspace/session ID, folder, tab map and assignments, each end state, decisive test tail, and `AC map` / `Decisions` / `Open items` (`AC map` in spec mode). In `worktree`/`branch` mode, list files changed by multiple branches (`git diff --name-only <base>...<branch>`) as merge risk.
 
 ## Completion criteria
 
 - [ ] The final tab map accounts for every worker in the set (discovered sub-issues or harness **WORKERS**), including failed launches and exited workers; saved IDs and end states match read-back
 - [ ] Each tab, read back, shows its submitted prompt and a worker response — nothing staged or unsent
+- [ ] Each launched worker's checkout record and instruction pointers match its prompt; write-task reports include baseline and first-write identity evidence
 - [ ] In `worktree` or `branch` mode, each worker's commits land on that issue's branch and no other
 - [ ] Every sub-issue's end state is reported: completed with quoted test command, passing output, and (spec mode) its `AC map` line, blocked, or errored
 - [ ] Each blocked tracker-assigned issue shows `ready-for-human` and a decision-naming comment in the **Verify** read-back, title unchanged

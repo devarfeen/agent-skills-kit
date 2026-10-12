@@ -1,13 +1,14 @@
 ---
 name: using-git-worktrees
+disable-model-invocation: true
 description: "Set up or reuse a Git worktree when the user asks to work in a worktree, before the task skill runs. Not for branch-only requests, generic implementation, worktree questions, or cleanup alone."
 metadata:
-  version: "0.1.1"
+  version: "0.3.0"
 ---
 
 # Using git worktrees
 
-A worktree gives a task its own checkout while sharing the repository's history. This companion establishes that checkout and returns its verified location to the calling workflow; it does not implement or ship the task.
+Establish a task checkout and return its verified location; setup does not implement or ship the task.
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
@@ -18,6 +19,8 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 - The request to work in a worktree already authorizes setup. Do not ask for the same permission again. A request for only a new branch stays a branch operation; ambiguous isolation wording needs its form resolved before this skill runs.
 
 ## Rules
+
+- **User invocation, workflow exceptions.** Direct use requires explicit user invocation; implicit discovery stays disabled. Explicitly user-started `/orchestrate-t3` and `/factory run` may read and follow these instructions for checkout setup only; never call a runtime Skill tool that rejects user-only targets. Other workflows use authorized Git setup or ask the user to run this skill when needed.
 
 - **Preserve existing work.** Inspect staged, unstaged, and untracked changes in both the source and any reused checkout. Leave unrelated changes in place. Uncommitted source changes do not appear in a new worktree; if the task needs them, resolve a scoped transfer with the user before proceeding. Never stash, reset, overwrite, or copy the whole checkout as a shortcut.
 - **Keep isolation binding.** A permission error, occupied branch, or failed setup is a blocked worktree step. Report it and pause dependent edits; never fall back to writing in the original checkout without the user's explicit change of scope.
@@ -81,7 +84,7 @@ Return at most three bullets, with the shortest decisive verification evidence:
 - Baseline: `bash tools/validate.sh` in that checkout — passed; source branch and pre-existing edits preserved.
 - Handoff: bind task commands and edit paths to this verified checkout; recheck identity before the first write and after handoffs or restarts. Preserve workspace instructions; report source-only `.gitignore` edits.
 
-On a blocker, replace the handoff with the blocked step and needed input. Stop this setup skill here. If invoked within an already-authorized task, return control so that task continues in the verified checkout without another permission prompt. A setup-only request ends here; recommend at most one next skill, never auto-chain a new workflow.
+On a blocker, replace the handoff with the blocked step and needed input. Stop setup here. After explicit invocation within an authorized task, or setup loaded by an authorized workflow exception, return the checkout record so that task continues without another permission prompt. A setup-only request ends here; recommend at most one next skill, never auto-chain a new workflow.
 
 ## Completion criteria
 

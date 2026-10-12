@@ -1,0 +1,62 @@
+[
+  {
+    "id": "C1",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/integration-contract/SKILL.md",
+    "observations": "Build for single-project API-SVC changed endpoint. Complete sweep of every accessible matrix repo finds no consumer anywhere. No previous contract."
+  },
+  {
+    "id": "C2",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/integration-contract/SKILL.md",
+    "observations": "Same complete no-external-consumer rerun, but historical contract has user edits and gate log. No source edits requested."
+  },
+  {
+    "id": "C3",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/integration-contract/SKILL.md",
+    "observations": "Gate mode. Existing contract is structurally complete; surfaces and coverage unchanged. Local running artifact verified, all smoke passes."
+  },
+  {
+    "id": "C4",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/integration-contract/SKILL.md",
+    "observations": "Single-project spec but one matrix consumer repo is unavailable. Accessible repos reveal no consumer. Gate later points to unapproved staging needing seed."
+  },
+  {
+    "id": "C5",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/release-notes/SKILL.md",
+    "observations": "Multi-repo multi-context layout, no .code-workspace file; GLOSSARY-MAP.md maps this task to context root /meta/payments. User requests notes for that context."
+  },
+  {
+    "id": "C6",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/polish-batch/SKILL.md",
+    "observations": "Explicit dispatch for route copy nit. Git diffs baseline exists but console baseline not yet observed. UI reachable and authorized local. Separate variant local console inspection unavailable."
+  },
+  {
+    "id": "C7",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/tdd-loop/SKILL.md",
+    "observations": "UI criterion covered by passing project E2E browser test asserting actual interaction. E2E runner exists; no agentic-qa run yet. Decide criterion proof and later QA debt."
+  },
+  {
+    "id": "C8",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/tdd-loop/SKILL.md",
+    "observations": "UI criterion can only be shown in running app; project has no E2E runner. Backend acceptance tests green. User asked TDD slice, not shipment."
+  },
+  {
+    "id": "C9",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/feature-prompt/SKILL.md",
+    "observations": "Existing ADR highest number0010; existing prompt highest0011. Create prompt now. Later ADR allocation scans ADRs only. Decide numbering guarantee and new prompt name."
+  },
+  {
+    "id": "C10",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/pixel-audit/SKILL.md",
+    "observations": "Worker reports change applied and returns old legacy row status fixed. Served geometry evidence not yet captured; source CSS appears right."
+  },
+  {
+    "id": "C11",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/port-feature/SKILL.md",
+    "observations": "Target has200 unrelated ADRs and one relevant accepted DS ADR. Reference trace and target survey scope named narrow feature. User asks gap map only."
+  },
+  {
+    "id": "C12",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/writing-kit-skills/SKILL.md",
+    "observations": "Author complete skill body600words, preserves permission/refusal/proof constraints, all refs connected. Another complex orchestrator needs1300words. No evidence its safety gates can be removed."
+  }
+]

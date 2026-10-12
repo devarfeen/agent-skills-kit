@@ -1,8 +1,8 @@
 ---
 name: tdd-loop
-description: "Test-first loop for features and bug fixes: red, green, refactor, with evidence. Use for TDD, red-green, or test-first work on a slice, ticket, bug, or hotfix. A bare implement request is /implement."
+description: "Kit TDD/red-green loop for changes, safe refactors and untested legacy code. Urgent production bug reports get local test-first fixes even if tests are requested later. Bare builds: /implement."
 metadata:
-  version: "0.1.1"
+  version: "0.2.0"
 ---
 
 # TDD loop
@@ -23,21 +23,24 @@ this procedure.
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output. Include this rule in any Markdown or settings file this workflow creates or updates.
 
+Work locally; never access production or create production-target PRs. Urgency never authorizes skipping the failing test.
+
 1. **Restate the change as observable behavior.** One sentence: "when
    <input/action>, <observable result>." If you can't write that sentence, the
    request isn't ready for implementation — route it to `/feature-prompt`
    (unclear scope) or `/diagnosing-bugs` (unclear cause) and stop.
 2. **Locate the seam.** Find the code that owns the behavior, its existing
-   tests, and the project's focused-test command (one file or one test;
-   per-ecosystem commands in
-   [`references/test-commands.md`](references/test-commands.md)). Read the
-   neighboring tests first and match their style, fixtures, and naming. If the
+   tests, and the project's focused-test command (one file or one test). Read
+   neighboring tests and project scripts/CI first. If the command is still
+   unclear, read only the matching ecosystem in
+   [`references/test-commands.md`](references/test-commands.md). Match local
+   style, fixtures, and naming. If the
    seam choice is genuinely contestable, ask the user; if the user is away,
    state your choice and proceed.
 3. **Map acceptance criteria to tests.** Build the matrix in
    [`references/ac-matrix.md`](references/ac-matrix.md) — one row per criterion per path
-   (happy, edge, failure, alternative), plus the span check. Rows that only a
-   running app can prove are owed to `/agentic-qa`. No criteria in the ticket →
+   (happy, edge, failure, alternative), plus the span check. A running-app row closes with a suitable project E2E test; when no runner
+   covers it, record proof owed to `/agentic-qa`. No criteria in the ticket →
    write them from the step-1 sentence and say so.
 4. **Declare any exception now** (see Exception protocol) — before writing
    any code.
@@ -101,9 +104,8 @@ run per slice adds no signal.
   Exception: <declared exception + follow-up test plan | none>
   ```
 
-  A filled instance lives in
-  [`references/summary-example.md`](references/summary-example.md) — match
-  its concreteness.
+  Load [`references/summary-example.md`](references/summary-example.md) only
+  when uncertain how to make an evidence field concrete.
 
   Then suggest `/code-review`, then `/commit-push-close` or `/commit-push-pr`,
   then `/agentic-qa` on the shipped revision when the change can reach a
@@ -148,28 +150,7 @@ do not request it again before pursuing green.
 
 ## Exception protocol
 
-TDD adapts to real work — it never silently disappears. Declare the exception
-before proceeding, in one line: `TDD exception: <case> — <reason>.` Then state
-how the change WILL be verified, and record a follow-up test plan in the
-summary (and in the ship skill's `Notes:` section when shipping).
-
-- **Spike / prototype.** Code written to answer a question. No tests during
-  the spike; name the question and timebox it. The keeper version re-enters
-  the loop from Red — or use `/prototype` and throw the spike away.
-- **Legacy code without tests.** Write a characterization test first: pin
-  current behavior at the nearest seam before changing anything. No harness at
-  all → build the smallest harness that runs one test at that seam; if that's
-  out of scope, verify manually and file the harness as the follow-up.
-- **Urgent hotfix.** The fix may ship on manual verification evidence when
-  waiting is worse than shipping. The regression test is written immediately
-  after — same iteration, before the issue closes — and must be seen failing
-  against the pre-fix commit. Implement locally; this
-  exception grants no production access or deployment authority.
-- **Infrastructure / config.** Unit tests rarely apply. Assert what is
-  assertable — a validation command, dry run, plan diff, or smoke check — name
-  which, run it, and record the output.
-- **Exploratory refactor.** Green tests are the harness: run them before,
-  continuously, and after. No tests over the area → that's the legacy case
-  first.
-
-An exception without declared verification is just untested code.
+For a spike, legacy seam, urgent hotfix, configuration change, or exploratory
+refactor, load [`references/exception-protocol.md`](references/exception-protocol.md)
+before editing. Declare the case, reason, verification, and follow-up test
+plan; an exception never grants production access or silently skips proof.

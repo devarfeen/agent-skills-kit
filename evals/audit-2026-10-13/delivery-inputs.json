@@ -1,0 +1,92 @@
+[
+  {
+    "id": "D1",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/factory/SKILL.md",
+    "observations": "Explicit factory run for PR87 into authorized local. CI green, current-head QA verified and risk low/blocking0. ReviewThreads page1 has100 resolved nodes and hasNextPage=true; page2 contains one unresolved thread. Head approved."
+  },
+  {
+    "id": "D2",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/factory/SKILL.md",
+    "observations": "Issue419 body has no criteria section; newest factory-criteria comment lists one empty-list criterion unchanged since intake. Current head bbbb222; newest QA handoff says Change bbbb222, Fully accepted1/1. Body has no acceptance verdict. CI green."
+  },
+  {
+    "id": "D3",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/factory/SKILL.md",
+    "observations": "Explicit factory run for issue420. PR88 merged directly into staging, only ordinary issue reference, no closingIssuesReferences or factory-delivered marker yet. Deployment succeeds at merge SHA. No staging access approval or SSH access."
+  },
+  {
+    "id": "D4",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/factory/SKILL.md",
+    "observations": "Eligible merged task checkout. Stack was started with project bill-418, project-directory /repo and temporary compose /repo/.worktrees/bill-418.compose.yml. Down with that configuration errors. Worktree clean."
+  },
+  {
+    "id": "D5",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/factory/SKILL.md",
+    "observations": "Compare explicit /factory run421 needing checkout with plain /factory421 status. using-git-worktrees exists with implicit discovery false. No direct invocation of setup."
+  },
+  {
+    "id": "D6",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/risk-review/SKILL.md",
+    "observations": "PR current head aaa; authorized delivery branch local is also repository default, and explicitly not a production deployment branch. Low tier, zero blocking. Separate variant local is production deployment branch."
+  },
+  {
+    "id": "D7",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/risk-review/SKILL.md",
+    "observations": "Explicit factory run loaded risk-review. PR low risk/blocking0; all review threads resolved. Run start authorized verdict posting, but risk skill itself must leave merge pause to factory."
+  },
+  {
+    "id": "D8",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/risk-review/SKILL.md",
+    "observations": "Repeated review same current head and identical risk verdict; one matching own marker already exists. Separate variant auto-merge acts immediately and PR becomes merged before readback."
+  },
+  {
+    "id": "D9",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/deploy-watch/SKILL.md",
+    "observations": "Merged PR base local, merge SHA aaa. Confirmed staging branch contains aaa; deployed descendant bbb is from staging deployment workflow. Live revision endpoint reports bbb. Explicit issue418 supplied. Staging browsing approved and SSH access supplied; smoke allpasses."
+  },
+  {
+    "id": "D10",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/deploy-watch/SKILL.md",
+    "observations": "Staging deploy job succeeds and smoke passes, but no runtime build revision can be observed. Worktree source and Actions head match desired change."
+  },
+  {
+    "id": "D11",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/local-to-staging/SKILL.md",
+    "observations": "origin/staging was fetched before promotion. Promotion merges remotely after that fetch. New delivery fix mergeSHA is now in remote staging but not local tracking ref yet."
+  },
+  {
+    "id": "D12",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/deploy-watch/SKILL.md",
+    "observations": "Issue418 has old factory-qa-assigned marker for PR80/mergeaaa. Returned issue now delivered by PR88/mergebbb. Deployment contains new fix. No assignment marker for this delivery."
+  },
+  {
+    "id": "D13",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/ci-loop/SKILL.md",
+    "observations": "Repository has no required checks. First --required query returns no required checks reported. All-check baseline includes failing lint; fix passes locally; need push/watch/readback."
+  },
+  {
+    "id": "D14",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/agentic-qa/SKILL.md",
+    "observations": "PR changes internal pure calculation with no browser reach; no UI grid built. Separate variant local review has no PR to post a marker on."
+  },
+  {
+    "id": "D15",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/qa-escape/SKILL.md",
+    "observations": "Reported bug tested on staging build that lacks delivered change. Local correct build does not reproduce. No causal failing check can be established."
+  },
+  {
+    "id": "D16",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/commit-push-pr/SKILL.md",
+    "observations": "Issue acceptance criteria exist only in newest factory-criteria comment. PR body lacks verdict; current-head QA handoff carries it. Existing non-draft PR needs handoff refresh, same branch/head, no new product change."
+  },
+  {
+    "id": "D17",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/factory/SKILL.md",
+    "observations": "Worker removes existing failing assertion because it was inconvenient; new tests pass. Decisions lists removing it. No user approval of weakened criterion."
+  },
+  {
+    "id": "D18",
+    "skill": "/home/arfeen/personal-projects/agent-skills-kit/.worktrees/skills-invocation-audit/skills/staging-fix/SKILL.md",
+    "observations": "Owner asks to fix staging issue. Read-only staging inspection approved but SSH access not supplied. Local repo and reproduction are available. Logs suggest restart and host .env edit."
+  }
+]
