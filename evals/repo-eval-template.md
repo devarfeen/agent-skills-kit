@@ -9,7 +9,7 @@ sheet catches what per-skill scoring cannot see.
 bash tools/validate.sh
 ```
 
-Fourteen checks: frontmatter (name matches folder, kebab-case, description present,
+Nineteen checks: frontmatter (name matches folder, kebab-case, description present,
 ≤1024 chars, parses as **strict YAML**), duplicated-by-design copies
 byte-identical, manifest↔folder agreement in both directions, README table rows,
 relative links and cross-file anchors resolve, zero-attribution tripwire on files
@@ -18,8 +18,11 @@ trigger-eval sets parse, **eval provenance** — every live description still
 matches the one judged in the run its `last_run` records — invocation parity
 (`disable-model-invocation` ⇔ `agents/openai.yaml` with
 `allow_implicit_invocation: false`), SKILL.md body word ceiling (1500),
-canonical one-liners byte-exact where used, and no placeholder scaffolding in
-`references/` or `assets/`.
+canonical one-liners byte-exact where used, no placeholder scaffolding in
+`references/` or `assets/`, a version bump on every changed skill, one plugin
+group per skill, no hidden zero-width or bidi characters, companion credits,
+the `agents-md` template byte budget, and the description budgets (200
+characters each, 3,000 total for model-invocable skills).
 
 Green is a gate, not a score. It proves nothing about whether the skills are good.
 

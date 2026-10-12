@@ -72,7 +72,10 @@ re-run `/agents-md` after a marker bump.
     `AGENTS.md` shows each section as moved, keeps PROJECT-CODEs and sections
     other skills added, and writes `AGENTS.md` last. `/local-to-staging`,
     `/staging-to-production`, and `/release-notes` now read the matrix from
-    `rules/projects.md`, or inline from an older `AGENTS.md`.
+    `rules/projects.md`, or inline from an older `AGENTS.md`. The template
+    budget in `tools/validate.sh` is now 12,500 bytes, and the version marker
+    appears nine times: the rule text, the template, and the seven `rules/`
+    assets.
 
 - **`/agentic-qa` 0.3.1** — its reference gains the agent-browser command
   notes (timeout variable, wait forms, batch input, launch options) that left

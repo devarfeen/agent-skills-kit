@@ -18,8 +18,9 @@
 #      to a real heading.
 #   6. No AI/tool attribution has leaked into the repo — files or branch commit
 #      messages (zero-attribution policy).
-#   7. The three agents-md version markers agree with each other and with the
-#      stated skill version.
+#   7. The nine agents-md version markers (rule text, AGENTS.md template, seven
+#      assets/rules/ files) agree with each other and with the stated skill
+#      version; the AGENTS.md template stays within TEMPLATE_BUDGET bytes.
 #   8. Manifest gradient rows carry a valid phase.
 #   9. Every skills/*/evals/evals.json parses and carries queries + last_run.
 #  10. Eval provenance: each live description still matches the one that was
@@ -49,9 +50,9 @@
 #      carry instructions a reviewer never sees.
 #  18. Companion parity: every companion in README "Companion install commands"
 #      is named in README.md's Credits And Provenance section, with its source repo.
-#  19. Total description budget for model-invocable skills (3000 characters;
-#      1779 at introduction) — every model-invocable description loads into
-#      every session's catalog.
+#  19. Description budgets: every description at most 200 characters, and a
+#      3000-character total for model-invocable skills (1779 at introduction)
+#      — every model-invocable description loads into every session's catalog.
 
 set -u
 

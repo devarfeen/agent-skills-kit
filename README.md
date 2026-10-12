@@ -79,8 +79,8 @@ into your agent's local skills directory. After install, invoke a skill with
 `feature-discovery`, `tdd-loop`, and `using-git-worktrees` also trigger
 automatically when a request matches their description. Opencode and
 Antigravity ignore that flag (they read only `name` and `description`), so
-there any kit skill can load when a request matches; every description
-therefore states its own boundary. Not sure which skill fits? Run `/ask-kit`.
+there any kit skill can load when a request matches. Every description is
+therefore kept to 200 characters and names the skill's nearest sibling. Not sure which skill fits? Run `/ask-kit`.
 
 [CHANGELOG.md](CHANGELOG.md) records what each update changes, including
 breaking changes such as the `CONTEXT.md` → `GLOSSARY.md` rename.
@@ -281,8 +281,8 @@ These interlocks use optional upstream skills alongside the kit:
 - **Worktrees** are request-driven. Ask to do work in a worktree and
   `/using-git-worktrees` runs before the task skill, using that project repo’s
   `.worktrees/<task-name>` and adding `/.worktrees/` to its `.gitignore`.
-  Generated `AGENTS.md` routes Matt’s implementation, debugging, prototype, and review skills through
-  that setup and passes them the verified checkout. Third-party installations
+  The generated workspace rules (`rules/orchestration.md` and `rules/skills.md`) route Matt’s implementation, debugging, prototype, and review skills through
+  that setup and pass them the verified checkout. Third-party installations
   stay untouched.
 - **Implementing** stacks three layers. `/implement` is an optional *ticket
   driver*; the kit's `tdd-loop` is the test-first *procedure* it calls at each
@@ -347,7 +347,7 @@ tables are in [GUIDE.md](GUIDE.md).
 
 ### Shared protocol lines
 
-Eight one-liners are shared kit protocol: every skill that covers the topic
+Seven one-liners are shared kit protocol: every skill that covers the topic
 carries the exact same sentence, and `tools/validate.sh` (check 13) fails on a
 paraphrase. The source text lives in
 [`writing-kit-skills`](skills/writing-kit-skills/SKILL.md).
@@ -376,7 +376,8 @@ skills from the wider agent-skills ecosystem.
   guide.
 - The non-negotiable discipline in `agents-md` was originally seeded by
   Forrest Chang's Karpathy-inspired `CLAUDE.md` guidelines and later expanded
-  in this repo into a 14-rule core:
+  in this repo into the 16 non-negotiable rules the generated `AGENTS.md`
+  carries today:
   <https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md>
   The upstream repository is MIT licensed. This repo records credit here rather
   than emitting source notes into generated `AGENTS.md` files.
@@ -508,11 +509,13 @@ CI runs the same script on every PR. It checks, in short: frontmatter and
 naming; byte-identical shared files (`ship-policy.md`, `context-terms.md`);
 manifest, README, and plugin-group coverage for every skill; link and anchor
 integrity; zero attribution in files and commit messages; agents-md version
-marker agreement; trigger-eval sets and their provenance; invocation parity
+marker agreement and a byte budget for the always-loaded `AGENTS.md`
+template; trigger-eval sets and their provenance; invocation parity
 with `agents/openai.yaml`; the 1,500-word body ceiling; the canonical
 one-liners; no placeholder scaffolding; version bumps on every changed skill;
 no hidden zero-width or bidi characters; every installed companion credited
-here; and a 3,000-character total budget for model-invocable descriptions.
+here; a 200-character cap on every description; and a 3,000-character total
+budget for model-invocable descriptions.
 
 ## License
 

@@ -143,7 +143,7 @@ still need their own request. See the
 
 ### Companion skills and MCPs are part of ad-hoc workflow
 
-Companion skills and MCPs sit beside the core gradient. They are not a second pipeline. Use them when they make the current step sharper, faster, or more verifiable. The current companion list and its use-when triggers live in [GUIDE.md](GUIDE.md#companion-skills-and-mcps) (human copy) and [`skills/agents-md/references/skills-manifest.md`](skills/agents-md/references/skills-manifest.md) (the source that drives generated `AGENTS.md`).
+Companion skills and MCPs sit beside the core gradient. They are not a second pipeline. Use them when they make the current step sharper, faster, or more verifiable. The current companion list and its use-when triggers live in [GUIDE.md](GUIDE.md#companion-skills-and-mcps) (human copy) and [`skills/agents-md/references/skills-manifest.md`](skills/agents-md/references/skills-manifest.md) (the source that drives the generated `rules/skills.md`, which lists only the companions found installed).
 
 The principles that don't change as the list does:
 
@@ -229,6 +229,12 @@ placeholders** → **`/design-system`** once per project that has UI (re-run
 chat-visible behaviors this establishes (PROJECT-CODEs, phase updates,
 understanding checks) are bound by the generated `AGENTS.md` rules themselves.
 
+`/agents-md` writes two layers. `AGENTS.md` loads on every task, so it holds
+only the rules every task needs and a table of what to read before which
+action. Seven files under `rules/` hold the rest — the Project Matrix,
+orchestration, verification, browser, shipping, issues, and skills — and the
+agent reads one only when it is about to do that kind of work.
+
 `/agents-md` also lists other instruction files that load beside `AGENTS.md`,
 such as `.github/copilot-instructions.md`, `.cursor/rules/`, or
 `AGENTS.override.md`, because they can quietly contradict it. It reports them
@@ -242,6 +248,8 @@ checks text/background pairs against WCAG AA contrast and confirms that every
 named font is actually loaded.
 
 > **Why placeholders, not guesswork:** `/agents-md` runs *before* you've decided where context lives, so it must not invent a path. Leaving labelled placeholders turns the fill step into a mechanical edit instead of a rewrite. `/agents-md` writes the *rules of engagement*; `/setup-matt-pocock-skills` owns the *locations*.
+
+> **Why the rules are split:** a rule that loads on every task costs tokens on every task, and a long file buries the few lines that matter for the step in front of the agent. Three hard stops stay in `AGENTS.md` as short rules because missing them is expensive: nothing ships outside the ship skills, a change that can reach a screen passes `/agentic-qa` before a human sees it, and agents are local only.
 
 ---
 
@@ -451,11 +459,12 @@ What separates intentional use from vibe coding:
 - **Letting `/implement` commit.** Its own text ends "commit your work to the current branch." The ship skills own commits — branch-off-main, structured message, issue link, test evidence, zero attribution. A bare commit bypasses all of it.
 - **Compacting mid-phase.** The agent loses the thread. Decide at the boundary between phases, and rule out continuing first.
 - **Shipping debug output.** Untagged logs survive; tag temporary instrumentation so one grep removes it before the ship skill stops on it.
-- **Assuming user-invoked means the model cannot fire it.** True in Claude CLI, Codex CLI, and Cursor CLI. Opencode and Antigravity ignore the flag, so the description's boundary sentence is what keeps a skill from loading there.
+- **Assuming user-invoked means the model cannot fire it.** True in Claude CLI, Codex CLI, and Cursor CLI. Opencode and Antigravity ignore the flag, so the description, which names the skill's nearest sibling, is what keeps it from loading there.
 - **Switching checkouts to ship.** Commit and push from the verified task worktree; do not move its edits back to the original checkout.
 - **Deleting a worktree after push or issue closure.** Confirm integration and preserve local files first. Shipping is not merging, and ignored files may still be valuable.
 - **Using `/tdd` as a loop.** Since upstream v1.1.0 it is a reference document — what a good test is, where seams go. Invoking it alone gets you no witnessed red. The procedure is `/tdd-loop`.
 - **Treating native memory as authority.** Native memory is user-local recall. `GLOSSARY.md` and ADRs bind.
+- **Growing the always-loaded `AGENTS.md`.** A rule that applies only to some tasks belongs in the matching `rules/` file, where it is read when that work starts. Everything in `AGENTS.md` is paid for on every task.
 - **Recreating secondary recall systems.** Do not create repo `MEMORY.md`, wiki, or discovery memory. Use native CLI memory only.
 - **Inlining UI the library already covers.** Once a project has a design system, hand-rolling markup in a page instead of consuming its `<project-slug>-ui-coding` library. A missing component goes through `/design-system` (extend), not a one-off.
 - **Claiming a UI fix "verified" by eye.** Per-page conformance needs `/pixel-audit`'s element-level gate — served assets, `getBoundingClientRect()`, computed styles — not a glance at a full-page screenshot.

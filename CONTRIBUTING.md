@@ -50,10 +50,12 @@ would waste tokens.
 ### Description first
 
 The description must answer, in one breath: *when should a runtime load this?*
-Include the trigger verbs and nouns users actually say ("commit, push, and
-close", "punch list", "pixel-audit"), the scope boundary ("cosmetic scope only",
-"multi-project specs only"), and what the skill refuses to do ("never implements,
-never auto-chains"). Look at `skills/polish-batch/SKILL.md` for a strong example.
+It has 200 characters (`validate.sh` check 19), so it carries three things:
+what the skill does in one clause, its main trigger in the words users
+actually say ("punch list", "pixel-audit"), and the nearest sibling a
+neighbouring request should go to instead ("behaviour changes go to
+/to-tickets"). Trigger-phrase lists, refusal lists, and procedure summaries
+belong in the body. Look at `skills/polish-batch/SKILL.md` for a strong example.
 
 ### Kit companions and task handoffs
 
@@ -65,7 +67,8 @@ enabled, and an explicit worktree request invokes it before the task skill.
 
 Keep handoffs narrow. Worktree setup returns its verified checkout to the
 already-requested task; it never authorizes a new implementation or shipping
-workflow. Third-party interlocks live in the `agents-md` template, not in
+workflow. Third-party interlocks live in the `agents-md` assets
+(`assets/rules/skills.md` and `assets/rules/orchestration.md`), not in
 rewritten copies of Matt's installed skills. General routing must also work
 when the optional Matt subsection is omitted.
 
@@ -82,8 +85,9 @@ into generated instructions.
 Runtimes load skills in tiers, so budget is a hard constraint, not a style
 preference:
 
-- **Description** — always in context, every turn. Keep it ~100 words of pure
-  routing signal.
+- **Description** — always in context, every turn. At most 200 characters of
+  pure routing signal (`validate.sh` check 19); model-invocable descriptions
+  also share a 3,000-character total.
 - **SKILL.md body** — loaded on trigger. The house band is 1,000–1,300 words
   after the frontmatter (`validate.sh` check 12 enforces a hard 1,500-word
   ceiling); approaching it, push detail into `references/` with clear pointers.
@@ -273,14 +277,14 @@ eval pass.
 | You changed | Also update |
 | :--- | :--- |
 | Added/removed/renamed a skill folder | `skills-manifest.md` row · README skills table and skill-groups table · its path in one `.claude-plugin/marketplace.json` plugin group (`workspace-setup`, `discover-plan`, `build`, `visual-design`, `ship`, `staging-promotion`, or `factory-workflow`) · `GUIDE.md` usage/tables for its gradient or companion role |
-| A skill's phase or gradient position | `skills-manifest.md` (single source for generated AGENTS.md tables) |
+| A skill's phase or gradient position | `skills-manifest.md` (single source for the generated `rules/skills.md` tables) |
 | `ship-policy.md` in either ship skill | The other copy, byte-identical |
 | An issue-title species or its grammar (`Spec:`, `Ticket NNNN of …`, `Way:`, non-spec) | `assets/rules/issues.md` (tracker-neutral) · both `ship-policy.md` copies (the title is the commit-subject anchor) · `GUIDE.md` issue-preflight gate · add a "predates this naming, do not retitle" clause for the old form |
 | Deprecating a skill (retained for reference) | Start its manifest `note` with `deprecated` — a `deprecated`-prefixed note excludes the row from generated gradient/companion tables · mark its README table row · add a STATUS banner at the top of its `SKILL.md` |
 | `agents-md` templates or generation rules (anything that changes what it emits — routine manifest row additions don't count) | Bump the version marker in `skills/agents-md/` (every occurrence: the rule text in `SKILL.md` and the first line of each asset — the `AGENTS.md` template and the seven `assets/rules/` files). The `AGENTS.md` template has a byte budget in `tools/validate.sh` (`TEMPLATE_BUDGET`): a rule that applies only to some tasks goes in an on-demand file, and detail that belongs to one skill goes in that skill |
 | Companion list | `skills-manifest.md` companions table · `GUIDE.md` human copy · relevant README/BEST-PRACTICES pointers |
 | A credited or globally installed companion skill (README "Credits And Provenance") | The same skill in README [Companion install commands (global)](#companion-install-commands-global) — `validate.sh` check 18 fails when a listed companion is missing from the credits |
-| Worktree placement, handoff, or cleanup boundary | `using-git-worktrees/SKILL.md` · `agents-md` template/routing · both ship-policy copies · README/GUIDE/BEST-PRACTICES usage |
+| Worktree placement, handoff, or cleanup boundary | `using-git-worktrees/SKILL.md` · `agents-md` Rule 11 in the template and `assets/rules/orchestration.md` / `skills.md` · both ship-policy copies · README/GUIDE/BEST-PRACTICES usage |
 | Elevated-permission presets | `skills/agents-md/references/tool-calling.md` (model-facing source) and `GUIDE.md` (human-facing copy) |
 | Any runtime fact in `tool-calling.md`, a `*-tools.md`, `memory-global-defaults.md`, or `skills/tdd-loop/references/test-commands.md` | Re-verify the claim against that tool's current official docs in the same PR — CLI flags, tool names, and test-runner syntax age fast; don't propagate a stale fact into more files |
 | Any runtime fact in `skills/orchestrate-herdr/references/` — `herdr-commands.md` CLI syntax and lifecycle states, `tracker-map.md` `gh` and Linear MCP calls | Re-verify against the *installed* surface in the same PR, not prose docs: `herdr <group> --help` plus `herdr --skill` for herdr (its binary is the stated authority for its own syntax), the live tool schema for Linear MCP, `gh <cmd> --help` for GitHub. A flag, subcommand, or enum value absent from `--help` is phantom tooling — the defect class `writing-kit-skills` names |
