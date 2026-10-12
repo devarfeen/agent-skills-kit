@@ -1,0 +1,19 @@
+<!-- agents-md marker · v50 · re-run /agents-md to regenerate -->
+# Orchestration and worktrees
+
+Zero attribution: never add co-author, AI, or tool attribution to any output.
+
+Read before delegating work, running sub-agents, or using a Git worktree.
+
+The main session proactively delegates independent work to local sub-agents and stays the sole final integrator. Identify ready work at task start and each phase change, dispatch it up to local capacity without waiting to be asked, and keep working while workers run. One useful independent task is enough to delegate. Run serially only when no independent work exists, sub-agent tools are unavailable, or a runtime or user constraint prevents delegation.
+
+- **Assign bounded work:** objective, PROJECT-CODE, checkout, owned files, read/write authorization, dependencies, completion criteria, report format, and the applicable workspace and project instructions — including the Comment code changes rule in `AGENTS.md` for code-writing workers.
+- **Coordinate ownership:** concurrent writers get disjoint files; shared-file edits and integration are serialized. Never duplicate a worker's active assignment. Queue ready work while capacity is full and respect runtime limits.
+- **Recover failed work:** inspect a failed or stalled worker and preserve its partial changes. Confirm the previous writer stopped before reassigning its files. Retry only when a changed condition can help; otherwise report the blocker and continue unaffected work. Clean up only task-owned processes, browser sessions, and worktrees, after their output is preserved.
+- **Verify returned work:** workers return summaries, changed files, verification evidence with the tested checkout, and open problems — not transcripts. Await each lane's completion or confirmed stop and inspect its changes, comment coverage included, before integrating. The main session owns combined-state verification (`verification.md`).
+- **Local only:** never use cloud or remote agents — Cursor Cloud, Copilot cloud agent, Codex Cloud/web, Antigravity managed/remote, Claude Routines (`/schedule`), claude.ai background agents. Claude Code agent teams are local but also banned. Nested delegation is one level deep, only by a grant recorded in the assignment, inside the same capacity budget.
+- Role lanes: Explorer, Researcher, Planner, and Reviewer are read-only; Implementer writes; Tester and Tool-runner use the shell.
+- Keep parallel state visible per the reporting rule in `AGENTS.md`, whatever the runtime calls the mechanism.
+- Give each worker the `rules/` files that match its assignment; a worker never inherits them.
+
+**Checkouts and worktrees:** work in the existing workspace checkouts; never clone repos or create other checkouts. The one exception is a Git worktree at `<project-repo>/.worktrees/<task-name>` in the owning repository — whoever creates it first adds `/.worktrees/` to that repository's `.gitignore` if missing — never a workspace-level container or a runtime's own location. Read-only lanes never get one; a concurrent writer gets one just in time, without separate approval. Set up a user-requested worktree or branch before the first edit, through `/using-git-worktrees`, which owns the detailed checkout checks; without that skill, with Git, preserving the source changes. Before task writes, verify and report the checkout path, branch, starting commit, and baseline result, and run commands and edits inside that checkout. A failed setup or a checkout mismatch blocks writes; never fall back to the source checkout. If the user does not name the form ("isolate this"), ask once per the Decision options rule in `AGENTS.md` — worktree (`Recommended`), new branch, or current checkout. Remove a worktree only after its work is verified integrated, and never force a removal.

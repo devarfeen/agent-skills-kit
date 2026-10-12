@@ -40,7 +40,6 @@ Matt Pocock core:
 Companions:
 
 - **agent-browser** — Browser automation CLI for AI agents: navigate pages, fill forms, click, screenshot, extract data, test web apps, QA/bug hunts, and Electron app automation.
-- **graphify** — Any question about a codebase, its architecture, file relationships, or project content — especially when a generated knowledge graph exists; query/path/explain over the graph.
 - **impeccable** — Design, redesign, critique, audit, polish, or otherwise improve a frontend interface: UX review, visual hierarchy, accessibility, typography, spacing, color, motion, and reusable design systems or tokens.
 - **unslop** — Cut AI tells from any writing. Must always apply.
 - **blast-radius** — Find what a change could break somewhere else before it ships, beyond the diff, and prove the one fact it's safe because of by running real code instead of writing it up. Use for 'blast radius of X', 'what could this break', or reviewing a small diff you don't trust.

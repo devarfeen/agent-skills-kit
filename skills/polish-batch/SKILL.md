@@ -1,9 +1,9 @@
 ---
 name: polish-batch
 disable-model-invocation: true
-description: Batch the UI-polish tail at the verify phase — during manual QA, capture tiny cosmetic fixes (copy, spacing, alignment, wrong string) WITHOUT fixing any of them, then dispatch them per PROJECT-CODE in one bounded pass, then verify. Use when the user says "punch list" or wants cosmetic nits, including a one-off alignment or spacing nit, handled in the polish tail. Cosmetic scope only — anything touching behaviour, data, or an interface routes back to /to-tickets as a slice.
+description: "Batch cosmetic UI nits found in manual QA (copy, spacing, alignment) into a punch list, dispatch them per PROJECT-CODE in one pass, then verify. Cosmetic only; behaviour changes go to /to-tickets."
 metadata:
-  version: "0.1.1"
+  version: "0.1.2"
 ---
 
 # Polish batch

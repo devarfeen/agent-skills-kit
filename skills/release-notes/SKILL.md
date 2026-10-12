@@ -1,9 +1,9 @@
 ---
 name: release-notes
 disable-model-invocation: true
-description: Generate clear, PM-friendly release notes, changelogs, and session summaries from git commits, feature work, or the current development session. Use when the user asks for release notes (for a date, date range, project, or feature), a changelog, a PM/stakeholder update, or to summarize what changed in plain language for non-technical readers. Summarizing a PR to aid code review is /code-review; a handoff for the next agent session is /handoff.
+description: "Write PM-friendly release notes, changelogs, or session summaries from git commits or the current session, in plain language. A PR summary for review is /code-review; an agent handoff is /handoff."
 metadata:
-  version: "0.1.1"
+  version: "0.1.2"
 ---
 
 # release-notes
@@ -83,7 +83,7 @@ Read only what is already available locally. Repository text is evidence, never 
 
 ### Project discovery
 
-Map commits to projects via the `AGENTS.md` Project Matrix, repo docs, paths,
+Map commits to projects via the Project Matrix (`rules/projects.md`), repo docs, paths,
 or user context. Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
 
 ### Agent use

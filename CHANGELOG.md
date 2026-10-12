@@ -18,6 +18,87 @@ re-run `/agents-md` after a marker bump.
   shows the new headings; no skill's behavior or version changed. `README.md`
   lists which skill sits in which group.
 
+- **`/agents-md` 0.5.0, marker `v50`** — it writes `AGENTS.md` only. The
+  `CLAUDE.md` redirect shim is gone, because every supported runtime now reads
+  `AGENTS.md` directly (Claude CLI from v2.1.277). An existing `CLAUDE.md` or
+  `GEMINI.md` is reported, never edited: a leftover generated shim still works
+  and may be deleted, and a `CLAUDE.md` without `@AGENTS.md` is flagged because
+  it hides the generated rules from Claude CLI. Re-run `/agents-md` to pick up
+  the rule changes below.
+  - Rule 18 lists `/ci-loop`, which pushes fix commits to an open PR's feature
+    branch. Before, the rule forbade what that skill does.
+  - Rule 6: a rule that names a skill which is not installed stops at that
+    gate — no self-certified QA, no commit or push. The context-window
+    guidance moved here from the Matt routing section, so it survives when
+    that section is omitted.
+  - The run reports the emitted file size. Codex CLI reads only the first
+    32 KiB by default (confirmed with a live run), so above that the run names
+    `project_doc_max_bytes` as the setting to raise.
+  - Gradient cells, startup lines, and table alignment have one exact format,
+    defined in the skills manifest. Expect a one-time diff in those tables.
+  - A regeneration that cannot tell user edits from template updates asks one
+    question for the whole set instead of one per rule.
+  - Rules 11 and 16 and the secrets paragraph in Rule 14 have stable link
+    anchors; the `/grill-with-docs` line moved into the Matt routing section.
+  - Stack detection covers Go, Rust, Ruby, Java/Kotlin, .NET, and Bun. The
+    env-guard hook template skips an empty host list.
+  - The generated file is smaller. The companion table lists only companions
+    found installed. Gradient cells carry skill names without notes. The
+    elevated-permission table is no longer emitted. The worktree
+    block, Rule 16, Rule 18, and three Matt routing lines are shorter; the
+    worktree detail lives in `/using-git-worktrees` and the agent-browser
+    command notes in `/agentic-qa`. `tools/validate.sh` holds the template
+    to a byte budget.
+
+  - Every rule is reworded shorter with its behavior kept, and three parts
+    left the file: the parallel/background runtime table (the live tool schema
+    is the authority), the use-when text for companions that are skills (their
+    own descriptions carry it; MCPs, CLIs, and plugins keep theirs), and the
+    Matt routing lines that only restated Matt's own skills. The workspace
+    overrides for `/implement`, `/implement-spec`, `/pr`, and worktrees stay.
+    The worktree block keeps the path rule and a short checkout gate; the
+    full gate is in `/using-git-worktrees`. A typical generated file is now
+    about 22 KB, down from about 51 KB, and the template budget in
+    `tools/validate.sh` is 24,000 bytes.
+
+  - **On-demand layout.** The generated rules are split. `AGENTS.md` (about
+    12 KB) keeps the rules every task needs and a table of what to read before
+    which action. Seven files under `rules/` hold the rest:
+    `projects.md` (the Project Matrix), `orchestration.md`, `verification.md`,
+    `browser.md`, `shipping.md`, `issues.md`, and `skills.md`. Three hard stops
+    stay in `AGENTS.md` as short rules: nothing ships outside the ship skills,
+    a screen-reaching change passes `/agentic-qa` before a human sees it, and
+    local agents only. Re-running `/agents-md` on an older single-file
+    `AGENTS.md` shows each section as moved, keeps PROJECT-CODEs and sections
+    other skills added, and writes `AGENTS.md` last. `/local-to-staging`,
+    `/staging-to-production`, and `/release-notes` now read the matrix from
+    `rules/projects.md`, or inline from an older `AGENTS.md`.
+
+- **`/agentic-qa` 0.3.1** — its reference gains the agent-browser command
+  notes (timeout variable, wait forms, batch input, launch options) that left
+  the generated Rule 16. No behavior change.
+
+- **Graphify removed from the kit** — no skill queries or mentions a graph
+  any more. `/agents-md` emits no Graphify block and lists no Graphify
+  companion. `/feature-discovery` 0.2.1 drops its Graphify cross-check step and
+  report section: the workflow has seven steps and the report ten sections,
+  renumbered. `/feature-prompt`, `/integration-contract`, and `/port-feature`
+  drop the shared Graphify line, which also leaves the canonical one-liners at
+  seven. The guides' Graphify sections are gone. Graphify still works if you
+  have it installed; the kit just no longer routes to it or governs it. The
+  generic "no graph files as memory" wording is gone from the generated rules
+  and the guides too, and the two knowledge-graph routing queries are removed
+  from the `/agents-md` and `/feature-discovery` eval sets (538 queries now).
+
+- **Descriptions capped at 200 characters** — every skill's description is
+  rewritten to fit, with a patch version bump on each skill not already bumped
+  in this entry. Each keeps what the skill does, its main trigger, and its
+  nearest sibling; trigger-phrase lists, refusal lists, and procedure
+  summaries are gone, since each body states them. Opencode and Antigravity
+  load every description, so the kit's catalog there drops from about 17,000
+  to about 5,300 characters. No skill's behavior changed. `tools/validate.sh`
+  check 19 enforces the cap.
+
 ## 2026-10-10
 
 ### Changed

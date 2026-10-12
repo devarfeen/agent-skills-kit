@@ -1,9 +1,9 @@
 ---
 name: writing-kit-skills
 disable-model-invocation: true
-description: "House style for authoring and editing skills in this kit — the skeleton, word budget, canonical one-liners, output caps, and eval gates every SKILL.md follows. Use when creating a new skill in agent-skills-kit or editing an existing kit skill's body, references, or description; generic skill creation elsewhere is skill-creator, and running the kit's eval harness is a maintainer procedure, not this skill."
+description: "House style for authoring or editing skills in agent-skills-kit: skeleton, word budget, canonical lines, eval gates. Generic skill creation elsewhere is skill-creator."
 metadata:
-  version: "0.3.0"
+  version: "0.3.1"
 ---
 
 # writing-kit-skills
@@ -47,10 +47,9 @@ Classify the observed failure before writing the fix. Knows the rule, skips it u
 
 ## Canonical one-liners
 
-These eight lines are shared kit protocol. Paste them **byte-exact** (validator-enforced); never paraphrase or expand them. The only exemption is a user-approved marker-and-file pair listed in `CANON_EXEMPT` in validate.sh (feature-discovery's code-first Graphify rule); add none without that approval:
+These seven lines are shared kit protocol. Paste them **byte-exact** (validator-enforced); never paraphrase or expand them. The only exemption is a user-approved marker-and-file pair listed in `CANON_EXEMPT` in validate.sh (none at present); add none without that approval:
 
 - Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`GLOSSARY-MAP.md` at repo root; legacy `CONTEXT-MAP.md`), else the repo root.
-- Use `graphify-out/graph.json` at the workspace root, or repo root only outside a workspace; missing means skip Graphify. Query before raw search and verify hits against current source. Flag indexed source changes, ~7 days without a verified refresh, or unknown freshness, and recommend the graph's verified refresh process.
 - Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes.
 - Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
 - Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.

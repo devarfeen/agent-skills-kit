@@ -5,9 +5,10 @@ How to fill the Project Matrix `Stack` cell per ecosystem. The binding rule live
 Zero attribution: omit co-author, AI, and tool attribution from all output.
 
 - **Find the real app root** — often nested (`application/`, `app/`, `src/`); read the manifest there and note the dir.
-- **PHP** — `composer.json`: version from `require.php`, frameworks from `require`; CodeIgniter version from `system/core/CodeIgniter.php` `CI_VERSION`. A Livewire app must say Livewire.
+- **PHP** — `composer.json`: version from `require.php`, frameworks from `require`, and its presence names Composer as the package manager; CodeIgniter version from `system/core/CodeIgniter.php` `CI_VERSION`. A Livewire app must say Livewire.
 - **Frontend build** — list `Vite`/`Tailwind` only when `vite`/`laravel-vite-plugin`/`tailwindcss` are in the app's own `package.json` deps; Laravel never implies one.
 - **JS / TS** — `package.json`: runtime + version; `TypeScript` when a `typescript` dep or `tsconfig.json` exists; package manager from the lockfile (`package-lock.json` → npm, `yarn.lock` → yarn, `pnpm-lock.yaml` → pnpm).
 - **Python** — framework from `requirements.txt` / `pyproject.toml`; version from `Dockerfile` `FROM python:X.Y`, `.python-version`, or `requires-python`.
+- **Go** — `go.mod`: `go` directive version, frameworks from `require`. **Rust** — `Cargo.toml`: `edition`, frameworks from `[dependencies]`; `[workspace]` marks a multi-crate root. **Ruby** — `Gemfile` / `Gemfile.lock`; version from `.ruby-version`. **Java / Kotlin** — `pom.xml` or `build.gradle(.kts)`: build tool from which file exists, frameworks from its dependencies. **.NET** — `*.csproj`: `TargetFramework` and `PackageReference`. **Bun** — `bun.lock` / `bun.lockb` → bun.
 - **A test runner is not the stack**; name one only when there is no app framework.
 - **Non-app folders** — `"type": "library"` in `composer.json` identifies a package, noted `VCS, branch <name>` when branch-installed. No detected framework alone does not prove package status. Raw SQL/migration folders are "<engine> / raw SQL migrations". A `.`-path folder is meta only when its contents support that role; inspect manifests before classifying it.

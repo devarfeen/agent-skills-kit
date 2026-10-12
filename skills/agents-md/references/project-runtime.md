@@ -28,7 +28,7 @@ environment values never reach the session. Never run the command without the
 filter; if `jq` is unavailable, skip runtime synchronization with that reason. Do not start containers, inspect running containers, or use
 staging/production files. An absent file, unavailable command, failed resolution,
 or invalid JSON skips runtime synchronization with a reason; default root
-generation remains independent. Runtime-only leaves the root pair untouched.
+generation remains independent. Runtime-only leaves the root `AGENTS.md` and `rules/` untouched.
 
 ## 2. Match projects to services
 
@@ -110,6 +110,6 @@ marker refresh, artifact migration, or setup-skill suggestions.
   preserves the marker lines and all bytes outside them. A repeat run is a no-op.
 - No missing project instruction file was created. Every project edit appeared
   in the approved diff; skipped projects remain unchanged.
-- Runtime-only leaves both root files byte-identical or absent as before.
+- Runtime-only leaves the root `AGENTS.md` byte-identical or absent as before.
 
 Compose resolution semantics: [Docker Compose config](https://docs.docker.com/reference/cli/docker/compose/config/).

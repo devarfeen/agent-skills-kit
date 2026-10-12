@@ -1,7 +1,7 @@
 # Test cases — `/agents-md`
 
 The routing test set for this skill lives in [`evals.json`](evals.json); this file is its readable
-form. 11 should-trigger queries and 9 near-miss negatives.
+form. 11 should-trigger queries and 8 near-miss negatives.
 
 Zero attribution: omit co-author, AI, and tool attribution from evaluation artifacts and publications.
 
@@ -24,7 +24,7 @@ proves nothing — if a query could never plausibly hit this skill, it is not te
 | 10 | Add the CLAUDE.md shim that forwards Claude to AGENTS.md in this workspace |
 | 11 | We added another repo to the code-workspace — refresh the workspace agent rules |
 
-## Should NOT trigger (9)
+## Should NOT trigger (8)
 
 | # | Query | Routes to |
 | :--- | :--- | :--- |
@@ -33,10 +33,9 @@ proves nothing — if a query could never plausibly hit this skill, it is not te
 | 3 | Seed the project ui-coding skill for ADMIN-WEB | `/design-system` |
 | 4 | Generate release notes for the workspace | `/release-notes` |
 | 5 | Trace how the workspace build pipeline works | `/feature-discovery` |
-| 6 | Create a knowledge graph of the workspace | `graphify` |
-| 7 | Sharpen the project's domain terminology | `domain-modeling` |
-| 8 | Create a new skill for our deploy process | `skill-creator` |
-| 9 | Add a binding AGENTS.md rule so UI changes reuse the component library | `/design-system` |
+| 6 | Sharpen the project's domain terminology | `domain-modeling` |
+| 7 | Create a new skill for our deploy process | `skill-creator` |
+| 8 | Add a binding AGENTS.md rule so UI changes reuse the component library | `/design-system` |
 
 ## Rule
 

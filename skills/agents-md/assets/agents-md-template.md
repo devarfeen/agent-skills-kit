@@ -1,68 +1,61 @@
-<!-- agents-md marker · v49 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v50 · re-run /agents-md to regenerate -->
 # Agent instructions
 
 [one concise, factual workspace intro inferred from the .code-workspace name and folder scan — no promotional adjectives]
 
-[PROJECT MATRIX — the `| Project | Path | Stack |` table per the Project Matrix Format rules in SKILL.md, one row per `.code-workspace` folder]
+This file loads on every task, so it holds only the rules every task needs. Task-specific rules live in `rules/` and are read on demand.
+
+## On-demand instructions
+
+Before the action in a row, read its file in full. A worker's assignment names the files that match its work. Read nothing else from `rules/` unless a file you read points there.
+
+| When you are about to… | Read |
+| :--- | :--- |
+| Work on a project by its code, or need its folder or stack | `rules/projects.md` |
+| Delegate work, run sub-agents, or use a Git worktree | `rules/orchestration.md` |
+| Edit code for a feature or fix, or verify a change | `rules/verification.md` |
+| Drive a browser | `rules/browser.md` |
+| Commit, push, open or merge a PR, or close an issue | `rules/shipping.md` |
+| Create, update, or triage an issue | `rules/issues.md` |
+| Choose a skill or companion, or finish a phase | `rules/skills.md` |
 
 ## Non-negotiable rules
 
 ### 1. Launch from the workspace root
 
-Run the main session from the workspace root — the folder holding the `.code-workspace` file and this `AGENTS.md` — never from inside a Project Matrix project.
+Run the main session from the workspace root — the folder holding the `.code-workspace` file and this `AGENTS.md`. At session start, check the working directory. Inside a project listed in `rules/projects.md`, stop and warn: "You launched inside <PROJECT-CODE>, not the workspace root — the Project Matrix and workspace rules may not load correctly." Ask whether to continue or relaunch, and do nothing else until the user chooses.
 
-At main-session start, check the working directory. At the workspace root, continue. Inside a Project Matrix project (or any child of one), stop and warn clearly: "You launched inside <PROJECT-CODE>, not the workspace root — the Project Matrix and workspace rules may not load correctly." Then ask the user to continue anyway or exit and relaunch from the workspace root. Do nothing else until they choose.
-
-Assigned local workers may start in the project checkout or worktree named in their assignment. Before work, read the supplied workspace instructions and applicable project and nested instructions. This exception does not apply to independent main sessions.
+Assigned local workers may start in the checkout or worktree their assignment names, after reading the supplied workspace and project instructions.
 
 ### 2. Target a project
 
-- Every task must target a project from the Project Matrix. If the prompt names none, stop and ask which one first.
-- "Meta workspace" means apply the task to every project in the matrix.
-- Use the PROJECT-CODE exactly as written everywhere — chat, docs, ADRs, prompts, issues, PRs, commits, comments, filenames — never altered, abbreviated, or re-cased.
-- In chat, identify projects by PROJECT-CODE, not folder/repo names, domains, or hostnames; mention paths only when the path itself matters.
-- Before edits or delegation, find and read existing project and nested `AGENTS.md` files governing the assigned paths. Pass the applicable instructions to workers; another project's specifics do not apply.
-- **Cascading:** follow the runtime's instruction hierarchy and file scopes. Project rules refine workspace defaults where that hierarchy permits; rule numbers express reading order, not authority. If hierarchy and scope do not resolve a material conflict, pause the affected work and ask; continue independent work.
+- Every task targets a project from the Project Matrix in `rules/projects.md`. If the prompt names none, stop and ask. "Meta workspace" means every project.
+- Use the PROJECT-CODE exactly as written everywhere — chat, docs, issues, PRs, commits, filenames. In chat, name projects by code, not folder, repo, or host.
+- Before edits or delegation, read the project and nested `AGENTS.md` files governing the assigned paths and pass them to workers. Another project's specifics do not apply.
+- **Cascading:** project rules refine workspace defaults where the runtime's instruction hierarchy permits; rule numbers are reading order, not authority. An unresolved material conflict pauses the affected work — ask, and continue independent work.
 
 ### 3. Honest state & reporting
 
-<a id="honest-state-reporting"></a>
-
-- Before any significant step, anchor state: `[verified]` (proven true), `[current]` (in progress), `[todo]` (not started).
-- Mandatory reporting gate: before the first tool call and before each phase transition, send a visible chat update with `Stage:`, `Found:`, `Next:`, and `Needs user:` on separate lines. Use `None` when no user input is needed. After discovery, investigation, or broad file reads, send this update before planning, edits, tests, commits, PRs, or issue updates. Send a closing update before ending the task. Apply this gate to every task, including short and read-only tasks; brevity, routine work, and skill-specific formats never waive it. Tool output and ordinary narration do not satisfy the gate. If an update was missed, send it immediately before continuing; report actual state without claiming it was sent earlier.
-- During an active phase, send the same update at least every 60 seconds, including while workers or jobs run. Keep individual waits at or below 60 seconds so reporting can continue. State unchanged progress honestly; do not invent findings.
-- Continue within a phase when the next action follows from the request; make phase transitions explicit. Stop only when user input, approval, or a scope decision is needed.
-- Never report work done while any part is skipped, stubbed, or unverified. Name the check layers run and not run per [Goal-driven execution](#goal-driven-execution); a read-only task says `Verification: not applicable` or lists what it checked. Surface constraints, risks, and assumptions up front.
-- Call a failure pre-existing only after reproducing it on the base revision; otherwise report it as `unverified — may be related`.
-- While any subagent, background task, or job is active — under any name, in any runtime — every visible update states `N running / M done / K blocked` and what each running lane is doing. Work running silently in the background is a reporting violation, exactly like claiming unverified work is done.
-- After a successful task, use the active skill's required closing format. If none exists, end with `Recommended next step:` and one useful follow-up with its reason.
-
-**Why:** silent gaps and premature "done" are how broken work ships.
+- Anchor state before a significant step: `[verified]`, `[current]`, `[todo]`.
+- **Reporting gate:** before the first tool call, before each phase change, and before ending, send a chat update with `Stage:`, `Found:`, `Next:`, and `Needs user:` on separate lines (`None` when no input is needed). It applies to every task, short and read-only ones included; tool output and narration do not satisfy it. Send a missed update immediately, without claiming it was sent earlier.
+- During an active phase, repeat the update at least every 60 seconds and keep single waits at or below 60 seconds. Report unchanged progress honestly.
+- While any worker, background task, or job runs, every update states `N running / M done / K blocked` and what each running lane is doing. Silent background work is a reporting violation.
+- Continue within a phase when the next action follows from the request; stop only for user input, approval, or a scope decision.
+- Never report work done while any part is skipped, stubbed, or unverified. Name the check layers run and not run (`verification.md`); a read-only task says `Verification: not applicable` or lists what it checked. Surface constraints, risks, and assumptions up front.
+- Call a failure pre-existing only after reproducing it on the base revision; otherwise report `unverified — may be related`.
+- After a successful task, use the active skill's closing format; with none, end with `Recommended next step:` and one follow-up with its reason.
 
 ### 4. Communication & output
 
-Chat only. Does not apply to code, docs, specs (PRDs), release notes, PR bodies, or prompts.
+Chat only — not code, docs, specs (PRDs), release notes, PR bodies, or prompts.
 
-#### Plain-language chat
-
-- Be concise and lead with the conclusion. Clarity beats compression — use a short complete sentence where clipping would confuse.
-- Talk in ASD-STE100 Simplified Technical English: active voice, present tense, short sentences, one idea per sentence, one meaning per word. Split any sentence that carries more than three identifiers.
-- Use the ubiquitous language from `GLOSSARY.md` for domain terms — the exact names, not synonyms.
-- Use everyday words over heavy ones ("fix" over "implement a solution", "use" over "utilize"); no other jargon unless it is an exact code, product, or domain name the user already uses.
-- Keep exact code, DB, API, route, screen, and file names verbatim. Name the plain effect, failure, or real decision first ("the test data made both cases identical"), the identifiers after; explain each technical term once.
-- No unexplained shorthand and no arrow-only flows without plain words after them. Optional brevity skills are user-invoked only.
-
-#### Understanding checks
-
-When the user asks you to repeat, confirm, or restate their understanding:
-
-- Restate only what you understand.
-- Ask the user to approve or correct it.
-- Stop there. Do not plan, edit, run tools, or continue until the user confirms or corrects the understanding.
+- Lead with the conclusion. Be concise, but use a full sentence where clipping would confuse.
+- Write ASD-STE100 Simplified Technical English: active voice, present tense, short sentences, one idea per sentence, one meaning per word. Split a sentence that carries more than three identifiers.
+- Use `GLOSSARY.md` terms exactly, and everyday words over heavy ones. Keep code, DB, API, route, screen, and file names verbatim; state the plain effect first, identifiers after; explain each technical term once.
+- No unexplained shorthand and no arrow-only flows. Brevity skills are user-invoked only.
+- **Understanding checks:** when the user asks you to repeat or confirm their understanding, restate only what you understand, ask them to approve or correct it, and stop — no planning, edits, or tools until they answer.
 
 ### 5. Zero attribution
-
-<a id="zero-attribution"></a>
 
 No co-author, AI, tool, or generator attribution.
 
@@ -71,45 +64,32 @@ No co-author, AI, tool, or generator attribution.
 
 ### 6. Skill & tool use
 
-<a id="skill-tool-use"></a>
+Skills are ad-hoc tools, not a pipeline: pick the installed skill that fits the step.
 
-Skills are ad-hoc tools, not a pipeline: treat every installed skill as available, and pick the one that fits the step in front of you — no required order, no state machine.
-
-- When choosing a skill or companion, consult the relevant catalogs and conditional routing in [Working with skills](#working-with-skills). For runtime-specific invocation, parallel/background mechanisms, or elevated launch presets, consult [Runtime tool-calling](#runtime-tool-calling).
-- **Live tools:** the current session's exposed tools, schemas, and permissions take precedence over runtime tables. A listed capability may be unavailable. Use an available fallback within the same authorization; otherwise report the blocked step. Never invent a tool call or broaden permissions to match a table.
-- Skills live in each repo's `.agents/skills/` and in the kit — prefer the project-local one; never assume a skill exists, use what is installed. Read a skill's current SKILL.md each time you use it; never run it from memory.
-- After finishing the authorized workflow, suggest a next skill when one fits and stop. Suggestions never authorize a new workflow; a handoff explicitly included in the user's requested workflow may proceed within that authority.
-- Companions are optional helpers — the catalog identifies kit-provided skills; external companions remain separate installs and are never vendored.
-- Companions are helpers, not authority — repo code, tests, ADRs, `GLOSSARY.md`, and user instructions still win.
-- Never assume a companion is installed; if missing, say so and continue with the best local fallback.
-- Use MCPs only for the current task — no browsing unrelated external data. For database MCPs, use the narrowest approved connection, read-only unless the user approves a specific write.
-
-Style and rewriting skills (e.g. unslop) govern free prose only — chat, and doc/PR prose composed freely. Text a skill mandates verbatim — templates, markers, section names, structured field labels, issue-title formats — is emitted exactly as specified; style skills never rewrite it.
+- **Live tools:** the session's exposed tools, schemas, and permissions win over any table here. Use an available fallback within the same authorization, or report the blocked step. Never invent a tool call or broaden permissions.
+- Prefer a project-local skill (`.agents/skills/`) over a user-level one. Never assume a skill exists. Read its current SKILL.md each time; never run it from memory.
+- When a rule here names a skill as a gate and it is not installed, say so and stop at each such gate. Do not self-certify QA, and do not push, open a PR, or close an issue by hand; report what is ready.
+- After the authorized workflow, suggest a next skill when one fits and stop. A suggestion never authorizes a new workflow.
+- Companions are optional, separately installed helpers, never authority — repo code, tests, ADRs, `GLOSSARY.md`, and user instructions win. If one is missing, say so and use the best local fallback.
+- Use MCPs only for the current task. Database MCPs: the narrowest approved connection, read-only unless the user approves a specific write.
+- Style skills (e.g. unslop) rewrite free prose only. Text a skill mandates verbatim — templates, markers, section names, field labels, issue-title formats — is emitted exactly.
 
 ### 7. Read code & project context
 
-Before editing, understand why the code exists — its callers and exports, the shared utilities it relies on, and its original intent.
+Before editing, understand why the code exists — its callers, exports, shared utilities, and intent.
 
 #### Context & native memory
 
-- Read `GLOSSARY.md` (<!-- set during setup: path to GLOSSARY.md -->) and ADRs (<!-- set during setup: path to specs/adr -->) before implementing, alongside the current request and relevant code, tests, and command evidence. These documents guide project decisions but never override higher-priority instructions or the user's current scope. Native CLI memory is advisory; never sync memory between CLIs.
-- `specs/` is an on-demand archive — retrieve only what the task names; never bulk-read it.
-- No repo `MEMORY.md`, wikis, discovery files, knowledge-graph files, or memory MCPs as default memory — shared context lives in `AGENTS.md`, `GLOSSARY.md`, and ADRs; graph/index companions are helpers, not binding memory.
-- `/grill-with-docs`: ask once, up front, whether archived context exists; capture pastes verbatim in the ADR **as a blockquote** with provenance (`Source: "<doc title>" · pasted <date>`); offer revealed names as `GLOSSARY.md` aliases; pasted history is advisory — flag ADR contradictions, never silently drop them.
-
-#### Graphify
-
-- The primary graph is `graphify-out/graph.json` at the workspace root: each project's own `<project>/graphify-out/graph.json` combined with `graphify merge-graphs`. If the primary graph is missing, skip Graphify; a single project's graph is not a substitute.
-- Query the primary graph before broad source search. Resolve its path from the workspace root even when a worker runs inside a project checkout. Scope results to the task's PROJECT-CODE by source path, retaining relevant cross-project edges. Verify hits against current source.
-- Check available indexed revisions or change metadata for stale inputs; changed indexed sources make the graph stale regardless of its age. More than ~7 days without a verified refresh warrants a warning; a recent file timestamp alone does not prove freshness. If no evidence establishes freshness, report it as unverified.
-- After a batch changes indexed sources, the main agent refreshes the merged graph once after integration and the final edit, within existing task authority. Run `graphify update <project>` for each changed project, then `graphify merge-graphs` over every project graph into `graphify-out/graph.json`; verify the merged graph still covers every project and its cross-project edges. Read-only tasks report staleness and recommend that process. If it is unavailable, unauthorized, or fails, report the graph as stale and continue from current source.
+- Read `GLOSSARY.md` (<!-- set during setup: path to GLOSSARY.md -->) and ADRs (<!-- set during setup: path to specs/adr -->) before implementing, with the request and the relevant code, tests, and command evidence. They guide decisions; they never override higher-priority instructions or the user's scope.
+- `specs/` is an on-demand archive — retrieve only what the task names.
+- Shared context lives in `AGENTS.md`, `GLOSSARY.md`, and ADRs. No repo `MEMORY.md`, wikis, discovery files, or memory MCPs as default memory; native CLI memory is advisory and never synced between CLIs.
 
 #### North star
 
 [NORTH STAR — emit this subsection only when the scan found a `VISION.md` / `vision.md`, per the SKILL.md rules; otherwise delete it. List each found file: `<path>` — workspace, or the PROJECT-CODE it belongs to.]
 
-- The vision file(s) above are the project's north star: read the relevant one before planning-phase work — feature prompts, grilling, specs, tickets, wayfinding — and align plans with it.
-- The north star guides direction and tie-breaking; it never overrides binding sources. When a plan or request conflicts with it, surface the conflict — never resolve it silently in either direction.
+- Read the relevant vision file before planning-phase work — feature prompts, grilling, specs, tickets, wayfinding — and align plans with it.
+- It guides direction and tie-breaking; it never overrides binding sources. Surface a conflict with it — never resolve one silently in either direction.
 
 ### 8. Think before coding
 
@@ -117,64 +97,21 @@ State assumptions. Present real interpretations. Push back on weak plans. Stop a
 
 ### 9. Decision options
 
-<a id="decision-options"></a>
+Do not make the user infer your recommendation. Label each option `Recommended`, `Currently implemented`, both, or neither — in the option title. Offer up to three concrete options plus a final `Write your own`, never padding to three. Label at most one `Recommended`; if none is safe to recommend, say why before the list.
 
-Do not make the user infer your recommendation. Label each option `Recommended`, `Currently implemented`, both, or neither — in the option title, not buried in the explanation. Offer up to three concrete options plus a final `Write your own`, never padding to three. Label at most one option `Recommended`; if none is safe to recommend, say why before the list.
+### 10. Verify before done
 
-### 10. Goal-driven execution
+Define success before edits. Turn bugs into reproductions and changes into checks. If a check fails, fix the cause; never delete, skip, or loosen a test or assertion to pass.
 
-<a id="goal-driven-execution"></a>
+A change whose code can reach a screen passes `/agentic-qa` on its head revision before a human reviews or tests it; unsure → it reaches. When human QA finds a bug in work an agent called done, run `/qa-escape` on that issue before fixing it. Detail: `rules/verification.md`.
 
-Define success before edits. Turn bugs into reproductions, changes into checks. Verify before reporting done.
+### 11. Local agents only
 
-Before the first implementation edit, the main agent must complete this preflight:
-
-- For an issue-backed task, read the tracker state and labels. Surface any existing triage or workflow gate before implementation or shipping work begins.
-- Read the issues labelled `qa-escape` for the area you will touch and the `## QA escape guards` section of this file when it exists. Each escape class there becomes a test or QA row for this task.
-- Lock the acceptance boundary for terms such as "all", "available", "visible", and "current". Check pagination, lazy loading, authorization, and hidden records when they can change that boundary. Put the decisive edge case into the first focused test.
-- Resolve the exact checkout, working directory, runtime or container, required environment variables, and canonical verification commands from applicable project instructions and executable scripts before running those commands. Reuse verified command forms, including paths and environment settings, throughout the task.
-- Inspect the aggregate full-check command before using it. Run checks it covers separately only for a needed intermediate result or when later edits invalidate the earlier result.
-
-Pick the lowest check layer that can disprove the claim — unit or feature test, then HTTP/API, then browser — and add higher layers only when the claim needs them. Browser checks prove UI and client-side claims only ([Efficient browser verification](#16-efficient-browser-verification)); persistence, authorization, tenant isolation, mail, and queues need automated tests.
-
-A change whose code can reach a screen — any changed file on a path that ends at something a user sees: a component, view, template, page, style, translation, or store; or an API, model, policy, job, mail, or migration whose output a screen shows; unsure → it reaches — passes `/agentic-qa` on its head revision before it is handed to a human for review or QA. A builder's or worker's report that something works is a claim, not evidence. When human QA finds a bug in work an agent called done, run `/qa-escape` on that issue before fixing it.
-
-Match check scope to change scope: verify each fix with its focused test or module-scope command. Run the project's required full check once per completed batch, after integration and the last edit, before shipping.
-
-If a check fails, fix the cause. Never make it pass by deleting, skipping, or loosening a test or assertion; if the check itself is wrong, say why and ask.
-
-Final verification covers the combined changes in the integration checkout; worker-local passes do not replace it. Report the checkout, tested revision or working-tree state, layers run and not run, command, and result. Later edits invalidate affected results: rerun the affected checks, including any required full check when its verified state changes. Once per batch prevents duplicate per-item runs, not necessary rechecks after fixes.
-
-### 11. Local orchestration
-
-The main session proactively delegates independent work to local sub-agents and remains the sole final integrator. Identify ready work at task start and each phase change. Dispatch it up to the available local capacity without waiting for the user to request delegation or approve it. As workers finish, assign the next ready work. Continue useful work in the main session while they run.
-
-One useful independent task is enough to delegate. Every worker must make a concrete contribution to the requested task, within its authorized scope and permissions. Run serially only when no useful independent work exists, sub-agent tools are unavailable, or an applicable runtime or user constraint prevents delegation.
-
-- **Keep capacity in use.** Resolve prerequisites before dispatch; queue ready tasks while capacity is full. Reuse workers where practical and release completed workers when needed to free capacity. Respect runtime limits and resource constraints; run long or noisy lanes in local background/async.
-- **Assign bounded work.** Each assignment carries the objective, PROJECT-CODE, checkout, owned files or scope, read/write authorization, dependencies, completion criteria, and required report format. Supply applicable workspace and project instructions as text or accessible paths the worker must read before starting. Explicitly include [Comment code changes](#comment-code-changes) for code-writing workers.
-- **Coordinate ownership.** Give concurrent writers disjoint file ownership; serialize shared-file edits and integration. Keep the main session focused on coordination, dependencies, integration, and work that advances the main dependency chain. Do not duplicate a worker's active assignment.
-- **Recover failed work.** Inspect failed or stalled workers and preserve partial changes. Confirm the previous writer has stopped before retrying or reassigning its files. Retry only when a specific recovery or changed condition can help; otherwise report the blocker and continue unaffected work. Clean up only task-owned processes, browser sessions, and worktrees, after confirming needed output is integrated or otherwise preserved.
-- Never use cloud or remote agents: Cursor Cloud, Copilot cloud agent, Codex Cloud/web, Antigravity managed/remote, Claude Routines (`/schedule`), claude.ai background agents. Claude Code agent teams are local but also banned. Nested delegation is allowed one level deep only, and only by explicit grant recorded in the assignment. The main session allocates that grant from the shared capacity budget; nested workers count toward the same limit.
-- Use local role lanes — Explorer, Researcher, Planner, Implementer, Reviewer, Tester, Tool-runner — read-only for discovery/research/review/planning, write for implementation, shell for tests.
-- **Verify returned work.** Workers return summaries, changed files, verification evidence with the tested checkout and state, and unresolved problems — not transcripts. Await each lane's completion or confirmed stop and inspect returned changes, including comment coverage, before integration. The main session owns combined-state verification per [Goal-driven execution](#goal-driven-execution) and final synthesis.
-- Keep parallel state visible per [Honest state & reporting](#honest-state-reporting) — lane count at dispatch, each completion or failure as it lands — for every parallel mechanism in every runtime, whatever this CLI calls it.
-
-**Checkouts and worktrees:** Work in the existing workspace checkouts; never clone repos or create other checkouts. The one exception is a Git worktree at `<project-repo>/.worktrees/<task-name>` in the owning project's repository — multi-project work puts them in each affected repo, never in a workspace-level container. Before creating one, add `/.worktrees/` to that repository's `.gitignore` if missing, and verify the destination is ignored. A runtime's native worktree mechanism may be used only if it creates the worktree at that path, never elsewhere (such as `.claude/worktrees/` or `~/.cursor/worktrees/`).
-
-- **On demand:** read-only lanes never get a worktree; a writer gets one just in time, only for concurrent isolated writes, without separate approval.
-- **User-asked isolation:** set up a requested worktree or branch before the first edit — a worktree through `/using-git-worktrees` when installed, before any third-party task skill; otherwise with Git, preserving the source changes. A branch-only request stays a branch. A failed setup blocks task edits; never fall back to the original checkout. If the user does not name the form ("isolate this"), ask once per [Decision options](#decision-options) — worktree (`Recommended`), new branch, or current checkout — and edit nothing meanwhile.
-- **Checkout gate:** when worktree isolation is required, creation alone is insufficient. Before task writes, verify and report the canonical checkout path, owning repository and common Git directory, branch or authorized detached state, starting commit, and baseline result. Pass that record and applicable instructions to task skills and workers. Before their first write and after handoffs, restarts, or checkout changes, recheck the Git root, common directory, branch, and worktree-list entry. Use explicit working directories for task commands and absolute edit paths inside the verified checkout, resolving symlinks before writes. A mismatch blocks dependent writes; never fall back to the source checkout. Only the narrow source `.gitignore` setup edit is allowed outside it without separate scope. Authorized commits may advance HEAD; the starting commit remains provenance.
-- **Cleanup:** remove worker worktrees after verified integration. Remove a user-requested worktree only on an authorized cleanup request, once its work is integrated (a pushed branch or closed issue is not proof), nothing still uses the checkout, and needed tracked, untracked, and ignored files are preserved. Keep its branch unless the work is retained elsewhere; never force a removal. Remote branch deletion needs its own scope.
+The main session delegates independent work to local sub-agents and stays the sole final integrator. Never use cloud or remote agents, and never clone a repository or create a checkout outside `<project-repo>/.worktrees/`. Detail: `rules/orchestration.md`.
 
 ### 12. Systematic debugging
 
-Find the root cause; don't patch symptoms — symptom patches resurface later as flakier, harder bugs.
-
-- Reproduce the failure before changing anything.
-- Trace to the underlying cause, not the surface symptom.
-- No hacks, arbitrary waits/sleeps, or guess-and-check fixes.
-- After fixing, confirm the original reproduction now passes.
+Find the root cause; do not patch symptoms. Reproduce the failure before changing anything, trace it to its cause, and confirm the original reproduction passes after the fix. No hacks, arbitrary waits or sleeps, or guess-and-check fixes.
 
 ### 13. Simplicity first
 
@@ -184,115 +121,19 @@ Solve only the asked problem. No speculative features, no one-use abstractions. 
 
 Touch only required lines. Match local style. Do not refactor unrelated code. Clean only dead code your change creates.
 
-Before writes, inspect the current branch and staged, unstaged, and untracked changes. Preserve pre-existing and other workers' edits; do not revert, reset, stash, remove, or overwrite them without specific authorization. If a file changes after you read it, re-read it and apply your patch to its current content. Pause only overlapping work when you cannot preserve the other changes safely.
+Before writes, inspect the current branch and the staged, unstaged, and untracked changes. Preserve pre-existing and other workers' edits; do not revert, reset, stash, remove, or overwrite them without specific authorization. If a file changes after you read it, re-read it and patch its current content. Pause only overlapping work when you cannot preserve the other changes safely.
 
-Refer to secrets by key name only — never print, paste, or commit their values, and keep credentials, tokens, sessions, caches, logs, and runtime databases out of repositories. Never access production systems, data, or deploy targets unless project instructions explicitly allow it. Destructive commands — dropping or resetting a database, fresh migrations, force-push, history rewrites, `rm -rf` outside task-owned paths, volume or container prune — need explicit approval for that command.
+**Secrets, production, destructive commands.** Refer to secrets by key name only — never print, paste, or commit their values, and keep credentials, tokens, sessions, caches, logs, and runtime databases out of repositories. Never access production systems, data, or deploy targets unless project instructions explicitly allow it. Destructive commands — dropping or resetting a database, fresh migrations, force-push, history rewrites, `rm -rf` outside task-owned paths, volume or container prune — need explicit approval for that command.
 
 ### 15. Comment code changes
 
-<a id="comment-code-changes"></a>
+Every added or modified logical code block gets a new or updated nearby comment or docstring, even when the code looks self-explanatory.
 
-Every added or modified logical code block must include a new or updated nearby comment or docstring. Comments are part of implementation, including when the code appears self-explanatory.
+- Explain purpose and reasoning — the business rule, constraint, assumption, or edge case — in the project's comment style. One comment may cover related statements; do not translate statements into English.
+- Update or remove comments the change makes stale; describe the resulting behavior, not a changelog.
+- For generated output, comment the source or template. For formats without comments, record the explanation in the nearest documentation and report that exception.
+- Before reporting done or shipping, inspect the diff for comment coverage. A chat summary, commit message, or PR description does not replace comments.
 
-- Explain the purpose and reasoning: the relevant business rule, constraint, assumption, or edge case. Match the project's comment conventions. One comment may cover related statements implementing the same decision; avoid merely translating each statement into English.
-- Update or remove comments made stale by the change. Describe the resulting behavior and its rationale, rather than keeping a changelog of edits in the code.
-- For generated output, comment the maintained source or template. For formats without comment syntax, record the explanation in the nearest relevant documentation and report that exception.
-- Before reporting done or shipping, inspect the diff and confirm every added or modified code block has comment coverage. A chat summary, commit message, or PR description does not replace the required comments.
+### 16. Shipping is owned by the ship skills
 
-### 16. Efficient browser verification
-
-Hard rules for every browser mechanism in every runtime — agent-browser, a built-in browser subagent, a Playwright/CDP MCP. The browser is rarely the bottleneck; chatty per-call driving, oversized snapshots, and unstable waits are.
-
-- Reuse one authenticated session for the task, under one session name — taken once from the runtime's session id when available and reused across shells and follow-up turns — never a new name per step, scenario, retry, or shell (a `$$`-based name changes in every new shell). If it fails, recover only that session as described below; never disturb another worker's session.
-- Drive each route as one batched flow — open → interact → deterministic assertion — never separate calls for open, wait, snapshot, click, errors, console. Prefer the project's flow runner or JSON flow mode when one exists (agent-browser: `batch --bail`). A simple route or form smoke takes about three calls: start the session, one batched flow, one evidence check.
-- Short explicit timeouts: 3–8 s on every browser command, one outer timeout per flow — never inherit a long default. Clean up spawned wait processes on exit: an orphaned wait blocks the whole session.
-- In agent-browser, the per-command timeout is `AGENT_BROWSER_DEFAULT_TIMEOUT` (ms), read when the session starts; later calls inherit it. Wait on a condition — `wait "<selector>"`, `wait --text`, `wait --url`, or `wait --fn` — or use `wait <ms>` for a known fixed delay. Never `wait --timeout N`: without a condition it ignores N, idles about 30 s, then fails. Warm a documented slow step (cold build) with an HTTP request before the browser flow, so browser commands stay within the default. `batch` takes quoted command arguments or a JSON array on stdin, never plain lines; pass secrets inside the JSON (for example with `jq -n --arg`), never on the command line.
-- Launch options apply only when a session's browser starts: pass `--ignore-https-errors` (or `AGENT_BROWSER_IGNORE_HTTPS_ERRORS=1`) and the timeout on its first command. To change them, close **that session** and reopen it. A warning that a launch flag was ignored means the session never got it: close that session and reopen it before continuing.
-- One command at a time per session, never overlapping. Health-check a reused session first (~2 s URL read); on failure, close and reopen **that session only** — never run `close --all`, which destroys other agents' auth and state. On a failed flow, fix the waits or selectors and retry in the same session; restart it only for an ignored launch flag, a dead session, or an intended auth reset, and report the reason.
-- Isolate mutation checks: record originals, change one setting, verify, restore before the next — restore even when the flow fails, or the next save persists contaminated fields.
-- Prefer stable selectors (`data-test`, CSS) over framework-generated element refs that re-renders invalidate (Livewire, React, …); re-snapshot only after a re-render breaks a ref. Wait on text, routes, and selectors taken from the app's source (templates, translations, `data-test`), never guessed strings — a wait on text that never appears burns the whole timeout.
-- Assert stable state — URL, DOM/component state, or session-visible state — never toast timing or `networkidle`. Use compact JS eval assertions; snapshot only the specific element when its selector is unknown — full-page snapshots are overview only.
-- One interaction flow plus one evidence check per behavior; cross-page persistence and data coverage belong in the project's test suite.
-- If a route exceeds the test environment's documented latency budget, record its timing and investigate. A fixed five-second threshold cannot distinguish a regression from expected build or network latency.
-
-### 17. Issue discipline
-
-When creating, updating, or triaging issues, follow [Issue titles](#issue-titles) for title formats, labels, legacy-title preservation, and distinctions between planning and delivery issues.
-
-### 18. Shipping is owned by the ship skills
-
-<a id="shipping-is-owned-by-the-ship-skills"></a>
-
-Nothing commits, pushes, opens a PR, or closes a delivery issue outside the ship skills — `/wayfinder` closes its own planning maps and tickets — and each ship skill stays inside its own scope:
-
-- `/commit-push-pr` — commit, push, and create or update a PR within that skill's allowed base-branch policy.
-- `/commit-push-close` — commit, push the current branch, and close the issue (a direct default-branch push only after its separate confirm).
-- `/pr-feedback` — fixes on an existing PR branch; it ships through `/commit-push-pr` on that same branch, never a raw push.
-- `/staging-fix` — commit, push, and open a PR targeting the staging branch only, with auto-merge; never the default branch.
-- `/local-to-staging` — open and merge `local` → `staging` PRs only, after their checks pass; never pushes, never a production or default branch. `/staging-to-production` is read-only and prints the owner's commands.
-- `/factory run` — only when the user starts it. It commits, pushes, and opens PRs solely by following the skills above. Once QA, CI, a second agent's code review, and a low risk tier all pass, it merges those PRs into `local` or the staging branch, posts the handover comment, sets the issue In Review, and removes merged worktrees and branches. It never closes an issue and never targets a default or production branch; plain `/factory` writes nothing.
-
-- Local engineering commits are not shipping: task-branch commits inside orchestration worktrees and local `--no-ff` merges into the local integration branch are allowed without a ship skill. [Zero attribution](#zero-attribution) still applies to them, and any push, PR, or issue close still exits through a ship skill.
-- Any other skill that instructs you to commit — `/implement` included — stops instead and hands off. Report what is ready to ship; do not stage, commit, or push it.
-- The ship skills own branch-off-main, the pre-ship `/code-review` question, the issue acceptance-criteria check, the merge-danger call, the structured commit message, issue linking, the how-to-test evidence, and [Zero attribution](#zero-attribution) — a bare commit outside them bypasses all of it and lands before the ship policy gets a say.
-
-## Working with skills
-
-[GRADIENT TABLE — columns `Phase | Skills`. Apply the manifest's note exclusions first. One row per gradient phase in manifest order (discover, sharpen, plan, slice, implement, verify, ship). In each row list every eligible `kit` and `external` skill whose manifest `phase` matches. Omit phases with no eligible skills.]
-
-[STARTUP NOTE — apply the manifest's note exclusions first, then one line per eligible skill with `phase: startup`, e.g. "Run `/design-system` per project after setup to build the UI library first."]
-
-### Companion skills and MCPs
-
-[COMPANION TABLE — columns `Companion | Use when`. Apply the manifest's note exclusions first. One row per eligible entry with `kind: companion` or `phase: companion`: its name and use-when text, in manifest order.]
-
-### Matt skill routing
-
-Use `/ask-matt` to choose a Matt skill flow — it routes, never executes; do not auto-run its suggestion.
-
-- Idea flow: `/grill-with-docs` → if runnable uncertainty, `/handoff` + `/prototype` + `/handoff` → for multi-session work, `/to-spec` then `/to-tickets`.
-- **The fog test.** Can you state the destination in one line *and* name every open decision as a sharp question, right now? Yes → `/feature-prompt`. No → fog → `/wayfinder` (decisions become tracker tickets, one resolved per session). Fog, not size: a large mechanical refactor has no fog (→ `/to-tickets` expand–contract); a two-file change gated on one unresolved decision is fog. Greenfield enters here too. Both arms rejoin at `/to-spec`; a map is exhausted when nothing is left to decide.
-- When a user requests work in a worktree, apply [User-asked isolation](#11-local-orchestration) before `/implement`, `/diagnosing-bugs`, `/prototype`, `/code-review`, or another Matt skill does task work. Pass the verified checkout and applicable instructions into that skill; setup returns to the already-authorized task and does not authorize a new workflow. Keep these interlocks here; do not rewrite installed third-party skills.
-- Fresh agent session per ticket; its browser session follows [Efficient browser verification](#16-efficient-browser-verification). `/implement` (when installed) says to use `/tdd` and to commit after `/code-review`; this workspace overrides both. Drive `/tdd-loop` at each seam instead, with `/tdd` supplying test quality and seam choice, and stop after `/code-review` without committing ([Shipping is owned by the ship skills](#shipping-is-owned-by-the-ship-skills)). Without `/implement`, drive `/tdd-loop` directly. `/tdd` is reference only — never a loop.
-- `/implement-spec` (user-invoked) builds a whole spec in one run; this workspace overrides four points of its text. Implementers are local sub-agents under [Local orchestration](#11-local-orchestration), each in `<project-repo>/.worktrees/<ticket>` behind its Checkout gate. Each drives `/tdd-loop`, with `/tdd` as reference. Commits and merges stay local on the integration branch. It opens no PR and resolves no ticket: after `/code-review`, report the integration branch and stop ([Shipping is owned by the ship skills](#shipping-is-owned-by-the-ship-skills)).
-- `/pr` loads whenever a PR body is written. A ship skill's body and the repo's PR template win: keep every mandated section, its order, and `Closes #N`; `/pr` shapes only the summary visual and the wording inside those sections.
-- `/retro` (user-invoked) proposes changes to the agent's environment after a session; apply one only on the user's approval. A mechanical finding becomes a lint rule, hook, or CI check. A judgement call goes to the repo's review-time standards file (`CODING_STANDARDS.md`, which `/code-review` reads), where it costs no implementation context.
-- `/diagnosing-bugs` finds the root cause; ship the fix through `/tdd-loop` — the reproduction becomes the failing regression test, one red → green per bug, required full check once at batch end ([Goal-driven execution](#goal-driven-execution)).
-- `/triage` = raw incoming issues and external PRs only — never tickets from `/to-tickets`. `/research` = delegable primary-source reading → cited doc. `/improve-codebase-architecture` (when installed) → a chosen improvement feeds `/grill-with-docs`. At a phase boundary choose in this order, never mid-phase: continue while the next phase needs this context verbatim and the window has room; `/clear` when nothing here matters next; `/handoff` only to change harness, directory, or person; a sub-agent for a tightly scoped unattended task; otherwise `/compact`, with an instruction naming the next phase.
-
-[RUNTIME TOOL-CALLING — emit the `### Runtime tool-calling` subsection here, per the Working with skills rules in SKILL.md]
-
-## Issue titles
-
-These titles live in the workspace's issue tracker of record (default: GitHub Issues), findable from tracker search and the ADR filename. `<PROJECT-CODE>` is the Project Matrix code — uppercase, hyphenated, no spaces; use it exactly.
-
-**Spec issue** — title starts exactly with:
-
-`Spec: <PROJECT-CODE> ADR-<adr-number> <adr-name>`
-
-- Derive `<adr-number>` and `<adr-name>` from the ADR filename in `specs/adr/` (without `.md`): `0042-stock-transfer-approvals.md` → `Spec: PAYMENTS ADR-0042 stock-transfer-approvals`.
-- Issues titled `PRD: …` predate this naming; treat them as spec issues and do not retitle them.
-
-**Spec ticket issue** — title starts exactly with:
-
-`Ticket NNNN of <PROJECT-CODE> ADR-<adr-number> <adr-name> (#<spec-issue>): <Short heading>`
-
-- `NNNN`: zero-padded four-digit ticket number, local to that spec, starting at `0001`. `<spec-issue>`: tracker identifier of the parent spec. `<Short heading>`: concise and action-oriented.
-- Example: `Ticket 0001 of PAYMENTS ADR-0042 stock-transfer-approvals (#4812): Add approval state model`
-- Issues titled `Slice NNNN of …` predate this naming; treat them as ticket issues and do not retitle them.
-
-**Wayfinder issue** — a `/wayfinder` map or one of its child tickets:
-
-`Way: <PROJECT-CODE> <destination or question>`
-
-- Map example: `Way: PAYMENTS unify approval and refund flows`
-- Ticket example: `Way: PAYMENTS which service owns idempotency?`
-- Not numbered. Parentage is the tracker's native child link, not the title.
-
-**Non-spec issue** — not tied to a spec:
-
-`<PROJECT-CODE>: <short imperative heading>`
-
-**Labels.** Every triaged *delivery* issue — spec, spec ticket, non-spec — carries exactly one category (`bug` or `enhancement`) and exactly one state (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). `qa-escape` is a marker label that sits beside the category and state labels on an issue whose bug escaped to human QA; it never replaces them.
-
-Wayfinder issues are planning artifacts, not delivery work: they carry only `/wayfinder`'s own labels (`wayfinder:map`, and `wayfinder:research` / `prototype` / `grilling` / `task`), are closed before `/to-spec` runs, and never get a category or state label. Their HITL/AFK classification is a ticket *type*, never a title marker — no issue title in any species may carry `HITL:`, `AFK:`, or `BLOCKER:`.
+Nothing commits, pushes, opens a PR, or closes a delivery issue outside the ship skills. Any other skill that says to commit stops and hands off: report what is ready; do not stage, commit, or push. Local task-branch commits inside orchestration worktrees are the one exception. Detail: `rules/shipping.md`.

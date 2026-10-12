@@ -1,9 +1,9 @@
 ---
 name: ask-kit
 disable-model-invocation: true
-description: "Ask which agent-skills-kit skill fits your situation — a router over this kit's skills from workspace setup through shipping. Names one skill, why it fits, and what it needs; never runs it. Use when the user asks which kit skill to use, what to run next with no spec or PR to point at, or how the kit's skills fit together. A spec, ticket, or PR that already exists routes to /factory; choosing among Matt Pocock's planning and build skills routes to ask-matt."
+description: "Ask which agent-skills-kit skill fits a situation: names one skill and why, never runs it. An existing spec, ticket, or PR goes to /factory; choosing among Matt Pocock's skills goes to ask-matt."
 metadata:
-  version: "0.0.3"
+  version: "0.0.4"
 ---
 
 # ask-kit

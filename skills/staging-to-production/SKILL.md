@@ -1,9 +1,9 @@
 ---
 name: staging-to-production
 disable-model-invocation: true
-description: "Read-only production-promotion readiness check across every workspace project — for each repo with `origin/staging`, report how far staging is ahead of the production branch, whether staging's head passed its GitHub Actions runs, and any open staging→production PR, then print the exact commands for the owner to open, merge, and watch the promotion. Use when the user says \"is staging ready for production\", \"prep the staging to production promotion\", or runs /staging-to-production. Never opens or merges a PR, never pushes, never triggers a workflow, and never accesses production — the owner runs the printed commands. Promoting local to staging is /local-to-staging."
+description: "Read-only check of whether staging is ready for production in every project, with the owner's commands. Never opens, merges, pushes, or touches production. Local to staging: /local-to-staging."
 metadata:
-  version: "0.0.1"
+  version: "0.0.2"
 ---
 
 # staging-to-production
@@ -12,7 +12,7 @@ staging-to-production prepares the owner's production promotion and stops there:
 
 ## Inputs
 
-- **Projects** — the rows of the workspace `AGENTS.md` Project Matrix, or the repos the user names. No workspace `AGENTS.md` and no names → stop and ask.
+- **Projects** — the rows of the workspace Project Matrix (`rules/projects.md`, or inline in an older `AGENTS.md`), or the repos the user names. No matrix and no names → stop and ask.
 - **Staging branch** — default `staging`, unless the user or workspace `AGENTS.md` names another. Repos without it on `origin` are listed as skipped.
 - **Production branch** — from the user or workspace `AGENTS.md`; otherwise the repo's default branch from `gh repo view <owner/repo> --json defaultBranchRef`. Confirm it with `git ls-remote --heads origin <branch>`. When a branch named `production` or `prod` also exists and differs from the default, stop for that repo and ask which one is production.
 - **Merge method** — merge commit, for the same long-lived-branch reason as `/local-to-staging`; a repo that disallows merge commits gets its allowed method in the printed command, with a note that staging and production will diverge.

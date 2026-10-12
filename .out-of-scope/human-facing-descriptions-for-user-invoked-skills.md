@@ -21,3 +21,8 @@ runtimes this kit supports do not:
 Checked 2026-10-05. In those runtimes every kit description is a live router,
 so the trigger and boundary sentences, and the trigger evals over all skills,
 still do work. Revisit when every supported runtime honors the flag.
+
+Since 2026-10-12 every description is capped at 200 characters. That shortens
+the router text; it does not turn it into a human summary. Each description
+still names what the skill does, its main trigger, and its nearest sibling,
+and the full trigger-eval sweep still runs over all of them.

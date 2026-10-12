@@ -1,8 +1,8 @@
 ---
 name: using-git-worktrees
-description: "Set up or reuse a Git worktree when the user asks to do work in a worktree, including implementing a ticket, fixing a bug, prototyping, or reviewing there. Load before the task's implementation or review skill so checkout selection happens before edits. Also use for an explicit /using-git-worktrees request. A branch-only request, generic implementation, a question about worktrees, or worktree cleanup alone does not trigger this skill."
+description: "Set up or reuse a Git worktree when the user asks to work in a worktree, before the task skill runs. Not for branch-only requests, generic implementation, worktree questions, or cleanup alone."
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # Using git worktrees

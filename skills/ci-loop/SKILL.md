@@ -1,9 +1,9 @@
 ---
 name: ci-loop
 disable-model-invocation: true
-description: "Drive an open PR's failing CI to green — read the failing job's log, reproduce locally, fix within the PR's scope, push, and watch the next run, repeating up to 3 attempts under one up-front approval. Use when the user says \"fix CI on PR 87\", \"get this PR green\", \"the build is failing on my PR\", or /factory reports a unit in CI. Stops on a flaky or infrastructure failure, a fix outside the ticket's scope, or the attempt cap. Reviewer comments route to /pr-feedback; a bug with no PR or CI run is /diagnosing-bugs; setting up a CI pipeline is not this skill."
+description: "Drive an open PR's failing CI to green: read the log, reproduce, fix in scope, push, up to 3 attempts under one approval. Reviewer comments are /pr-feedback; no PR or CI run is /diagnosing-bugs."
 metadata:
-  version: "0.3.0"
+  version: "0.3.1"
 ---
 
 # ci-loop

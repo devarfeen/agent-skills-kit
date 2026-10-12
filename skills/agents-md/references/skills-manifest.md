@@ -1,6 +1,6 @@
 # Skills Manifest
 
-Single source for the `## Working with skills` tables generated into `AGENTS.md`.
+Single source for the skills tables generated into `rules/skills.md`.
 Do not hardcode skill rows in `SKILL.md` — edit this file to add or move a skill.
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
@@ -13,8 +13,21 @@ Columns:
   install, off the gradient).
 - `phase` — for `kit`/`external`: a gradient phase (`discover`, `sharpen`, `plan`,
   `slice`, `implement`, `verify`, `ship`) or `startup`; `companion` places a kit skill off the gradient. Blank for external companions.
-- `note` — optional short suffix shown after the skill in the gradient cell (e.g. `→ ADR`). A note beginning `deprecated` or `kit-internal` excludes the row from all generated catalogs and startup notes. Keep the row for kit coverage; exclusion does not remove the skill from this repo.
+- `note` — optional short gloss, emitted only in a startup line (gradient cells carry names alone; each skill's own description says when to use it). A note beginning `deprecated` or `kit-internal` excludes the row from all generated catalogs and startup notes. Keep the row for kit coverage; exclusion does not remove the skill from this repo.
 - `use-when` — for companion entries (kind or phase): the trigger text. Blank for gradient/startup skills.
+
+Emitted formats — exact, so regeneration diffs stay quiet:
+
+- Tables: alignment row `| :--- |`; the `Phase` cell is the phase name as written here.
+- Gradient cell: its skills in manifest order as backticked names, separated by `, ` — no notes.
+- Startup line: a list item per skill, ``- Run `/name` — <note>.`` — one closing period, never doubled.
+
+Install check — emit a companion only when it is found: a skill by its `SKILL.md` under `.agents/skills/` or `.claude/skills/` at the workspace root or in the user's home; an MCP by a server entry in a workspace MCP config file; a CLI or plugin by its command on `PATH`. Not found or unsure → leave it out and name it in chat as not detected.
+
+Companion format, in manifest order:
+
+- Companions found as skills: one line, ``Installed companion skills: `a`, `b`.`` — names only; each skill's own description says when to use it. None found → omit the line.
+- Companions found as an MCP, CLI, or plugin: a `| Companion | Use when |` table with the use-when text verbatim, since they carry no description of their own. None found → omit the table.
 
 Every folder under this repo's `skills/` must have a `kit` row here
 (`tools/validate.sh` enforces this).
@@ -37,8 +50,8 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | `/handoff` | external | plan | fork context to a new session (pairs with /prototype) | |
 | `/to-tickets` | external | slice | | |
 | `/triage` | external | slice | raw incoming issues and external PRs only — never /to-tickets tickets | |
-| `/implement` | external | implement | optional ticket driver — run with /tdd-loop at each seam; stop after /code-review, never commit, overriding its own text (Shipping is owned by the ship skills) | |
-| `/implement-spec` | external | implement | user-invoked whole-spec driver — parallel implementers in worktrees, merged onto one local integration branch; each drives /tdd-loop; stop after /code-review — never push, open a PR, or close tickets, overriding its own text (Shipping is owned by the ship skills) | |
+| `/implement` | external | implement | optional ticket driver — /tdd-loop at each seam; stop after /code-review, never commit (Shipping is owned by the ship skills) | |
+| `/implement-spec` | external | implement | user-invoked whole-spec driver — local implementers in worktrees, each on /tdd-loop; stop after /code-review; never push, open a PR, or close tickets (Shipping is owned by the ship skills) | |
 | `/tdd` | external | implement | reference only — test quality and seam choice; never use it alone as a loop | |
 | `/tdd-loop` | kit | implement | the test-first procedure — gates, completion evidence, exception protocol; stands alone | |
 | `/orchestrate-herdr` | kit | implement | inside herdr only — fan a spec (PRD) out to worker tabs | |
@@ -73,7 +86,7 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | pr | companion | | | A PR body is being written — smallest visual that shows the change, before/after evidence, one-way or two-way door plus blast radius. Inside `/commit-push-pr` or a repo PR template it shapes the summary visual and wording only; mandated sections, order, and `Closes #N` stay. |
 | retro | companion | | | A session is finished — especially one that went sideways — and the agent's environment should improve: navigation pointers, automated checks, coding standards, steering files. Proposes, never edits. User-invoked (`/retro`); do not auto-fire. |
 | wait-what | companion | | | The agent's last chat message did not land — re-pitch it with brief context, ASD-STE100 Simplified Technical English, and the ubiquitous language from `GLOSSARY.md`. |
-| unslop | companion | | | Free-prose output needs AI tells removed — chat narration, and PR/issue/doc prose the agent composes freely. Never applies to text a skill mandates verbatim: generated `AGENTS.md`/shims, output templates, section names, field labels, canonical lines. |
+| unslop | companion | | | Free-prose output needs AI tells removed — chat narration, and PR/issue/doc prose the agent composes freely. Never applies to text a skill mandates verbatim: generated `AGENTS.md`, output templates, section names, field labels, canonical lines. |
 | blast-radius | companion | | | A change's blast radius needs proving — what it could break beyond the diff, with the one safety fact run against real code rather than a writeup. User-invoked (`/blast-radius`); do not auto-fire. |
 | show-me-your-work | companion | | | Long-running or unattended work needs a reviewable decision trail — a TSV log of what, why, evidence, and result that a human can audit after stepping away. User-invoked (`/show-me-your-work`); do not auto-fire. |
 | before-and-after | companion | | | A visible change needs a before and after screenshot pair, from two URLs, saved to a local folder. Images stay local: never pass `--markdown` or run its upload script, whose default host is public. |
@@ -83,7 +96,6 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | to-questionnaire | companion | | | A decision needs knowledge the user lacks — turn it into a Markdown questionnaire the one person who can answer fills in async or in a meeting. |
 | domain-modeling | companion | | | Project terminology, aliases, or ADR-backed domain language need sharpening. |
 | codebase-design | companion | | | Module boundaries, seams, or interface design decisions matter. |
-| Graphify | companion | | | Querying a generated code/docs/media graph would save broad file reads. Follow the workspace Graphify rule for graph location, query scope, and refresh. |
 | Codex plugin for Claude Code | companion | | | Claude Code needs Codex for review or delegated work. |
 | Impeccable | companion | | | Frontend design quality, visual polish, or browser-backed UI checks matter. |
 | notebooklm-py | companion | | | The user asks to work with NotebookLM sources or artifacts. |

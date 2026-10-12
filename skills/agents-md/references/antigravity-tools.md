@@ -1,5 +1,7 @@
 Tool-calling index: [`tool-calling.md`](tool-calling.md).
 
+Zero attribution: omit co-author, AI, and tool attribution from all output.
+
 > Last verified: 2026-09-28 against installed agy (Antigravity) 1.2.12 — flag/command surface via installed `--help`; internal tool names via official docs or the shipped binary; re-verify on touch (see CONTRIBUTING sync map).
 
 | Skill Reference | Antigravity CLI Equivalent |
@@ -18,7 +20,7 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 **Key Notes:**
 
 - `@` references files/context (e.g. `@src/main.go`), not agents.
-- Antigravity CLI reads `AGENTS.md` directly from the active workspace; it is the canonical instruction file, and this kit emits no Antigravity-specific shim.
+- Antigravity CLI reads `AGENTS.md` directly from the active workspace; it is the canonical instruction file.
 - **Memory:** no native memory file store; use generated `AGENTS.md` and binding context files. No repo memory files or memory MCP servers for this kit. See [`memory-global-defaults.md`](memory-global-defaults.md).
 - Multi-repo workspace policy: use workspace-root MCP config.
 - For exact config-file placement by tool, use [`tool-calling.md`](tool-calling.md).

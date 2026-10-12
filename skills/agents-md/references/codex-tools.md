@@ -22,6 +22,10 @@ Zero attribution: omit co-author, AI, and tool attribution from all output. The 
 - Highest elevated permission launch: `codex --dangerously-bypass-approvals-and-sandbox` (or explicit `codex --sandbox danger-full-access --ask-for-approval never`). This removes sandboxing and approval prompts.
 - For exact config-file placement by tool, use [`tool-calling.md`](tool-calling.md).
 
+## Size cap
+
+The `project_doc_max_bytes` cap covers the combined instruction files, and content past it is dropped without a warning. When the generated `AGENTS.md` exceeds 32768 bytes, tell the user to set `project_doc_max_bytes` in `~/.codex/config.toml` above the emitted size, with headroom for their global Codex instructions — or Codex never sees the later sections. Name the setting; never read or edit the user's Codex configuration. Confirmed 2026-10-12 with codex-cli 0.162.1: a 45 KB file lost its tail at the default and kept it at 65536.
+
 ## Agents: parallel, background & roles
 
 The orchestrator uses the available spawn and coordination tools. Under `[agents]`, use `max_concurrent_threads_per_session`; `max_threads` remains a legacy alias. When unset, the runtime chooses capacity. Check actual nesting limits and permissions instead of assuming six workers or depth one. Switch between live threads with `/agent`. Codex Web tasks are remote and excluded by kit policy. Source: [official subagent configuration](https://learn.chatgpt.com/docs/agent-configuration/subagents).

@@ -1,9 +1,9 @@
 ---
 name: agentic-qa
 disable-model-invocation: true
-description: "Agent-run functional QA before a human sees the work — for a PR or branch whose code can reach a screen, drives every acceptance criterion through the running app across states, viewports, and roles, fails on console errors and failed requests, checks neighbouring flows, and records VERIFIED, PARTIAL, or BLOCKED with evidence on the PR. Use when the user says \"QA this PR\", \"test it like QA would\", \"run agentic QA on #87\", or /factory reports a unit in QA. The tester never edits code — findings route to /tdd-loop. Pixel conformance against a design is /pixel-audit; cosmetic nits are /polish-batch; a bug human QA already found is /qa-escape."
+description: "Agent-run functional QA of a PR or branch that can reach a screen: drives acceptance criteria through the running app and records the result on the PR. Never edits code. Pixel checks are /pixel-audit."
 metadata:
-  version: "0.3.0"
+  version: "0.3.1"
 ---
 
 # agentic-qa
@@ -54,7 +54,7 @@ Where a second checkout of the base commit can run, drive the same routes there 
 
 ### 4. Drive each cell
 
-Follow the workspace browser rule: one named session, one batched flow per cell, short explicit timeouts. Per flow: clear console, errors, and requests; capture the before state; act; assert the after state; read console, errors, and `network requests --type xhr,fetch --status 400-599`; take one screenshot. Force states with the recipes in the reference (aborted or stubbed responses for error and empty, `set offline on`, long fixtures). Never submit real data on staging without approval.
+Follow the workspace browser rule: one named session, one batched flow per cell, short explicit timeouts; agent-browser specifics are in the reference. Per flow: clear console, errors, and requests; capture the before state; act; assert the after state; read console, errors, and `network requests --type xhr,fetch --status 400-599`; take one screenshot. Force states with the recipes in the reference (aborted or stubbed responses for error and empty, `set offline on`, long fixtures). Never submit real data on staging without approval.
 
 ### 5. Judge and write findings
 

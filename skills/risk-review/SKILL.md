@@ -1,9 +1,9 @@
 ---
 name: risk-review
 disable-model-invocation: true
-description: "Specialist review plus risk gate for an open PR with green CI — runs a parallel lens per touched area (data and migrations, API contracts and their consumers, infra and config, cloud and IaC, security and auth), classifies the change low or high risk against a fixed rubric, and records the verdict on the PR. Low risk offers auto-merge only into the staging branch or the `local` delivery branch; high risk requests an engineer and stops. Use when the user says \"risk-review PR 87\", \"is this PR safe to auto-merge\", or /factory reports a unit in REVIEW. Never approves its own PR and never merges past a human gate. A standards-and-spec review is /code-review; replying to reviewer threads is /pr-feedback."
+description: "Risk gate for an open PR with green CI: specialist lenses, a low or high tier, verdict on the PR. Low may auto-merge to staging or local only. Not /code-review; reviewer threads are /pr-feedback."
 metadata:
-  version: "0.4.0"
+  version: "0.4.1"
 ---
 
 # risk-review

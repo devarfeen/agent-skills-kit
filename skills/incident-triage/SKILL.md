@@ -1,9 +1,9 @@
 ---
 name: incident-triage
 disable-model-invocation: true
-description: "Triage an incident or outage from evidence — build a timeline, rank likely causes with the evidence for and against each, propose mitigations for the owner, answer questions, and write one incident note. Use when the user says \"we have an incident\", \"the site is down\", \"triage this alert\", or pastes alerts, error spikes, or logs and asks what is going on. Read-only: works from user-supplied evidence and, with this session's approval, read-only staging inspection; never accesses production and never applies a mitigation. Fixing a known staging bug is /staging-fix; root-causing a reproducible bug locally is /diagnosing-bugs."
+description: "Triage an incident or outage from evidence: timeline, ranked causes, mitigations, one note. Read-only; never touches production. A known staging bug is /staging-fix; a local bug is /diagnosing-bugs."
 metadata:
-  version: "0.1.1"
+  version: "0.1.2"
 ---
 
 # incident-triage

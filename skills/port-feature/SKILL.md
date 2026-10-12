@@ -1,9 +1,9 @@
 ---
 name: port-feature
 disable-model-invocation: true
-description: Use only when the user explicitly wants to port, migrate, rebuild, or recreate a complete feature from a REFERENCE implementation into a TARGET stack (e.g. bring a legacy screen into the new app). Sits at the discover → plan entry — reads the target's binding context, traces the reference's real behaviour/workflow/permissions/states, surveys what the target already has, and writes ONE gap map artifact, then suggests /grill-with-docs and stops. Do not use it to copy a helper function from one repo to another or ask how two existing features differ. The reference is truth for behaviour; the target's design system is truth for UI. Never implements, never auto-chains; interviews for any missing input.
+description: "Use only to port, migrate, or rebuild a complete feature from a reference implementation into a target stack. Writes one gap map, suggests /grill-with-docs, stops. Never implements or auto-chains."
 metadata:
-  version: "0.1.1"
+  version: "0.1.2"
 ---
 
 # Port feature
@@ -35,7 +35,6 @@ Carry this through every gap-map section:
 - **Never implement here.** No product code, config, or migration edits; the only write is the gap map file.
 - Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
 - **Narrow retrieval only.** Trace the reference and survey the target with targeted, evidence-backed search (`rg`/`git grep` for the exact route/path/symbol/state), `/feature-discovery`-style. **Never** bulk-read a repo or its `specs/` tree to "find everything".
-- Use `graphify-out/graph.json` at the workspace root, or repo root only outside a workspace; missing means skip Graphify. Query before raw search and verify hits against current source. Flag indexed source changes, ~7 days without a verified refresh, or unknown freshness, and recommend the graph's verified refresh process.
 - **Read context before deciding.** `GLOSSARY.md` and relevant ADRs describe recorded decisions; current code and tests show implemented behavior. Follow the current user's explicit decisions, record conflicts with older context, and treat native CLI memory as a lead to verify.
 - **Decisions are artifacts.** The output is the durable gap map file, not a chat summary; chat reports only what was written and the phase update.
 - **Don't fabricate an issue before coding.** Issues come later, from `/to-tickets` after `/grill-with-docs`.

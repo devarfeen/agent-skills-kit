@@ -10,15 +10,13 @@ Contents: [Emitting into AGENTS.md](#emitting-into-agentsmd) · [Agent Orchestra
 
 ## Emitting into AGENTS.md
 
-The `agents-md` generator fills its `### Runtime tool-calling` slot with exactly three untitled tables, one row per runtime in this file's order, cells copied verbatim, alignment row `| :--- |`:
+The `agents-md` generator fills the `## Runtime tool-calling` slot in `rules/skills.md` with exactly one untitled table, one row per runtime in this file's order, cells copied verbatim, alignment row `| :--- |`: `| Runtime | Skill invocation |`, from the **All runtimes (index)** table without its `Tool mapping` column.
 
-1. `| Runtime | Skill invocation |` — from the **All runtimes (index)** table; drop its `Tool mapping` column.
-2. `| Runtime | Parallel dispatch | Local background / async |` — from **Parallel & background mechanism by runtime**; drop `Custom agent files`.
-3. `| Runtime | Highest elevated launch / preset | Effect |` — from **Highest elevated permission by runtime**.
+The **Parallel & background mechanism** and **Highest elevated permission** tables are reference only and never emitted — the live tool schema is the authority on dispatch, and a launch preset is the user's choice at launch, not a workspace rule.
 
 ## Agent Orchestration Model
 
-The model itself is the `AGENTS.md` Non-negotiable rule **Local orchestration** (main session orchestrates role-typed local lanes and keeps the only seat for merge and final judgment); this file maps it to each runtime's concrete mechanisms. A runtime with no subagents uses a focused in-process tool pass per lane.
+The model itself is the generated orchestration rule in `rules/orchestration.md` (main session orchestrates role-typed local lanes and keeps the only seat for merge and final judgment); this file maps it to each runtime's concrete mechanisms. A runtime with no subagents uses a focused in-process tool pass per lane.
 
 ### Local-only policy (no cloud agents)
 

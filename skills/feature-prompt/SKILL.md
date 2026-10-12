@@ -1,9 +1,9 @@
 ---
 name: feature-prompt
 disable-model-invocation: true
-description: "Use when the user wants to turn a feature idea, change request, or rough requirement into a small prompt for grill-with-docs. When cheap repo exploration reveals domain terms missing from or stale in GLOSSARY.md, surface those candidate terms for user approval before any context update. Post-decision artifacts route onward instead: turning an ADR into a spec or implementation prompt is /to-spec, and investigating how existing behaviour works is /feature-discovery."
+description: "Turn a feature idea, change request, or rough requirement into a small prompt for grill-with-docs. An ADR to a spec is /to-spec; how existing behaviour works is /feature-discovery."
 metadata:
-  version: "0.2.0"
+  version: "0.2.1"
 ---
 
 # feature-prompt
@@ -56,7 +56,6 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
   unclear or project/context cannot be inferred safely.
 - Use repo evidence when cheap: Project Matrix, cwd, `GLOSSARY.md`,
   `GLOSSARY-MAP.md`, and ADR names. Do not run a broad code scan by default.
-- Use `graphify-out/graph.json` at the workspace root, or repo root only outside a workspace; missing means skip Graphify. Query before raw search and verify hits against current source. Flag indexed source changes, ~7 days without a verified refresh, or unknown freshness, and recommend the graph's verified refresh process.
 
 ### Scope and slicing
 

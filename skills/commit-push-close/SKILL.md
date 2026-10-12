@@ -1,9 +1,9 @@
 ---
 name: commit-push-close
 disable-model-invocation: true
-description: Ship one iteration of issue work directly — commit with a structured message, push, then close the linked issue with a comment that explains how to test the change; creates the issue inline when none exists. Use when the user says "commit, push, and close", "close out an issue with testing steps", "ship this issue", or is done and says "ship it" without requesting a PR. A reviewable PR is /commit-push-pr.
+description: "Ship issue work directly: structured commit, push, then close the issue with how-to-test steps. Use for commit, push, and close, or a bare ship it. A reviewable PR is /commit-push-pr."
 metadata:
-  version: "0.2.3"
+  version: "0.2.4"
 ---
 
 # commit-push-close

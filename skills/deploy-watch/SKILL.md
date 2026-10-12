@@ -1,9 +1,9 @@
 ---
 name: deploy-watch
 disable-model-invocation: true
-description: "Babysit a merged PR's staging deploy — find the GitHub Actions deploy run for the merge commit, watch it to a conclusion, run an approved agent-browser smoke check against the staging URL, and record pass or fail on the PR. Use when the user says \"watch the staging deploy for PR 87\", \"did my change make it to staging\", or /factory reports a unit in STAGING. Never touches a server, never re-runs or triggers a deploy by hand, and never promotes to production — it ends at ready for the owner. A broken staging deploy routes to /staging-fix; investigating an outage is /incident-triage."
+description: "Watch a merged PR's staging deploy run, run an approved smoke check on staging, and record pass or fail on the PR. Never touches a server or triggers a deploy. A broken deploy is /staging-fix."
 metadata:
-  version: "0.3.0"
+  version: "0.3.1"
 ---
 
 # deploy-watch

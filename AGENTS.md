@@ -40,17 +40,3 @@ so precision beats volume.
 7. **Preserve refusal boundaries.** When editing a skill, keep its "stops and
    refuses" lines (never auto-chain, scope gates, cosmetic-only, etc.) — they
    are the safety property, not filler.
-## Graphify
-
-This project may have a knowledge graph at `graphify-out/` (god nodes, community
-structure, cross-file relationships). Only when `graphify-out/graph.json` exists:
-
-- For codebase questions, first run `graphify query "<question>"`; use
-  `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"`
-  for focused concepts — these return a scoped subgraph far smaller than raw grep.
-- If `graphify-out/wiki/index.md` exists, use it for broad navigation instead of
-  raw source browsing.
-- Read `graphify-out/GRAPH_REPORT.md` only for broad architecture review or when
-  query/path/explain do not surface enough context.
-- After modifying files, or when `graphify-out/graph.json` is more than ~7 days
-  old, run `graphify update .` to keep the graph current (AST-only, no API cost).

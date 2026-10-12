@@ -1,6 +1,6 @@
 # Environment guard hooks (optional)
 
-The generated rules forbid production access and gate staging, but prose is advisory: a runtime hook enforces it before the command runs. This file is a template to suggest, never to install. Writing settings or scripts needs the user's explicit approval, and the user fills in the host lists.
+The generated rules forbid production access, but prose is advisory: a runtime hook enforces it before the command runs. The hook also asks before a command names a staging host — a stricter default than the generated rules, which the user may drop by leaving that list empty. This file is a template to suggest, never to install. Writing settings or scripts needs the user's explicit approval, and the user fills in the host lists.
 
 Zero attribution: omit co-author, AI, and tool attribution from all output, including the hook script and settings.
 
@@ -43,8 +43,9 @@ decide() {
     '{hookSpecificOutput: {hookEventName: "PreToolUse", permissionDecision: $d, permissionDecisionReason: $r}}'
   exit 0
 }
-grep -Eq "$PROD_HOSTS" <<<"$cmd" && decide deny "Production access is forbidden by AGENTS.md."
-grep -Eq "$STAGING_HOSTS" <<<"$cmd" && decide ask "Staging access needs explicit approval for this step."
+# An empty list skips its check; an empty pattern would match every command.
+[[ -n "$PROD_HOSTS" ]] && grep -Eq "$PROD_HOSTS" <<<"$cmd" && decide deny "Production access is forbidden by AGENTS.md."
+[[ -n "$STAGING_HOSTS" ]] && grep -Eq "$STAGING_HOSTS" <<<"$cmd" && decide ask "This command names a staging host. Approve this step?"
 exit 0
 ```
 

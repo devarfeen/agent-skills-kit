@@ -215,7 +215,7 @@ When sources conflict, this is the precedence:
 
 **What runs is what the code says.** Binding sources say what *should* happen; current code says what *does*. When they disagree, the agent cites both and never rewrites either to match.
 
-**Two search orders, on purpose.** Most skills query Graphify first to narrow the search, then verify every hit against current source. `/feature-discovery` is the deliberate exception: it traces current code first, because code is its source of truth, and only then cross-checks with Graphify and reads ADRs. Its report has separate Graphify and ADR sections, so you can see where the graph has drifted from the code and where an accepted decision disagrees with what's implemented. It never reads git history on its own; when the code can't explain *why* or *when*, the report offers a history scan, and the scan runs only if you say yes.
+**Code first.** `/feature-discovery` traces current code first, because code is its source of truth, and only then reads ADRs. Its report has an ADR section, so you can see where an accepted decision disagrees with what's implemented. It never reads git history on its own; when the code can't explain *why* or *when*, the report offers a history scan, and the scan runs only if you say yes.
 
 ---
 
@@ -242,36 +242,6 @@ checks text/background pairs against WCAG AA contrast and confirms that every
 named font is actually loaded.
 
 > **Why placeholders, not guesswork:** `/agents-md` runs *before* you've decided where context lives, so it must not invent a path. Leaving labelled placeholders turns the fill step into a mechanical edit instead of a rewrite. `/agents-md` writes the *rules of engagement*; `/setup-matt-pocock-skills` owns the *locations*.
-
-### Optional: Graphify across the Project Matrix
-
-When [Graphify](https://github.com/Graphify-Labs/graphify) is installed and broad codebase questions would otherwise mean huge `rg` sweeps, treat it as a workspace-level companion — not binding memory.
-
-Graphify builds two layers: **AST** (structural code edges, free) and **LLM semantic** (docs, ADRs, inferred cross-file links, costs tokens). First build always needs the full pass; day-to-day refresh can stay AST-only.
-
-**Build once after setup (or when you add a folder to the matrix):**
-
-1. From the workspace root, `graphify extract <path>` (AST + LLM) for each Project Matrix folder (not the `.` meta row). Set `GEMINI_API_KEY` for headless semantic extraction, or use `/graphify <path>` per project.
-2. `graphify merge-graphs ... --out graphify-out/graph.json` at the workspace root.
-3. Query from the root: `graphify query "..."`, `graphify path "A" "B"`, `graphify explain "X"`.
-
-**Refresh all projects in one pass:**
-
-| Cadence | Loop | When |
-| :--- | :--- | :--- |
-| **AST** | `graphify update <path>` per matrix folder → re-merge | After code edits; free and incremental |
-| **Full LLM** | `graphify extract <path>` per matrix folder → re-merge | Docs/ADRs/specs changed, graph ~7+ days old, or cross-document links look wrong |
-
-Full command examples: [GUIDE.md — Graphify in multi-project workspaces](GUIDE.md#graphify-in-multi-project-workspaces).
-
-**Habits:**
-
-- **Per project, merge at root.** Never run `/graphify` on each subfolder from the workspace root — outputs collide in the same `graphify-out/`. `graphify extract` writes inside each project.
-- **Re-merge after every batch update.** Per-project graphs and the workspace merged graph are different files; updating projects without merging leaves cross-project queries stale.
-- **Match refresh to what changed.** Code-only week → AST loop. Docs or binding context (`GLOSSARY.md`, `specs/adr/`) moved → full LLM re-extract on affected projects.
-- **Verify against code.** Graphify is evidence that speeds discovery (`/feature-discovery`, `/integration-contract`); repo code and tests still win when they disagree.
-- **Do not bulk-read the graph.** Query narrowly (`graphify query`, `path`, `explain`) the same way you retrieve from `specs/` — never load `graph.json` or `GRAPH_REPORT.md` wholesale into chat.
-- **Cadence:** AST loop after active coding days; full LLM loop weekly or before a multi-project spec. Discovery skills may suggest an update but stay read-only — you run the refresh.
 
 ---
 
@@ -306,7 +276,7 @@ merged and verified, request cleanup as described in the guide.
 
 Workspace-root level.
 
-1. **`/feature-discovery`** — point it at the module, sub-module, UI, or behavior the bug lives in. It traces current code first, cross-checks with Graphify, reads related ADRs, and returns the report in chat. This is your evidence base. If the bug's *when* or *why* lives in history, accept its offer to scan git history.
+1. **`/feature-discovery`** — point it at the module, sub-module, UI, or behavior the bug lives in. It traces current code first, reads related ADRs, and returns the report in chat. This is your evidence base. If the bug's *when* or *why* lives in history, accept its offer to scan git history.
 2. **`/diagnosing-bugs`** — run it on that area. It finds the root cause and fixes it. If it can only *confirm the bug exists* without fully resolving it, escalate to **`/tdd-loop`**: write a failing test that reproduces the bug, watch it fail for the right reason, then make it pass to close it for good.
 3. **Ship** — `/commit-push-close` or `/commit-push-pr`. The commit carries a `Root cause:` line naming the cause removed, not the symptom; if the cause was never proven, it says so. Temporary instrumentation is tagged (`[DEBUG-a4f2]`) while debugging so one grep removes it; the ship skills stop on any that remains.
 4. **Look back** *(optional)* — after a bug that took too long to find, `/retro` in the same session proposes the check or standard that would have caught it.
@@ -460,8 +430,6 @@ Pass the spec (`/factory PRWL-142`) to see every ticket at once, blocked ones fi
 
 - **`/release-notes`** — at the end of the week, generate a PM-friendly summary of what shipped, from the week's commits and closed work. Saved for handoff to your project manager. It reads each change's diff rather than trusting commit subjects, can cover a version range between local tags (`v1.3.0..v1.4.0`), and adds an *Action needed* line when users or ops must do something.
 - **`/retro`** *(when installed)* — after any session that hit the same mistake twice or searched too long. Mechanical findings become checks; judgement calls become review standards.
-- **Graphify AST refresh** *(when installed)* — `graphify update` loop per matrix folder + re-merge after active coding weeks (see [GUIDE.md](GUIDE.md#graphify-in-multi-project-workspaces)).
-- **Graphify full LLM refresh** *(when installed)* — `graphify extract` loop per matrix folder + re-merge weekly, when docs/ADRs changed, or before `/integration-contract`.
 
 ---
 
@@ -471,10 +439,6 @@ What separates intentional use from vibe coding:
 
 - **Auto-chaining skills.** Letting the agent run `discover → … → ship` unattended. Suggest and stop; the human steers every transition.
 - **Bulk-reading `specs/`.** Loading the whole archive "for context." Retrieve narrowly instead.
-- **Treating companion tools as default memory.** Graph or index tools can help a task, but their artifacts are not binding context.
-- **Updating per-project graphs but not re-merging.** Cross-project `graphify query` reads the workspace-root `graphify-out/graph.json`; stale merge = wrong answers across PROJECT-CODEs.
-- **Running `/graphify` on each matrix folder from the workspace root.** Outputs overwrite the same `graphify-out/` — use `graphify extract <path>` per project instead.
-- **AST-only refresh when docs moved.** `graphify update` skips LLM on code-only diffs — re-extract semantically when `GLOSSARY.md`, ADRs, or specs changed.
 - **Fabricating an issue before coding** for genuinely ad-hoc work. Let the ship skill create the issue at the end from the real diff and decisions.
 - **Skipping discovery on a bug.** Jumping straight to a fix without tracing the journey.
 - **Mixing conventions across projects.** In a multi-tech workspace, never carry one project's patterns into another. Always name the full Project from the matrix.
@@ -492,7 +456,7 @@ What separates intentional use from vibe coding:
 - **Deleting a worktree after push or issue closure.** Confirm integration and preserve local files first. Shipping is not merging, and ignored files may still be valuable.
 - **Using `/tdd` as a loop.** Since upstream v1.1.0 it is a reference document — what a good test is, where seams go. Invoking it alone gets you no witnessed red. The procedure is `/tdd-loop`.
 - **Treating native memory as authority.** Native memory is user-local recall. `GLOSSARY.md` and ADRs bind.
-- **Recreating secondary recall systems.** Do not create repo `MEMORY.md`, wiki, discovery, or default knowledge-graph memory. Use native CLI memory only. Use optional graph/index companions only when task-fit.
+- **Recreating secondary recall systems.** Do not create repo `MEMORY.md`, wiki, or discovery memory. Use native CLI memory only.
 - **Inlining UI the library already covers.** Once a project has a design system, hand-rolling markup in a page instead of consuming its `<project-slug>-ui-coding` library. A missing component goes through `/design-system` (extend), not a one-off.
 - **Claiming a UI fix "verified" by eye.** Per-page conformance needs `/pixel-audit`'s element-level gate — served assets, `getBoundingClientRect()`, computed styles — not a glance at a full-page screenshot.
 - **Fixing nits live during QA.** Steering the agent nit-by-nit fractures the QA pass. Capture with `/polish-batch`, then dispatch in one bounded pass per PROJECT-CODE.
@@ -504,7 +468,6 @@ What separates intentional use from vibe coding:
 - **Pasting unredacted staging logs or query output into a PR.** PR bodies are permanent; redact first.
 - **Force-pushing past a rejected push.** Find out why it was rejected; someone else's work may be on the branch.
 - **Trusting a 200 as proof of deploy.** A reachable URL proves the site is up, not which build is live.
-- **Treating the graph as the code.** A Graphify edge the current source doesn't confirm is drift, not behavior.
 - **Reporting a test that passes on code you just wrote as "already worked".** Revert your own change, watch the test fail, then re-apply it.
 
 ---

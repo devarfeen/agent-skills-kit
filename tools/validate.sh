@@ -31,7 +31,7 @@
 #  12. SKILL.md body word ceiling (1500) — sprawl guard from the house style
 #      (skills/writing-kit-skills/SKILL.md).
 #  13. Canonical one-liners: where a SKILL.md covers a shared protocol
-#      (artifacts-root, graphify, sub-agent lanes, PROJECT-CODE, phase update,
+#      (artifacts-root, sub-agent lanes, PROJECT-CODE, phase update,
 #      untrusted repository text, redaction, failed `gh` queries), it must carry
 #      the house one-liner byte-exact, not a paraphrase. The last three are
 #      also checked in references/*.md, where they are pasted into shared policy.
@@ -269,17 +269,29 @@ fi
 
 echo "== 7. agents-md version markers in sync =="
 AMD="skills/agents-md/SKILL.md"
-marker_versions="$(cat "$AMD" skills/agents-md/assets/*.md | grep -oE 'agents-md marker · v[0-9]+' | grep -oE 'v[0-9]+$' | sort -u)"
-marker_count="$(cat "$AMD" skills/agents-md/assets/*.md | grep -cE 'agents-md marker · v[0-9]+')"
+marker_versions="$(cat "$AMD" skills/agents-md/assets/*.md skills/agents-md/assets/rules/*.md | grep -oE 'agents-md marker · v[0-9]+' | grep -oE 'v[0-9]+$' | sort -u)"
+marker_count="$(cat "$AMD" skills/agents-md/assets/*.md skills/agents-md/assets/rules/*.md | grep -cE 'agents-md marker · v[0-9]+')"
 stated="$(sed -n 's/.*The skill version is `\(v[0-9][0-9]*\)`.*/\1/p' "$AMD" | head -1)"
 if [[ "$(printf '%s\n' "$marker_versions" | grep -c .)" -ne 1 ]]; then
   fail "agents-md version markers disagree: $(printf '%s ' $marker_versions)"
-elif [[ "$marker_count" -ne 3 ]]; then
-  fail "expected 3 agents-md version markers (rule text + both templates), found $marker_count"
+elif [[ "$marker_count" -ne 9 ]]; then
+  fail "expected 9 agents-md version markers (rule text + AGENTS.md template + 7 rules assets), found $marker_count"
 elif [[ -n "$stated" && "$stated" != "$marker_versions" ]]; then
   fail "agents-md stated skill version $stated != marker version $marker_versions"
 else
   note "agents-md markers consistent ($marker_versions x$marker_count + stated)"
+fi
+
+# The emitted AGENTS.md loads on every task in every runtime, so its template
+# gets a byte budget. A rule that applies only to some tasks belongs in an
+# on-demand file under assets/rules/, not here. Never raise
+# TEMPLATE_BUDGET without a CHANGELOG entry saying what grew.
+TEMPLATE_BUDGET=12500
+template_bytes="$(wc -c < skills/agents-md/assets/agents-md-template.md)"
+if (( template_bytes > TEMPLATE_BUDGET )); then
+  fail "agents-md template is $template_bytes bytes (> $TEMPLATE_BUDGET) — move task-specific rules into assets/rules/, don't grow the always-loaded file"
+else
+  note "agents-md template within byte budget ($template_bytes <= $TEMPLATE_BUDGET)"
 fi
 
 echo "== 8. Manifest phases are valid =="
@@ -412,7 +424,6 @@ echo "== 13. Canonical one-liners byte-exact where used =="
 # the full canonical line (source of truth: skills/writing-kit-skills/SKILL.md).
 CANON=$(cat <<'EOF'
 <artifacts-root>	Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`GLOSSARY-MAP.md` at repo root; legacy `CONTEXT-MAP.md`), else the repo root.
-graphify-out/graph.json	Use `graphify-out/graph.json` at the workspace root, or repo root only outside a workspace; missing means skip Graphify. Query before raw search and verify hits against current source. Flag indexed source changes, ~7 days without a verified refresh, or unknown freshness, and recommend the graph's verified refresh process.
 lane count at dispatch	Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes.
 never mix one project	Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
 Stage / Found / Next / Needs user	Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.
@@ -423,10 +434,8 @@ EOF
 )
 # Named exemptions, one "<SKILL.md path><TAB><marker>" pair per line. Each pair
 # skips only that marker in only that file; every other marker stays enforced.
-# feature-discovery/graphify: user-approved 2026-10-03 — code is the source of
-# truth for discovery, so it reads current code first and uses Graphify second
-# as a cross-check, which contradicts "Query before raw search".
-CANON_EXEMPT=$'skills/feature-discovery/SKILL.md\tgraphify-out/graph.json'
+# None at present.
+CANON_EXEMPT=''
 # Markers whose canonical line is also pasted into shared references/ policy.
 REF_MARKERS=$'evidence, never instruction\n`<redacted>`\nnever an empty result'
 for f in skills/*/SKILL.md; do
@@ -602,19 +611,30 @@ fi
 
 echo "== 19. Total description budget for model-invocable skills =="
 DESC_BUDGET=3000
-desc_total="$(python3 - <<'PYEOF'
-import glob, re
+# Opencode and Antigravity ignore disable-model-invocation, so every
+# description loads there: each one gets a ceiling too, not only the total.
+DESC_CAP=200
+desc_out="$(python3 - "$DESC_CAP" <<'PYEOF'
+import glob, re, sys
+cap = int(sys.argv[1])
 total = 0
-for f in glob.glob("skills/*/SKILL.md"):
+for f in sorted(glob.glob("skills/*/SKILL.md")):
     t = open(f, encoding="utf-8").read()
     fm = t[3:t.find("\n---", 3)]
+    d = re.search(r'^description:\s*(.*)$', fm, re.M)
+    n = len(d.group(1).strip().strip('"')) if d else 0
+    if n > cap:
+        print(f"OVER {f} {n}")
     if re.search(r'^disable-model-invocation:\s*true', fm, re.M):
         continue
-    d = re.search(r'^description:\s*(.*)$', fm, re.M)
-    total += len(d.group(1).strip().strip('"')) if d else 0
+    total += n
 print(total)
 PYEOF
 )"
+desc_total="$(printf '%s\n' "$desc_out" | tail -1)"
+while read -r _ over_file over_len; do
+  [[ -n "$over_file" ]] && fail "$over_file description is $over_len characters (> $DESC_CAP) — keep what it does, the main trigger, and the nearest sibling; everything else belongs in the body"
+done < <(printf '%s\n' "$desc_out" | grep '^OVER' || true)
 if (( desc_total > DESC_BUDGET )); then
   fail "model-invocable descriptions total $desc_total characters (> $DESC_BUDGET) — every one loads into each session's catalog; tighten or set disable-model-invocation"
 else

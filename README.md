@@ -69,8 +69,7 @@ npx skills update <skill-name>
 
 Line-by-line global installs are under [Available Skills](#available-skills),
 [grouped by GitHub source](#global-install-commands). Companions mirror
-[Credits And Provenance](#credits-and-provenance);
-Graphify is installed separately. The `skills` CLI has no version or ref option,
+[Credits And Provenance](#credits-and-provenance). The `skills` CLI has no version or ref option,
 so companions install from each source's default branch (unpinned).
 
 The `skills` CLI fetches the named subfolder from this repo and installs it
@@ -103,9 +102,9 @@ with the [groups `npx skills` shows](#skill-groups) under this repo's command.
 
 | Skill | Phase | What it does | Example prompt |
 | :--- | :--- | :--- | :--- |
-| [`agents-md`](skills/agents-md/SKILL.md) | startup | Generates the workspace-root `AGENTS.md` (Project Matrix, 18 non-negotiable rules, skills gradient, context policy) plus a `CLAUDE.md` redirect shim, from a `.code-workspace` file (marker `v48`). Reports competing per-runtime instruction files without touching them, and suggests an optional env-guard hook template when production or staging hosts are named | `Generate AGENTS.md for this workspace` |
+| [`agents-md`](skills/agents-md/SKILL.md) | startup | Generates a small workspace-root `AGENTS.md` (the rules every task needs, plus a table of what to read before which action) and seven on-demand files under `rules/` (Project Matrix, orchestration, verification, browser, shipping, issues, skills) from a `.code-workspace` file (marker `v50`). Writes no `CLAUDE.md` or `GEMINI.md` — every supported runtime reads `AGENTS.md`. Reports competing per-runtime instruction files without touching them, and suggests an optional env-guard hook template when production or staging hosts are named | `Generate AGENTS.md for this workspace` |
 | [`design-system`](skills/design-system/SKILL.md) | startup | Turns a design source into tokens + a UI library + a verifiable preview + a binding AGENTS.md rule. Source order: one you name, else a root `DESIGN.md`, else a project UI/brand/component-library skill, else Figma, spec, reference screens, or a guided session. Checks WCAG AA contrast, loaded fonts, and light/dark modes; re-run `extend` as the design grows | `Set up the design system for ADMIN-WEB from this Figma file` |
-| [`feature-discovery`](skills/feature-discovery/SKILL.md) | discover | Read-only, evidence-backed trace of how a feature, module, or behavior works, with current code as the source of truth — then Graphify as a cross-check, then ADRs, each with its own report section. Git history is read only if you accept the report's offer | `Trace the invite-user workflow across ADMIN-WEB and API-SERVICE` |
+| [`feature-discovery`](skills/feature-discovery/SKILL.md) | discover | Read-only, evidence-backed trace of how a feature, module, or behavior works, with current code as the source of truth, then ADRs. Git history is read only if you accept the report's offer | `Trace the invite-user workflow across ADMIN-WEB and API-SERVICE` |
 | [`port-feature`](skills/port-feature/SKILL.md) | discover | Maps a feature from a REFERENCE implementation into a TARGET stack as one gap map — including validation, bulk actions, role gates, and reference behaviour no test covers — then hands to planning | `Port stock-transfer approvals from LEGACY-PORTAL to ADMIN-WEB` |
 | [`feature-prompt`](skills/feature-prompt/SKILL.md) | sharpen | Turns a rough idea into a small, PR-sized prompt file for `grill-with-docs`, showing inferred facts separately from what you stated | `Help me create a feature prompt for stock transfer approvals` |
 | [`tdd-loop`](skills/tdd-loop/SKILL.md) | implement | Enforceable test-first loop — one failing test, watch it fail right, smallest change to green, widen, refactor on green — plus an exception protocol for spikes, legacy code, hotfixes, and infra work. Called by `/implement` at each seam when that's installed; stands alone when it isn't | `Fix this bug test-first` |
@@ -130,7 +129,7 @@ with the [groups `npx skills` shows](#skill-groups) under this repo's command.
 | [`ask-kit`](skills/ask-kit/SKILL.md) | companion | Router over this kit's own skills: describe your situation and it names the one skill to run next, why, and what that skill needs — never runs it. For a spec, ticket, or PR that already exists, `/factory` reads the real state instead | `Which kit skill do I use for this?` |
 | [`factory`](skills/factory/SKILL.md) | companion | Factory conductor: reads where a spec, ticket, or PR stands across CI, review, risk gate, and staging deploy, then names the one skill that moves it next — never runs it, never goes past staging. Shows how long each unit has sat in its state and flags stalled ones. Started as `/factory run <label or reference>` it carries the chain out itself after one question (which agent builds, which reviews): build in T3 Code threads, QA with before/after screenshots, PR, a second agent's code review, merge into `local` or staging, and handover to manual QA. It never closes an issue | `/factory SPEC-142` · `/factory run PRWL-127` · `/factory run automate` |
 | [`incident-triage`](skills/incident-triage/SKILL.md) | companion | Read-only incident triage: timeline, ranked causes with evidence (always including one that isn't a recent change), owner-run mitigations, one redacted incident note with a Resolution section — production never accessed; a suspected breach goes straight to the owner | `We have an incident: checkout 502s since 14:00` |
-| [`writing-kit-skills`](skills/writing-kit-skills/SKILL.md) | — | Kit-internal house style for authoring and editing this repo's skills: skeleton, word budget, the eight canonical one-liners, output caps, eval gates, and matching each rule's form to the failure it fixes | `Rewrite this SKILL.md to house style` |
+| [`writing-kit-skills`](skills/writing-kit-skills/SKILL.md) | — | Kit-internal house style for authoring and editing this repo's skills: skeleton, word budget, the seven canonical one-liners, output caps, eval gates, and matching each rule's form to the failure it fixes | `Rewrite this SKILL.md to house style` |
 
 ### Global install commands
 
@@ -321,7 +320,7 @@ recovery loops. See [BEST-PRACTICES.md](BEST-PRACTICES.md) for the mental
 model: the gradient, context discipline, and anti-patterns.
 
 The kit ships `using-git-worktrees` as a companion. External companion skills
-and MCPs (Graphify, agent-browser, Figma MCP, herdr,
+and MCPs (agent-browser, Figma MCP, herdr,
 docker-expert, Laravel Boost, database MCPs, …) are separate installs used
 beside this kit when installed and task-fit — helpers, not a required
 pipeline. The list lives in
@@ -356,7 +355,6 @@ paraphrase. The source text lives in
 | Topic | What it guarantees |
 | :--- | :--- |
 | Artifacts root | Specs, ADRs, and contracts resolve to one predictable root (workspace, per-context, or repo) |
-| Graphify | Use the knowledge graph when it exists, verify hits against source, flag stale graphs |
 | Sub-agent lanes | Local lanes only, never cloud agents; lane count announced and each lane reported |
 | PROJECT-CODE | Every project named by its Project Matrix code; no cross-project convention mixing |
 | Phase updates | `Stage / Found / Next / Needs user` at each phase transition |
@@ -364,9 +362,8 @@ paraphrase. The source text lives in
 | Redaction | Tokens, keys, cookies, passwords, emails, and customer identifiers become `<redacted>` before evidence leaves the session |
 | Failed `gh` queries | A failed or erroring `gh` call is "unknown" — never an empty result, a pass, or green |
 
-The only exemption is user-approved and listed in `CANON_EXEMPT` in the
-validator: `feature-discovery` traces current code first and uses Graphify
-afterwards as a cross-check, instead of querying the graph before searching.
+An exemption has to be user-approved and listed in `CANON_EXEMPT` in the
+validator; none exists at present.
 
 ## Credits And Provenance
 
@@ -406,8 +403,7 @@ skills from the wider agent-skills ecosystem.
   <https://github.com/vercel-labs/skills>
   <https://github.com/vercel-labs/agent-skills>
 - Other optional companions referenced by `agents-md`: Matt Pocock's
-  `ask-matt` router (<https://github.com/mattpocock/skills>), Graphify
-  (<https://github.com/Graphify-Labs/graphify>), Codex plugin for Claude Code
+  `ask-matt` router (<https://github.com/mattpocock/skills>), Codex plugin for Claude Code
   (<https://github.com/openai/codex-plugin-cc>), Impeccable
   (<https://github.com/pbakaus/impeccable>), notebooklm-py
   (<https://github.com/teng-lin/notebooklm-py>), herdr
@@ -447,8 +443,6 @@ skills from the wider agent-skills ecosystem.
   - Impeccable (<https://github.com/pbakaus/impeccable>): `impeccable`.
   - agentic-awesome-skills (<https://github.com/sickn33/agentic-awesome-skills>):
     `docker-expert`.
-  - Graphify (<https://github.com/Graphify-Labs/graphify>): `graphify`, installed
-    from a local copy rather than through the `skills` CLI.
 - The QA-escape loop (`agentic-qa`, `qa-escape`, and the acceptance-matrix,
   evidence, and risk-lens changes to existing skills) adapts ideas from skills
   in GitHub's awesome-copilot collection

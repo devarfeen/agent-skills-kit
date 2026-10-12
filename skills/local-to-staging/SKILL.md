@@ -1,9 +1,9 @@
 ---
 name: local-to-staging
 disable-model-invocation: true
-description: "Promote every workspace project from `origin/local` to `origin/staging` in one pass — open a local→staging PR in each repo that has both branches, merge it after its checks pass, then watch the GitHub Actions runs on the merge commit and report success or failure per project. Use when the user says \"promote local to staging\", \"open and merge local→staging PRs on all projects\", or runs /local-to-staging. Never pushes, never touches a server, never bypasses branch protection, and never goes past staging — promotion to production is /staging-to-production. A broken staging deploy routes to /staging-fix."
+description: "Promote every project from origin/local to origin/staging: open each PR, merge on green, watch the Actions runs. Never pushes or goes past staging. Production is /staging-to-production."
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # local-to-staging
@@ -12,7 +12,7 @@ local-to-staging moves what is already on `origin/local` onto `origin/staging` f
 
 ## Inputs
 
-- **Projects** — the rows of the workspace `AGENTS.md` Project Matrix, or the repos the user names. No workspace `AGENTS.md` and no names → stop and ask.
+- **Projects** — the rows of the workspace Project Matrix (`rules/projects.md`, or inline in an older `AGENTS.md`), or the repos the user names. No matrix and no names → stop and ask.
 - **Branches** — source `local`, target `staging`, unless the user or workspace `AGENTS.md` names others. A repo qualifies only when `git ls-remote --heads origin <source> <target>` returns both; the rest are listed as skipped with the missing branch.
 - **Merge method** — merge commit (`--merge`). `local` and `staging` are long-lived, and a squash or rebase leaves `staging` with commits `local` does not contain, so the next promotion re-proposes or conflicts on work already shipped. A repo that disallows merge commits is reported and skipped; never switch methods silently.
 

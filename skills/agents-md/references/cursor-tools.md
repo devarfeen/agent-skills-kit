@@ -1,5 +1,7 @@
 # Cursor CLI Tool Mapping
 
+Zero attribution: omit co-author, AI, and tool attribution from all output.
+
 > Last verified: 2026-09-28 against installed cursor-agent 2026.09.26-dd393fe — flag/command surface via installed `--help`; internal tool names via official docs or the shipped binary; re-verify on touch (see CONTRIBUTING sync map).
 
 Mechanics and permissions: [`tool-calling.md`](tool-calling.md).
@@ -28,7 +30,7 @@ Mechanics and permissions: [`tool-calling.md`](tool-calling.md).
 **Key Notes:**
 
 - Cursor CLI command is `agent` (interactive: `agent`, non-interactive: `agent -p "..."`).
-- `AGENTS.md` is the canonical workspace instruction file; no extra shim is required for Cursor.
+- `AGENTS.md` is the canonical workspace instruction file for Cursor.
 - **Memory:** no documented memory flag in `~/.cursor/cli-config.json`; IDE “Generate Memories” (Settings → Rules) is IDE-local recall. No repo memory files or memory MCP servers for this kit. See [`memory-global-defaults.md`](memory-global-defaults.md).
 - Cursor MCP config files: `<workspace-root>/.cursor/mcp.json` (recommended for multi-repo workspaces), `~/.cursor/mcp.json` (global fallback).
 - Skills load from `.cursor/skills/`, `.agents/skills/`, `~/.cursor/skills/`, `~/.agents/skills/`, plus compat dirs `.claude/skills/`, `.codex/skills/`, `~/.claude/skills/`, `~/.codex/skills/`.

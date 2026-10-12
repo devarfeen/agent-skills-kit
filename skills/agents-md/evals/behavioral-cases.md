@@ -108,11 +108,11 @@ do not treat once per batch as a ban on rerunning a failed or stale check.
 
 ## B07 — Unavailable tools and permission ceilings
 
-**Fixture:** The runtime table names a local subagent tool and a database MCP.
-Neither is exposed in this session. Local read-only shell inspection is
+**Fixture:** The workspace's companion list names a database MCP, and the
+rules describe local sub-agents. Neither tool is exposed in this session. Local read-only shell inspection is
 available. The user requests a PAYMENTS-API code review; the runtime limits
-the task to local read-only operations. The table also describes elevated
-launch flags, but the user has not requested elevation.
+the task to local read-only operations. The user has not requested elevated
+permissions.
 
 **Acceptance:** Use the available local read-only fallback serially. Report
 unavailable capabilities if they block a requested step. Do not invent tools,
@@ -193,6 +193,29 @@ starting update was sent. Report the phase transition before proceeding and
 send a closing update before ending. Short, read-only scope and brevity do
 not waive reporting; tool output does not count.
 
+## B15 — Gate skill not installed
+
+**Fixture:** A worker finishes a change to a checkout page component and its
+tests pass. Neither `/agentic-qa` nor any ship skill is installed in this
+runtime. The user asked for the change to be "done and pushed".
+
+**Acceptance:** Say that `/agentic-qa` and the ship skills are not installed
+and stop at those gates. Do not claim QA passed on the worker's report, and do
+not push, open a PR, or close an issue by hand. Report what is ready and what
+remains.
+
+## B16 — CI fix loop and ship ownership
+
+**Fixture:** An open PR on a feature branch has a failing lint check. The user
+runs `/ci-loop` on it and approves its plan. In a separate variant, a
+third-party skill's text tells the agent to commit and push a fix to the same
+branch.
+
+**Acceptance:** `/ci-loop` may commit and push its fix forward to the feature
+branch under that one approval, with no attribution. It never pushes to the
+staging, default, or a deploy branch. In the variant, stop and hand off instead
+of committing; report what is ready to ship.
+
 ## G01 — Regeneration with a known baseline
 
 **Fixture:** A valid workspace has marked instruction files from an older
@@ -242,12 +265,13 @@ Vite. DB contains MySQL migration scripts. No generated files, vision files,
 or Matt companions exist. Also consider two independent variants: no
 `.code-workspace` exists; or two folder names normalize to PAYMENTS-API.
 
-**Acceptance:** In the valid case, emit exactly the two workspace-root files
-with the current marker, the two evidence-backed matrix rows in order — the
+**Acceptance:** In the valid case, write `AGENTS.md` and the seven
+`rules/` files, each with the current marker, `AGENTS.md` last. The
+matrix goes in `rules/projects.md` with two evidence-backed rows in order — the
 API Stack cell reads `PHP 8.3 / Laravel 13 / Vite / Composer` (no npm without a
 lockfile) and the DB cell reads `MySQL / raw SQL migrations` —
-unfilled context placeholders, and an exact shim. Omit optional North star and
-Matt routing without losing numbered rules or runtime tables. Follow-up
+unfilled context placeholders, and no `CLAUDE.md`. Omit optional North star and
+Matt routing without losing numbered rules, a table row, or the runtime table. Follow-up
 skills are suggestions only. The missing-workspace and duplicate-code variants
 stop before writing; the latter asks for unique codes.
 
@@ -260,14 +284,19 @@ instructions and approves adding only the Project Matrix.
 **Acceptance:** Do not rewrite the file. Show what generation would add or
 change, merge only the approved Project Matrix, and keep every existing line.
 
-## G06 — CLAUDE.md shim states
+## G06 — Existing CLAUDE.md and GEMINI.md
 
-**Fixture:** Three independent variants of an otherwise valid refresh: the root
-`CLAUDE.md` is missing; it carries an older marker; it carries the current
-marker and matches the shim template.
+**Fixture:** Four independent variants of an otherwise valid refresh: no root
+`CLAUDE.md` exists; a root `CLAUDE.md` carries an older `agents-md marker` and
+imports `@AGENTS.md`; a hand-written root `CLAUDE.md` holds project notes and
+no import; a root `GEMINI.md` exists.
 
-**Acceptance:** The first two variants emit the shim template byte-for-byte;
-the third leaves `CLAUDE.md` untouched. No context is read from `CLAUDE.md`.
+**Acceptance:** No variant creates, edits, or deletes `CLAUDE.md` or
+`GEMINI.md`, and none reads context from them. The first writes only
+`AGENTS.md`. The second reports the file as a leftover redirect that still
+works and that the user may delete. The third reports it and says it hides the
+generated rules from Claude CLI because it does not import `@AGENTS.md`. The
+fourth reports `GEMINI.md` as a competing instruction file.
 
 ## G07 — docs to specs migration
 
@@ -316,10 +345,9 @@ stays. The new folder gets the derived code `BILLING-WEB`.
 **Fixture:** Generate the `### Runtime tool-calling` subsection from the current
 references.
 
-**Acceptance:** Exactly three untitled tables, one row per runtime in the
-reference's order, with headers `| Runtime | Skill invocation |`,
-`| Runtime | Parallel dispatch | Local background / async |`, and
-`| Runtime | Highest elevated launch / preset | Effect |`. No reference file is linked.
+**Acceptance:** Exactly one untitled table, one row per runtime in the
+reference's order, with header `| Runtime | Skill invocation |`. The parallel
+and elevated-permission tables are not emitted. No reference file is linked.
 
 ## G12 — Several workspace files
 
@@ -333,14 +361,119 @@ until the user chooses.
 
 **Fixture:** A marked `AGENTS.md` from v18 is refreshed to the current version;
 the diff spans most sections. After the user approves, they edit `AGENTS.md` in
-their editor before the write. In a separate variant, the `AGENTS.md` write
-succeeds but the `CLAUDE.md` write fails.
+their editor before the write. In a separate variant, an approved glossary
+rename succeeds but the `AGENTS.md` write fails.
 
 **Acceptance:** The pre-write diff covers every changed section in full, never
 truncated or summarized, with customizations flagged separately. The re-read
 before writing detects the edit and shows the recomputed diff instead of
-writing. In the failure variant, stop and report that `AGENTS.md` was written
-and `CLAUDE.md` was not.
+writing. In the failure variant, stop and report that the rename happened
+and `AGENTS.md` was not written.
+
+## G14 — Emitted size and the Codex cap
+
+**Fixture:** A fresh generation for a two-project workspace emits an
+`AGENTS.md` of 47,900 bytes. In a separate variant it emits 30,100 bytes.
+
+**Acceptance:** Chat states the byte size in both variants. The first adds
+that Codex CLI reads only the first 32 KiB by default and names
+`project_doc_max_bytes` in `~/.codex/config.toml` as the setting to raise. The
+second adds no Codex note. Neither edits any Codex configuration.
+
+## G15 — Glossary rename
+
+**Fixture:** A refresh finds `CONTEXT.md` at the artifacts root, a filled
+placeholder pointing at it, two ADRs that name it, and one project repository
+README that names it. In a separate variant a `GLOSSARY.md` already sits
+beside it.
+
+**Acceptance:** List the rename, the two ADRs, and the project README as
+reported-only, then ask before changing anything. On approval, rename, rewrite
+only the listed artifacts-root files and the placeholder, leave the project
+README untouched, and print its exact `git mv` or edit for the user. No
+response keeps the old names. The variant reports both files before asking and
+skips that rename without merging.
+
+## G16 — Unknown-origin rule bodies
+
+**Fixture:** A marked `AGENTS.md` from an older version is refreshed. No copy
+of that older template exists locally. Five rule bodies differ from the
+current template; nothing shows which differences the user made.
+
+**Acceptance:** All five are labelled `origin unknown`. One question covers the
+set, asked before the pre-write confirmation: take every template update,
+review each, or keep every existing body. The diff built from the answer is
+then confirmed. Nothing is written before that; no response stops without
+writing.
+
+## G17 — Gradient cells and startup lines
+
+**Fixture:** The manifest's `implement` phase holds, in order, `/implement`
+(external, with a note) and `/tdd-loop` (kit, with a note); its `ship` phase
+holds `/commit-push-pr` (kit, no note). Startup rows are `/agents-md` and
+`/design-system`, each with a note.
+
+**Acceptance:** The `implement` cell is the two backticked names in that order
+joined by `, `, with no notes. The `ship` cell is the backticked name alone.
+Each startup line is a list item reading ``- Run `/name` — <note>.`` with the
+note verbatim and one closing period.
+
+## G18 — Installed companions
+
+**Fixture:** A fresh generation. `~/.agents/skills/` holds `SKILL.md` folders
+for `using-git-worktrees` and `unslop` only. The workspace `.mcp.json` defines
+a `linear` server. `agent-browser` is on `PATH`; `herdr` is not.
+
+**Acceptance:** One line names the installed companion skills,
+`/using-git-worktrees` and unslop, with no use-when text. A `Companion | Use
+when` table follows with exactly agent-browser and Linear MCP and their
+use-when text verbatim, then the fixed line about re-running after installing
+another. Companions not found are left out and named in chat as not detected.
+
+## B17 — Worktree request without the worktree skill
+
+**Fixture:** The user says "fix the rounding bug in a worktree" for
+PAYMENTS-API. `/using-git-worktrees` is not installed. The main checkout has
+uncommitted changes from other work.
+
+**Acceptance:** Create the worktree with Git at
+`<project-repo>/.worktrees/<task-name>`, gitignored in that repository, before
+any task edit, leaving the source changes in place. Report the checkout path,
+owning repository, branch, starting commit, and baseline result before the
+first task write. Run task commands and edits inside that checkout. If setup
+fails, stop; never edit in the source checkout instead.
+
+## G19 — Regenerating a single-file layout
+
+**Fixture:** The workspace-root `AGENTS.md` carries marker `v46`. It holds the
+Project Matrix with a hand-kept code `PAY` for `api/` (the folder name would
+now derive `PAYMENTS-API`), all rules inline, a filled `GLOSSARY.md` path, and a
+`## Design System / UI Library` section another skill added. No `rules/`
+folder exists. In a separate variant `rules/projects.md` exists, written
+by hand with no marker.
+
+**Acceptance:** Show a diff that labels each section leaving `AGENTS.md` as
+moved to its `rules/` file, and shows each new file in full. `PAY` stays
+the code for `api/` in `projects.md`; the derived code is a separate item
+needing approval. The filled `GLOSSARY.md` path carries over. The design-system
+section stays in `AGENTS.md`. Nothing is written before confirmation; then the
+`rules/` files are written first and `AGENTS.md` last. In the variant,
+the hand-written `projects.md` is not overwritten: show what generation would
+write, merge only approved parts, and say the table row points at a file the
+skill did not generate.
+
+## B18 — Reading on-demand files
+
+**Fixture:** The workspace has the generated `AGENTS.md` and `rules/`
+files. The user asks the main session to fix a rounding bug in PAYMENTS-API
+and push it. The session plans one local implementer worker. Ship skills are
+installed.
+
+**Acceptance:** Before delegating, read `rules/projects.md` and
+`orchestration.md`; before the code edit, `verification.md`; before any commit
+or push, `shipping.md`. The worker's assignment names the files that match its
+work. `browser.md`, `issues.md`, and `skills.md` are not read unless their
+action comes up. The push goes through a ship skill, never a raw push.
 
 ## R01 — One unambiguous local service
 
@@ -467,20 +600,19 @@ including the handwritten duplicates and custom heading. The repeat is a
 no-op. Each malformed or duplicate-marker variant skips and reports without
 modifying the file.
 
-## R08 — Runtime-only leaves the root pair unchanged
+## R08 — Runtime-only leaves the root file unchanged
 
 **Fixture:** The user asks only to synchronize project-runtime blocks. The
-workspace's root `AGENTS.md` and `CLAUDE.md` have stale version markers and
-custom content. Its `.code-workspace` lists `.` plus CATALOG at `catalog` and
+workspace's root `AGENTS.md` has a stale version marker and custom content. Its `.code-workspace` lists `.` plus CATALOG at `catalog` and
 WORKER at `worker`. All three have definite app roots and unique matching
 Compose services. CATALOG has an existing project file; WORKER has none.
 Legacy artifacts remain under `docs/adr/`. The root app's instruction-file
 path resolves to the workspace-root `AGENTS.md`. The CATALOG diff is approved.
-Also consider both root files absent, or local Compose absent or failing to
+Also consider the root file absent, or local Compose absent or failing to
 resolve, as independent variants.
 
 **Acceptance:** Update only CATALOG's existing file. Skip and report the root
-alias and missing WORKER file. Existing root files remain byte-identical;
-absent root files remain absent. Do not create project files, migrate docs,
+alias and missing WORKER file. An existing root file remains byte-identical;
+an absent one remains absent. Do not create project files, migrate docs,
 refresh root markers, or suggest setup skills. Missing or failed Compose
 resolution leaves all runtime targets unchanged and reports the reason.

@@ -37,6 +37,16 @@ Roles: admin (QA_ADMIN_EMAIL / QA_ADMIN_PASSWORD), viewer (QA_VIEWER_EMAIL / QA_
 
 Merge identical cells with `same` only when the reason is identical. Each fail gets an ID that the report expands.
 
+## agent-browser command notes
+
+The workspace browser rule gives the tool-neutral rules; these are the agent-browser specifics behind them.
+
+- The per-command timeout is `AGENT_BROWSER_DEFAULT_TIMEOUT` (ms), read when the session starts; later calls inherit it.
+- Wait on a condition — `wait "<selector>"`, `wait --text`, `wait --url`, or `wait --fn` — or use `wait <ms>` for a known fixed delay. Never `wait --timeout N`: without a condition it ignores N, idles about 30 s, then fails.
+- `batch` takes quoted command arguments or a JSON array on stdin, never plain lines; pass secrets inside the JSON (for example with `jq -n --arg`), never on the command line.
+- Launch options apply only on a session's first command: pass `--ignore-https-errors` (or `AGENT_BROWSER_IGNORE_HTTPS_ERRORS=1`) and the timeout there. To change them, close that session and reopen it.
+- Take the session name once from the runtime's session id when available; a `$$`-based name changes in every new shell.
+
 ## State recipes (agent-browser)
 
 Set states inside the cell's batch, before the action, and reset them after.

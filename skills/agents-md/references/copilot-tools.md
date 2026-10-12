@@ -1,5 +1,7 @@
 Tool-calling index: [`tool-calling.md`](tool-calling.md).
 
+Zero attribution: omit co-author, AI, and tool attribution from all output.
+
 > Last verified: 2026-09-28 against installed GitHub Copilot CLI 1.0.88 — flag/command surface via installed `--help`; internal tool names via official docs or the shipped binary; re-verify on touch (see CONTRIBUTING sync map).
 
 | Skill Reference | Copilot CLI Equivalent |

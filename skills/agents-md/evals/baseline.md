@@ -5,7 +5,7 @@
 
 ## Trigger eval
 
-**19/21** (21/21 unanimous across the three judges)
+**19/21** (21/21 unanimous across the three judges; the set had 21 queries then, 20 now)
 
 - **[trigger]** `Create the Project Matrix and non-negotiable rules for this workspace` → majority `/design-system` (votes: /design-system, /design-system, /design-system)
 - **[trigger]** `Refresh the Project Matrix — I added a folder to the workspace` → majority `/design-system` (votes: /design-system, /design-system, /design-system)
@@ -27,7 +27,7 @@
 | Frontier readiness | 5 |  |
 | **Average** | **4.80** | |
 
-> **`N/A` on TDD/testing compat:** The skill emits Markdown instruction files (AGENTS.md + CLAUDE.md shim) from a workspace scan; it has no executable code or test surface, and its done-ness is proven by the observable completion checklist rather than a test run.
+> **`N/A` on TDD/testing compat:** The skill emits Markdown instruction files (AGENTS.md, and at that time a CLAUDE.md shim) from a workspace scan; it has no executable code or test surface, and its done-ness is proven by the observable completion checklist rather than a test run.
 
 ## Notes
 

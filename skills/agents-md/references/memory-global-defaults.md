@@ -1,12 +1,14 @@
 # Native Memory Defaults By CLI
 
+Zero attribution: omit co-author, AI, and tool attribution from all output.
+
 > Human setup reference. Never loaded during `AGENTS.md` generation — open it
 > only when the user asks to enable a CLI's native memory. Re-verify a snippet
 > against its linked docs on touch (CONTRIBUTING sync map).
 
 Copy-paste snippets for **user-level** config. Merge into existing files; do not overwrite unrelated keys.
 
-This kit creates no repo `MEMORY.md`, wiki, discovery, or default knowledge-graph memory. Use each CLI's native memory only when it provides one; graph/index companion artifacts are never binding memory. Shared rules live in generated `AGENTS.md`, with `GLOSSARY.md` / `specs/adr/` as binding project context when those files exist.
+This kit creates no repo `MEMORY.md`, wiki, or discovery memory. Use each CLI's native memory only when it provides one. Shared rules live in generated `AGENTS.md`, with `GLOSSARY.md` / `specs/adr/` as binding project context when those files exist.
 
 ---
 

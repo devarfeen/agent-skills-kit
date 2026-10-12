@@ -2,6 +2,121 @@
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
+## v50 regression run
+
+Date: 2026-10-12. Scope: the cases the `v50` changes touch — B15, B16, G04,
+G06, G13, G14, G15, G16, G17, R08. Method: one independent evaluator read the
+current `SKILL.md`, template, and references plus fixture text only, with the
+acceptance checks withheld and `evals/` off limits, and modeled each case.
+These are simulations, not evidence of guaranteed compliance in every runtime.
+
+A first pass on the draft wording surfaced defects that were fixed before this
+run: "never read `CLAUDE.md`" contradicted the competing-files report that has
+to open it; the Rule 6 gate line forbade commits that Rule 18 allows locally;
+the Codex note needed the user's global file, which the skill may not read; the
+glossary collision check sat after approval; the unknown-origin question had no
+place relative to the diff confirmation; startup lines had no list form.
+
+| Case | Modeled decision | Result |
+| :--- | :--- | :--- |
+| B15 | Names both missing skills, stops at both gates, self-certifies nothing, ships nothing by hand, reports what is ready. | PASS |
+| B16 | `/ci-loop` pushes its fix forward to the feature branch under the one approval; the third-party commit instruction is refused and handed off. | PASS |
+| G04 | Writes `AGENTS.md` only with the `v50` marker and both matrix rows; both refusal variants stop before writing. The evaluator did not show `Composer` in the Stack cell and noted no rule derived it. | PASS, with that gap |
+| G06 | Creates, edits, and deletes nothing in all four variants; classifies the marked redirect as removable and the import-less file as hiding the rules from Claude CLI; lists `GEMINI.md`. | PASS |
+| G13 | Full diff, re-read detects the edit and shows the recomputed diff before writing; the failed-write variant reports the rename done and `AGENTS.md` unwritten. | PASS |
+| G14 | States the byte size in both variants; adds the Codex setting only above 32768; edits no Codex configuration. | PASS |
+| G15 | Lists rename, ADRs, and the reported-only README, asks first, rewrites only listed files, prints the README text edit; the collision variant reports both without merging. | PASS |
+| G16 | Labels all five `origin unknown`, asks one set question before the confirmation, writes nothing until confirmed. | PASS |
+| G17 | Cells joined by `<br>` with ` — ` and the note verbatim; a note-less skill stands alone; startup list items with one closing period. | PASS |
+| R08 | Updates only CATALOG, skips the root alias and missing WORKER file, leaves the root file byte-identical or absent. | PASS |
+
+Two wording fixes followed this run and were not re-evaluated: the PHP
+stack-detection line now names Composer from `composer.json`, closing the G04
+gap; the glossary collision line now says the colliding rename and its rewrites
+leave the approval list. Open gaps the evaluator raised and this pass left
+alone: no explicit "reconfirm" after a recomputed diff, no recovery step when
+`AGENTS.md` fails to write after a rename, and no statement on whether a
+`/ci-loop` push re-triggers the `/agentic-qa` gate.
+
+Live evidence, separate from the simulation: codex-cli 0.162.1 was given a
+45,860-byte `AGENTS.md` with a token at each end. At the default it returned
+the head token and not the tail; with `project_doc_max_bytes=65536` it returned
+both.
+
+## v50 size-reduction run
+
+Date: 2026-10-12, after the run above. Scope: the cases the size cuts touch —
+B10, B16, B17, G03, G08, G11, G17, G18. Same method: one independent evaluator,
+fixtures only, acceptance checks withheld. Simulations, not live evidence.
+
+| Case | Modeled decision | Result |
+| :--- | :--- | :--- |
+| B10 | Refuses native isolation, adds the ignore rule, creates writer worktrees under `api/.worktrees/`, gives the explorer none, asks no separate approval. | PASS |
+| B16 | Unchanged from the run above under the shorter Rule 18. | PASS |
+| B17 | Without the worktree skill: creates the worktree with Git before any edit, leaves source changes alone, reports the gate record, never falls back. | PASS |
+| G03 | Names-only gradient cells in manifest order, exclusions applied, two startup list items. | PASS |
+| G08 | Keeps Matt routing, emits North star with the file and its PROJECT-CODE, deletes Graphify. | PASS |
+| G11 | Exactly two tables; the elevated-permission table is not emitted. | PASS |
+| G17 | Comma-joined names without notes; startup items with one closing period. | PASS |
+| G18 | Lists exactly the four installed companions plus the fixed line; names the rest as not detected; Graphify block follows the graph's presence. | PASS |
+
+One wording fix followed and was not re-evaluated: the worktree paragraph now
+says to add `/.worktrees/` to the repository's `.gitignore` if missing, which
+the evaluator had to infer from "gitignored there". Open gap left alone: no
+rule says which commit an on-demand worktree starts from.
+
+## v50 tightened-rules run
+
+Date: 2026-10-12, after the two runs above. Every rule was reworded shorter and
+three parts left the generated file (the parallel runtime table, use-when text
+for skill companions, and the Matt routing lines that restated Matt's skills).
+Scope: all sixteen template cases and G03, G08, G11, G17, G18. Same method: one
+independent evaluator, fixtures only, acceptance checks withheld. Simulations,
+not live evidence.
+
+Result: 19 of 21 passed on the first pass. B10 and B17 failed.
+
+| Case | Result | Note |
+| :--- | :--- | :--- |
+| B01–B09, B11, B13–B16 | PASS | B03 was modeled before a dropped Rule 14 sentence ("pause only overlapping work…") was restored; the modeled decision still met the check. |
+| B10 | FAIL, then PASS | The shortened worktree paragraph said "gitignored there" without saying who adds the ignore rule. Restored; a second evaluator then added the rule and created both worktrees correctly. |
+| B17 | FAIL, then PASS | "Through `/using-git-worktrees`" had lost its "without it, with Git" fallback, so the agent stopped. Restored; the second evaluator created the worktree with Git and reported the checkout record. |
+| G03, G08, G11, G17, G18 | PASS | One runtime table; skill companions on one line, MCP and CLI companions in a table. |
+
+One wording change followed the recheck and was not re-evaluated: "owns the
+full checkout gate" became "owns the detailed checkout checks", because the
+word "gate" collided with the Rule 6 line about gate skills. B07's fixture was
+reworded afterwards, since it described runtime tables that are no longer
+emitted. Open gaps the evaluators raised and this pass left alone: how a
+worker's partial changes are preserved, how the companion install check maps a
+server name to its manifest row, and no closing format for a gate-blocked task.
+
+## v50 on-demand layout run
+
+Date: 2026-10-13. The generated rules were split: `AGENTS.md` keeps the rules
+every task needs plus a read-before table, and seven on-demand files hold the
+rest. Scope: B04, B06, B09, B10, B11, B15, B16, B17, B18, G04, G17, G18, G19.
+Method: one independent evaluator with the acceptance checks withheld. For the
+template cases it started with `AGENTS.md` only and had to say which on-demand
+file it read and when, applying only rules from files it had read.
+Simulations, not live evidence.
+
+Result: 13 of 13 passed. In every template case the evaluator read the
+matching file before the action — `projects.md` at task start,
+`orchestration.md` before delegating or creating a worktree,
+`verification.md` before an edit, `shipping.md` before a commit, push, or
+close — and left `browser.md` and `issues.md` unread when their action did not
+come up. G19 moved a single-file `v46` layout across with the hand-kept code,
+the filled glossary path, and the design-system section intact, and wrote
+`AGENTS.md` last.
+
+Two changes followed the run and were not re-evaluated. The folder was renamed
+from `specs/agents/` to `rules/`, a path-only change. One sentence was added
+for a gap G19 raised: a declined merge into a hand-written `projects.md` stops
+before `AGENTS.md` is written. Open gaps left alone: the wayfinder label rule
+sits in `issues.md`, which a close does not load; no ship skill only commits
+and pushes without a PR or an issue close.
+
 ## v43 checkout gate regression
 
 Date: 2026-10-01. The worktree rule now requires a reported checkout record,

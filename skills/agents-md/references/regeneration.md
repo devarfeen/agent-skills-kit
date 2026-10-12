@@ -16,6 +16,12 @@ not obsolete defaults. Show customizations and proposed resolutions explicitly
 in the pre-write diff; retain them unless the user approves changing them. An
 unresolved conflict or no response means stop without writing.
 
+Without a baseline, label each differing rule body `origin unknown`, pairing
+old and new bodies by rule heading. Before the pre-write confirmation, ask once
+for the whole set: take every template update, review each one, or keep every
+existing body. Build the diff from that answer, then confirm it as usual. Never
+ask per rule unless the user picks review.
+
 ## Preserve foreign sections
 
 Carry over verbatim any section another skill added (e.g.
@@ -54,18 +60,22 @@ only for `GLOSSARY.md` and `GLOSSARY-MAP.md`.
    and at each filled placeholder path. Search the Project Matrix project
    repositories read-only. List every planned rename, every artifacts-root file
    that names the old file, and every project-repository file that will be
-   reported but not renamed, then ask. Declined or no response → keep the old
-   names and carry the filled placeholder over unchanged.
+   reported but not renamed. A `GLOSSARY.md` already beside a `CONTEXT.md` →
+   report both, drop that rename and its rewrites from the list, and never
+   merge or overwrite. Then ask about whatever remains.
+   Declined or no response → keep the old names and carry the filled
+   placeholder over unchanged.
 2. **Rename.** On approval, `git mv` each listed file (plain `mv` when
-   untracked). A `GLOSSARY.md` already beside a `CONTEXT.md` → stop and report
-   both; never merge or overwrite.
+   untracked).
 3. **Rewrite** the old name to the new one only in the files on the approved
    list and in the filled placeholder path.
 4. **Report** every rename and rewrite, and print the exact `git mv` command
-   for each project-repository file left for the user. On a failed move or
+   or text edit for each project-repository file left for the user. On a failed move or
    write, stop and report what moved and what did not.
 
 ## Legacy markers
 
-Recognize pre-`v6` attribution-bearing comments as legacy markers for migration
-only; replace them with the current marker in approved regeneration.
+A pre-`v6` file opens with an HTML comment that names the `agents-md` skill and
+a `v<N>` below 6, in an attribution-bearing wording instead of
+`agents-md marker`. Treat that first-line comment as a marker for migration
+only; replace it with the current marker in approved regeneration.
