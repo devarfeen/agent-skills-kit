@@ -177,3 +177,21 @@ Expected: recover the assignment/budgets from the round log, verify live state, 
 Fixture: all workers confirmed stopped, unmerged blocked unit with task-owned stack and safe recorded stop/restart commands; unpublished QA remains. A second fixture has unknown writer status.
 
 Expected: first unit stops its task services but preserves checkout, volumes and evidence; second preserves its stack. Report blockers and resume commands. Do not claim instructions can restart a terminated parent without an external supervisor.
+
+## F-30: Reviewer launch inherits the builder's conversation by default
+
+Fixture: authorized run, explicit reviewer provider, pinned base/head and complete criteria; parent carries builder reasoning and a passing QA narrative. The live local launch schema defaults to inheriting conversation and supports disabling it.
+
+Expected: launch a fresh reviewer with inheritance disabled. Supply criteria/source, applicable policies/authorization, checkout/branch, base/head, scope and destination only. Preserve the provider choice; exclude builder narrative and prior verdicts. A different provider does not waive isolation.
+
+## F-31: Follow-up review uses Standards and Spec child lanes
+
+Fixture: round 2, changed head, three previous findings with builder replies; reviewer uses a companion that delegates Standards and Spec. Fresh local child sessions are supported. Each lane can read its applicable sources.
+
+Expected: fresh round-2 reviewer receives relevant previous findings/replies. Each child starts without inherited conversation and receives only its axis inputs plus relevant unresolved findings. Neither gets the sibling's conclusions or the builder's full transcript. Keep all three findings accounted for in the complete review record.
+
+## F-32: Review has more findings than fit its parent summary
+
+Fixture: fresh reviewer has twelve evidenced findings and long check output. The tracker accepts the complete comment and returns its ID; parent can read it.
+
+Expected: publish all twelve findings with evidence, then return at most 400 words identifying base/head, axis/severity counts, checks, blockers and comment ID. Parent reads the full gate record. Do not paste raw logs, silently omit findings or use a short summary as proof the gate passed.

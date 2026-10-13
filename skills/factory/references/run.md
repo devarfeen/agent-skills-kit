@@ -254,17 +254,22 @@ Read the comment back. For Linear, confirm every successful upload has its expec
 
 A fresh reviewer inspects what the builder produced; both settle findings on the issue, where a person can read the exchange. **Execution** selects a different provider when available and reports same-provider review. Runs once CI and QA pass on head.
 
-1. **Review.** Dispatch a fresh read-only reviewer through **Execution**, titled `<issue-id> review`, bound to the unit's worktree, with this prompt:
+1. **Review.** Apply **Independent review** in [`execution-and-continuity.md`](execution-and-continuity.md#independent-review) to the reviewer and any child lanes. Dispatch a fresh read-only reviewer through **Execution**, titled `<issue-id> review`, bound to the unit's worktree, with this prompt:
 
    ```md
    TRACKER: [GitHub|Linear]
    ISSUE: [NATIVE_IDENTIFIER]
-   BASE: [PR_BASE]
+   BASE: [PINNED_BASE_SHA]
+   HEAD: [PINNED_HEAD_SHA]
    CHECKOUT: [ABSOLUTE_WORKTREE_PATH]
+   BRANCH: [VERIFIED_BRANCH]
+   CRITERIA: [SOURCE AND COMPLETE ACCEPTANCE CRITERIA]
+   INSTRUCTIONS: [APPLICABLE POLICY AND STANDARD PATHS; EFFECTIVE AUTHORIZATION]
    ROUND: [N]
    SINCE: [SHA_REVIEWED_LAST_ROUND | none]
 
-   Review this checkout's diff against BASE with `/code-review` when installed,
+   Verify checkout, branch and HEAD before reviewing. Review its diff against BASE
+   with `/code-review` when installed,
    else against the issue's acceptance criteria and the project's documented
    standards. With SINCE set, review only the commits after it and the findings
    the builder declined in its last reply on the issue. Edit, commit, and push
@@ -278,6 +283,11 @@ A fresh reviewer inspects what the builder produced; both settle findings on the
    Commit (full head SHA), Round, and Findings; emit no HTML marker.
    On GitHub retain `<!-- code-review: sha=<head-sha> round=<ROUND> findings=<n> -->`.
    Cannot post → end your message with the comment text instead.
+
+   Return the concise result specified by Independent review; keep the complete
+   findings in the posted comment or report. A posting failure returns the full
+   comment draft as the required exception. Any child review lanes start fresh
+   with only their axis inputs and conversation inheritance disabled.
 
    Zero attribution: name no agent, model, or tool in the comment.
    ```

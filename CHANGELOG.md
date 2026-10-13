@@ -11,6 +11,11 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- **`/factory` 4.1.0** — independent reviewers and their Standards/Spec lanes
+  start with conversation inheritance disabled and neutral, revision-bound
+  assignments. Parent returns stay concise and link complete findings; later
+  rounds receive only relevant findings and replies from prior review.
+
 - **`/factory` 4.0.0** — selects builder/reviewer defaults without a start
   question, supports authorized native local execution when T3 is unavailable,
   and supervises terminal turns and stalled workers with bounded recovery.

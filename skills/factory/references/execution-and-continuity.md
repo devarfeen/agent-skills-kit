@@ -10,11 +10,21 @@ Honor explicit user backend/provider/model requirements. An unavailable required
 
 For T3, read **Capabilities** in `orchestrate-t3/references/t3-tools.md`. Use the usable inherited builder/provider/model when present; otherwise use an available project default verified against the live catalog, then the usable provider with the first sorted provider instance ID and its catalog default. A reviewer defaults to the first sorted usable provider ID different from the builder with `canRunCrossProviderChildTask: true` in the live result. If none exists, use a fresh reviewer with the builder's provider and disclose that it uses the same provider. Keep explicit model choices; never select by remembered model names, price, or tier.
 
-Native workers inherit this session's provider/model unless the user specifies another supported choice. Use a fresh reviewer without inherited builder conversation, with only the issue criteria, project instructions, base/head, and previous findings/replies. Report same-provider review accurately. A workspace that requires different-provider review retains that gate. A missing local executor parks; do not invent tools or remote workers.
+Native workers inherit this session's provider/model unless the user specifies another supported choice. Reviewers follow **Independent review** below. Report same-provider review accurately. A workspace that requires different-provider review retains that gate. A missing local executor parks; do not invent tools or remote workers.
 
 ## Dispatch
 
 Keep the existing checkout policy, assignment ownership, capacity limits, stage skills, and current effective access authorization. Native builders receive the same applicable instructions and filled `orchestrate-t3/references/worker-prompt.md` contract as T3 builders, and implement through `tdd-loop`; loading that prompt does not invoke T3. Native reviewers use **Review loop**'s read-only prompt. Save the worker ID, checkout/branch/head, ownership, stage and remaining attempt budgets in **Round log** before waiting. Use `execution` as its Check value; its Tried cell records `worker`, `checkout`, `branch`, `head`, `owned-files`, `stage`, `worker-recoveries-used`, `runtime-repairs-used`, `qa-rechecks-used`, `ci-attempts-used`, and `review-rounds-used`. Native executor tools come from the live runtime; unavailable capacity queues work without dispatching another writer into its checkout.
+
+## Independent review
+
+Launch every review round in a fresh session with conversation inheritance disabled through the live launch schema (`fork_turns: "none"` when exposed). Provider/model inheritance is separate from conversation inheritance; a different provider alone does not establish independence. Confirm the launch used a fresh session and no conversation fork. If the backend cannot provide that isolation, use an authorized supported local launcher; otherwise leave the review gate incomplete and report why.
+
+Supply only the issue criteria and their source, applicable instruction/standard paths and effective authorization, verified checkout/branch, pinned base/head, review scope and reporting destination. On later rounds add only previous findings and the builder's replies needed to assess them. Keep builder reasoning, implementation narrative, prior success verdicts and parent transcripts out of the assignment. Evidence paths may be inspected on demand; the reviewer forms its own findings from requirements, code and checks.
+
+Any Standards/Spec child lanes use the same fresh-session boundary and receive only their axis's inputs. They do not inherit the supervisor's conversation or each other's conclusions.
+
+Return at most 400 words to the parent: tested base/head, findings by axis/severity, checks run and not run, blockers, and the complete report path or posted comment ID. Keep every finding and supporting detail in that report/comment; the concise return never drops findings or substitutes for reading the complete gate record. Raw logs and transcripts stay out of the return.
 
 ## Supervise and recover
 
