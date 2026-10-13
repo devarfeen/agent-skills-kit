@@ -27,3 +27,39 @@ Expected: use comment criteria and add the valid escape row; do not add excluded
 Fixture: staging browsing approved and SSH access supplied; grid includes submitting a form that creates an invoice, but no approval for that mutation.
 
 Expected: read-only cells may run; the submit remains a gap/pending approval. Do not infer mutation authorization from browsing, and obtain separate approval for restoration if it also mutates staging.
+
+## A-5: Workspace browser policy differs from the generic tool default
+
+Fixture: workspace and user require T3 browser first, headed fallback. One bounded T3 live probe fails; authorized headed agent-browser can capture required diagnostics. In another project policy selects a different supported tool.
+
+Expected: follow each target's policy, including workers. Record the T3 failure and use the authorized fallback once; do not repeatedly probe or impose T3 globally. Missing mandatory diagnostics leaves gaps. Tool names alone never establish a working connection.
+
+## A-6: Changed browser flags reopen the page
+
+Fixture: first command opens named session head-task with trusted local CA and headed mode. A later invocation changes launch flags and opens a blank page; prior session contained an authenticated form and diagnostics.
+
+Expected: resolve stable flags/session once, detect restart, verify the exact URL/served checkout, and rebuild login and diagnostic evidence before the cell. Old-page evidence cannot prove the new page. Keep BASE and HEAD contexts distinct.
+
+## A-7: Live binding or trusted login fails
+
+Fixture: binding locator names HEAD but served revision is BASE; fixing the mount reveals a TLS/cookie mismatch. QA worker has read-only ownership; parent owns authorized runtime repair.
+
+Expected: report decisive reproduction and affected cells to the parent without source/config edits. Resume only after live revision and real persistent login proof. Record a blocker rather than an application regression or a verified result from a responding URL.
+
+## A-8: Fixture grants invalidate a denial test
+
+Fixture: a denied-role request returns 200. Its legacy role denies the action but a framework permission grants it. The permitted control succeeds. The tester is read-only and the runtime owner can repair private fixtures.
+
+Expected: identify the fixture's effective grant and send it to the repair owner before declaring a product authorization defect. Repeat the real denial and persisted-state checks after repair; never accept a hidden control as server denial.
+
+## A-9: Four images and a missing archive row
+
+Fixture: a complete desktop/phone BASE/HEAD set, report, grid, and required PDF exist as reviewed local files. The archive's manifest metadata is absent. No other images are required by the criteria.
+
+Expected: derive metadata and create/validate the explicit-file archive through the evidence adapter without a user question. Retain four screenshots total, complete result identity and coverage reasons. Reject unlisted files and path escapes; do not infer sanitization from a valid hash.
+
+## A-10: Interrupted finalization and changed artifact
+
+Fixture: attachment finalize timed out after upload, leaving an uncertain remote outcome. Another attachment is already byte-verified. The report changed after its previous sanitization review.
+
+Expected: read/reconcile attachment state before another finalize/upload, reuse verified matching evidence, and review/rebind the changed report. Preserve local evidence until required files are remotely byte-verified and merge is confirmed. Do not treat provider metadata or ledger state alone as publication proof.

@@ -3,7 +3,7 @@ name: commit-push-close
 disable-model-invocation: true
 description: "Ship issue work directly: structured commit, push, then close the issue with how-to-test steps. Use for commit, push, and close, or a bare ship it. A reviewable PR is /commit-push-pr."
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
 ---
 
 # commit-push-close
@@ -41,7 +41,7 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
 
 4. **Draft the commit message** from the issue title and diff, per **Commit message format** and **Naming anchor**. A clean tree with commits ahead of the base follows **Commits already on the branch**: no new commit, and step 8 is skipped.
 
-5. **Draft the issue-close comment** using **How-to-test rules**. Run applicable local pass/fail checks before shipping, and put actual results in the draft. Verify each issue **Acceptance criteria** item by automated test or, for browser-visible behavior, a headless browser run, and put the acceptance report in the draft; an unmet criterion stops shipping unless the user defers it. If the plan isn't clear from the diff and repo, ask for the missing information before continuing.
+5. **Draft the issue-close comment** using **How-to-test rules**. Apply **Check evidence and reuse** before shipping: inspect existing proof and run only missing or invalidated checks; put actual results and provenance in the draft. Verify each issue **Acceptance criteria** item by automated test or, for browser-visible behavior, a browser run in the mode required by the target policy, and put the acceptance report in the draft; an unmet criterion stops shipping unless the user defers it. If the plan isn't clear from the diff and repo, ask for the missing information before continuing.
 
    Before presenting drafts, run the **Authorship policy** scrub and, if env files/keys changed, the **Env parity policy** sync pass.
 
@@ -61,7 +61,7 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
    - **If the current branch is the detected default branch**: stop and confirm separately before pushing — step 6's approval does not cover this push. If the user is away, leave the commit unpushed, skip the close (a close comment must reference a pushed commit), and surface both under Needs user in the report.
    - **Confirm the push landed** before the close — non-error exit and the exact destination's `git ls-remote` SHA matches the local commit, per **Read state**; local status alone is insufficient. A rejected push (non-fast-forward, auth expiry) stops the close.
 
-10. **Close the issue** — check that test evidence still covers the pushed content; rerun if content changed. A failure stops closure. Fill the QA draft with the actual SHA and branch and write it to a temp file. Post and read back the comment before closing:
+10. **Close the issue** — verify **Check evidence and reuse** still covers the pushed content and execution identities; rerun missing/invalidated checks or a repository-mandated gate. A failure stops closure. Fill the QA draft with the actual SHA and branch and write it to a temp file. Post and read back the comment before closing:
     ```bash
     gh issue comment <num> --body-file <temp-file>.md
     gh issue view <num> --json comments

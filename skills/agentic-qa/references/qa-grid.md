@@ -37,17 +37,24 @@ Roles: admin (QA_ADMIN_EMAIL / QA_ADMIN_PASSWORD), viewer (QA_VIEWER_EMAIL / QA_
 | Neighbour: invoice list total column | default | pass | pass | pass | pass |
 ```
 
-Merge identical cells with `same` only when the reason is identical. Each fail gets an ID that the report expands.
+Select states and roles from the changed behavior, criteria, and escape classes. Record the coverage reason for each row; do not multiply unreachable states across every role. Merge identical cells with `same` only when the reason is identical. Each fail gets an ID that the report expands.
+
+## Runtime and browser preparation
+
+Verify the workspace/project binding against live checkout, command directory/user and served revision before using either URL. Send failures to the runtime repair owner; QA remains read-only. Keep BASE and HEAD data, trust configuration and login sessions separate. A locator or HTTP health response alone cannot prove the tested revision or authenticated readiness.
+
+Use the browser tool and headed/headless mode required by current target policy and user preference, including workers. Where policy selects T3 first, make one bounded live capability/connection probe; on failure use its authorized fallback and record the exact reason. Tool exposure alone is not availability. A different project's policy may select a different tool. Missing required console/page-error/failed-request diagnostics remains a gap; choosing another tool never waives them.
 
 ## agent-browser command notes
 
 The workspace browser rule gives the tool-neutral rules; these are the agent-browser specifics behind them.
 
 - The per-command timeout is `AGENT_BROWSER_DEFAULT_TIMEOUT` (ms), read when the session starts; later calls inherit it.
-- Wait on a condition — `wait "<selector>"`, `wait --text`, `wait --url`, or `wait --fn` — or use `wait <ms>` for a known fixed delay. Never `wait --timeout N`: without a condition it ignores N, idles about 30 s, then fails.
+- Wait on a condition — `wait "<selector>"`, `wait --text`, `wait --url`, or `wait --fn` — with the target policy’s condition deadline. Never `wait --timeout N`: without a condition it ignores N, idles about 30 s, then fails.
 - `batch` takes quoted command arguments or a JSON array on stdin, never plain lines; pass secrets inside the JSON (for example with `jq -n --arg`), never on the command line.
-- Launch options apply only on a session's first command: pass `--ignore-https-errors` (or `AGENT_BROWSER_IGNORE_HTTPS_ERRORS=1`) and the timeout there. To change them, close that session and reopen it.
+- Resolve launch options once: headed/headless mode, trust for the binding's approved local CA, timeout and session name. Keep the same options on every invocation that requires them; changed launch options require an intentional close/reopen and invalidate the old page/session evidence. Trust the local CA through supported controls; certificate-error bypass needs target-policy authorization and is reported as such, not trusted TLS proof.
 - Take the session name once from the runtime's session id when available; a `$$`-based name changes in every new shell.
+- Verify session, page URL and served checkout after a restart or handoff. A command that opened another browser page cannot reuse the previous login or diagnostic baseline. Reproduce cookie/TLS problems as runtime blockers and send them to the repair owner before judging application behavior.
 
 ## State recipes (agent-browser)
 
@@ -69,7 +76,8 @@ Per flow, capture and read:
 ```
 console --clear · errors --clear · network requests --clear
 <before assertion> → <action> → <after assertion>
-console · errors · network requests --type xhr,fetch --status 400-599 · screenshot <grid-dir>/<cell-id>.png
+console · errors · network requests --type xhr,fetch --status 400-599
+<reuse desktop/phone before/after images; no per-cell screenshot>
 ```
 
 `diff screenshot --baseline <before.png>` shows regions that changed; a changed region outside the expected area is a finding.

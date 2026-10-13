@@ -3,7 +3,7 @@ name: agentic-qa
 disable-model-invocation: true
 description: "Agent-run functional QA of a PR or branch that can reach a screen: drives acceptance criteria through the running app and records the result on the PR. Never edits code. Pixel checks are /pixel-audit."
 metadata:
-  version: "0.5.0"
+  version: "0.6.0"
 ---
 
 # agentic-qa
@@ -29,7 +29,7 @@ Drive the change through the running app; judge visible behavior, logs and reque
 - **Success is a visible change.** Capture the relevant state before acting and assert the expected change after. A success message with no changed state is a fail. For a write, the change also survives a reload.
 - **Prove presence before a negative.** Before asserting a control is rejected or hidden for a role, show it exists for a role that should see it. Otherwise "missing" passes as "denied".
 - **Production is never touched.** On staging: read-only flows only, unless each mutation and its restoration are separately approved.
-- **Status is earned.** `VERIFIED` only when every applicable cell passed, every unreachable cell has a proved reason, and no gap remains. Any failed cell or gap → `PARTIAL`. App not runnable, no criteria, or no login for a required role → `BLOCKED`. Never the word "fixed".
+- **Status is earned.** `VERIFIED` only when every applicable cell passed, every unreachable cell has a proved reason, and no gap remains. Any failed cell or gap → `PARTIAL`, which never passes acceptance. App not runnable, no criteria, or no login for a required role → `BLOCKED`. Never the word "fixed".
 - **Three re-checks per finding.** A finding that still fails on its third re-check against a new head is escalated to the engineer by name in the report; it is not re-queued again.
 - **One approval before any remote write.** Show the PR comment and wait. User away → print it and stop.
 - **Run authorization.** Loaded by `/factory run`, the run's start approves posting the comment. Staging, and any mutating step there, keeps its own approval.
@@ -46,15 +46,17 @@ Trace each changed file to a screen per the reference. Quote one path per reacha
 
 ### 2. Build the grid
 
-Use `<change>` as the PR number or sanitized branch name before a PR exists. Rows: each acceptance criterion and each path it owes, each escape class for the area, and one row per neighbouring flow — other screens that call the changed code, sibling entry points, create vs edit. Columns: the states each row can reach (default, loading, empty, error, success, disabled, permission denied, offline, long content, keyboard-only), at 375 and 1280 widths, for each role. Write the grid to `<artifacts-root>/specs/qa/<change>-<short-sha>/grid.md` before driving anything; template in the reference.
+Use `<change>` as the PR number or sanitized branch name before a PR exists. Rows: each acceptance criterion and each path it owes, each escape class for the area, and one row per neighbouring flow — other screens that call the changed code, sibling entry points, create vs edit. Columns: relevant states, roles, and desktop/phone widths from target policy; record coverage reasons per the reference. Write the grid to `<artifacts-root>/specs/qa/<change>-<short-sha>/grid.md` before driving anything; template in the reference.
 
 ### 3. Baseline
 
-Where a second checkout of the base commit can run, drive the same routes there once and keep its console, error, and failed-request output. Screenshot each route once on the base run as its `before` image; the head run's screenshot is its `after`. No base run → every captured error counts and the report says so, with `before: not captured`.
+Before either URL, follow **Runtime and browser preparation** in [`references/qa-grid.md`](references/qa-grid.md) for live binding proof, session isolation and owner repairs.
+
+Where a second checkout of the base commit can run, drive the same routes there once and keep its console, error, and failed-request output. Capture one desktop and one phone before image, then both after. Reuse these four images; honor stricter target budgets. No base run → every captured error counts and the report says so, with `before: not captured`.
 
 ### 4. Drive each cell
 
-Follow the workspace browser rule: one named session, one batched flow per cell, short explicit timeouts; agent-browser specifics are in the reference. Per flow: clear console, errors, and requests; capture the before state; act; assert the after state; read console, errors, and `network requests --type xhr,fetch --status 400-599`; take one screenshot. Force states with the recipes in the reference (aborted or stubbed responses for error and empty, `set offline on`, long fixtures). Never submit real data on staging without approval.
+Use the tool, mode and fallback policy resolved in **Runtime and browser preparation**. Per cell: clear diagnostics, capture before state, act, assert after state, read console/page errors and failed XHR/fetch responses, retain assertions and logs. Reuse the four baseline/head images across the grid. Use one stable named session and batched flow with short explicit timeouts. Force states with the reference recipes. Staging mutations require approval.
 
 ### 5. Judge and write findings
 
@@ -62,7 +64,7 @@ Mark each cell. Before marking a cell `fail`, replay its exact batch once from t
 
 ### 6. Record
 
-Write `report.md` in that evidence folder (`no-ui-reach` or an early block needs no grid); include the explicit zero-attribution rule in all Markdown artifacts. Then draft the PR comment: status, counts, findings, and the marker line exactly:
+Write `report.md` and evidence identity per [QA records](references/qa-records.md); `no-ui-reach` or an early block needs no grid. Every Markdown artifact states zero attribution. Then draft the PR comment: status, counts, findings, and the marker line exactly:
 
 ```
 <!-- agentic-qa: sha=<head-sha> result=<verified|partial|blocked|no-ui-reach> findings=<n> recheck=<highest re-check count among open findings, 0 if none> -->

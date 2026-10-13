@@ -3,7 +3,7 @@ name: orchestrate-t3
 disable-model-invocation: true
 description: "Fan a spec (PRD) or issue list out to T3 Code worker threads, one worktree per group, and monitor them to done. Needs the T3 Code MCP. Inside herdr use /orchestrate-herdr; one issue is /tdd-loop."
 metadata:
-  version: "0.6.0"
+  version: "0.7.0"
 ---
 
 # Orchestrate T3
@@ -74,6 +74,8 @@ One thread per group per **Launch**, titled with its repository key and issue id
 ### 7. Monitor
 
 Wait on every running thread per **Wait**; read a settled one per **Read**. After compaction or restart, follow **Recover** before any call.
+
+Before fan-out or provider handoff, apply **Context** in the tool reference; preserve parent capacity for pending returns and compact through supported controls before the handoff.
 
 - **Working** → leave it. A long test run is not a stall; a wait that timed out is waited on again.
 - **Waiting** → apply the question rule. No pending question means a permission prompt: surface it under Needs user and never relaunch the thread.

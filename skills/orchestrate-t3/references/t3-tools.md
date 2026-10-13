@@ -55,7 +55,13 @@ Save the returned `threadId` and `runId` with the group before the next call. A 
 
 ## Read
 
-`t3_thread_read` with the saved `threadId` returns the thread's messages. Take the worker's report from its last assistant message. When the result marks an item as truncated, fetch the rest with that item's ID and the next text offset it returns; a partly read report is not evidence.
+`t3_thread_read` with the saved `threadId` returns the thread's messages. Use live pagination/output limits when supported and take the worker's report from its last assistant message. When the result marks an item as truncated, fetch the rest with that item's ID and the next text offset it returns; a partly read report is not evidence. Save large output to a durable report/log and inspect bounded sections rather than putting every worker transcript in the parent context.
+
+## Context
+
+Reserve at least 25% of the parent's receiving context budget before large returns or provider handoff; account for pending tool payloads and inherited messages, not only current text. Child capacity cannot absorb an oversized parent envelope. Workers return concise evidence and complete report paths; complete acceptance maps and findings remain readable on demand.
+
+Use supported harness compaction before the handoff when needed. The live MCP schema may expose no compact operation; never invent one or claim it ran. Without supported compaction, reduce payloads through supported controls or save checkout/head, thread/run IDs, status, budgets and outstanding gates for an authorized fresh parent thread with a neutral handoff. Confirm active writers and follow **Recover** before resuming. Context reduction never clears an unread gate or authorizes duplicate dispatch.
 
 ## Questions
 

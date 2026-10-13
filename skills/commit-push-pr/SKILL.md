@@ -3,7 +3,7 @@ name: commit-push-pr
 disable-model-invocation: true
 description: "Ship issue work as a pull request: structured commit, push, PR with Closes #N. Use only when the user explicitly asks for a PR; a bare ship it is /commit-push-close."
 metadata:
-  version: "0.7.0"
+  version: "0.8.0"
 ---
 
 # commit-push-pr
@@ -81,7 +81,7 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
 
 5. **Draft the commit message** from the issue title and diff, per **Commit message format** and **Naming anchor**. A clean tree with commits ahead of the base follows **Commits already on the branch**: no new commit, and step 9 is skipped.
 
-6. **Draft the PR and QA comment** — title mirrors the commit subject. Follow **How-to-test rules** and run the applicable local pass/fail checks now. Quote the decisive result in both drafts and mark unperformed manual checks pending. Verify each issue **Acceptance criteria** item by automated test or, for browser-visible behavior, a headless browser run, and put the acceptance report in the QA comment; an unmet criterion stops shipping unless the user defers it. A failure stops shipping; an unclear plan requires the missing information.
+6. **Draft the PR and QA comment** — title mirrors the commit subject. Apply **How-to-test rules** and **Check evidence and reuse**; run missing/invalidated checks. Quote the decisive result in both drafts and mark unperformed manual checks pending. Verify each issue **Acceptance criteria** item by automated test or, for browser-visible behavior, a browser run in the mode required by the target policy, and put the acceptance report in the QA comment; an unmet criterion stops shipping unless the user defers it. A failure stops shipping; an unclear plan requires the missing information.
 
    Before presenting drafts, run the **Authorship policy** scrub and, if env files/keys changed, the **Env parity policy** sync pass.
 
@@ -101,7 +101,7 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
     - No upstream → `git push -u origin <branch>`.
     - Verify the intended remote branch SHA as required by **Read state**. A rejected or mismatched push stops PR creation/edit and commenting.
 
-11. **Open or update the PR** against the permitted base resolved in step 1. Test evidence must cover the committed content; rerun when content changed, not merely because timing output differs. A failed check stops publication. Save the final body to a file, then:
+11. **Open or update the PR** against the permitted base resolved in step 1. Validate **Check evidence and reuse** against the committed content and execution identities; rerun only missing/invalidated checks or a repository-mandated gate. A failed check stops publication. Save the final body to a file, then:
     ```bash
     gh pr create \
       --base "<resolved-base>" \

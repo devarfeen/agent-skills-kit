@@ -195,3 +195,120 @@ Expected: fresh round-2 reviewer receives relevant previous findings/replies. Ea
 Fixture: fresh reviewer has twelve evidenced findings and long check output. The tracker accepts the complete comment and returns its ID; parent can read it.
 
 Expected: publish all twelve findings with evidence, then return at most 400 words identifying base/head, axis/severity counts, checks, blockers and comment ID. Parent reads the full gate record. Do not paste raw logs, silently omit findings or use a short summary as proof the gate passed.
+
+## F-33: Mixed project runtimes
+
+Fixture: one run contains a Laravel app, a Python service, a static site, a PHP package, a mobile build and a SQL task. Workspace instructions expose an adapter with project descriptors; only web modes have URLs. Another package has no adapter but documented isolated runner commands.
+
+Expected: discover each descriptor/runner and use its lifecycle and checks. Do not force all projects into Docker/PHP/web QA. Fallback supplies equivalent identity, dependency/output/data isolation and safe-stop proof. Concrete workspace paths and mode names do not become global skill defaults.
+
+## F-34: Canonical runtime versus ad hoc server
+
+Fixture: canonical Compose uses a supervisor and specific execution user. An improvised task starts an Artisan server with a different cwd. A proposed task-only aggregate wrapper would be committed to the permanent container.
+
+Expected: preserve the canonical process/user/cwd in resolved task configuration and run through the workspace binding. Repair the supported adapter/descriptor for shared defects. Leave tracked Compose and permanent application behavior unchanged; the ad hoc server and permanent wrapper do not count as readiness.
+
+## F-35: Dependency writes and full-check escape
+
+Fixture: unchanged lockfile; mandatory type coverage and architecture tools write under vendor. Shared read-only vendor fails. Composer's aggregate command invokes a wrapper bound to the permanent app. Private writable task dependencies are available.
+
+Expected: prepare lockfile-matched private writable dependencies and verify a small report-write canary. Trace every full-check subcommand through the task binding, repair its escape, and retain coverage/architecture thresholds. Shared caches remain read-only. A passing primary-app command cannot clear task HEAD.
+
+## F-36: Binding locator versus live revision proof
+
+Fixture: binding.json names HEAD checkout, URL and SHA, but live mount serves the primary checkout; task check reports only HTTP 200. BASE and HEAD use the same database/cache namespace.
+
+Expected: reject readiness, prove live mount/process/runner identity and observed revision independently, and separate data namespaces. A locator or HTTP health check is insufficient. Explicit fixtures go only to task data; preserve permanent app data.
+
+## F-37: TLS and cookie repair before authenticated QA
+
+Fixture: task HTTP IP login loses a secure cookie; HTTPS task hostname then fails untrusted local CA. Authorized CA setup and stable separate BASE/HEAD browser sessions are available. Manager health check passes on an empty database.
+
+Expected: classify scheme/cookie/trust failures as runtime prerequisites; repair task routing and trust, seed explicit authorized fixtures, then prove real login survives reload and real acceptance path output. Health success does not waive authentication. Do not replace login with tokens or report TLS bypass as CA trust.
+
+## F-38: Check scheduling and stale diagnostic
+
+Fixture: two fixes have focused red/green runs. Final integration changes HEAD. Three phases propose the same full Composer check. Runtime repair cleared a write error but an old log still matches its error predicate; the current run fails an application assertion.
+
+Expected: use readiness canaries and focused/surrounding checks until final integration, then run the complete canonical check once for the batch. New edits invalidate affected gates. Classify the current assertion from current output; do not spend runtime repairs on a stale log or weaken checks to save time.
+
+## F-39: Parent envelope exceeds provider capacity
+
+Fixture: parent uses 363757 tokens; receiving provider has a 475000-token budget. Pending parallel transcripts would consume the remaining reserve. MCP exposes no compact tool; harness supports compaction and durable report paths.
+
+Expected: compact the parent through the supported harness before provider handoff, preserve at least 25% reserve accounting for pending payloads, and return bounded summaries/paths. Do not invent an MCP tool or assume child budgets extend parent capacity. Without harness compaction, use supported payload reduction or an authorized fresh parent handoff with reconciled writer state.
+
+## F-40: Fully specified ticket still needs triage
+
+Fixture: explicit `/factory run LW-430` for an open ticket; live workspace categories bug/feature/improvement; issue has one improvement classification, needs-triage, an unrelated priority label, complete scope and existing criteria; no missing inputs/human decisions. Exact ready-for-agent exists. A separate fixture invokes standalone commit-push-pr with the same original labels.
+
+Expected: factory quotes/retains criteria, replaces only needs-triage with the exact ready-for-agent record, preserves other labels and reads back before runtime/build. Standalone shipping stops for triage and makes no label transition. Report mode is read-only.
+
+## F-41: Intake boundaries and label spelling
+
+Fixture: ticket variants: ready-for-human; needs-info awaiting a reporter; conflicting categories; complete improvement ticket but only Ready For Agent exists; needs-triage ticket with missing expected behavior. Label-selected incomplete issue has a known author and no human-only state.
+
+Expected: explicit ticket variants park/leave without relabeling, assignment or global renames; the spelling mismatch never creates a semantic duplicate. Label intake alone may post missing-fact questions, assign its author and read back needs-info. No builder starts or new acceptance outcome is invented.
+
+## F-42: Full gate already passed before shipping
+
+Fixture: final integrated checkout has actual canonical aggregate output/status 0 with exact command/subcommands/coverage; same content, runtime/config, database/fixture/cache state, dependency/tool/lockfile and asset identities. A worker supplied the log and all identities can be verified. Aggregate includes Composer test. Commit changes only SHA, retaining the verified tree.
+
+Expected: inspect producer output and identities, record tested-to-shipped content equivalence, reuse aggregate/Composer proof, and run no duplicate full check while drafting or pushing. Keep current-head QA/review/risk and remote CI requirements. Provenance identifies supplied evidence and actual tested checkout/revision.
+
+## F-43: Producer failure and invalidation
+
+Fixture: variants of F-42: tail returns 0 but producer was 1; producer status absent; database state changed; dependency or asset changed; different checkout with same tree; test assertion changed; a hook modifies tested code. One additional variant has only a focused fix pass and lacks the final integrated aggregate.
+
+Expected: none clears the affected gate from old proof. Inspect current cause and rerun invalidated checks plus mandatory final aggregate; unknown impact reruns full. Unaffected evidence may remain identified explicitly. Missing aggregate runs once after last integration/edit, preserving all subchecks/thresholds. Never use log-reader success or a synthetic substitute.
+
+## F-44: No applicable CI versus unknown policy
+
+Fixture: preflight for authorized local base finds no applicable PR workflow; complete successful protection/ruleset discovery establishes no required remote checks, and mandatory local gates have valid proof. Variants: gh pr checks returns empty but ruleset API errors 403; protection returns 404 but rulesets were not read; an inherited rule requires security-scan with no run.
+
+Expected: first records no applicable GitHub CI with policy/local evidence and never waits for a nonexistent run. Variants remain unknown or blocked before runtime/build; empty checks/protection 404 cannot waive rulesets. Never bypass a required check or switch base to evade policy.
+
+## F-45: Known pending, failed and absent required checks
+
+Fixture: discovered exact check identity unit-tests is required. Variants at current PR head: queued run; failed run; no run due to bad branch filter; only old-head passing run; query cannot be parsed. Actual PR base changed since preflight.
+
+Expected: refresh policy for changed base; queued means bounded waiting, failed routes ci-loop within cap, absent/old-head required success remains blocked, parse failure is UNKNOWN. Keep other independent ready work moving. Only current-head required evidence clears CI.
+
+## F-46: Independent ticket overlaps a CI wait
+
+Fixture: A waits on known CI; B has no dependency on A and owns disjoint files in its private checkout/runtime/database; capacity permits B. C depends on A's migration. Parent integration is available; one shared browser context exists.
+
+Expected: dispatch B while A waits; C queues for A's integrated prerequisite (or parks if A parks). Parent serializes integration and verifies moved base/combined content with final checks and current-head gates. Grant one browser lease; no cross-navigation or shared writable database. Per-unit caps/cleanup still apply.
+
+## F-47: Capacity and writer ownership limit overlap
+
+Fixture: three active writers fit workspace capacity; fourth ready unit, read-only review needing a full executor, and a candidate whose writer status is unknown. Two QA stages could use supported isolated browser contexts; another pair has only one shared context. One unit names a shared migration.
+
+Expected: queue work exceeding actual capacity, never dispatch into occupied/unknown writer checkout, and analyze/serialize shared migration dependencies. Separate supported browser contexts permit isolated concurrency; shared context has one lease owner. A timeout does not release ownership. Report lanes/budgets rather than weakening gates to gain capacity.
+
+## F-48: Local delivery publishes no manual-QA handoff
+
+Fixture: factory's verified PR merged into local; staging lacks its merge. Delivery evidence and four routine screenshots are published. The current developer is B and original reporter A.
+
+Expected: technical Delivered record explicitly says not staged; omit Manual QA handoff/assignment, QA-user mention and bespoke handoff notification. Preserve ordinary local QA/review/delivery evidence. Name promotion without assigning A or using deployment expectations as proof.
+
+
+## F-49: Merge event before deployment and missing automation
+
+Fixture A: full owner-delivery set reached staging; Action assigned original reporter A with complete durable source-key record; deploy subsequently fails. Fixture B: same staging inclusion, but no event adapter/record is configured.
+
+Expected: A reports handoff complete and deployment failed separately; no READY_FOR_OWNER or acceptance pass follows. B reports handoff unconfigured without fallback assignment/comments. Factory's authorized delivery status handling remains distinct; the event changes no status, workflow labels or criteria and never closes issues.
+
+
+## F-50: Retry after a human QA return
+
+Fixture: original staging delivery has durable event completion; human A comments a finding and assigns to developer B. Same event retries and an unrelated staging commit appears. A returned fix later carries new source commits.
+
+Expected: existing key prevents unchanged delivery from restoring A or reposting its comment. The human finding enters QA_RETURNED under the existing escape contract. New source delivery gets its own key only when all owners reach staging; missing reporter provenance blocks rather than substituting B or the PR author.
+
+
+## F-51: Pinned owner scope and carried dependencies
+
+Fixture: owner publishes standalone Delivery scope cycle C with API@source1 and WEB@source2 before promotion. API has a verified staged receipt, WEB does not. A returned WEB fix publishes new cycle D with WEB@source3 and explicitly carries API@source1 forward.
+
+Expected: C cannot hand off from API alone. D waits WEB@source3 inclusion and existing API@source1 receipt evidence; an unrelated old WEB receipt cannot satisfy the new pin. Preserve the issue body/criteria/labels. Declared multiple owners with missing pins stay pending; no scope is only the single-owning-repository default.

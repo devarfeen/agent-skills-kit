@@ -70,6 +70,12 @@ Check READINESS belongs to this checkout and runtime before using it. Report
 local runtime blockers with the decisive error, reproduction, and invalidated
 checks to the parent for bounded repair; keep stack/config writes with its
 assigned repair owner. Synthetic checks do not clear an unverified real route.
+When STACK is supplied, read its task binding and independently verify live
+source, working directory/user and revision; its path alone is not proof.
+Keep BASE and HEAD state separate. Follow workspace browser tool/mode policy
+and fallback rules. Within factory, run focused checks per fix; its parent
+owns the complete canonical check after final integration, once per batch.
+Standalone work retains the project's required worker checks.
 
 Do not work on the full spec. Do not redo spec orchestration. Do only the
 issue-level discovery this issue needs.
@@ -95,6 +101,10 @@ your tooling injects.
 Report back when completed, errored, or blocked.
 
 Completion requires test evidence: the test command and its passing output.
+Return at most 400 words of decisive evidence and the complete report/log
+paths; keep every acceptance-map row and finding in that complete record.
+Do not paste raw tool transcripts into the return. Preserve the four closing
+fields below, using the report path for any detail too long for this summary.
 End the report with four fields, one line each:
 Status: <completed | blocked — decision needed | errored — cause>
 AC map: <AC-n → test name | agentic-qa (surface) | deferred — why; every assigned criterion listed>

@@ -3,7 +3,7 @@ name: factory
 disable-model-invocation: true
 description: "Shows where a spec (PRD), ticket, or PR stands in the factory workflow and names the one skill that moves it on. Read-only unless the user starts /factory run. Never closes issues or passes staging."
 metadata:
-  version: "4.1.0"
+  version: "4.2.0"
 ---
 
 # factory
@@ -21,7 +21,7 @@ Derive each unit's state from tracker issues, PRs, checks, reviews and deploy ev
 
 - **Report mode is read only.** It reads the tracker, `gh`, and git. It writes nothing remote and edits no file; every state change belongs to the skill it names.
 - **Report mode suggests, never auto-chains.** Name the next skill with the exact invocation, then stop. The user runs it. Only `run` mode, started by the user, carries a suggestion out.
-- **Gates need evidence, not status words.** A gate passes only on the observable signal in [`references/states.md`](references/states.md) — a green run URL for the head SHA, an agentic-qa and a risk-review marker comment for the head SHA, a deploy-watch pass marker for the merge commit. A label, a chat claim, or "CI is fine" does not pass a gate.
+- **Gates need evidence, not status words.** A gate passes only on the observable signal in [`references/states.md`](references/states.md): required CI evidence for head (or authoritative no-applicable-CI policy with mandatory local proof), head-bound QA/risk evidence, and deploy-watch proof for the merge commit. A label, a chat claim, or "CI is fine" does not pass a gate.
 - **Head SHA binds everything.** Review, QA, and risk evidence counts only for the PR's current `headRefOid`; an approval counts only when its review's `commit.oid` is head. A new push sends the PR back to CI.
 - **Staging is the ceiling.** `READY_FOR_OWNER` is terminal. Never suggest production deploys, production PRs/merges, or flag rollouts. Default branches are owner-only except explicitly authorized, non-production delivery `local`; name the owner otherwise.
 - **Unreadable signals stop.** A signal the table needs can't be read (tracker access denied, no deploy workflow found) → report `UNKNOWN` with what is missing. Never guess the more advanced state. A failed or erroring `gh` query is unknown — never an empty result, a pass, or green; report the command and its error.
@@ -36,7 +36,7 @@ From the reference, build the list of units to place: a spec expands to all its 
 
 ### 2. Read the signals
 
-Per unit, read only what the state table needs:
+Per unit, read only what the state table needs. Before interpreting checks, apply [`references/ci-policy.md`](references/ci-policy.md); it distinguishes known no-CI policy from pending, failed, absent required checks and unreadable policy:
 
 ```bash
 gh pr view <pr> --json state,isDraft,baseRefName,headRefOid,mergeCommit,mergedAt,reviewDecision,reviews,statusCheckRollup,autoMergeRequest,body,comments,commits
@@ -65,8 +65,8 @@ Print the output below. Report mode ends here: do not run the suggested skill, e
 
 The user's `/factory run <reference>` approves the whole chain. Read [`references/run.md`](references/run.md) first.
 
-1. **Intake.** Resolve units as in step 1. A label reference lists the open issues carrying it and triages each per **Triage**; one with no checkable outcome becomes `needs-info`, is assigned to its author, and leaves the run. Missing acceptance criteria are posted as a comment. **Start** selects available agents automatically, honoring explicit user choices; no reviewer answer is required.
-2. **Loop.** One unit at a time, in the order **One unit at a time** gives: place it (steps 2–4), carry out its `Next` per **Stage map**, and place it again; log it and apply **Lessons**. Per unit: status In Progress, its own worktree and **Task stack**, a builder thread, agentic QA, a PR, CI, the **Review loop** between the reviewer and the builder, risk review, **Merge**, **Handover** with status In Review, **Cleanup**. For setup or local-runtime blockers, read [`references/readiness-and-recovery.md`](references/readiness-and-recovery.md); **Loading a stage skill** governs recovery and stops.
+1. **Intake.** Resolve units as in step 1 and apply **Triage** before builder/runtime work. A fully specified ticket may receive its narrow eligibility transition under run authority; ambiguous work parks. Label intake retains its reporter-follow-up path. Missing criteria restating existing outcomes are posted as a comment. **Start** discovers base/CI policy and selects available agents, honoring explicit choices.
+2. **Loop.** Follow **Dependency-aware scheduling**: isolated independent units may overlap within capacity; the parent serializes integration. For each ready unit: place it (steps 2–4), carry out its `Next` per **Stage map**, and place it again; log it and apply **Lessons**. Per unit: status In Progress, its own worktree and **Task stack**, a builder thread, agentic QA, a PR, CI, the **Review loop** between the reviewer and the builder, risk review, **Merge**, **Handover** with status In Review, **Cleanup**. For setup or local-runtime blockers, read [`references/readiness-and-recovery.md`](references/readiness-and-recovery.md); **Loading a stage skill** governs recovery and stops.
 3. **Parks.** A unit whose next actor is a person — a high risk tier, a spent cap, a fact only the reporter holds — is parked with its evidence; the run continues. No tracked compose file or issue body is edited; no issue is closed.
 4. **Run report.** The output table, each parked unit's reason, the criteria drafted, and **Lessons** report.
 

@@ -3,12 +3,12 @@ name: local-to-staging
 disable-model-invocation: true
 description: "Promote every project from origin/local to origin/staging: open each PR, merge on green, watch the Actions runs. Never pushes or goes past staging. Production is /staging-to-production."
 metadata:
-  version: "1.0.0"
+  version: "2.0.0"
 ---
 
 # local-to-staging
 
-local-to-staging moves what is already on `origin/local` onto `origin/staging` for every project that has both branches, through one PR per repo, and proves the result with the Actions runs on each merge commit. It ships no new code: it never commits, pushes, or edits files, so it needs no worktree.
+local-to-staging moves what is already on `origin/local` onto `origin/staging` for every project that has both branches, through one PR per repo, and reports merge, handoff and Actions evidence separately. It ships no new code: it never commits, pushes, or edits files, so it needs no worktree.
 
 ## Inputs
 
@@ -45,13 +45,13 @@ gh pr list --repo <owner/repo> --base <target> --head <source> --state open --js
 gh repo view <owner/repo> --json mergeCommitAllowed
 ```
 
-Read staging deployment routing: the workflow's push trigger, deploy job, checkout revision and staging destination. No or ambiguous deploy workflow → deployment unverified, no QA handoff even if test runs pass.
+Read staging deployment routing: the workflow's push trigger, deploy job, checkout revision and staging destination. No or ambiguous deploy workflow → deployment unverified even if test runs pass. Read [staging-handoff.md](references/staging-handoff.md) to discover the separate merge-event automation and its issue/delivery evidence before promotion.
 
 Classify each repo: **skip** (branch missing, or 0 commits ahead — nothing to promote), **blocked** (merge commits disallowed), or **promote** (reuse the open PR when one exists for this exact head/base pair).
 
 ### 2. Show the plan
 
-The plan also lists, per repo, the issues step 6 would hand to manual QA and to whom, so the one approval covers those assignments and comments.
+The plan lists per-repo delivery references and handoff automation configuration. Approval covers PR creation and merge; the configured event owns any reporter assignment. Publish no QA-user mention or bespoke handoff notification before staging.
 
 ```
 local-to-staging plan — 3 promote, 1 nothing to promote, 1 skipped
@@ -93,42 +93,29 @@ gh run watch <run-id> --repo <owner/repo> --exit-status
 
 No run yet → re-check at 30s, 60s, then every 2 minutes up to 10 minutes; still none → `no run` (the repo may have no staging workflow), reported as unverified, not passed. Watch every run on the merge commit to a conclusion, up to 2× the workflow's usual duration (read from its last 5 runs); still running → `pending`. On failure, read `gh run view <run-id> --repo <owner/repo> --log-failed` and quote the decisive tail.
 
-### 6. Hand delivered issues to manual QA
+### 6. Inspect staging-event handoff
 
-First fetch the merged target and prove it contains the promotion merge SHA. Per repo whose confirmed staging deploy and other runs succeeded: an open issue qualifies when its newest delivery record names a merge now contained in that refreshed target, and no matching manual-QA assignment record names that same delivered PR and merge. Older assignments do not suppress a new fix. Find candidates through the workspace tracker: issues in the In Review status for that project (Linear), or `gh issue list --state open --search "factory-delivered in:comments"` (GitHub).
+Fetch the target again and prove it includes the promotion merge and each delivered merge. Inspect the configured event and its durable per-issue records using [staging-handoff.md](references/staging-handoff.md); read delivery history through [linear-records.md](references/linear-records.md). Include every related issue in the promoted range and every declared owner delivery for cross-repository tickets.
 
-For Linear delivery/assignment records, read [`references/linear-records.md`](references/linear-records.md); missing or conflicting fields leave handoff pending.
-
-Assign each to Manual QA — the person the workspace's issue-tracker document names, else the issue's reporter — and post:
-
-```
-Staging deployment job succeeded for <merge-sha of the promotion> — assigned for manual QA.
-Live build / smoke: <confirmed evidence, or unverified/not run with reason>.
-Runs: <run URL> (success)
-
-```
-
-Linear uses the readable assignment fields in that reference. GitHub appends `<!-- factory-qa-assigned: pr=<delivered-pr> merge=<delivered-merge-sha> staging=<merge-sha of the promotion> -->`.
-
-Leave the status as it is and never close the issue. Read each assignee and comment back. A repo with a failed or missing run hands nothing over: nobody is asked to test a build that did not deploy.
+Report `assigned`, `pending`, `blocked` or `unconfigured` from evidence, separately from deploy runs. Assignment can complete when deployment fails or is missing; never infer deployed/smoke success from it. Missing reporter, incomplete owner inclusion or absent record blocks the affected handoff only. Do not assign, post an assignment comment, rerun the event or improvise a fallback.
 
 ## Output
 
 ```
 local-to-staging — 3 merged, 1 nothing to promote, 1 skipped
-| Project      | PR   | Merge    | Runs on staging            | Result      |
-| SHOP-WEB     | #301 | a1b2c3d  | deploy ✔ · tests ✔         | success     |
-| ADMIN-WEB    | #212 | e4f5a6b  | deploy ✘ (step: migrate)   | failed      |
+| Project      | PR   | Merge    | Runs on staging            | Result / Handoff |
+| SHOP-WEB     | #301 | a1b2c3d  | deploy job ✔ · tests ✔     | assigned    |
+| ADMIN-WEB    | #212 | e4f5a6b  | deploy job ✘: migrate      | assigned    |
 | PAYMENTS-API | #88  | —        | —                          | check failed: lint |
 | DOCS-SITE    | —    | —        | —                          | nothing to promote |
 | LEGACY-CRM   | —    | —        | —                          | no origin/staging |
 ```
 
-Say deployment `success` only with a confirmed staging deploy run and every run green on the merge commit; test-only success leaves deployment unverified. At most 3 bullets, one per failure, each with the run URL and the quoted tail. Close with the `Suggested next skills (optional)` footer, 1–3 items: failed run → `/staging-fix`; failed PR check → `/ci-loop`; all green → `/deploy-watch` for a smoke check, or `/staging-to-production` when ready.
+Report deploy-job conclusion from the confirmed run; test-only success leaves deployment unverified. Live build and smoke stay unverified here; handoff completion grants no deployment/acceptance pass. At most 3 bullets, one per failure, each with the run URL and the quoted tail. Close with the `Suggested next skills (optional)` footer, 1–3 items: failed run → `/staging-fix`; failed PR check → `/ci-loop`; all green → `/deploy-watch` for a smoke check, or `/staging-to-production` when ready.
 
 ## Completion criteria
 
 - [ ] Every Project Matrix row appears in the output table with a result
-- [ ] Every merged row has a verified mergeCommit and run URLs, or missing/pending routing or runs stated; QA assignment requires a successful staging deploy containing the latest delivery
+- [ ] Every merged row has a verified mergeCommit and separate run/handoff evidence, with missing configuration, reporter, owner inclusion or record stated; this skill made no QA assignment
 - [ ] No `--admin`, push, commit, re-run, cancel, or dispatch appears in the commands this run executed
 - [ ] No PR in this run targets a branch other than the confirmed target

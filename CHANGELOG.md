@@ -7,9 +7,43 @@ their new versions, so a workspace on an older copy can see what an update
 brings. Generated `AGENTS.md` files carry the `agents-md` marker version;
 re-run `/agents-md` after a marker bump.
 
+## 2026-10-14
+
+### Changed
+
+- **Staging reporter handoff** — `/local-to-staging` 2.0.0, `/deploy-watch`
+  2.0.0 and `/staging-fix` 0.4.0 inspect shared staging merge events and
+  durable Linear receipts. The original reporter receives manual QA after the
+  merge; skills do not assign a fixed QA user or duplicate the event. Explicit
+  pinned repository scopes prevent partial cross-project handoffs.
+- **Factory audit follow-up** — `/factory` 4.2.0 validates eligibility before
+  build, permits a narrow ready-for-agent transition for complete tickets,
+  discovers actual CI requirements early, and overlaps isolated independent
+  units while serializing integration. Workspace supervisor adapters provide
+  durable checkpoint and handoff-budget guards where available; unsupported
+  provider recovery remains explicit.
+- **Check reuse** — `/commit-push-pr` 0.8.0 and `/commit-push-close` 0.5.0
+  inspect revision/runtime-bound proof and run only missing or invalidated
+  checks. Required final integration and remote CI gates remain mandatory.
+- **QA evidence** — `/agentic-qa` 0.6.0 records relevant state coverage,
+  schema-verified fixture/ACL controls and versioned result identity. Factory
+  publication uses complete reviewed manifests and resumable per-file state,
+  reconciles uncertain remote writes, and verifies downloaded bytes before
+  cleanup. Four routine screenshots are reused across QA/review cells.
+
 ## 2026-10-13
 
 ### Changed
+
+- **Runtime and context contracts** — `/factory` 4.2.0 discovers workspace task
+  adapters or equivalent project runners, preserves canonical service behavior,
+  and requires private writable dependencies, outputs and data with live checkout
+  proof. Readiness canaries and focused checks precede one complete final batch
+  check. `/agentic-qa` 0.6.0 follows target browser policy, trusted task URLs and
+  stable separate sessions and four routine desktop/phone before/after images. `/orchestrate-t3` 0.7.0 and factory reserve parent
+  context before provider handoff, use supported compaction or durable fresh
+  handoffs, and keep worker returns bounded. New contract fixtures cover these
+  failure modes; they do not claim live runtime or trigger-evaluation results.
 
 - **`/factory` 4.1.0** — independent reviewers and their Standards/Spec lanes
   start with conversation inheritance disabled and neutral, revision-bound

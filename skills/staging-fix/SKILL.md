@@ -3,7 +3,7 @@ name: staging-fix
 disable-model-invocation: true
 description: "Fix a staging bug without touching a server: fix locally with a test, then a PR to the staging branch with auto-merge. Use for staging is broken. Inspecting staging alone is not this skill."
 metadata:
-  version: "0.3.0"
+  version: "0.4.0"
 ---
 
 # staging-fix
@@ -43,7 +43,7 @@ On the workspace's required delivery branch (`local` when it mandates `origin/lo
 
 ### 3. Ship
 
-Read the staging deploy workflow and confirm its branch trigger and destination. Missing or ambiguous CI routing stops shipping; do not promise a deploy from the branch name alone. Draft the commit and PR with the fix, its root cause (the cause removed, or `not established` with what was ruled out), changed paths, human reproduction steps with expected results, and test evidence, redacted per Rules. Scrub attribution and present both for the combined approval. After approval, stage only the fix paths, inspect the staged diff, commit with the approved message, then:
+Read the staging deploy workflow and confirm its branch trigger and destination. Missing or ambiguous CI routing stops shipping; do not promise a deploy from the branch name alone. Draft the commit and PR with the fix, its root cause (the cause removed, or `not established` with what was ruled out), changed paths, human reproduction steps with expected results, and test evidence, redacted per Rules. Include canonical `Issue: <identifier>` commit trailers and non-closing `Ref <identifier>` PR references plus the stable owner-delivery identities required by the caller's handoff parser; read [staging-handoff.md](references/staging-handoff.md). A fix creates a new delivery key. Scrub attribution and present both for the combined approval. After approval, stage only the fix paths, inspect the staged diff, commit with the approved message, then:
 
 ```bash
 git push -u origin <branch>
@@ -55,7 +55,7 @@ Select `--merge`, `--squash`, or `--rebase` from repository policy before approv
 
 ### 4. Report the deploy expectation
 
-Report the observed PR state and the configured deploy expectation. Say deployed only with a successful deployment run for the expected commit; otherwise say deployment is pending or unverified.
+Report the observed PR state and separate deploy/handoff evidence. Before staging, local technical records say `not staged`; make no QA assignment, QA-user mention or bespoke handoff notification. Once the fix reaches staging, inspect the configured merge-event record using [staging-handoff.md](references/staging-handoff.md); missing configuration, original reporter, owner inclusion or durable record remains pending. The event owns assignment/comments even if deploy fails; this skill makes no fallback tracker mutation. A deployment pass needs the expected live build identity and completed smoke proof; run success alone is deploy-job success with smoke unverified. No result claims deployment from a handoff.
 
 ## Output
 
