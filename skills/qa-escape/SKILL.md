@@ -3,7 +3,7 @@ name: qa-escape
 disable-model-invocation: true
 description: "Record a bug human QA found after delivery, including factory QA_RETURNED: reproduce it and identify the missed check. No prior delivery: /diagnosing-bugs."
 metadata:
-  version: "0.4.0"
+  version: "1.0.0"
 ---
 
 # qa-escape
@@ -51,11 +51,11 @@ Name the lowest layer that can show the bug: a unit test for logic; a handler te
 
 ### 5. Count the class
 
-`gh issue list --label qa-escape --state all --json number,title,body,comments` (or the tracker's label filter), read all matching issues (a truncated list cannot establish the count), then count distinct issues with a marker of the same `class` and `area`, excluding `reproduced=no` and `not-a-regression`. Three or more issues including this one → draft one guard from the reference's ladder, highest rung first: a type, constraint, or lint rule that makes the mistake unwritable; a check in CI or `validate`-style tooling; a standing grid row for the area; a rule line in the workspace `AGENTS.md` section `## QA escape guards`.
+`gh issue list --label qa-escape --state all --json number,title,body,comments` (or the tracker's label filter), read all matching issues (a truncated list cannot establish the count), then count distinct issues with a record of the same `class` and `area`, excluding `reproduced=no` and `not-a-regression`. Three or more issues including this one → draft one guard from the reference's ladder, highest rung first: a type, constraint, or lint rule that makes the mistake unwritable; a check in CI or `validate`-style tooling; a standing grid row for the area; a rule line in the workspace `AGENTS.md` section `## QA escape guards`.
 
 ### 6. Record
 
-Draft the issue comment from the reference template, ending with the marker line exactly:
+Draft the issue comment from the reference template. Linear uses `## QA escape` and readable Class, Area, PR, Tested commit and Reproduced fields, with full commit SHA and reproduction evidence; emit no HTML marker. Readers/counts accept these complete records and legacy markers. On GitHub end with the marker line exactly:
 
 ```
 <!-- qa-escape: class=<slug|none> area=<PROJECT-CODE>:<surface> pr=<pr-number> tested=<tested-sha> reproduced=<yes|intermittent|no> -->
@@ -77,6 +77,6 @@ At most 3 bullets beyond this. Close with the `Suggested next skills (optional)`
 
 - [ ] Reproduced: brief names expected, actual, minimal conditions and run count. Unreproduced/not-deployed: brief names observations, attempts or ancestry evidence, and `reproduced=no`
 - [ ] Reproduced: why-chain ends at a named missed check and quotes its claim. Unreproduced: no inferred cause or invented regression test
-- [ ] The issue comment with its marker and the `qa-escape` label are on the issue, read back after writing — or both drafts are printed when approval is pending
+- [ ] The issue comment with its complete record and the `qa-escape` label are on the issue, read back after writing — or both drafts are printed when approval is pending
 - [ ] Reproduced eligible class: printed count lists counted issues. Excluded/no-reproduction result: count not performed and exclusion stated
 - [ ] Reproduction attempted: checkout record precedes it and worktree status shows no code/test changes. An ancestry-only not-deployed result needs no reproduction checkout

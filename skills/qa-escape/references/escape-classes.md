@@ -49,6 +49,8 @@ A new slug needs a one-line definition in the comment and a proposal to add it h
 
 `Evidence:` is `executed (<env> @ <sha>)`, `supplied (<QA artifact>)`, or `mixed`; never imply supplied evidence was executed in this run.
 
+For Linear use heading `## QA escape` and readable Class, Area, PR, Tested commit and Reproduced fields instead of the example's HTML marker. Preserve the reproduction, class count and evidence. GitHub retains its marker.
+
 ## Guard ladder
 
 When the class count reaches three, propose the highest rung that fits. A rung lower on the list is weaker because a person or agent can skip it.

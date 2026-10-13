@@ -3,7 +3,7 @@ name: ci-loop
 disable-model-invocation: true
 description: "Drive an open PR's failing CI to green: read the log, reproduce, fix in scope, push, up to 3 attempts under one approval. Reviewer comments are /pr-feedback; no PR or CI run is /diagnosing-bugs."
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
 ---
 
 # ci-loop
@@ -13,7 +13,7 @@ ci-loop turns one PR's red checks green by fixing the code, not the checks. It i
 ## Inputs
 
 - **PR** — number or URL. Read `gh pr view <pr> --json number,headRefName,headRefOid,baseRefName,state,isCrossRepository,closingIssuesReferences`. Not open, or a fork you can't push to → stop and say so.
-- **Ticket scope** — the linked issue's body criteria/checklist, otherwise its newest `<!-- factory-criteria -->` comment. No linked issue → the PR body's stated scope; neither → ask.
+- **Ticket scope** — the linked issue's body criteria/checklist, otherwise its newest standalone `## Acceptance criteria` comment (legacy criteria markers remain readable). No linked issue → the PR body's stated scope; neither → ask.
 - **Isolated worktree** — the PR's worktree at `<project-repo>/.worktrees/pr-<n>` on its head branch: reuse its verified task checkout; otherwise use `git worktree add` per workspace policy. Only an explicitly started `/factory run` or `/orchestrate-t3` may read/follow `using-git-worktrees` for its task setup; direct skill use requires the user's invocation. Before the first command there, verify and report the checkout record the workspace `AGENTS.md` requires: path, owning repository and common Git directory, branch or detached state, starting commit, and baseline. Setup failure or a mismatch blocks the run; never fall back to the main checkout. Leave the worktree in place and report its path; cleanup follows the workspace rules. A dirty worktree on another branch → stop and ask; never stash or switch silently.
 - **Attempt cap** — default 3 per PR, not per run: `fix(ci):` commits already on the head branch since its last green run count against it. The user may lower it, not remove it.
 

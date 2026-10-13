@@ -2,7 +2,7 @@
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
-Mechanics for `run` mode. `SKILL.md` holds the loop and the one start question; this file holds how each part is carried out.
+Mechanics for `run` mode. `SKILL.md` holds the loop; this file holds how each part is carried out.
 
 ## Contents
 
@@ -17,6 +17,7 @@ Mechanics for `run` mode. `SKILL.md` holds the loop and the one start question; 
 - Round log
 - Lessons
 - Task stack
+- Readiness and recovery
 - Build
 - Screenshots on the issue
 - Review loop
@@ -24,6 +25,7 @@ Mechanics for `run` mode. `SKILL.md` holds the loop and the one start question; 
 - Staging
 - Handover
 - Cleanup
+- QA artifact cleanup
 
 ## Loading a stage skill
 
@@ -31,7 +33,7 @@ Stage skills are user-invoked, so no Skill-tool call starts them. The user start
 
 1. Read `<name>/SKILL.md` from the directory that holds this skill's own folder. Not there → look in the runtime's other skill directories. Not installed → park the unit and name `npx skills add devarfeen/agent-skills-kit -g --skill <name>`.
 2. Follow the stage file for this unit. Load only references needed by the active step; optional examples and unrelated branches stay unloaded. Reuse already-read, unchanged sections; retain every safety gate. Its **Run authorization** line says what the run's start already approved. A stage skill without that line keeps every approval it asks for.
-3. Every other stop in the skill stops that unit: a failed check, an unmet criterion, a refused merge, a missing input. Park the unit with the stop's evidence. Never retry a stop by doing the step by hand.
+3. Classify local setup/testability failures through **Readiness and recovery**, and stopped-worker failures through **Execution**, before parking. These exceptions repeat the original gate; **Execution** defines the factory-only post-commit resume exception. Every other refusal still stops the unit: an unmet criterion, a refused merge, missing authority or input, or an exhausted cap. Park with evidence; never bypass a stage skill by doing its refused step by hand.
 4. The skill's intake questions are answered from **Start**. It asks the user nothing: a question **Start** does not answer is settled by **No further questions**.
 5. Where the skill says to stop, suggest a next skill, or end the transcript, return here and place the unit again.
 
@@ -41,10 +43,10 @@ A model-invoked skill (`tdd-loop`, `code-review`) is called with the Skill tool 
 
 After triage and before any unit is built, in this order.
 
-1. **T3 Code.** Builders and reviewers run as T3 Code threads, always. Its MCP server is not connected → stop and print the setup from `orchestrate-t3`'s `references/t3-tools.md`; never fall back to another backend. A repository with no T3 Code project is registered and named in the report. Every thread runs in the mode T3 Code calls **Full access**.
+1. **Execution.** Load [`execution-and-continuity.md`](execution-and-continuity.md) for backend selection, agent defaults, dispatch, and worker recovery. Prefer available T3 Code; use authorized native local agents when it is unavailable. Standalone `orchestrate-t3` retains its T3-only contract.
 2. **Preflight.** Per repository in the run: the focused-test command; the PR base — the one the workspace instructions name, else `local` when `origin/local` exists, even when it is the default branch, else the staging branch. A production deployment branch is never the base. A default `local` is allowed only when workspace policy explicitly designates it for delivery; other defaults are forbidden. Each unit's worktree branches from `origin/<base>`; and the local compose file the **Task stack** is derived from. One that cannot be found parks that repository's units, naming it.
-3. **The start question** — the reviewer question in `SKILL.md`. The builder is not asked: it is `inheritedProviderInstanceId` and `inheritedModel` from `orchestrator_capabilities`. Every option comes from that result, never a remembered list, read per **Capabilities** in `orchestrate-t3`'s `references/t3-tools.md`: one option for every usable provider, and none for an unusable one. The result has no sign-in field, so never drop a usable provider because its sign-in cannot be confirmed. Each option names the provider's default model as **Capabilities** defines it. Never pick a model by tier or price; the user names a different one if they want it. Recommend a different provider than the builder, because a second harness is the independent check; when the builder's provider is the only usable one, offer it and say the review will not be independent. Both inherited fields null, or the builder's provider unusable → ask the builder question too, in the same batch, with the same options. User away → stop; the run has no default reviewer.
-4. One line before work starts: the unit count, the caps — three QA re-checks, three CI attempts, three review rounds per unit — and the two agents.
+3. **Agents.** Apply the defaults in **Execution** using live capabilities. Report the backend, builder, reviewer, and whether review uses a different provider. Missing essential authority or an explicitly required unavailable agent parks affected units; routine model preference does not.
+4. One line before work starts: the unit count, the caps — three local-runtime repair attempts, three QA re-checks, three CI attempts, three review rounds per unit — and the two agents.
 
 ### Comments only
 
@@ -52,7 +54,7 @@ A run never edits an issue's title or body, on any tracker. Everything it writes
 
 ### No further questions
 
-After the batch the run asks the user nothing. A fact it lacks is read from the tracker, the repository, or a local reproduction. One it cannot get parks that unit, with the question written out for whoever holds the answer. Never ask the user to guess a fact about someone else's report, and never ask whether to do something a rule here already forbids.
+The run asks no routine preference or operational questions. A fact it lacks is read from the tracker, the repository, or a local reproduction. One it cannot get parks that unit, with the question written out for whoever holds the answer. Never ask the user to guess a fact about someone else's report, and never ask whether to do something a rule here already forbids.
 
 ## Triage
 
@@ -67,7 +69,7 @@ Per issue, in this order:
 1. **Already triaged** — exactly one category and state `ready-for-agent` or `ready-for-human` → leave its labels alone. `ready-for-human` and `wontfix` issues leave the run, named.
 2. **Category** — `bug` when the text reports behaviour that differs from what was intended; `enhancement` for new or changed behaviour. Exactly one.
 3. **Checkable outcome** — the issue is ready only when its text states at least one result a test or a browser run could confirm. Quote that sentence as evidence.
-4. **Ready** → set the category and `ready-for-agent`, removing any other state label. An issue's acceptance criteria are the `## Acceptance criteria` section of its body, else the newest comment carrying `<!-- factory-criteria -->`. An issue with neither gets that comment drafted: the heading `## Acceptance criteria`, the issue's outcomes restated as a numbered list in its own terms, then the marker. Add no criterion the issue does not state. Post it without asking — `gh issue comment <n> --body-file <file>`, or the Linear comment — and read it back. The run report lists every comment drafted this way. Keep each issue's criteria text as read at the end of intake — **Build** step 3 compares against it.
+4. **Ready** → set the category and `ready-for-agent`, removing any other state label. Read criteria from the issue body, otherwise its newest standalone `## Acceptance criteria` comment; legacy criteria markers remain readable. An issue with neither gets a comment restating its outcomes as numbered criteria. Format Linear records per [`records.md`](records.md); GitHub retains `<!-- factory-criteria -->`. Add no new criterion. Post without asking and read back. List drafted criteria in the run report and retain their source/text for **Build** step 3.
 5. **Not ready** → set the category and `needs-info`, post a comment naming each missing fact as a question, and assign the issue to its author: `gh issue edit <n> --add-assignee <author-login>`. When the assign is refused, start the comment with `@<author-login>` instead and say so. The issue leaves the run.
 
 Label names come from the workspace `AGENTS.md`; the list above is the kit's default set. A label the repository lacks → park the issue and name the label; never create one. Read every change back with `gh issue view <n> --json labels,assignees,comments`.
@@ -81,13 +83,13 @@ Place the unit with `states.md`, then act on its state. `Next` in that table is 
 | `QA_RETURNED` | **Returned by QA** below |
 | `BUILDING` | Existing non-draft PR lacking only the current-head acceptance verdict → load `commit-push-pr` in its verified PR checkout to check criteria and refresh the handoff; preserve its branch and create no duplicate PR. Otherwise **Build** below |
 | `CI` | Pending → `gh pr checks <pr> --watch`. Failing → load `ci-loop` |
-| `QA` | Load `agentic-qa`, then **Screenshots on the issue**. Findings → **After a fix**. `blocked` or `partial` → park, naming the missing input or the gap cells |
+| `QA` | Load `agentic-qa`, then **Screenshots on the issue**. Findings → **After a fix**. Local-runtime blockers → **Readiness and recovery**, then repeat affected QA within its cap. Remaining `blocked` or `partial` → park, naming the missing input or gap cells |
 | `CHANGES` | Risk, QA, or code-review findings → **After a fix**. `CHANGES_REQUESTED` from a person → park; name `/pr-feedback <pr>` |
 | `REVIEW` | **Review loop** until it settles on head, then load `risk-review`. Low tier → `MERGE`; high tier → reviewers requested, unit parks at `HUMAN_REVIEW` for a person to approve and merge |
 | `MERGE`, PR open | **Merge** below |
 | `MERGE`, PR merged into `local` | **Handover**, then **Cleanup**. Done for this run: it has not reached staging, and the run never promotes. Name `/local-to-staging` |
 | `STAGING` | **Staging** below |
-| `READY_FOR_OWNER` | **Handover** when the issue has no `factory-delivered` marker, then **Cleanup**. Done |
+| `READY_FOR_OWNER` | **Handover** when no delivery record matches this PR and merge revision, then **Cleanup**. Done |
 | `OUTCOME`, `TICKETS`, `CI_STUCK`, `QA_STUCK`, `HUMAN_REVIEW`, `DEPLOY_FAILED`, `UNKNOWN` | Park with the state's evidence and its `Next` — a person decides here |
 
 A parked unit is not retried in the same run. Running `/factory run` again with the same reference places every unit afresh, so it resumes where the signals say the work stands.
@@ -157,11 +159,11 @@ Missing file → create it with the zero-attribution line from the top of this f
 | 2026-10-10 | #418 | BILLING-WEB | #87 | 2 | agentic-qa | pass | - | feat: add order form and route |
 ```
 
-Append when a check returns for a unit — an `agentic-qa` result, a `ci-loop` attempt, a `risk-review` marker, a **Review loop** round, a `qa-escape` marker. A passing round is one row; a failing round is one row per distinct cause.
+Append at worker dispatch/recovery and when a check returns for a unit — a readiness repair, an `agentic-qa` result, a `ci-loop` attempt, a `risk-review` marker, a **Review loop** round, a `qa-escape` marker. A passing round is one row; a failing round is one row per distinct cause.
 
-- **Check** — `agentic-qa`, `ci`, `risk-review`, `code-review`, or `qa-escape`.
-- **Cause** — for `ci`, the failing check's name. Otherwise one slug from the class list in the `qa-escape` skill's `references/escape-classes.md`, chosen by that file's rule; no slug fits → `other:<two-word-slug>`. `-` on a pass.
-- **Tried** — the subjects of the commits made since the unit's previous round; `first build` on round 1.
+- **Check** — `execution`, `readiness`, `agentic-qa`, `ci`, `risk-review`, `code-review`, or `qa-escape`.
+- **Cause** — for `execution`, `readiness` or `ci`, the failing operation/check's name. Otherwise one slug from the class list in the `qa-escape` skill's `references/escape-classes.md`, chosen by that file's rule; no slug fits → `other:<two-word-slug>`. `-` on a pass.
+- **Tried** — execution uses the worker/budget record in **Execution**; readiness uses the repair record in **Readiness and recovery**. Other checks use the subjects of commits made since the unit's previous round; `first build` on round 1.
 
 Every cell comes from evidence read in that round. `PR` is `-` until one is open.
 
@@ -192,11 +194,11 @@ Each unit runs its own copy of the app from its own worktree, so the builder's t
    - keep only the app's own service; databases, caches, and proxies stay the shared ones, reached over the same network;
    - mount the worktree's source where the original mounts the project's;
    - mount dependency folders and gitignored env files read-only from the primary checkout — a unit whose diff changes a lockfile installs its own dependencies inside its stack instead;
-   - give paths the app writes at run time (logs, caches) volumes of their own;
+   - give runtime and test-runner writable paths task-owned storage, including internal temporary paths under otherwise read-only dependencies;
    - rename the service's container and take a host port nothing is listening on.
 2. **Start.** Every bind-mount source must exist first: Docker creates a missing one owned by root. Then `docker compose -p <task-name> --project-directory <project-repo> -f <file> up -d`.
-3. **Prove.** The stack's URL answers, and a marker only this worktree holds (its head SHA in a file, or a string from its diff) is served from it. `find <worktree> -maxdepth 2 -user root` prints nothing; run it for this unit's worktree and its `-base` checkout only. A root-owned path under another task's folder is named in the run report and never parks this unit. Either check failing → stop with the same Compose prefix from step 2 plus `down`, verify its containers stopped, then park the unit with the output.
-4. **Hand over.** Record its exact start/stop prefix. `STACK:` gives the URL and command prefix (`docker compose -p <task-name> --project-directory <project-repo> -f <file> exec <service>`).
+3. **Prove.** The stack's URL answers, and a marker only this worktree holds (its head SHA in a file, or a string from its diff) is served from it. `find <worktree> -maxdepth 2 -user root` prints nothing; run it for this unit's worktree and its `-base` checkout only. A root-owned path under another task's folder is named in the run report and never parks this unit. Prove the applicable runtime checks in **Readiness and recovery** before dispatch. A failed check blocks dependent work; diagnose and repair within that contract. If a stack needs stopping, use the exact recorded Compose prefix plus `down` and verify its containers stopped. A failed stop parks and preserves its configuration and checkout.
+4. **Hand over.** Record its exact start/stop prefix. `STACK:` gives the URL and command prefix (`docker compose -p <task-name> --project-directory <project-repo> -f <file> exec <service>`). Supply `READINESS:` evidence and the effective authorization pointers with the verified checkout record; neither grants authority beyond workspace policy.
 
 A workspace with its own worktree-app command → record its start and safe stop commands and use them instead of steps 1–2 and Compose cleanup. Missing stop procedure parks before starting. Preserve the rule against editing tracked compose files.
 
@@ -204,14 +206,18 @@ A workspace with its own worktree-app command → record its start and safe stop
 
 At the end of the run `git -C <project-repo> status --porcelain` shows no compose file changed.
 
+## Readiness and recovery
+
+Before task-stack setup and when a stage reports a local-runtime blocker, load [`readiness-and-recovery.md`](readiness-and-recovery.md). It owns readiness evidence, repair classification, the per-unit repair cap, and resume rules. Passing readiness never substitutes for acceptance, QA, CI, review, or shipping gates.
+
 ## Build
 
 One pass per unit, in this order. Each step's evidence is read back before the next starts.
 
-1. **Implement.** Set the unit's status per **Tracker status** and start its **Task stack**. Load `orchestrate-t3` with this one unit as its issue list and **Start** as its intake: the builder agent and Full access. It asks nothing. Each thread's prompt carries the unit's lines per **Lessons** in `LESSONS:` and its stack per **Task stack** in `STACK:`. It returns each issue's end state.
+1. **Implement.** Set the unit's status per **Tracker status** and prove its **Task stack**. Reuse an existing task-owned checkout and committed implementation only after **Readiness and recovery** verifies them; resume its missing checks rather than building it again. Otherwise dispatch through **Execution** on that checkout with the issue, criteria, `LESSONS:`, `STACK:`, `READINESS:`, and effective authorization pointers. T3 dispatch loads `orchestrate-t3` with this unit and **Start** as intake; native dispatch follows **Execution** directly. Verify the returned evidence, not just its terminal status.
 
-   A blocked or errored issue parks. An issue without quoted passing test output is not built.
-2. **QA with before and after.** First confirm `git -C <worktree> status --porcelain` is empty; leftovers go back to the worker to commit, so the SHA that is tested is the SHA that ships. Load `agentic-qa` on the branch head, against the unit's stack URL. The unit's worktree is its head checkout — create no second one — and the base checkout is `<task-name>-base` beside it, served by a stack of its own for the base run only. Its base run supplies the `before` screenshots and its head run the `after` ones, in an evidence folder named for the branch until a PR exists. `no-ui-reach` passes without screenshots. Findings go back to the worker per **After a fix** and QA runs again on the new head; the third failed re-check parks the unit as `QA_STUCK`. Each result is a row in the **Round log**, and each round's images go on the issue per **Screenshots on the issue**.
+   A local-runtime blocker first follows **Readiness and recovery**; worker failures follow **Execution** recovery. Other blocked results park. An issue without quoted passing test output is not built.
+2. **QA with before and after.** First confirm `git -C <worktree> status --porcelain` is empty; leftovers go back to the worker to commit, so the SHA that is tested is the SHA that ships. Load `agentic-qa` on the branch head, against the unit's ready stack URL. The unit's worktree is its head checkout — create no second one — and the base checkout is `<task-name>-base` beside it, served by its own ready stack for the base run only. Its base run supplies the `before` screenshots and its head run the `after` ones, in an evidence folder named for the branch until a PR exists. `no-ui-reach` passes without screenshots. Findings go back to the worker per **After a fix**; local-runtime blockers follow **Readiness and recovery**. QA runs again on the tested head after a fix or runtime repair; the third failed re-check parks the unit as `QA_STUCK`. Each result is a row in the **Round log**, and each round's images go on the issue per **Screenshots on the issue**.
 3. **Ship.** First read the issue's acceptance criteria again, from where **Triage** step 4 found them; text that differs from what intake kept parks the unit, quoting both. Load `commit-push-pr` in the unit's worktree against the PR base from **Start**. The PR names each issue with an ordinary reference, never a closing keyword, whatever the base: a merge must not close an issue. A group of several issues ships as one PR naming each. Confirm the pushed head is the SHA QA tested, then post the agentic-qa comment for it, as that skill directs once a PR exists. A different SHA means QA runs again.
 
 Place the unit again; it is now in `CI` or beyond.
@@ -220,14 +226,18 @@ Place the unit again; it is now in `CI` or beyond.
 
 After every `agentic-qa` round that captured screenshots, passing or failing, put that round's `before` and `after` images on the unit's issue, in the tracker that holds that issue. A group of several issues gets them on each. Starting the run approves these comments and uploads. The issue's own tracker is the only place an image is sent: never an image host, a gist, a paste service, or a branch.
 
+Record task-owned evidence paths and publish durable QA reports/grids under [`qa-artifact-cleanup.md`](qa-artifact-cleanup.md). Format Linear comments through [`records.md`](records.md); keep the tested SHA, result, finding count and rechecks as readable fields, without HTML markers.
+
 Look at each image first. One that shows a secret, a token, or a customer's identifier is not uploaded; name it under Needs user and list its row as `withheld`.
 
 - **Linear** — inspect the live tool schema first. One file at a time, finishing each before starting the next, because the signed URL expires in 60 seconds:
   1. `prepare_attachment_upload` with the issue identifier, the filename, `contentType: image/png`, the exact size from `wc -c < <file>`, and the title `<route> <before|after> <short-sha>`.
-  2. `curl -X PUT --data-binary @<file>` to `uploadRequest.url`, sending every header in `uploadRequest.headers` exactly as returned.
-  3. `create_attachment_from_upload` with the returned `assetUrl` and the same title.
+  2. `curl --fail-with-body -X PUT --data-binary @<file>` to `uploadRequest.url`, sending every header in `uploadRequest.headers` exactly as returned. Require HTTP success before finalizing.
+  3. `create_attachment_from_upload` with the returned `assetUrl` and the same title. Retain the issue attachment ID, original asset URL, title, and local file mapping.
 
-  A failed upload is prepared and sent once more; a second failure is reported under Needs user and its row says `upload failed`. Then `save_comment` with the table below, each cell naming its attachment title.
+  Read back the issue's attachments. Download each new asset using the supported attachment-read URL and verify its image type and bytes against the local file. Metadata alone is not upload proof. Refresh an expired signed read URL before retrying its download; reuse already-verified attachments rather than uploading duplicates.
+
+  A failed upload is prepared and sent once more; a second failure is reported under Needs user and its row says `upload failed`. Then `save_comment` with the table below: link each image's attachment title to its original uploaded asset URL and add image previews beneath the table. Use original asset URLs, not upload-request URLs or expiring signed read URLs. Mark blocker captures and synthetic output accurately; they are not screenshots of authenticated acceptance output.
 - **GitHub** — `gh` cannot attach an image to an issue. Post the table with `gh issue comment <n> --body-file <file>`, each cell holding the image's path under the evidence folder, followed by the line `Not uploaded: gh cannot attach images. Files are in the local evidence folder.`
 
 ```md
@@ -238,13 +248,13 @@ Look at each image first. One that shows a secret, a token, or a customer's iden
 | /invoices | /invoices before a1b2c3d | /invoices after a1b2c3d |
 ```
 
-Read the comment back. A missing `before` image is written `not captured`. An upload that fails never parks the unit; the QA result stands on its marker.
+Read the comment back. For Linear, confirm every successful upload has its expected image link and preview in the saved body; a plain title or local path is not a visible image. Report unverified delivery explicitly rather than claiming screenshots were attached. A missing `before` image is written `not captured`. An upload that fails never parks the unit; the QA result stands on its marker.
 
 ## Review loop
 
-A second harness reviews what the first one built, and the two settle it on the issue, where a person can read the exchange. Runs once CI and QA pass on head.
+A fresh reviewer inspects what the builder produced; both settle findings on the issue, where a person can read the exchange. **Execution** selects a different provider when available and reports same-provider review. Runs once CI and QA pass on head.
 
-1. **Review.** Launch one T3 Code thread with the reviewer agent from **Start**, titled `<issue-id> review`, bound to the unit's worktree, with this prompt:
+1. **Review.** Dispatch a fresh read-only reviewer through **Execution**, titled `<issue-id> review`, bound to the unit's worktree, with this prompt:
 
    ```md
    TRACKER: [GitHub|Linear]
@@ -264,16 +274,17 @@ A second harness reviews what the first one built, and the two settle it on the 
    `## Code review — <short-sha> · round <ROUND>`: numbered findings, each with
    file and line, what is wrong, and why it matters for this issue. A declined
    finding you accept is dropped; one you still hold stays, with your answer to
-   the reason given. End the comment with
-   `<!-- code-review: sha=<head-sha> round=<ROUND> findings=<n> -->`.
+   the reason given. On Linear use heading `## Code review` and readable fields
+   Commit (full head SHA), Round, and Findings; emit no HTML marker.
+   On GitHub retain `<!-- code-review: sha=<head-sha> round=<ROUND> findings=<n> -->`.
    Cannot post → end your message with the comment text instead.
 
    Zero attribution: name no agent, model, or tool in the comment.
    ```
 
-   A reviewer that could not post → the run posts its text unchanged. Read the comment back from the issue; the thread's word is not the record.
+   A reviewer that could not post → the run preserves its findings and applies [`records.md`](records.md) formatting before posting to Linear. Read the comment back from the issue; the thread's word is not the record.
 2. **Settled?** `findings=0` for head → the loop ends; go to `risk-review`.
-3. **Answer.** Send the comment to the unit's builder thread per **Send** in `orchestrate-t3`'s `references/t3-tools.md` (thread gone → launch a new builder thread on the same worktree). For each finding the builder either fixes it through `tdd-loop` and commits, or declines it with a reason; a finding outside the issue's scope is declined as such and listed under Needs user. It then posts one reply on the issue: each finding as `fixed <sha>` or `declined — <reason>`, ending `<!-- code-review-reply: round=<n> fixed=<n> declined=<n> -->`.
+3. **Answer.** Send the comment to the unit's builder through **Execution**; a stopped worker resumes on the same verified checkout. For each finding the builder either fixes it through `tdd-loop` and commits, or declines it with a reason; a finding outside the issue's scope is declined as such and listed under Needs user. Post each answer as `fixed <sha>` or `declined — <reason>`. Linear uses `## Code review reply` with Round, Fixed, Declined; GitHub retains `<!-- code-review-reply: round=<n> fixed=<n> declined=<n> -->`.
 4. **Again.** Commits were made → **After a fix**: the new head passes CI and QA again before the next review round. Then step 1 with the next round number.
 
 Three rounds. Findings still open after the third park the unit, quoting them. Each round is a `code-review` row in the **Round log**, with `<n> findings` or `pass` as its result.
@@ -295,12 +306,14 @@ A PR merged into `local` has not reached staging. Say so and name `/local-to-sta
 
 ## Handover
 
-For each issue whose PR is `MERGED`, once per issue. The comment is written from evidence read this run, posted through the issue's tracker, and read back:
+For each issue whose PR is `MERGED`, once per delivered PR and merge revision. A complete matching delivery record skips repeat handover; an older/different delivery does not suppress a returned fix. Write the comment from evidence read this run, post through the issue's tracker, and read back:
 
 ```md
 ## Delivered
 
-PR: <url> — merged into `<base>` at <merge-sha>
+PR: <url>
+Merge commit: <full-merge-sha>
+Base: <base>
 Staging: <deploy run URL and result | not on staging yet — manual QA starts once it is>
 
 ## Acceptance criteria
@@ -309,7 +322,11 @@ Staging: <deploy run URL and result | not on staging yet — manual QA starts on
 
 ## QA
 
-agentic-qa: <result> on <head-sha> — before/after: <the round's comment on this issue>
+Commit: <full-tested-head-sha>
+Result: <actual-QA-result>
+Findings: <actual-finding-count>
+Rechecks: <actual-recheck-count>
+Before / After: <the round's durable evidence comment>
 Code review: <n> rounds — <n> fixed, <n> declined
 Risk review: tier <actual tier>, blocking <actual count> — <marker URL>
 
@@ -321,23 +338,29 @@ Risk review: tier <actual tier>, blocking <actual count> — <marker URL>
 
 <gaps, deferred criteria, declined review findings, follow-ups; omit when none>
 
-<!-- factory-delivered: pr=<n> merge=<merge-sha> base=<base> -->
 ```
 
 First apply **Closed by the merge** in **Tracker status**; after the comment, set **In Review** per that section. A run started with a label then removes that label from the issue — `gh issue edit <n> --remove-label <label>`, or the Linear label removal — and reads the labels back: the label means an agent should work the issue now, and that is no longer true. A parked unit and a `needs-info` issue keep it, so the next run looks at them again. A run started with an issue reference removes no label. Assign nobody here: pass issue identifiers to `deploy-watch`, or let `/local-to-staging` discover this delivery comment. Their handoff requires a proven staging deploy containing `<merge-sha>`. The run never closes the issue.
+
+On GitHub append `<!-- factory-delivered: pr=<n> merge=<merge-sha> base=<base> -->` after the template. On Linear read back `## Delivered` with PR, Merge commit and Base per [`records.md`](records.md). Link durable QA evidence rather than local files that cleanup will remove.
 
 Issues of parked or unmerged units get no handover.
 
 ## Cleanup
 
-Automatic after **Handover**. A unit is cleanable only when its PR is `MERGED` and its branch tip equals the PR's final `headRefOid`. Every other unit keeps its stack, worktree, and branches, and is named.
+Automatic after **Handover**. Code/worktree cleanup requires a `MERGED` PR and branch tip equal to its final `headRefOid`; otherwise keep those resources and name them. QA artifact cleanup uses its independent merge, ownership and publication proofs and can run when branches/worktrees are already absent.
 
 Per cleanable unit, and for its QA base worktree:
 
 1. Stop each stack with its recorded start prefix: `docker compose -p <task-name> --project-directory <project-repo> -f <compose-file> down`. Verify no containers remain for that task project before deleting its temporary file. A failed stop skips further cleanup for that stack and worktree; report it.
-2. `git -C <worktree> status --porcelain --ignored`. Modified or untracked files, or ignored files that are not dependency or build output, → name them and skip this worktree.
-3. `git worktree remove <path>` — never `--force`.
-4. `git branch -d <branch>`. After a squash or rebase merge `-d` refuses; `-D` is allowed only for a branch whose tip is the merged PR's `headRefOid`.
-5. `git push origin --delete <branch>` when the remote branch still exists.
+2. Apply **QA artifact cleanup** to the unit's recorded evidence before removing its worktrees. Unverified publication retains local evidence and is reported.
+3. `git -C <worktree> status --porcelain --ignored`. Modified or untracked files, or ignored files that are not dependency or build output, → name them and skip this worktree.
+4. `git worktree remove <path>` — never `--force`.
+5. `git branch -d <branch>`. After a squash or rebase merge `-d` refuses; `-D` is allowed only for a branch whose tip is the merged PR's `headRefOid`.
+6. `git push origin --delete <branch>` when the remote branch still exists.
 
 End with `docker compose ls`, `git worktree list`, and `git branch --list` for each repository as the read-back.
+
+## QA artifact cleanup
+
+After confirmed merge and handover, automatically follow [`qa-artifact-cleanup.md`](qa-artifact-cleanup.md) for this unit's recorded local QA files. This has its own publication/ownership guards; code/worktree cleanup does not authorize broad evidence deletion. An already-delivered unit can retry retained evidence cleanup without reposting handover.

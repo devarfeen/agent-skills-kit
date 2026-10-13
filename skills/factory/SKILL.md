@@ -3,7 +3,7 @@ name: factory
 disable-model-invocation: true
 description: "Shows where a spec (PRD), ticket, or PR stands in the factory workflow and names the one skill that moves it on. Read-only unless the user starts /factory run. Never closes issues or passes staging."
 metadata:
-  version: "1.5.0"
+  version: "4.0.0"
 ---
 
 # factory
@@ -47,7 +47,7 @@ gh issue view <issue> --json state,comments
 
 Read unresolved review threads with a paginated GraphQL `reviewThreads` query; unreadable thread state is `UNKNOWN` before a merge.
 
-The risk-review marker is a PR comment containing `<!-- risk-review: tier=<low|high> sha=<sha> blocking=<n> -->`. Read it from `comments`; ignore markers for any other SHA. The agentic-qa marker `<!-- agentic-qa: sha=<sha> result=<…> findings=<n> recheck=<n> -->` and the deploy-watch marker `<!-- deploy-watch: merge=<merge-sha> deployed=<run-head-sha> result=<pass|fail> -->` are read the same way; the newest marker wins. The `Acceptance criteria` verdict clearing `BUILDING` must name head: read the body, otherwise the newest `## QA handoff` whose `Change:` SHA is head. Old-head acceptance does not count. `qa-escape` markers (`<!-- qa-escape: class=… area=… pr=<n> tested=<sha> reproduced=… -->`) live on the issue, not the PR.
+Read QA/risk/deploy evidence on the PR and issue records through [`references/records.md`](references/records.md). Linear comments use readable headings and fields; legacy records remain readable. Newest valid evidence for the required revision wins. The `Acceptance criteria` verdict clearing `BUILDING` must name head: read the body, otherwise the newest `## QA handoff` whose `Change:` SHA is head. Old-head acceptance does not count.
 
 ### 3. Place each unit
 
@@ -65,12 +65,8 @@ Print the output below. Report mode ends here: do not run the suggested skill, e
 
 The user's `/factory run <reference>` approves the whole chain. Read [`references/run.md`](references/run.md) first.
 
-1. **Intake.** Resolve units as in step 1. A label reference lists the open issues carrying it and triages each per **Triage**; one with no checkable outcome becomes `needs-info`, is assigned to its author, and leaves the run. Missing acceptance criteria are posted as a comment. Run the checks in **Start**; the builder is this session's model. Ask:
-   - "Which agent and model reviews the code? Prefer a different provider than the builder."
-   - **Start** finds no builder: "Which agent and model builds?"
-
-   User away → stop. Then it asks nothing more.
-2. **Loop.** One unit at a time, in the order **One unit at a time** gives: place it (steps 2–4), carry out its `Next` per **Stage map**, and place it again; log it and apply **Lessons**. Per unit: status In Progress, its own worktree and **Task stack**, a builder thread, agentic QA, a PR, CI, the **Review loop** between the reviewer and the builder, risk review, **Merge**, **Handover** with status In Review, **Cleanup**. A stage skill is read and followed per **Loading a stage skill**; its stops still stop that unit.
+1. **Intake.** Resolve units as in step 1. A label reference lists the open issues carrying it and triages each per **Triage**; one with no checkable outcome becomes `needs-info`, is assigned to its author, and leaves the run. Missing acceptance criteria are posted as a comment. **Start** selects available agents automatically, honoring explicit user choices; no reviewer answer is required.
+2. **Loop.** One unit at a time, in the order **One unit at a time** gives: place it (steps 2–4), carry out its `Next` per **Stage map**, and place it again; log it and apply **Lessons**. Per unit: status In Progress, its own worktree and **Task stack**, a builder thread, agentic QA, a PR, CI, the **Review loop** between the reviewer and the builder, risk review, **Merge**, **Handover** with status In Review, **Cleanup**. For setup or local-runtime blockers, read [`references/readiness-and-recovery.md`](references/readiness-and-recovery.md); **Loading a stage skill** governs recovery and stops.
 3. **Parks.** A unit whose next actor is a person — a high risk tier, a spent cap, a fact only the reporter holds — is parked with its evidence; the run continues. No tracked compose file or issue body is edited; no issue is closed.
 4. **Run report.** The output table, each parked unit's reason, the criteria drafted, and **Lessons** report.
 
@@ -96,4 +92,5 @@ At most one table row per unit; `Gate evidence` names the run, SHA, or comment �
 - [ ] Every unit in the spec appears in the table, and the printed unit count matches the total sub-issue count, open and closed, read from the tracker
 - [ ] Every `Gate evidence` cell names a run ID, SHA, or comment marker that was actually read this run
 - [ ] Report mode: `git status` and the PRs show no change made by this run, and no next skill was invoked
-- [ ] Run mode: every unit ends merged with a `factory-delivered` comment read back, or parked with a named reason; no issue was closed and `git status` shows no compose file changed
+- [ ] Run mode: readiness/repair evidence names checkout/runtime, causes, changed conditions, and rechecks within all caps
+- [ ] Run mode: every unit ends merged with its delivery record read back, or parked with a named reason; QA artifact cleanup follows publication/merge guards; no issue was closed and no tracked Compose file changed

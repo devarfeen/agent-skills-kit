@@ -11,6 +11,27 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- **`/factory` 4.0.0** — selects builder/reviewer defaults without a start
+  question, supports authorized native local execution when T3 is unavailable,
+  and supervises terminal turns and stalled workers with bounded recovery.
+  Active or unconfirmed writers prevent reassignment; original gates and
+  explicit backend/model requirements remain binding.
+
+- **Readable criteria compatibility** — `/orchestrate-t3` 0.6.0,
+  `/agentic-qa` 0.5.0, `/ci-loop` 0.5.0,
+  `/risk-review` 0.6.0, `/commit-push-pr` 0.7.0 and `/commit-push-close` 0.4.0
+  read standalone acceptance-criteria comments while retaining legacy reads.
+
+- **`/factory` 2.1.0** — Linear evidence comments include linked images and
+  previews instead of plain attachment names. Upload proof requires HTTP
+  success, attachment read-back, and matching image bytes; existing verified
+  uploads are reused and expiring read URLs are kept out of comments.
+
+- **`/orchestrate-t3` 0.5.0** — worker assignments distinguish authorized
+  cross-repository discovery from checkout write ownership, carry effective
+  access-policy versions and factory readiness evidence, and return runtime
+  blockers to the parent repair owner.
+
 - **Delivery contracts** — `/factory` 1.5.0, `/commit-push-pr` 0.6.0,
   `/commit-push-close` 0.3.0, `/risk-review` 0.5.0, `/ci-loop` 0.4.0,
   `/deploy-watch` 0.4.0, `/local-to-staging` 0.2.0, `/agentic-qa` 0.4.0,
@@ -58,6 +79,23 @@ re-run `/agents-md` after a marker bump.
   distinguished from catalog routing and live workflow execution.
 
 ### Breaking
+
+- **Clean Linear records and temporary QA evidence** — `/factory` 3.0.0,
+  `/qa-escape` 1.0.0, `/deploy-watch` 1.0.0 and `/local-to-staging` 1.0.0
+  publish readable Linear fields rather than HTML control markers. Readers
+  retain older records and bind gates/deduplication to complete revisions.
+  Factory publishes durable sanitized QA reports/grids and required evidence,
+  then automatically removes only recorded local task artifacts after merge
+  and verified publication. Blocked/unmerged or unpublished evidence is kept.
+  GitHub PR records and source/worktree preservation gates remain unchanged.
+
+- **`/factory` 2.0.0** — authorized task-runtime failures get up to three
+  changed-condition repairs before parking, replacing the immediate setup
+  stop. BASE readiness now proves startup, checkout, assets, writable test
+  storage, and applicable login/acceptance/diagnostic paths before building.
+  Repairs retain stage caps and acceptance gates, record evidence, and resume
+  the existing verified implementation. Access, scope, shipping, and parked
+  terminal-state boundaries remain unchanged.
 
 - **`/pixel-audit` 1.0.0** — the intermediate `fixed` row status is now
   `awaiting verification`; legacy rows receive that interpretation on rerun.

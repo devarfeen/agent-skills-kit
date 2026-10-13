@@ -3,7 +3,7 @@ name: agentic-qa
 disable-model-invocation: true
 description: "Agent-run functional QA of a PR or branch that can reach a screen: drives acceptance criteria through the running app and records the result on the PR. Never edits code. Pixel checks are /pixel-audit."
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
 ---
 
 # agentic-qa
@@ -13,7 +13,7 @@ Drive the change through the running app; judge visible behavior, logs and reque
 ## Inputs
 
 - **Change** — a PR number or branch. Read the diff, the head SHA, and the linked issue.
-- **Acceptance criteria** — the issue's body section/checklist, otherwise its newest `<!-- factory-criteria -->` comment, plus the `AC map` line of the `/tdd-loop` summary when one exists. Cover rows marked `agentic-qa (<surface>)`. No criteria → `BLOCKED`.
+- **Acceptance criteria** — the issue's body section/checklist, otherwise its newest standalone `## Acceptance criteria` comment (legacy criteria markers remain readable), plus any `/tdd-loop` `AC map`. Cover rows marked `agentic-qa (<surface>)`. No criteria → `BLOCKED`.
 - **Isolated worktree** — the app runs from `<project-repo>/.worktrees/pr-<n>` at the head SHA (detached is fine; the tester commits nothing): reuse the verified PR or factory task worktree; before a PR exists use `.worktrees/qa-<branch-slug>`. Otherwise use `git worktree add --detach` per workspace policy. Only an explicitly started `/factory run` or `/orchestrate-t3` may read/follow `using-git-worktrees` for its task setup; direct skill use requires the user's invocation. Before commands there, report and verify path, owning repo/common Git directory, branch or detached state, starting SHA and baseline against workspace rules. Setup failure or mismatch blocks; never use the main checkout as fallback. Leave and report the worktree; cleanup follows workspace policy. The base-commit baseline runs from its own worktree, `.worktrees/pr-<n>-base`.
 - **Running app** — local URL from that worktree at head. Staging needs this session's explicit user approval and user-provided SSH access under the global rule; read-only unless each mutation is separately approved. Neither → `BLOCKED`.
 - **Roles** — each role that can see the touched surfaces, with test logins referenced by env var name only, never values. A role with no login → gap cells; if required to verify a criterion, result `BLOCKED`, otherwise `PARTIAL`.

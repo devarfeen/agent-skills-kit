@@ -3,7 +3,7 @@ name: risk-review
 disable-model-invocation: true
 description: "Risk gate for an open PR with green CI: specialist lenses, a low or high tier, verdict on the PR. Low may auto-merge to staging or local only. Not /code-review; reviewer threads are /pr-feedback."
 metadata:
-  version: "0.5.0"
+  version: "0.6.0"
 ---
 
 # risk-review
@@ -15,7 +15,7 @@ risk-review answers one question for the factory: may this PR merge without an e
 - **PR** — number or URL; read `gh pr view <pr> --json number,headRefOid,baseRefName,state,isDraft,files,body,closingIssuesReferences,statusCheckRollup,reviewDecision,latestReviews,comments`. Draft or closed → stop.
 - **Green checks on head** — every required check `pass` on `headRefOid` (`gh pr checks <pr> --required`). No required checks reported → inspect all checks and record that fallback. A failed lookup is unknown. Anything failing or pending → stop and suggest `/ci-loop <pr>`.
 - **Diff** — `gh pr diff <pr>` and `gh pr diff <pr> --name-only`. Lanes read surrounding code at head from the PR's worktree (`<project-repo>/.worktrees/pr-<n>`) when it exists, else with `git show <head-sha>:<path>`; this read-only review never creates a worktree and never reads the main checkout as if it were head.
-- **Ticket scope** — the linked issue's `## Acceptance criteria` body section/checklist, otherwise its newest `<!-- factory-criteria -->` comment. No criteria → acceptance remains unproven.
+- **Ticket scope** — the linked issue's `## Acceptance criteria` body section/checklist, otherwise its newest standalone `## Acceptance criteria` comment (legacy criteria markers remain readable). No criteria → acceptance remains unproven.
 - **Acceptance and QA evidence** — the `Acceptance criteria` verdict in a body explicitly naming head, otherwise the newest `## QA handoff` comment whose `Change:` SHA is head. Read the newest agentic-qa marker for that SHA; stale acceptance and QA evidence never count.
 - **Merge danger** — the `Door:` and `Blast radius:` lines in the PR body or QA comment, read as the author's claim.
 

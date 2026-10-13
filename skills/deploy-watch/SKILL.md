@@ -3,7 +3,7 @@ name: deploy-watch
 disable-model-invocation: true
 description: "Watch a merged PR's staging deploy run, run an approved smoke check on staging, and record pass or fail on the PR. Never touches a server or triggers a deploy. A broken deploy is /staging-fix."
 metadata:
-  version: "0.4.0"
+  version: "1.0.0"
 ---
 
 # deploy-watch
@@ -16,9 +16,9 @@ deploy-watch proves a merged change reached staging and works there, using only 
 - **Staging branch** — default `staging`, confirmed by `git ls-remote`. Accept a staging-base PR, or an authorized delivery-`local` PR when refreshed staging contains its merge SHA. Quote the ancestry check; other bases or absent ancestry stop. Production branches are forbidden.
 - **Deploy workflow** — read its staging push trigger, deployment job, checkout revision and staging destination. A test-only workflow is not a deploy. Zero or ambiguous candidates → stop and name the missing routing evidence.
 - **Staging URL** — from workspace instructions, the workflow environment URL, or the user; needed only for smoke. Missing → deploy-only result, smoke not run.
-- **Smoke checklist** — the spec's integration-contract smoke gate when one exists; otherwise issue body criteria/checklist, or its newest factory-criteria comment, turned into 1–5 browser checks. Add checks for reproduced escape classes in the area, excluding not-a-regression; show missing criteria as smoke blocked. Show the checklist before running it.
+- **Smoke checklist** — the spec's integration-contract smoke gate when one exists; otherwise issue body criteria/checklist, or its newest standalone acceptance-criteria comment (legacy records remain readable), turned into 1–5 browser checks. Add checks for reproduced escape classes in the area, excluding not-a-regression; show missing criteria as smoke blocked. Show the checklist before running it.
 - **Smoke approval** — explicit user approval this session plus user-provided SSH access, as the global staging rule requires; this skill uses neither SSH nor server commands. Missing either → watch GitHub only, smoke not run.
-- **Delivered issues** — explicit tracker identifiers supplied by factory, otherwise closing references and newest `factory-delivered` comments naming this PR. Ordinary PR references can be checked against the tracker; ambiguity leaves handoff pending.
+- **Delivered issues** — explicit tracker identifiers supplied by factory, otherwise closing references and newest delivery records naming this PR. Ordinary PR references can be checked against the tracker; ambiguity leaves handoff pending.
 
 ## Rules
 
@@ -72,15 +72,16 @@ Smoke: 4/4 pass on https://staging.example.com — invoices list, credit note to
 
 ### 6. Hand to manual QA
 
-Only after a confirmed staging deploy run succeeded and contains this change. Resolve the delivered issues from Inputs and read their latest delivery; factory's explicit identifiers work before its handover comment exists. Skip only an assignment marker for the same delivered PR and merge; older deliveries do not suppress a returned fix. Missing or ambiguous issue identity leaves handoff pending. In step 5's approval, assign each to the workspace's Manual QA person, else its reporter, and post:
+Only after a confirmed staging deploy run succeeded and contains this change. Resolve the delivered issues from Inputs and read their latest delivery; factory's explicit identifiers work before its handover comment exists. Read Linear `## Delivered` fields PR, Merge commit, Base, and `## Manual QA assignment` fields PR, Merge commit, Staging commit; accept legacy records too. Skip only a complete assignment record for the same delivered PR and merge; older deliveries do not suppress a returned fix. Missing or ambiguous issue identity leaves handoff pending. In step 5's approval, assign each to the workspace's Manual QA person, else its reporter, and post:
 
 ```
 Staging deployment job succeeded for <deployed-sha> — assigned for manual QA.
 Live build / smoke: <confirmed evidence, or unverified/not run with reason>.
 Deploy: <run URL> (success) · Smoke: <passed>/<total> | not run
 
-<!-- factory-qa-assigned: pr=<delivered-pr> merge=<delivered-merge-sha> staging=<deployed-sha> -->
 ```
+
+For Linear use `## Manual QA assignment` with readable PR, Merge commit and Staging commit fields, full SHAs, and the deployment/smoke evidence. GitHub appends `<!-- factory-qa-assigned: pr=<delivered-pr> merge=<delivered-merge-sha> staging=<deployed-sha> -->`.
 
 Leave the issue's status as it is and never close it; the person testing does. Read the assignee and comment back.
 

@@ -1,5 +1,7 @@
 # Worker prompt
 
+Zero attribution: never add or leave co-author, AI, tool, or generator attribution in any output.
+
 One prompt per thread, filled from that thread's group. Never send the full spec; a thread owns exactly the issues in its group. For a group of several issues, repeat the `ISSUE` / `ISSUE_URL` pair once per issue in work order and replace the first instruction with "Work only on these issues, in the order listed, committing only to BRANCH."; the closing report then carries one `AC map:` line per issue.
 
 Fill `TRACKER` with the workspace tracker per **Resolve** in [`tracker-map.md`](tracker-map.md), `ISSUE` with the issue's native identifier (`42` on GitHub, `PRWL-101` on Linear), and `ISSUE_URL` with its link.
@@ -8,7 +10,7 @@ Fill `TRACKER` with the workspace tracker per **Resolve** in [`tracker-map.md`](
 
 Fill the repository/common-directory identity, starting commit, baseline evidence, and applicable instruction pointers from that record. `AC_SCOPE` lists this repository assignment's criteria; for a split issue, other repository assignments remain outside the thread's write scope.
 
-`LESSONS` and `STACK` are filled only by `/factory run`: the lesson lines for this issue's project, and the URL and command prefix of the app stack it started for this checkout. Otherwise drop each line and the sentence naming it, rather than sending an empty field.
+`AUTHORIZATION` names the applicable access-policy pointers and their effective revision or content hash; recheck them after policy changes. `LESSONS`, `STACK`, and `READINESS` are filled only by `/factory run`: project lessons, the app URL/command prefix, and readiness proof for the assigned runtime. Otherwise drop those lines and their instructions rather than sending empty fields.
 
 ```md
 TRACKER: [GitHub|Linear]
@@ -21,9 +23,11 @@ COMMON_GIT_DIR: [CANONICAL_COMMON_GIT_DIR]
 STARTING_COMMIT: [COMMIT]
 BASELINE: [COMMAND_AND_RESULT]
 INSTRUCTIONS: [WORKSPACE_AND_PROJECT_INSTRUCTION_POINTERS]
+AUTHORIZATION: [ACCESS_POLICY_POINTERS_AND_EFFECTIVE_VERSION]
 AC_SCOPE: [ASSIGNED_CRITERIA]
 LESSONS: [LESSON_LINES]
 STACK: [APP_URL] · [EXEC_PREFIX]
+READINESS: [CHECKOUT_RUNTIME_IDENTITY_CHECK_RESULTS_AND_LOG_PATH]
 
 Work only on this repository assignment, committing only to BRANCH, inside
 CHECKOUT. Read INSTRUCTIONS before edits. Verify canonical root, common Git
@@ -33,6 +37,11 @@ evidence belongs to this checkout; a mismatch or unapproved failed baseline is
 a blocker, never a reason to work elsewhere. Bind command working directories
 and edit paths to CHECKOUT; never write another repository.
 
+Read relevant local source/schema files across repositories when AUTHORIZATION
+permits it; checkout write ownership does not restrict those discovery reads.
+Use existing authorization rather than asking again for the same covered action.
+Missing authority or an essential fact remains a blocker.
+
 Use the supplied checkout record and instructions for project/repository context.
 
 Drive each seam with `/tdd-loop` directly when available; use `/tdd` only as
@@ -41,7 +50,7 @@ green step to BRANCH; never push or open a PR. Without `/tdd-loop`, reproduce
 the failure with a test and make it pass; still report the command and passing output.
 
 Before coding, read the issue's acceptance criteria (in its body, else its
-newest `## Acceptance criteria` comment), any issues labelled
+newest standalone `## Acceptance criteria` comment; legacy criteria records remain readable), any issues labelled
 `qa-escape` for this area, and the `## QA escape guards` lines in AGENTS.md.
 Map every assigned criterion in AC_SCOPE to a test, to `agentic-qa (<surface>)` when only a running
 app can prove it, or to a deferral with its reason. Never report UI behavior
@@ -56,6 +65,11 @@ Follow each line under LESSONS above. Run tests and app commands through the pre
 acceptance criteria, or anything under `specs/factory/`, and never delete a
 test or remove an assertion to reach green; a test whose contract must change
 is named under Decisions with the reason.
+
+Check READINESS belongs to this checkout and runtime before using it. Report
+local runtime blockers with the decisive error, reproduction, and invalidated
+checks to the parent for bounded repair; keep stack/config writes with its
+assigned repair owner. Synthetic checks do not clear an unverified real route.
 
 Do not work on the full spec. Do not redo spec orchestration. Do only the
 issue-level discovery this issue needs.

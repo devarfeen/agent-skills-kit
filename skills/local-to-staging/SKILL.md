@@ -3,7 +3,7 @@ name: local-to-staging
 disable-model-invocation: true
 description: "Promote every project from origin/local to origin/staging: open each PR, merge on green, watch the Actions runs. Never pushes or goes past staging. Production is /staging-to-production."
 metadata:
-  version: "0.2.0"
+  version: "1.0.0"
 ---
 
 # local-to-staging
@@ -95,7 +95,9 @@ No run yet → re-check at 30s, 60s, then every 2 minutes up to 10 minutes; stil
 
 ### 6. Hand delivered issues to manual QA
 
-First fetch the merged target and prove it contains the promotion merge SHA. Per repo whose confirmed staging deploy and other runs succeeded: an open issue qualifies when its newest `factory-delivered` comment names a merge now contained in that refreshed target, and no `factory-qa-assigned` marker names that same delivered PR and merge. Older assignments do not suppress a new fix. Find candidates through the workspace tracker: issues in the In Review status for that project (Linear), or `gh issue list --state open --search "factory-delivered in:comments"` (GitHub).
+First fetch the merged target and prove it contains the promotion merge SHA. Per repo whose confirmed staging deploy and other runs succeeded: an open issue qualifies when its newest delivery record names a merge now contained in that refreshed target, and no matching manual-QA assignment record names that same delivered PR and merge. Older assignments do not suppress a new fix. Find candidates through the workspace tracker: issues in the In Review status for that project (Linear), or `gh issue list --state open --search "factory-delivered in:comments"` (GitHub).
+
+For Linear delivery/assignment records, read [`references/linear-records.md`](references/linear-records.md); missing or conflicting fields leave handoff pending.
 
 Assign each to Manual QA — the person the workspace's issue-tracker document names, else the issue's reporter — and post:
 
@@ -104,8 +106,9 @@ Staging deployment job succeeded for <merge-sha of the promotion> — assigned f
 Live build / smoke: <confirmed evidence, or unverified/not run with reason>.
 Runs: <run URL> (success)
 
-<!-- factory-qa-assigned: pr=<delivered-pr> merge=<delivered-merge-sha> staging=<merge-sha of the promotion> -->
 ```
+
+Linear uses the readable assignment fields in that reference. GitHub appends `<!-- factory-qa-assigned: pr=<delivered-pr> merge=<delivered-merge-sha> staging=<merge-sha of the promotion> -->`.
 
 Leave the status as it is and never close the issue. Read each assignee and comment back. A repo with a failed or missing run hands nothing over: nobody is asked to test a build that did not deploy.
 
