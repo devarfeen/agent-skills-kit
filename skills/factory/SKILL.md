@@ -3,7 +3,7 @@ name: factory
 disable-model-invocation: true
 description: "Shows where a spec (PRD), ticket, or PR stands in the factory workflow and names the one skill that moves it on. Read-only unless the user starts /factory run. Never closes issues or passes staging."
 metadata:
-  version: "4.3.0"
+  version: "4.4.0"
 ---
 
 # factory
@@ -70,9 +70,9 @@ The user's `/factory run <reference>` approves the whole chain. Read [`reference
    - "Which agent and model reviews the code? A different provider than the builder is recommended."
 
    User away → stop. After this batch the run asks nothing more.
-2. **Loop.** Follow **Dependency-aware scheduling**: isolated independent units may overlap within capacity; the parent serializes integration. For each ready unit: place it (steps 2–4), carry out its `Next` per **Stage map**, and place it again; log it and apply **Lessons**. Per unit: status In Progress, its own worktree and **Task stack**, a builder thread, agentic QA in a QA worker, a PR, CI, the **Review loop** between the reviewer and the builder, risk review, **Merge**, **Handover** with status In Review, **Cleanup**. For setup or local-runtime blockers, read [`references/readiness-and-recovery.md`](references/readiness-and-recovery.md); **Loading a stage skill** governs recovery and stops.
+2. **Loop.** Follow **Dependency-aware scheduling**: isolated independent units may overlap within capacity; the parent serializes integration. For each ready unit: place it (steps 2–4), carry out its `Next` per **Stage map**, and place it again; log it and apply **Lessons**. Per unit: status In Progress, its own worktree and **Task stack**, a builder thread, agentic QA in a QA worker, a PR, CI, the **Review loop** between the reviewer and the builder, risk review, **Merge**, **Handover** with status In Review, **Cleanup**, **Promotion**, **Staging**. For setup or local-runtime blockers, read [`references/readiness-and-recovery.md`](references/readiness-and-recovery.md); **Loading a stage skill** governs recovery and stops.
 3. **Parks.** A unit whose next actor is a person — a high risk tier, a spent cap, a fact only the reporter holds — is parked with its evidence; the run continues. No tracked compose file or issue body is edited; no issue is closed.
-4. **Run report.** The output table, each parked unit's reason, the criteria drafted, and **Lessons** report.
+4. **Run report.** The output table, each parked unit's reason, the criteria drafted, **Production readiness**, and **Lessons** report.
 
 ## Output
 

@@ -79,10 +79,11 @@ Place the unit with `states.md`, then act on its state. `Next` in that table is 
 | `CHANGES` | Risk, QA, or code-review findings → **After a fix**. `CHANGES_REQUESTED` from a person → park; name `/pr-feedback <pr>` |
 | `REVIEW` | Read [`review-and-delivery.md`](review-and-delivery.md). After a fix push that answered a review round, test **Fix-only close** before dispatching a reviewer. Otherwise **Review loop** until it settles on head, then load `risk-review`. Low tier → `MERGE`; high tier → reviewers requested, unit parks at `HUMAN_REVIEW` for a person to approve and merge |
 | `MERGE`, PR open | **Merge** in `review-and-delivery.md` |
-| `MERGE`, PR merged into `local` | **Handover**, then **Cleanup**, in `review-and-delivery.md`. Done for this run: it has not reached staging, and the run never promotes. Name `/local-to-staging` |
+| `MERGE`, PR merged into `local` | **Handover**, then **Cleanup**, then **Promotion**, in `review-and-delivery.md` |
 | `STAGING` | **Staging** in `review-and-delivery.md` |
-| `READY_FOR_OWNER` | **Handover** (`review-and-delivery.md`) when no delivery record matches this PR and merge revision, then **Cleanup**. Done |
-| `OUTCOME`, `TICKETS`, `CI_STUCK`, `QA_STUCK`, `HUMAN_REVIEW`, `DEPLOY_FAILED`, `UNKNOWN` | Park with the state's evidence and its `Next` — a person decides here |
+| `READY_FOR_OWNER` | **Handover** (`review-and-delivery.md`) when no delivery record matches this PR and merge revision, then **Cleanup**. Done; it joins **Production readiness** there |
+| `DEPLOY_FAILED` | **Deploy failure** in `review-and-delivery.md` |
+| `OUTCOME`, `TICKETS`, `CI_STUCK`, `QA_STUCK`, `HUMAN_REVIEW`, `UNKNOWN` | Park with the state's evidence and its `Next` — a person decides here |
 
 For staged units, report the event-owned handoff from [records.md](records.md) independently of deployment state, including `DEPLOY_FAILED` or unreadable deploy routing. A handoff does not clear the parked deploy gate.
 

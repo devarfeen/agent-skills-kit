@@ -3,7 +3,7 @@ name: staging-fix
 disable-model-invocation: true
 description: "Fix a staging bug without touching a server: fix locally with a test, then a PR to the staging branch with auto-merge. Use for staging is broken. Inspecting staging alone is not this skill."
 metadata:
-  version: "0.4.1"
+  version: "0.5.0"
 ---
 
 # staging-fix
@@ -26,6 +26,7 @@ These boundaries are the skill's safety property. They are absolute — no step,
 - **Fixes deploy only through CI.** The change reaches staging as a merged PR that GitHub Actions deploys — never by copying files, editing on the box, or triggering a deploy by hand.
 - **A bad deploy is reverted the way it arrived.** If the merged fix makes staging worse, open a revert PR against `staging` through the same CI path and report it like the fix PR — never hotfix the server to undo a merge. Revert by the merge's real shape (`git revert -m 1` for a merge commit, plain revert for a squash); unknown shape → stop.
 - **One approval before any remote write.** Show the commit message and PR draft and wait for one combined user approval before pushing or making a mutating `gh` call. Read-only `gh` checks may run beforehand. If the user is away, present the drafts and stop.
+- **Run authorization.** Loaded by `/factory run` for a `DEPLOY_FAILED` unit, the run's start approves the combined commit and PR draft. Step 3 opens the PR without `--auto`: the run takes it through its own gates and merges it. Staging inspection approval stays the user's own.
 - Redact before anything leaves the session: replace tokens, keys, cookies, session IDs, passwords, emails, and customer identifiers in quoted evidence with `<redacted>`, keeping only the lines that show the fault.
 - **Zero attribution.** No co-author, AI, or tool attribution in commits, PR titles, or PR bodies; strip any tool-injected footer before committing.
 - **Tracker link.** Include the workspace-required issue identifier in commit and PR bodies. If none exists, draft the issue for the same combined approval; create it only after approval and before committing.
@@ -63,7 +64,7 @@ The one-line report from step 4, plus at most two bullets: what the fix was, and
 
 ## Completion criteria
 
-- [ ] PR read-back shows the confirmed staging base and auto-merge enabled, a verified queue entry, or an expected completed merge
+- [ ] PR read-back shows the confirmed staging base and auto-merge enabled, a verified queue entry, or an expected completed merge; under `/factory run`, the open PR on that base
 - [ ] The passing test tail (or the stated substitute verification) is quoted in the PR body
 - [ ] No co-author or AI/tool attribution text in the commit message or PR title/body
 - [ ] Report line printed

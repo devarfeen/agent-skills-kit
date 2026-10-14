@@ -2,13 +2,16 @@
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output, except the **Reviewer provenance** line in `records.md` when the workspace allows it.
 
-Read when a unit first reaches `REVIEW`, `MERGE`, `STAGING` or `READY_FOR_OWNER`, or before dispatching a reviewer. [`run.md`](run.md) keeps the loop, caps, **Tracker status**, **After a fix**, **Round log** and **Lessons** that these stages use.
+Read when a unit first reaches `REVIEW`, `MERGE`, `STAGING`, `DEPLOY_FAILED` or `READY_FOR_OWNER`, or before dispatching a reviewer. [`run.md`](run.md) keeps the loop, caps, **Tracker status**, **After a fix**, **Round log** and **Lessons** that these stages use.
 
 ## Contents
 
 - Review loop
 - Merge
 - Staging
+- Promotion
+- Deploy failure
+- Production readiness
 - Handover
 - Cleanup
 - QA artifact cleanup
@@ -85,9 +88,19 @@ Pick the merge method from repository policy (`gh repo view --json mergeCommitAl
 
 ## Staging
 
-A PR on staging, including an authorized `local` PR whose merge is in staging → load `deploy-watch` with the unit's explicit tracker issue identifiers and report its conclusion. Staging browsing needs this session's user approval and user-provided SSH access; without both, watch GitHub only. The shared staging-event Action owns manual-QA assignment as changes reach staging, independently of deploy success. Deploy-watch reads its durable records and reports missing/unconfigured handoff; it makes no fallback assignment. Use the original reporter and full owner-delivery evidence in [records.md](records.md). A failure parks at `DEPLOY_FAILED`. Deploy-only success without a pass marker → **Handover**, **Cleanup**, then park with smoke or build-identity proof pending; never loop on the same missing approval or claim `READY_FOR_OWNER`.
+A PR on staging, including an authorized `local` PR whose merge is in staging → load `deploy-watch` with the unit's explicit tracker issue identifiers and report its conclusion. Staging browsing needs this session's user approval and user-provided SSH access; without both, watch GitHub only. The shared staging-event Action owns manual-QA assignment as changes reach staging, independently of deploy success. Deploy-watch reads its durable records and reports missing/unconfigured handoff; it makes no fallback assignment. Use the original reporter and full owner-delivery evidence in [records.md](records.md). A failure → **Deploy failure**. Deploy-only success without a pass marker → **Handover**, **Cleanup**, then park with smoke or build-identity proof pending; never loop on the same missing approval or claim `READY_FOR_OWNER`.
 
-A PR merged into `local` has not reached staging. Say `not staged` and name `/local-to-staging`; its merge triggers configured event automation. The run never promotes or emits pre-staging QA-user mentions or bespoke handoff notifications.
+## Promotion
+
+A PR merged into `local` has not reached staging; its handover says `not staged`. Once per round, after that round's merges, load `local-to-staging` for the repos holding such units. Its merge triggers configured event automation. Then place each unit again: a staging branch containing its merge commit → **Staging**. A repo it reports blocked, failed or awaiting review parks its units with that evidence and names `/local-to-staging`; the run never retries a promotion. It emits no pre-staging QA-user mentions or bespoke handoff notifications.
+
+## Deploy failure
+
+Load `staging-fix` once per unit per run, with the failed deploy run's `--log-failed` tail as evidence. Its fix PR on the staging base goes through CI, QA, **Review loop**, risk review and **Merge** like any PR; once merged, **Staging** watches the later deploy run. A staging-fix stop, or a second `DEPLOY_FAILED`, parks the unit naming `/staging-fix` or a revert PR.
+
+## Production readiness
+
+Once, at the end of a run in which any unit reached `READY_FOR_OWNER`, load `staging-to-production` for those units' repos and put its readiness table and command blocks in the run report. It is read-only: production promotion stays the owner's, and the run never runs a printed command.
 
 ## Handover
 

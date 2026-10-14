@@ -8,7 +8,7 @@ A person found a problem in work an agent called done. The run takes it through 
 
 1. **Record.** Load `qa-escape` for the unit. Its QA report is what the reporter wrote on the issue since the reopen, with their screenshots. Expected or actual missing → park the unit, naming that field as a question for the reporter. Reproduce on the local build that holds the fix; staging only with the user's own approval in this session. Where the reporter tested is read from their report and the branch ancestry, never asked: a fault that does not show locally, on a fix the tested branch does not contain, is `not-deployed`.
 2. **Act on the marker it posts.**
-   - `class=not-deployed` → build nothing, and a label run removes its label from the issue. The unit keeps its PR; when that PR is merged into `local`, name `/local-to-staging` and say the reporter tested a build without the fix. The run never promotes.
+   - `class=not-deployed` → build nothing, and a label run removes its label from the issue. The unit keeps its PR; when that PR is merged into `local`, **Promotion** in [`review-and-delivery.md`](review-and-delivery.md) carries it to staging; say the reporter tested a build without the fix.
    - `reproduced=no` → park with what was tried.
    - `class=not-a-regression` → park: the fault predates this PR and needs its own issue.
    - Any other class → **Build**, in a new worktree from the PR base. The worker's first Red is the regression test `qa-escape` named, and its prompt carries the reproduction brief. The unit then follows the usual path to a new PR.

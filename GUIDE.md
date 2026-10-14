@@ -412,7 +412,11 @@ The factory group (`factory-workflow` in `npx skills`) covers what happens after
 4. runs `/agentic-qa`, opens the PR, and drives CI;
 5. has the second agent review the code and post its findings on the issue; the builder fixes or declines each one, for up to three rounds;
 6. runs `/risk-review` and, for a low tier, merges into `local` or the staging branch through GitHub;
-7. posts the handover comment, sets the issue In Review, and removes the app copy, the worktree, and the branches.
+7. posts the handover comment, sets the issue In Review, and removes the app copy, the worktree, and the branches;
+8. promotes `local` to staging with `/local-to-staging` for the repos it merged into, then runs `/deploy-watch`. A failed deploy gets one `/staging-fix`, whose PR goes through the same gates;
+9. ends with a read-only `/staging-to-production` readiness report. You run the production commands yourself.
+
+These ship skills stay available as your own slash commands. Inside a run they skip their usual approval prompt, because starting the run approved them.
 
 With several issues — a label, or a spec with sub-issues — it works them one at a time and finishes or parks each before starting the next. Issues with an open PR go first, then issues QA sent back, then the rest, oldest first. Each issue starts from a base that already has the earlier ones, and gets the lessons they taught.
 
@@ -426,7 +430,7 @@ It parks an issue, and moves to the next, when a person is needed: a high risk t
 
 **What a run learns.** Each check round — a QA result, a CI attempt, a risk review, a code review — is logged as one row in `specs/factory/rounds.md`: what failed, the cause, and what the worker tried. When the same cause shows up in three issues of one project, the run writes a one-line instruction into `specs/factory/lessons.md` and pastes that project's lessons into every later worker prompt, in this run and the next. It does not ask first; the run report lists each line it added, and you can edit or delete any of them. A lesson only changes how a worker works. It never changes a criterion, a test, a gate, or a cap, and a fix that deletes a test or removes an assertion parks the issue. Neither file is state: `/factory` still places every issue from the tracker and the PR alone.
 
-**Issues QA sent back.** When a person reopens an issue or reports a problem on shipped work, the run no longer hands it straight to you. It runs `/qa-escape` first: reproduces the problem, records why the agent's checks missed it, and posts that on the issue. Then it rebuilds, starting from a failing test for that exact problem, and takes the fix through the usual gates. Three cases still come back to you: the problem cannot be reproduced, it existed before the change, or the fix was simply not on the environment QA tested (the run names `/local-to-staging` and builds nothing). Approving a durable guard also stays yours.
+**Issues QA sent back.** When a person reopens an issue or reports a problem on shipped work, the run no longer hands it straight to you. It runs `/qa-escape` first: reproduces the problem, records why the agent's checks missed it, and posts that on the issue. Then it rebuilds, starting from a failing test for that exact problem, and takes the fix through the usual gates. Three cases still come back to you: the problem cannot be reproduced, it existed before the change, or the fix was simply not on the environment QA tested (the run builds nothing and promotes the fix to staging). Approving a durable guard also stays yours.
 
 **Screenshots.** After every QA round the run puts that round's before and after screenshots on the issue. On Linear it attaches the images. On GitHub it posts a comment listing the local file paths, because `gh` cannot attach an image; drag them in yourself if you want them there. Images are never sent anywhere except the issue's own tracker.
 

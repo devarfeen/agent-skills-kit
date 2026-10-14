@@ -11,6 +11,15 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- **Factory run ships to staging** — `/factory` 4.4.0 run mode now loads the
+  promotion and staging skills itself. After a merge into `local` it runs
+  `/local-to-staging` 2.1.0 once per round for the run's repos, then
+  `/deploy-watch`. A failed deploy gets one `/staging-fix` 0.5.0, whose PR
+  goes through the run's usual gates rather than auto-merge. A run that
+  reached `READY_FOR_OWNER` ends with a read-only `/staging-to-production`
+  0.2.0 report. Each skill gains a **Run authorization** line and stays
+  user-invocable. Production promotion stays with the owner, and the run
+  still never closes an issue, so it never loads `/commit-push-close`.
 - **Fix-only review close** — `/factory` 4.3.0 ends the review loop without
   another reviewer round when every finding was fixed, the fix touches only
   cited lines and a mechanical comparison proves no behavior change. The
