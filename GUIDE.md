@@ -434,6 +434,8 @@ It parks an issue, and moves to the next, when a person is needed: a high risk t
 
 **Screenshots.** After every QA round the run puts that round's before and after screenshots on the issue. On Linear it attaches the images. On GitHub it posts a comment listing the local file paths, because `gh` cannot attach an image; drag them in yourself if you want them there. Images are never sent anywhere except the issue's own tracker.
 
+**When a run stops early.** If a run is interrupted, paused, or ends with work unfinished, it saves a handoff for each unfinished issue: where it stands, what setup it needs, and a prompt you can paste to resume. Resuming keeps the builder and reviewer you already chose and does not ask again. A pause or stop you asked for stays stopped. `/orchestrate-t3` saves the same handoff for each unfinished group.
+
 **Before a run builds.** It checks that T3 Code is connected, and that each repository has a test command, a PR base, and a local compose file to copy the app from. A repository missing one is parked with the reason.
 
 ```text
