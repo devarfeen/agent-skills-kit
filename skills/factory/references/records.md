@@ -1,6 +1,6 @@
 # Workflow records
 
-Zero attribution: never add or leave co-author, AI, tool, or generator attribution in any output.
+Zero attribution: never add or leave co-author, AI, tool, or generator attribution in any output, except the **Reviewer provenance** line below when the workspace allows it.
 
 Use when reading or publishing issue workflow records. Linear comments contain clean Markdown headings, evidence, and readable fields. Emit no HTML control markers in Linear comments. Keep GitHub marker formats and internal evidence contracts where their consumers require them; read legacy Linear markers for existing history.
 
@@ -38,7 +38,7 @@ Each line is `<command> — <passed/failed counts or exit status> — <duration>
 
 ## Carrying QA forward
 
-Allowed only when the **No-behavior proof** below holds for the diff from the last QA-tested commit to the new head. The prior QA result must be `verified` or `no-ui-reach` with findings 0. Anything else, or any doubt about reach, runs full QA. Post on the issue, and on GitHub also on the PR:
+Allowed only when the **No-behavior proof** below holds for the diff from the last QA-tested commit to the new head. Test files outside any rendered path may also change, because they cannot reach a screen; the changed tests must then run and pass on the new head, and the record lists them under Changed files as `test-only` with that run in Proof. The prior QA result must be `verified` or `no-ui-reach` with findings 0. Anything else, or any doubt about reach, runs full QA. Post on the issue, and on GitHub also on the PR:
 
 ```md
 ## QA carried forward
@@ -59,11 +59,11 @@ On GitHub append `<!-- qa-carried-forward: sha=<new-head> from=<qa-sha> -->`. Re
 
 Used by **Carrying QA forward**, **Fix-only close** in `review-and-delivery.md`, and the comment-only check cadence in `run.md`. It holds only when every changed file passes one of these, each quoted with its command output:
 
-- A test or doc file outside any rendered, routed or built path.
+- A doc file outside any rendered, routed or built path.
 - PHP code: identical `php -w` output before and after, and no changed line holds an annotation or attribute (`@` inside a docblock, or `#[`).
 - Other code: every changed line, trimmed, is blank or a comment line in that language, and no changed line holds a tool directive (`@ts-`, `eslint-`, `prettier-`, `istanbul`, `c8`, `noqa`, `pragma`, `go:`, `webpack`, `@vite`, `type:`).
 
-A file that fails a test, or any doubt, fails the proof: run the full step instead.
+A changed test file is behavior for checks and review, so it fails this proof. A file that fails a test, or any doubt, fails the proof: run the full step instead.
 
 ## Code review fix check
 
