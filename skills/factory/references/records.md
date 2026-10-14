@@ -9,10 +9,11 @@ Use when reading or publishing issue workflow records. Linear comments contain c
 | Heading | Required fields | Equivalent legacy record |
 | --- | --- | --- |
 | `## Acceptance criteria` | Numbered criteria, preserving the issue's stated outcomes | `factory-criteria` |
-| `## QA` | `Commit`, `Result`, `Findings`, `Rechecks` | `agentic-qa` |
-| `## Code review` | `Commit`, `Round`, `Findings` | `code-review` |
-| `## Code review reply` | `Round`, `Fixed`, `Declined` | `code-review-reply` |
-| `## Delivered` | `PR`, `Merge commit`, `Base` | `factory-delivered` |
+| `## QA` | `Commit`, `Result`, `Findings`, `Rechecks`, `Checks` | `agentic-qa` |
+| `## QA carried forward` | `Commit`, `From QA commit`, `Prior QA record`, `Why no new QA`, `Changed files`, `Proof`, `Not re-tested`, `Still required` | `qa-carried-forward` (GitHub marker) |
+| `## Code review` | `Commit`, `Round`, `Findings`; `Reviewer` only under **Reviewer provenance** | `code-review` |
+| `## Code review reply` | `Round`, `Fixed`, `Declined`; `Builder` only under **Reviewer provenance** | `code-review-reply` |
+| `## Delivered` | `PR`, `Merge commit`, `Base`, `Checks` | `factory-delivered` |
 | `## QA escape` | `Class`, `Area`, `PR`, `Tested commit`, `Reproduced` | `qa-escape` |
 | `## Manual QA assignment` | `PR` (URL list), `Merge commit`, `Staging commit`, `Repository`, `Delivery key`, `Reporter`, `Result` | `factory-qa-assigned` (history only when provenance/key absent) |
 
@@ -21,6 +22,41 @@ Write fields as ordinary Markdown, for example `**Commit:** <full SHA>`. Include
 Read fields inside their matching heading's section. A standalone acceptance-criteria comment starts with that heading; a nested criteria section in a delivery or QA report is not a replacement intake criteria source. Body criteria/checklists take precedence. Otherwise use the newest valid standalone criteria comment, including legacy records, and retain its exact source and text.
 
 Normalize readable and legacy fields to the same state evidence. Order applicable records by original comment creation time, retain their URL/ID, and bind revision-dependent gates to the exact requested revision. Formatting edits do not create a new QA run or reorder its result. A newer blocked/partial result must not be bypassed with an older pass. Missing, malformed, conflicting, or unreadable required fields leave the gate unverified. Delivery deduplication compares delivered PR and merge revisions. Manual-QA deduplication uses the durable issue/repository/source-delivery key below, not a heading or later staging/deploy SHA alone.
+
+## Checks block
+
+`## QA` and `## Delivered` carry a `Checks:` block for every check run that gated the unit since the previous such record (`## Delivered`: the final ship gate). One line per check, from the inspected producer output:
+
+```md
+Checks:
+- composer test — 2986 passed, 0 failed — 3m 24s — 4f5e6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f
+- npm run lint — exit 0 — 12s — 4f5e6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f
+```
+
+Each line is `<command> — <passed/failed counts or exit status> — <duration> — <full tested SHA>`. A resumed aggregate lists the failed attempt and the resumed stages as separate lines; a reused result names the SHA it ran on. Use real values only; an unknown count or duration says `unknown`. The block reports checks; it never replaces **Check records** proof.
+
+## Carrying QA forward
+
+Allowed only when the diff from the last QA-tested commit to the new head cannot reach a screen, proved mechanically: the changed file list, and for each code file a comparison with comments and whitespace stripped that shows identical code (PHP: `php -w` output identical before and after). Other languages carry forward only when the change is limited to tests or docs outside any rendered path. The prior QA result must be `verified` or `no-ui-reach` with findings 0. Anything else, or any doubt about reach, runs full QA. Post on the issue, and on GitHub also on the PR:
+
+```md
+## QA carried forward
+
+Commit: <full new head SHA>
+From QA commit: <full SHA that QA tested>
+Prior QA record: <link to the ## QA comment>
+Why no new QA: the change cannot reach a screen — <one plain sentence, e.g. "only a code comment was added">
+Changed files: <path> — <comment-only | test-only | docs-only>
+Proof: <command and its result, e.g. "php -w diff of config/navigation.php: identical code">
+Not re-tested: screenshots and browser checks were not repeated; the prior QA result and images stand for this commit.
+Still required: CI and code review on this commit.
+```
+
+On GitHub append `<!-- qa-carried-forward: sha=<new-head> from=<qa-sha> -->`. Read it back. A complete record for head is accepted exactly like a `verified` QA result for head; a missing field, an unquoted proof or a non-matching `From QA commit` leaves the QA gate open.
+
+## Reviewer provenance
+
+Default: zero attribution. Only when the workspace instructions explicitly allow reviewer provenance, `## Code review` gains one line `Reviewer: <provider>/<model> via <harness>` and `## Code review reply` gains `Builder: <provider>/<model> via <harness>`, from the live launch record. This exception covers those two comment kinds on GitHub and Linear only, never commits, PRs, code, docs or any other comment.
 
 ## Staging-event assignment
 
@@ -42,8 +78,8 @@ For executed checks, use **Check evidence and reuse** in the shared ship policy 
 
 ## Existing PR records
 
-On GitHub PRs retain the existing comments: `agentic-qa` with `sha`, `result`, `findings`, `recheck`; `risk-review` with `tier`, `sha`, `blocking`; and `deploy-watch` with `merge`, `deployed`, `result`. Read their existing HTML marker format, using newest evidence for the required revision. Linear issue QA records supplement rather than replace mandatory PR evidence.
+On GitHub PRs retain the existing comments: `agentic-qa` with `sha`, `result`, `findings`, `recheck`; `risk-review` with `tier`, `sha`, `blocking`; `deploy-watch` with `merge`, `deployed`, `result`; and `qa-carried-forward` with `sha`, `from`. Read their existing HTML marker format, using newest evidence for the required revision. Linear issue QA records supplement rather than replace mandatory PR evidence.
 
 ## Publication and read-back
 
-The factory formats its Linear criteria, QA, review/reply and delivery comments with the fields above before posting. Pass the format to workers; a worker's marker-bearing draft is formatted before publication while preserving its findings and revision. Read the saved comment back and check all required fields and evidence links. A clean-looking comment without complete gate evidence is not a pass.
+The factory formats its Linear criteria, QA, QA carried forward, review/reply and delivery comments with the fields above before posting. Pass the format to workers; a worker's marker-bearing draft is formatted before publication while preserving its findings and revision. Read the saved comment back and check all required fields and evidence links. A clean-looking comment without complete gate evidence is not a pass.

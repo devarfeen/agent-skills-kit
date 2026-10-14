@@ -11,6 +11,27 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- **Factory run feedback** — `/factory` 4.3.0 asks the start question batch
+  again: which agent and model builds and which reviews, with options from the
+  live T3 or native executor catalog; user away stops the run, and it asks
+  nothing more after the batch. QA browser work and evidence publication run
+  in a QA worker that returns a bounded summary; the parent checks images by
+  metadata and never reads image bytes or oversized saved output. Build and
+  fix rounds run focused checks; the full check runs once per head at ship;
+  an environment failure resumes from the failed stage; a comment-only change
+  reruns only the stages that read comments. `## QA` and `## Delivered` gain a
+  `Checks:` block. A new `## QA carried forward` record carries a QA result to
+  a head whose diff provably cannot reach a screen; CI and code review still
+  run. Reviewer and builder provenance lines appear in code review records
+  only when the workspace allows them. QA publication is the four screenshots
+  and `results.json`; report and grid stay local and no archive is built.
+  Cleanup is automatic: it calls the task adapter's destroy command for BASE
+  and HEAD, re-verifies reused attachments from the proof-wide pending list,
+  cleans superseded QA rounds, removes `/tmp/<task-id>/` and reads back that
+  no task resources remain. `/agentic-qa` 0.7.0 uses the same publication set
+  and accepts a carried-forward record for a later commit. `/commit-push-pr`
+  0.9.0 and `/commit-push-close` 0.6.0 accept a `## QA carried forward` record
+  for the shipped SHA in the Agentic QA criterion.
 - **Instruction loading** — `/factory` 4.2.1 keeps intake, scheduling, build
   and round records in `run.md`. Review loop, merge, staging, handover and
   cleanup move to `references/review-and-delivery.md`; the `QA_RETURNED` path

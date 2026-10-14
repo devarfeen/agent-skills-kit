@@ -13,6 +13,7 @@ Mechanics for `run` mode. `SKILL.md` holds the loop; this file holds intake, sch
 - Dependency-aware scheduling
 - Tracker status
 - After a fix
+- Check cadence
 - Round log
 - Lessons
 - Task stack
@@ -36,9 +37,9 @@ A model-invoked skill (`tdd-loop`, `code-review`) is called with the Skill tool 
 
 After triage and before any unit is built, in this order.
 
-1. **Execution.** Load [`execution-and-continuity.md`](execution-and-continuity.md) for backend selection, agent defaults, dispatch, and worker recovery. Prefer available T3 Code; use authorized native local agents when it is unavailable. Standalone `orchestrate-t3` retains its T3-only contract.
+1. **Execution.** Load [`execution-and-continuity.md`](execution-and-continuity.md) for backend selection, agent options, dispatch, the QA worker, and worker recovery. Prefer available T3 Code; use authorized native local agents when it is unavailable. Standalone `orchestrate-t3` retains its T3-only contract.
 2. **Preflight.** Per repository in the run: the focused-test and canonical full-check commands; the PR base — the one the workspace instructions name, else `local` when `origin/local` exists, even when it is the default branch, else the staging branch. A production deployment branch is never the base. A default `local` is allowed only when workspace policy explicitly designates it for delivery; other defaults are forbidden. Each unit's worktree branches from `origin/<base>`. Resolve its runtime through **Task stack**; a non-web project needs its documented runner, not an invented app server. Before runtime preparation or dispatch, read [`ci-policy.md`](ci-policy.md) and discover the authorized base, applicable workflows and required-check policy. Record unknown or unavailable required gates as blockers now; an empty PR check list is insufficient.
-3. **Agents.** Apply the defaults in **Execution** using live capabilities. Report the backend, builder, reviewer, and whether review uses a different provider. Missing essential authority or an explicitly required unavailable agent parks affected units; routine model preference does not.
+3. **The question batch.** Ask the two questions in `SKILL.md` together, once. Every option comes from the live executor catalog per **Select once** in **Execution** — T3 capabilities, or the native local agents when T3 is unavailable — never a remembered list: one option per provider, naming its default model. Recommend this session's provider as builder and a different provider as reviewer, because a second harness is the independent check. A question the start request already answers explicitly is not asked. User away → stop; the run has no default for either. Report the backend, builder, reviewer, and whether review uses a different provider. Missing essential authority or an explicitly chosen unavailable agent parks affected units.
 4. One line before work starts: the unit count, the caps — three local-runtime repair attempts, three QA re-checks, three CI attempts, three review rounds per unit — and the two agents.
 
 ### Comments only
@@ -47,7 +48,7 @@ A run never edits an issue's title or body, on any tracker. Everything it writes
 
 ### No further questions
 
-The run asks no routine preference or operational questions. A fact it lacks is read from the tracker, the repository, or a local reproduction. One it cannot get parks that unit, with the question written out for whoever holds the answer. Never ask the user to guess a fact about someone else's report, and never ask whether to do something a rule here already forbids.
+After the batch the run asks the user nothing. A fact it lacks is read from the tracker, the repository, or a local reproduction. One it cannot get parks that unit, with the question written out for whoever holds the answer. Never ask the user to guess a fact about someone else's report, and never ask whether to do something a rule here already forbids.
 
 ## Triage
 
@@ -74,7 +75,7 @@ Place the unit with `states.md`, then act on its state. `Next` in that table is 
 | `QA_RETURNED` | **Returned by QA** in [`returned-by-qa.md`](returned-by-qa.md) |
 | `BUILDING` | Existing non-draft PR lacking only the current-head acceptance verdict → load `commit-push-pr` in its verified PR checkout to check criteria and refresh the handoff; preserve its branch and create no duplicate PR. Otherwise **Build** below |
 | `CI` | Apply [`ci-policy.md`](ci-policy.md): pending known checks → wait in bounded polls while other ready units may advance; failing → load `ci-loop`. Missing/unreadable required checks → park, never wait for nonexistent CI or waive a required gate |
-| `QA` | Load `agentic-qa`, then **Screenshots on the issue**. Findings → **After a fix**. Local-runtime blockers → **Readiness and recovery**, then repeat affected QA within its cap. Remaining `blocked` or `partial` → park, naming the missing input or gap cells |
+| `QA` | Load `agentic-qa` in the **QA worker** (**Execution**), then **Screenshots on the issue**. A valid `## QA carried forward` record ([records.md](records.md)) for head settles this state. Findings → **After a fix**. Local-runtime blockers → **Readiness and recovery**, then repeat affected QA within its cap. Remaining `blocked` or `partial` → park, naming the missing input or gap cells |
 | `CHANGES` | Risk, QA, or code-review findings → **After a fix**. `CHANGES_REQUESTED` from a person → park; name `/pr-feedback <pr>` |
 | `REVIEW` | Read [`review-and-delivery.md`](review-and-delivery.md). **Review loop** until it settles on head, then load `risk-review`. Low tier → `MERGE`; high tier → reviewers requested, unit parks at `HUMAN_REVIEW` for a person to approve and merge |
 | `MERGE`, PR open | **Merge** in `review-and-delivery.md` |
@@ -114,7 +115,20 @@ Never set a completed or cancelled status and never close an issue. The person d
 
 A finding from QA, risk review, or code review goes to the unit's worker with the finding's reproduction, to fix through `tdd-loop` and commit on the unit's branch. A worker never pushes. Once a PR is open, load `commit-push-pr` on that branch to push the fix and update the PR, then place the unit again: the new head sends it back through `CI`, `QA`, and `REVIEW`.
 
+**QA carried forward.** When the diff from the last QA-tested commit to the new head cannot reach a screen under the mechanical proof in **Carrying QA forward** ([records.md](records.md)), post that record on the issue (GitHub: issue and PR) instead of a new QA round: no new screenshots or uploads. CI and code review still run on the new head. Any doubt about reach → full QA.
+
 **Checks stay locked.** Before the fixed head is checked again, read `git diff <previous-head>..<new-head>` for the project's test files. A deleted test, or an assertion removed from a test that existed on the previous head, parks the unit with the hunk quoted: a round that passes by changing its checks proves nothing. A claimed incorrect test is parked for a human decision; a worker's `Decisions:` line cannot authorize weakening the gate. New regression coverage may be added without removing existing assertions.
+
+## Check cadence
+
+Checks gate a head; they do not repeat for comfort. Never exclude tests or drop coverage or thresholds to save time.
+
+- **Building and fixing.** Each build or fix round runs the focused checks for the changed files only, through the project's focused-test command. The canonical full check does not run in these rounds.
+- **Shipping.** The canonical full check runs once per head, at ship time, in the integration checkout, through **Check evidence and reuse** in the shared ship policy.
+- **Environment failure.** When an aggregate check fails for a local-environment reason (classified through **Readiness and recovery**), repair the environment, then rerun only the failed stage and the stages after it, on the same content identity. Earlier passing stages stay valid. Record both logs in the **Round log** and both attempts in `Checks:`. A product failure is not an environment failure.
+- **Comment-only change.** A later change with the mechanical proof from **Carrying QA forward** ([records.md](records.md)) reruns only the stages that read comments (format, lint, typo, static analysis) and reuses the other stages of the last passing full check. The quoted proof is the impact analysis that **Check evidence and reuse** requires. Anything else follows its invalidation rules.
+- **Logs.** Factory and task commands write logs under `/tmp/<task-id>/`, one directory per task id, never loose files elsewhere in `/tmp`, so the task adapter's destroy removes them.
+- **Records.** After each check run that gates the unit, put its `Checks:` lines ([records.md](records.md)) in the next `## QA` or `## Delivered` record.
 
 ## Round log
 
@@ -162,7 +176,7 @@ Each unit executes from its verified checkout through the workspace's supported 
 
 Prepare separate BASE and HEAD bindings with private writable dependencies, runtime outputs and data. Start only required services through the recorded lifecycle command, prove BASE readiness before builder dispatch, and prove HEAD readiness before QA. A responding URL or a binding file alone cannot identify the served checkout. Preserve tracked Compose configuration and the permanent local app.
 
-Pass the binding locator, URL when applicable, task execution prefix, lifecycle commands and `READINESS:` proof with the checkout record. Missing safe stop procedure blocks startup. At cleanup use that binding's recorded stop command, verify its services stopped, then remove only eligible task-owned configuration. A failed stop preserves configuration and checkout. Non-service modes report their runner/lifecycle evidence instead of `docker compose ls`.
+Pass the binding locator, URL when applicable, task execution prefix, lifecycle commands and `READINESS:` proof with the checkout record. Missing safe stop procedure blocks startup. At cleanup call the workspace task adapter's destroy command for every task runtime of the unit (BASE and HEAD), per **Cleanup** in [`review-and-delivery.md`](review-and-delivery.md). A failed destroy preserves what remains, including the checkout, and is reported. Non-service modes report their runner/lifecycle evidence instead of `docker compose ls`.
 
 ## Readiness and recovery
 
@@ -175,13 +189,13 @@ One pass per unit, in this order. Each step's evidence is read back before the n
 1. **Implement.** Set the unit's status per **Tracker status** and prove its **Task stack**. Reuse an existing task-owned checkout and committed implementation only after **Readiness and recovery** verifies them; resume its missing checks rather than building it again. Otherwise dispatch through **Execution** on that checkout with the issue, criteria, `LESSONS:`, `STACK:`, `READINESS:`, and effective authorization pointers. T3 dispatch loads `orchestrate-t3` with this unit and **Start** as intake; native dispatch follows **Execution** directly. Verify the returned evidence, not just its terminal status.
 
    A local-runtime blocker first follows **Readiness and recovery**; worker failures follow **Execution** recovery. Other blocked results park. An issue without quoted passing test output is not built.
-2. **QA with before and after.** First confirm `git -C <worktree> status --porcelain` is empty; leftovers go back to the worker to commit, so the SHA that is tested is the SHA that ships. Load `agentic-qa` on the branch head, against the unit's ready stack URL. The unit's worktree is its head checkout — create no second one — and the base checkout is `<task-name>-base` beside it, served by its own ready stack for the base run only. Its base run supplies the `before` screenshots and its head run the `after` ones, in an evidence folder named for the branch until a PR exists. `no-ui-reach` passes without screenshots. Findings go back to the worker per **After a fix**; local-runtime blockers follow **Readiness and recovery**. QA runs again on the tested head after a fix or runtime repair; the third failed re-check parks the unit as `QA_STUCK`. Each result is a row in the **Round log**, and each round's images go on the issue per **Screenshots on the issue**.
-3. **Ship.** First read the issue's acceptance criteria again, from the source **Triage** retained; text that differs from what intake kept parks the unit, quoting both. Load `commit-push-pr` in the unit's worktree against the PR base from **Start**. The PR names each issue with an ordinary reference, never a closing keyword, whatever the base: a merge must not close an issue. A group of several issues ships as one PR naming each. Pass inspected **Check evidence and reuse** proof from the shared ship policy so shipping runs only missing/invalidated checks; keep the final integrated gate. Confirm the pushed head is the SHA QA tested, then post the agentic-qa comment for it, as that skill directs once a PR exists. A different SHA means QA runs again.
+2. **QA with before and after.** First confirm `git -C <worktree> status --porcelain` is empty; leftovers go back to the worker to commit, so the SHA that is tested is the SHA that ships. Load `agentic-qa` on the branch head, against the unit's ready stack URL, in the **QA worker** when the executor supports one. The unit's worktree is its head checkout — create no second one — and the base checkout is `<task-name>-base` beside it, served by its own ready stack for the base run only. Its base run supplies the `before` screenshots and its head run the `after` ones, in an evidence folder named for the branch until a PR exists. `no-ui-reach` passes without screenshots. Findings go back to the worker per **After a fix**; local-runtime blockers follow **Readiness and recovery**. QA runs again on the tested head after a fix or runtime repair; the third failed re-check parks the unit as `QA_STUCK`. Each result is a row in the **Round log**, and each round's images go on the issue per **Screenshots on the issue**.
+3. **Ship.** First read the issue's acceptance criteria again, from the source **Triage** retained; text that differs from what intake kept parks the unit, quoting both. Load `commit-push-pr` in the unit's worktree against the PR base from **Start**. The PR names each issue with an ordinary reference, never a closing keyword, whatever the base: a merge must not close an issue. A group of several issues ships as one PR naming each. Pass inspected **Check evidence and reuse** proof from the shared ship policy so shipping runs only missing/invalidated checks; keep the final integrated gate. Confirm the pushed head is the SHA QA tested, then post the agentic-qa comment for it, as that skill directs once a PR exists. A different SHA means QA runs again, unless **QA carried forward** applies.
 
 Place the unit again; it is now in `CI` or beyond.
 
 ## Screenshots on the issue
 
-After every QA round, publish its reviewed report/grid and four routine desktop/phone before/after images through [evidence-publication.md](evidence-publication.md). Reuse images across cells and review; unchanged retries reuse verified attachments. Groups publish to each issue's own tracker. Run authorization covers these evidence comments/uploads, not another image host or tracker.
+After every QA round, the QA worker publishes its publication set — the four routine desktop/phone before/after PNG images and `results.json` — through [evidence-publication.md](evidence-publication.md). `report.md` and `grid.md` stay local; the readable `## QA` comment carries the grid and result. Reuse images across cells and review; unchanged retries reuse verified attachments. Groups publish to each issue's own tracker. Run authorization covers these evidence comments/uploads, not another image host or tracker.
 
-Use the target's evidence adapter when available. Build the complete manifest once, derive missing archive metadata locally, save transaction state, reconcile uncertain finalization, and read back remote bytes before claiming publication. Format Linear fields through [records.md](records.md). Preserve withheld/unverified artifacts and report publication failures without changing the QA verdict. Cleanup follows [qa-artifact-cleanup.md](qa-artifact-cleanup.md).
+Use the target's evidence adapter when available. Build the complete manifest once, build no archive, save transaction state, reconcile uncertain finalization, and read back remote bytes before claiming publication. Format Linear fields through [records.md](records.md). Preserve withheld/unverified artifacts and report publication failures without changing the QA verdict. Cleanup follows [qa-artifact-cleanup.md](qa-artifact-cleanup.md).

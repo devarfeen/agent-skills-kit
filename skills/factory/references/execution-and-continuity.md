@@ -8,9 +8,9 @@ Load at run start and before recovering a worker. The parent owns advancement th
 
 Honor explicit user backend/provider/model requirements. An unavailable required choice parks affected units with its reason. Otherwise prefer T3 when its live capability query succeeds and usable providers support the required launch mode. Exposed tool names alone do not prove connectivity. A failed capability query is one failure, not a reason to repeat slow calls; use native local execution when workspace policy permits delegation and the runtime exposes it. Report the fallback and cause. This is another executor, not a T3 authentication workaround. Never reuse OAuth secrets, change sign-in mode, or control T3 through shell commands.
 
-For T3, read **Capabilities** in `orchestrate-t3/references/t3-tools.md`. Use the usable inherited builder/provider/model when present; otherwise use an available project default verified against the live catalog, then the usable provider with the first sorted provider instance ID and its catalog default. A reviewer defaults to the first sorted usable provider ID different from the builder with `canRunCrossProviderChildTask: true` in the live result. If none exists, use a fresh reviewer with the builder's provider and disclose that it uses the same provider. Keep explicit model choices; never select by remembered model names, price, or tier.
+The user chooses builder and reviewer in the **Start** question batch ([`run.md`](run.md)); an explicit choice in the start request answers its question. For T3, read **Capabilities** in `orchestrate-t3/references/t3-tools.md` and build the options from the live capability result: one option per usable provider, naming the model the catalog marks as that provider's default, or its first listed model when none is marked. Without T3, the options are the native local agents and models the runtime exposes. A reviewer option needs `canRunCrossProviderChildTask: true` on T3 when its provider differs from the builder's. Recommend this session's provider as builder and a different provider as reviewer. Never select by remembered model names, price, or tier, and never pick either agent without the user's answer.
 
-Native workers inherit this session's provider/model unless the user specifies another supported choice. Reviewers follow **Independent review** below. Report same-provider review accurately. A workspace that requires different-provider review retains that gate. A missing local executor parks; do not invent tools or remote workers.
+Native workers run the chosen provider/model. Reviewers follow **Independent review** below. Report same-provider review accurately. A workspace that requires different-provider review retains that gate. A missing local executor parks; do not invent tools or remote workers.
 
 ## Dispatch
 
@@ -27,6 +27,12 @@ Supply only the issue criteria and their source, applicable instruction/standard
 Any Standards/Spec child lanes use the same fresh-session boundary and receive only their axis's inputs. They do not inherit the supervisor's conversation or each other's conclusions.
 
 Return at most 400 words to the parent: tested base/head, findings by axis/severity, checks run and not run, blockers, and the complete report path or posted comment ID. Keep every finding and supporting detail in that report/comment; the concise return never drops findings or substitutes for reading the complete gate record. Raw logs and transcripts stay out of the return.
+
+## QA worker
+
+Run QA browser work and evidence publication in a QA worker when the executor supports one. It loads `agentic-qa` and then [`evidence-publication.md`](evidence-publication.md) on the unit's verified head checkout and ready stack URL, under the unit's browser lease and the run's authorization; it edits no code. It returns a bounded summary: result, cell counts (pass, fail, gap, not reachable), finding IDs with one line each, local evidence paths, uploaded attachment IDs, the posted comment ID and the `Checks:` lines it ran. Without worker support the parent runs both itself under the same limits.
+
+The parent never reads image bytes or saved oversized tool output into its context. It checks images by metadata (dimensions, byte size, hash) from a local tool, and queries a large saved result for the fields it needs (for example with `grep` or a JSON query) instead of reading the file. Gate decisions still read the posted record back, in bounded sections.
 
 ## Supervise and recover
 

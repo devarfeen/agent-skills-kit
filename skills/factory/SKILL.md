@@ -3,7 +3,7 @@ name: factory
 disable-model-invocation: true
 description: "Shows where a spec (PRD), ticket, or PR stands in the factory workflow and names the one skill that moves it on. Read-only unless the user starts /factory run. Never closes issues or passes staging."
 metadata:
-  version: "4.2.1"
+  version: "4.3.0"
 ---
 
 # factory
@@ -55,7 +55,7 @@ Match the signals against the table in [`references/states.md`](references/state
 
 ### 4. Check the gate and pick one next skill
 
-For each unit, state the gate out of its current state and whether its evidence is present. Pick exactly one next skill per unit from the table's `next` column. When that skill runs or changes code, name the worktree it will use — `<project-repo>/.worktrees/pr-<n>` for a PR, `.worktrees/qa-escape-<issue>` for an escape — so every code-touching step works in isolation per the workspace `AGENTS.md`. For a spec with several units, order the suggestions so a blocked unit (`QA_RETURNED`, `DEPLOY_FAILED`, `CI_STUCK`, `QA_STUCK`, `CHANGES`, `UNKNOWN`) comes before progress on healthy ones; healthy units follow oldest `Since` first, and a unit in one state for more than 3 days is flagged `stalled`. Units that share a gate and skill collapse into one suggestion (for example, `/orchestrate-herdr` for every `BUILDING` ticket of one spec).
+For each unit, state the gate out of its current state and whether its evidence is present. Pick exactly one next skill per unit from the table's `next` column. When that skill runs or changes code, name the worktree it will use — `<project-repo>/.worktrees/pr-<n>` for a PR, `.worktrees/qa-escape-<issue>` for an escape. For a spec with several units, order the suggestions so a blocked unit (`QA_RETURNED`, `DEPLOY_FAILED`, `CI_STUCK`, `QA_STUCK`, `CHANGES`, `UNKNOWN`) comes before progress on healthy ones; healthy units follow oldest `Since` first, and a unit in one state for more than 3 days is flagged `stalled`. Units that share a gate and skill collapse into one suggestion (for example, `/orchestrate-herdr` for every `BUILDING` ticket of one spec).
 
 ### 5. Report and stop
 
@@ -65,8 +65,12 @@ Print the output below. Report mode ends here: do not run the suggested skill, e
 
 The user's `/factory run <reference>` approves the whole chain. Read [`references/run.md`](references/run.md) first; its **Stage map** names the late-stage files ([`references/review-and-delivery.md`](references/review-and-delivery.md), [`references/returned-by-qa.md`](references/returned-by-qa.md)) to read when a unit first reaches those states.
 
-1. **Intake.** Resolve units as in step 1 and apply **Triage** before builder/runtime work. A fully specified ticket may receive its narrow eligibility transition under run authority; ambiguous work parks. Label intake retains its reporter-follow-up path. Missing criteria restating existing outcomes are posted as a comment. **Start** discovers base/CI policy and selects available agents, honoring explicit choices.
-2. **Loop.** Follow **Dependency-aware scheduling**: isolated independent units may overlap within capacity; the parent serializes integration. For each ready unit: place it (steps 2–4), carry out its `Next` per **Stage map**, and place it again; log it and apply **Lessons**. Per unit: status In Progress, its own worktree and **Task stack**, a builder thread, agentic QA, a PR, CI, the **Review loop** between the reviewer and the builder, risk review, **Merge**, **Handover** with status In Review, **Cleanup**. For setup or local-runtime blockers, read [`references/readiness-and-recovery.md`](references/readiness-and-recovery.md); **Loading a stage skill** governs recovery and stops.
+1. **Intake.** Resolve units as in step 1 and apply **Triage** before builder/runtime work. A fully specified ticket may receive its narrow eligibility transition under run authority; ambiguous work parks. Label intake retains its reporter-follow-up path. Missing criteria restating existing outcomes are posted as a comment. Run the checks in **Start**, then ask its one batch:
+   - "Which agent and model builds?"
+   - "Which agent and model reviews the code? A different provider than the builder is recommended."
+
+   User away → stop. After this batch the run asks nothing more.
+2. **Loop.** Follow **Dependency-aware scheduling**: isolated independent units may overlap within capacity; the parent serializes integration. For each ready unit: place it (steps 2–4), carry out its `Next` per **Stage map**, and place it again; log it and apply **Lessons**. Per unit: status In Progress, its own worktree and **Task stack**, a builder thread, agentic QA in a QA worker, a PR, CI, the **Review loop** between the reviewer and the builder, risk review, **Merge**, **Handover** with status In Review, **Cleanup**. For setup or local-runtime blockers, read [`references/readiness-and-recovery.md`](references/readiness-and-recovery.md); **Loading a stage skill** governs recovery and stops.
 3. **Parks.** A unit whose next actor is a person — a high risk tier, a spent cap, a fact only the reporter holds — is parked with its evidence; the run continues. No tracked compose file or issue body is edited; no issue is closed.
 4. **Run report.** The output table, each parked unit's reason, the criteria drafted, and **Lessons** report.
 
@@ -93,4 +97,4 @@ At most one table row per unit; `Gate evidence` names the run, SHA, or comment �
 - [ ] Every `Gate evidence` cell names a run ID, SHA, or comment marker that was actually read this run
 - [ ] Report mode: `git status` and the PRs show no change made by this run, and no next skill was invoked
 - [ ] Run mode: readiness/repair evidence names checkout/runtime, causes, changed conditions, and rechecks within all caps
-- [ ] Run mode: every unit ends merged with its delivery record read back, or parked with a named reason; QA artifact cleanup follows publication/merge guards; no issue was closed and no tracked Compose file changed
+- [ ] Run mode: every unit ends merged with its delivery record read back, or parked with a named reason; cleanup read-back shows no task runtime resource or `/tmp/<task-id>/` left, or names each one; no issue was closed and no tracked Compose file changed

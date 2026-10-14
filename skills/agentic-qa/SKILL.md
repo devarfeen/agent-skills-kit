@@ -3,7 +3,7 @@ name: agentic-qa
 disable-model-invocation: true
 description: "Agent-run functional QA of a PR or branch that can reach a screen: drives acceptance criteria through the running app and records the result on the PR. Never edits code. Pixel checks are /pixel-audit."
 metadata:
-  version: "0.6.0"
+  version: "0.7.0"
 ---
 
 # agentic-qa
@@ -22,7 +22,7 @@ Drive the change through the running app; judge visible behavior, logs and reque
 ## Rules
 
 - **The tester never edits code.** No source, test, fixture, or config edits, even for a one-character fix. Every failure becomes a finding with reproduction steps, routed to `/tdd-loop`.
-- **Reach is decided by the code, not the label.** The change needs this skill when any changed file is reachable from a route, page, component, template, translation, or style, or is an API whose response a screen renders. Trace it per [`references/qa-grid.md`](references/qa-grid.md) and quote the path.
+- **Reach is decided by the code, not the label.** The change needs this skill when any changed file is reachable from a route, page, component, template, translation, or style, or is an API whose response a screen renders.
 - **A criterion a user sees must be reachable.** When no changed file reaches a screen but an acceptance criterion describes something a user sees or does, the feature is built and not connected. Record a finding with class `not-wired` naming that criterion and the missing entry point; the result is `partial`, never `no-ui-reach`.
 - **A blank cell is not done.** Every grid cell is `pass`, `fail`, `gap — <missing input>`, or `not reachable — <reason>`. A reason names why the state cannot occur, not why it was inconvenient.
 - **Browser errors fail the cell.** Capture console, page errors, and XHR/fetch responses for every flow. A new `error`-level message, unhandled rejection, or 4xx/5xx response fails the cell, unless the cell expects it (a 403 for a forbidden role) or the same signal appears on the base commit run.
@@ -56,7 +56,7 @@ Where a second checkout of the base commit can run, drive the same routes there 
 
 ### 4. Drive each cell
 
-Use the tool, mode and fallback policy resolved in **Runtime and browser preparation**. Per cell: clear diagnostics, capture before state, act, assert after state, read console/page errors and failed XHR/fetch responses, retain assertions and logs. Reuse the four baseline/head images across the grid. Use one stable named session and batched flow with short explicit timeouts. Force states with the reference recipes. Staging mutations require approval.
+Use the tool, mode and fallback policy resolved in **Runtime and browser preparation**. Per cell: clear diagnostics, capture before state, act, assert after state, read console/page errors and failed XHR/fetch responses, retain assertions and logs. Use one stable named session and batched flow with short explicit timeouts. Force states with the reference recipes. Staging mutations require approval.
 
 ### 5. Judge and write findings
 
@@ -70,7 +70,7 @@ Write `report.md` and evidence identity per [QA records](references/qa-records.m
 <!-- agentic-qa: sha=<head-sha> result=<verified|partial|blocked|no-ui-reach> findings=<n> recheck=<highest re-check count among open findings, 0 if none> -->
 ```
 
-After approval, post it with `gh pr comment <pr> --body-file <file>` and read it back. No PR yet → the marker stays at the end of `report.md`, and the run is posted once a PR for the same head SHA exists; a later commit needs a new run.
+After approval, post it with `gh pr comment <pr> --body-file <file>` and read it back. No PR yet → the marker stays at the end of `report.md`, posted once a PR for the same head SHA exists; a later commit needs a new run unless the caller posts a valid `## QA carried forward` record for it.
 
 ## Output
 
@@ -81,7 +81,7 @@ Browser: 1 console error (TypeError in InvoiceTotal.vue:42), 0 failed requests v
 Evidence: <artifacts-root>/specs/qa/87-a1b2c3d/report.md
 ```
 
-Then at most 3 bullets naming the highest-impact findings. Close with the `Suggested next skills (optional)` footer, 1–3 items: findings → `/tdd-loop` with the first finding; verified → `/risk-review <pr>` or `/factory`.
+Then at most 3 bullets naming the highest-impact findings. A QA worker returns only its caller's bounded summary, never image bytes. Close with the `Suggested next skills (optional)` footer, 1–3 items: findings → `/tdd-loop` with the first finding; verified → `/risk-review <pr>` or `/factory`.
 
 ## Completion criteria
 

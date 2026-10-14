@@ -3,7 +3,7 @@ name: commit-push-close
 disable-model-invocation: true
 description: "Ship issue work directly: structured commit, push, then close the issue with how-to-test steps. Use for commit, push, and close, or a bare ship it. A reviewable PR is /commit-push-pr."
 metadata:
-  version: "0.5.1"
+  version: "0.6.0"
 ---
 
 # commit-push-close
