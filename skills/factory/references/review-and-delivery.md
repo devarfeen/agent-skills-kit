@@ -20,7 +20,7 @@ Read when a unit first reaches `REVIEW`, `MERGE`, `STAGING`, `DEPLOY_FAILED` or 
 
 A fresh reviewer inspects what the builder produced; both settle findings on the issue, where a person can read the exchange. **Execution** selects a different provider when available and reports same-provider review. Runs once CI and QA pass on head.
 
-1. **Review.** Apply **Independent review** in [`execution-and-continuity.md`](execution-and-continuity.md#independent-review) to the reviewer and any child lanes. Dispatch a fresh read-only reviewer through **Execution**, titled `<issue-id> review`, bound to the unit's worktree, with this prompt:
+1. **Review.** Apply **Independent review** in [`execution-and-continuity.md`](execution-and-continuity.md#independent-review) to the reviewer and any child lanes. Dispatch a fresh read-only reviewer through **Execution**, titled `<issue-id> review`, assigned the unit's execution worktree and the workspace-required thread binding, with this prompt:
 
    ```md
    TRACKER: [GitHub|Linear]
@@ -28,6 +28,7 @@ A fresh reviewer inspects what the builder produced; both settle findings on the
    BASE: [PINNED_BASE_SHA]
    HEAD: [PINNED_HEAD_SHA]
    CHECKOUT: [ABSOLUTE_WORKTREE_PATH]
+   THREAD_BINDING: [REQUIRED_THREAD_PROJECT_AND_ROOT]
    BRANCH: [VERIFIED_BRANCH]
    CRITERIA: [SOURCE AND COMPLETE ACCEPTANCE CRITERIA]
    INSTRUCTIONS: [APPLICABLE POLICY AND STANDARD PATHS; EFFECTIVE AUTHORIZATION]
@@ -35,7 +36,8 @@ A fresh reviewer inspects what the builder produced; both settle findings on the
    SINCE: [SHA_REVIEWED_LAST_ROUND | none]
    PROVENANCE: [allowed — Reviewer: <provider>/<model> via <harness> | not allowed]
 
-   Verify checkout, branch and HEAD before reviewing. Review its diff against BASE
+   Preserve THREAD_BINDING and run commands with explicit CHECKOUT working
+   directories. Verify checkout, branch and HEAD before reviewing. Review its diff against BASE
    with `/code-review` when installed,
    else against the issue's acceptance criteria and the project's documented
    standards. With SINCE set, review only the commits after it and the findings

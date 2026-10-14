@@ -6,7 +6,7 @@ T3 Code is controlled through its MCP server, never a shell command. The connect
 
 ## Connect
 
-The server is connected when the session's tool list holds `orchestrator_capabilities` and `t3_thread_launch`. Neither present → stop and print the setup for the user to run; a skill cannot complete the sign-in:
+Discover `orchestrator_capabilities` and a supported launcher for the workspace's binding policy: `t3_thread_launch` or local child delegation. Missing connectivity or a compatible launcher → stop and print the setup for the user to run; a skill cannot complete the sign-in:
 
 ```sh
 claude mcp add --transport http t3 <MCP URL>
@@ -27,20 +27,24 @@ Call `orchestrator_capabilities` once. A permission error on it, or on the first
 
 ## Project
 
-A thread launched from outside T3 Code needs a `projectId`. Call `t3_project_list`, following its pages, and match the project whose workspace root is the repository's primary checkout. No match → report the unregistered repository under Needs user; registering a project changes the user's T3 Code setup, so ask first. Loaded by `/factory run`, register it with the project-create tool the live schema shows, titled with its PROJECT-CODE, and name it in the report instead of asking.
+Read workspace thread policy before selecting a project. When threads must stay bound to the workspace, resolve its registered project/root through live session metadata or paginated `t3_project_list`. In LUCETT-WORKSPACE this applies to every supervisor, builder, reviewer, QA and standalone task. A product worktree is an execution assignment, not a T3 project selection. Reuse that workspace project; no product registration or separate product thread is needed.
+
+Without a workspace-bound policy, match the repository's primary checkout to its registered project. No match → report the unregistered repository under Needs user; registration changes the user's T3 setup and needs authorization. `/factory run` may register it through the live project-create schema, titled with its PROJECT-CODE, and report the registration.
 
 ## Launch
 
-`t3_thread_launch`, one call per group:
+Select the supported launch mode from live schemas and workspace policy. Preserve saved provider/model and permission-mode choices in either mode.
 
-- `projectId` — from **Project**.
-- `title` — the thread label from the workflow.
-- `modelSelection` — the saved inherited builder identity or explicit user override; set it explicitly so a project default cannot change the builder.
-- `runtimeMode` — the Intake choice, set explicitly on every launch.
-- `workspaceStrategy` — `{type: "existing_worktree", worktreePath: <absolute checkout path>, branch: <branch>}`. An omitted strategy means the project root, not a worktree.
-- `message` — prepend a no-write readiness instruction to the filled worker prompt: "Verify the assigned checkout identity and report ready without edits, commits or tests. Wait for the parent to confirm runtime binding before beginning the assignment."
+- **Workspace-bound:** use supported local child delegation inheriting the workspace (`isolation: "shared"` when exposed), or an authorized `t3_thread_launch` selecting the workspace project/root. For an authorized top-level launch use `workspaceStrategy: {type: "root"}` when the live schema exposes it. Keep the workspace root strategy; assigning a product `existing_worktree` would change the thread binding. A product checkout assignment does not itself require a top-level thread. Apply host authorization requirements only when a top-level launch is actually needed. If no permitted launcher preserves the binding and required review isolation, report that specific blocker.
+- **Checkout-bound:** use `t3_thread_launch` with the repository's `projectId` and `workspaceStrategy: {type: "existing_worktree", worktreePath: <absolute checkout path>, branch: <branch>}`, or another supported exact-checkout launcher. Omitting strategy means the project root, not a task worktree.
 
-Never replace explicit binding with `delegate_task` using `isolation: "shared"` and a worktree named only in the prompt. Save the returned `threadId` and `runId` with the group before the next call. Read the launch's live runtime binding and compare project, checkout and branch with the verified checkout record before allowing writes. Mismatches block implementation. After a matching live read and readiness acknowledgement, release the assignment through **Send** with the saved thread ID. Save the implementation run ID from its receipt or a live read before monitoring or registering completion; the readiness turn is not implementation completion. A supervisor at the workspace root keeps its own project/root identity separate from each product-worker assignment, including a root-bound parent whose `worktreePath` is null. A launch has no retry key: after an error or a lost response, call `t3_thread_list` and look for the title before launching again, or the group gets two threads.
+Set the workflow title, saved provider/model (`modelSelection` for thread launch), permission mode (`runtimeMode`), and filled worker prompt through the selected launcher's live schema. Prepend: "Verify thread binding and assigned execution checkout separately. Report ready without edits, commits or tests; wait for the parent's release."
+
+Save returned worker/thread and run IDs. Read live thread project/root/branch/worktree identity and the readiness report. In workspace-bound mode, compare thread identity to the workspace and independently verify the assigned product checkout's canonical path, common Git directory, branch and head. A prompt naming a checkout alone is insufficient evidence. In checkout-bound mode compare live binding to the task checkout. Mismatches block writes. Release only a matching ready worker through the launcher's supported send control; record its implementation run ID from the receipt/live read. The readiness turn is not implementation completion.
+
+Keep actual thread binding separate from product execution identity in group maps, checkpoints and replacement-parent handoffs. Resolve null `worktreePath` against the registered project root, never against the product assignment. Resolve absolute paths from local workspace/project records on macOS, Linux and WSL2; do not embed another platform's home path.
+
+A launch has no assumed retry key: after an error or lost response, reconcile live workers/threads before relaunching. Confirm any previous writer terminal before replacement. Use the selected launcher's matching wait/read/send/recovery controls; the T3 thread controls below apply when it returns T3 thread/run IDs. Shared workspace binding grants no shared write ownership, conversation inheritance for reviewers, or permission to bypass supervisor telemetry gates.
 
 ## Wait
 

@@ -3,12 +3,12 @@ name: orchestrate-t3
 disable-model-invocation: true
 description: "Fan a spec (PRD) or issue list out to T3 Code worker threads, one worktree per group, and monitor them to done. Needs the T3 Code MCP. Inside herdr use /orchestrate-herdr; one issue is /tdd-loop."
 metadata:
-  version: "0.8.0"
+  version: "0.9.0"
 ---
 
 # Orchestrate T3
 
-Fan issues out to T3 Code threads — one thread per group of issues, each bound to its own worktree — and drive every issue to a test-backed end state. You are the **orchestrator**: you read, group, create worktrees, launch, monitor, and report; the threads implement.
+Fan issues out to T3 Code threads — one thread per group of issues, each assigned its own execution worktree — and drive every issue to a test-backed end state. You are the **orchestrator**: you read, group, create worktrees, launch, monitor, and report; the threads implement.
 
 ## Inputs
 
@@ -25,10 +25,10 @@ T3 Code tool calls are cited by bold section name from [`references/t3-tools.md`
 
 - **Zero attribution.** Omit co-author, AI, and tool attribution from prompts, commits, tracker comments, and reports.
 - **Never implement.** The orchestrator's only writes are worktree setup and tracker block labels. A fix a thread got wrong goes back to that thread per **Send**.
-- **T3 Code threads only, local only.** Workers are top-level threads launched per **Launch** in the user's own T3 Code environment. Launch no thread through a shell, and use no cloud agent product.
-- **The kit places the worktree; T3 Code binds it.** Create each checkout at `<project-repo>/.worktrees/<task-name>` and hand it to the thread as an existing worktree. A worktree T3 Code creates itself, or one the worker makes through its shell, sits outside the workspace's placement rule and is not bound to the thread.
+- **T3 Code workers only, local only.** Use the supported child or authorized top-level launcher per **Launch** in the user's T3 Code environment. Launch no worker through a shell, and use no cloud agent product.
+- **Separate thread binding from execution checkout.** Create each checkout at `<project-repo>/.worktrees/<task-name>`. Apply the workspace thread policy in **Project/Launch** of `references/t3-tools.md`; LUCETT-WORKSPACE keeps every thread at its workspace root while commands and edits use the assigned product worktree. Use supported shared child delegation when required. Otherwise bind the thread to the prepared existing worktree. Never let a launcher create a checkout outside the workspace placement rule.
 - **Every thread has a checkout record.** No launch until the group's worktree path, branch, and starting commit are verified and saved. A failed setup blocks that group; the project root is never the fallback.
-- **Saved IDs only.** Every wait, read, and send uses a `threadId` saved at launch — never the newest thread, a title guess, or recollection.
+- **Saved IDs only.** Every wait, read, and send uses the worker/thread and run IDs saved at launch — never the newest thread, a title guess, or recollection.
 - **Unattended threads need an unattended mode.** The orchestrator can answer a thread's question but cannot approve a permission prompt, so a thread launched in a stricter mode stalls where only the user can release it.
 - **Answer only what the issue already decides.** A thread's question whose answer is written in its issue or this run's intake is answered per **Questions**, quoting the source. Any other question is a human decision: surface it under Needs user and block the issue per **Block**.
 - **Completion requires test evidence:** quoted passing command/output read from the thread and an `AC map:` covering every assigned criterion. Missing evidence stays incomplete. A split issue completes only after all repository assignments and its combined verification are evidenced; otherwise report the remaining integration gate.
@@ -70,7 +70,7 @@ One worktree per repository-specific group, on a new branch — Linear's `gitBra
 
 ### 6. Launch threads
 
-One thread per group per **Launch**, titled with its repository key and issue identifiers — `PAYMENTS-API · #42` or `PAYMENTS-API · PRWL-127 + PRWL-130` — and the filled [`worker prompt`](references/worker-prompt.md). Launch independent groups together. Shared runtime resources run serially; dependent groups start only after their blocker is verified completed, never after a blocked or errored end state. A launch is recorded when saved `threadId` and `runId` and the first read match the submitted prompt and verified project/worktree/branch binding. A mismatch blocks worker writes and enters the existing launch-recovery path.
+One thread per group per **Launch**, titled with its repository key and issue identifiers — `PAYMENTS-API · #42` or `PAYMENTS-API · PRWL-127 + PRWL-130` — and the filled [`worker prompt`](references/worker-prompt.md). Launch independent groups together. Shared runtime resources run serially; dependent groups start only after their blocker is verified completed, never after a blocked or errored end state. A launch is recorded when saved `threadId` and `runId` and the first read match the submitted prompt, required thread binding and independently verified execution checkout/branch/head. A mismatch blocks worker writes and enters the existing launch-recovery path.
 
 ### 7. Monitor
 
@@ -91,7 +91,7 @@ Report agent/mode, group map (repository-qualified issues, reason, checkout, bra
 
 ## Completion criteria
 
-- [ ] The group map accounts for every issue's repository assignments, including failed launches; each thread has one repository, and saved `threadId`s and end states match read-back
+- [ ] The group map accounts for every issue's repository assignments, including failed launches; each thread has one repository write assignment, and saved `threadId`s and end states match read-back
 - [ ] `git worktree list` in each repository shows every group's checkout under `.worktrees/`, and each thread's commits land on that group's branch and no other
 - [ ] Each thread, read back, shows its submitted prompt and a worker response
 - [ ] Every issue's end state is reported: completed with quoted test command, passing output, and its `AC map` line; blocked; or errored

@@ -17,6 +17,13 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- `/factory` 5.2.0 and `/orchestrate-t3` 0.9.0 separate T3 thread binding
+  from product execution ownership. LUCETT-WORKSPACE keeps every supervisor,
+  builder, reviewer, QA and standalone task thread at its workspace root;
+  supported child delegation inherits that binding while commands and edits
+  use verified product worktrees. No product thread or registration is needed.
+  Readiness, checkpoints and handoffs verify both identities on macOS, Linux
+  and WSL2. Fresh reviewer sessions, telemetry gates and writer ownership remain.
 - `/factory` 5.1.0 checks a workspace adapter's read-only local telemetry source
   when MCP omits usage or window data. It binds occupancy to the current root
   native thread and preserves sample freshness on macOS, Linux and WSL2.

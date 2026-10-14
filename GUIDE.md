@@ -356,7 +356,7 @@ subject to the same preservation checks.
 | Greenfield Build | `/wayfinder` | No code to discover; chart the destination and its decisions first. |
 | Delegable Reading Legwork | `/research` | Background agent reads primary sources into a cited Markdown doc. |
 | Spec With Many Sub-issues, Inside herdr | `/orchestrate-herdr` | One worker tab per open sub-issue; sub-issues blocked by another open one wait for their blocker; workers report a fixed `Status:` line. |
-| Many Issues, T3 Code Connected | `/orchestrate-t3` | One T3 Code thread per group of issues, each bound to a worktree under `.worktrees/`; issues that block one another or touch the same surface share a group. Needs the T3 Code MCP server signed in above read-only. |
+| Many Issues, T3 Code Connected | `/orchestrate-t3` | One T3 Code thread per group of issues, each assigned an execution worktree under `.worktrees/`, with thread binding set by workspace policy; issues that block one another or touch the same surface share a group. Needs the T3 Code MCP server signed in above read-only. |
 | Incident Or Outage | `/incident-triage` | Read-only timeline and ranked causes from the evidence you paste. |
 | Session Pause | `/handoff` | Continuation doc for the next agent. |
 | Session Went Sideways | `/retro` | User-invoked look back over the session; proposes environment changes (checks, coding standards, steering files), never code changes. Run it before clearing context. |

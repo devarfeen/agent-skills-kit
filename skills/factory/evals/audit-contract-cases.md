@@ -320,11 +320,11 @@ Fixture: the user starts in Codex provider A/model M and chooses reviewer B/mode
 
 Expected: launch builders with A/M, or D/P for the override variant; retain B/N and ask no builder or repeated reviewer question. Unknown original identity blocks setup rather than using C or a project default.
 
-## F-53: Prompt-only checkout does not bind a worker
+## F-53: Workspace thread binding differs from product execution checkout
 
-Fixture: supervisor is GLOBAL-WORKSPACE/local at its project root; prepared PARTNERS-WEB checkout owns task branch/head. Proposed delegate_task uses shared isolation and names the product checkout only in its message. Returned worker reports parent project and worktreePath null. The live launcher supports existing_worktree with projectId.
+Fixture: supervisor is LUCETT-WORKSPACE/local at its project root; workspace policy requires every T3 thread to stay there. Prepared PARTNERS-WEB worktree owns task branch/head. Supported shared child delegation inherits the workspace project and reports worktreePath null. A top-level product launch would require another user request.
 
-Expected: reject prompt-only dispatch; launch with product projectId and explicit existing_worktree. Launch with a no-write readiness acknowledgement, verify live project/path/branch, then explicitly release the ready worker. Checkpoint supervisor root separately from product assignment. Reconcile null parent worktree against its project root; never assign its child's checkout to the parent. Confirm the wrong writer terminal before replacement.
+Expected: keep supervisor, builder, reviewer and QA thread bindings in LUCETT-WORKSPACE. Use supported workspace-inheriting child delegation; request no product registration or top-level product thread. Require a no-write readiness acknowledgement and independently verify product canonical path/common Git directory/branch/head before release. Checkpoint actual thread_binding separately from product project_id/checkout/branch/head. Reconcile null thread worktree against the workspace root. Explicit working directories and edit paths select the product worktree; naming it in a prompt alone is insufficient verification. Preserve provider choices, telemetry preflights and writer ownership.
 
 ## F-54: Completion preflight and wrapper failure
 
@@ -337,3 +337,15 @@ Expected: refresh preflight before import, preserve exit 2 through the wrapper a
 Fixture: checkpoint records preserved head, stopped worker, saved reviewer, remaining budgets, runtime restart command and next QA gate. The parent crashes without a final reply; variant has explicit pause intent. A host handoff renderer is available.
 
 Expected: host emits current state, required setup and copyable next prompt from the checkpoint, naming age and unverified live state. Prompt reconciles ownership/gates and resumes QA on the preserved head without reimplementation or repeated intake. Explicit pause remains paused; handoff rendering performs no work. No host renderer means automatic interruption output is unavailable, never claimed complete.
+
+## F-56: Reviewer isolation survives workspace-bound delegation
+
+Fixture: LUCETT-WORKSPACE requires all threads at its workspace root. Shared child launcher preserves that binding but always forks conversation. A second supported fresh launcher can select the same workspace root without conversation inheritance; variant has no such launcher.
+
+Expected: use the fresh launcher when authorized, preserving saved reviewer provider/model and passing neutral criteria, policies and pinned execution checkout/base/head. Verify isolation independently of shared workspace binding. Without an authorized fresh launcher, leave the review gate incomplete and name the isolation blocker; never move the reviewer to a product project or accept inherited builder reasoning.
+
+## F-57: Portable workspace-bound resume
+
+Fixture: same saved task runs on macOS, Linux or WSL2; local registered LUCETT-WORKSPACE roots and product worktree paths differ. Checkpoint preserves task ownership and previous host paths, with unknown live writer state.
+
+Expected: resolve current absolute paths through local workspace/project records, reconcile actual thread binding separately from product execution identity, verify native-root telemetry through the existing adapter, and confirm writer state before resuming. Do not copy previous host home paths, invent platform scripts, dispatch a duplicate writer or reset attempt budgets.
