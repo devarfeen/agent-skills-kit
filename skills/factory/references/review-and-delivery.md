@@ -1,6 +1,6 @@
 # Factory run — review and delivery
 
-Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
+Zero attribution: never add or leave co-author, AI, or tool attribution in any output, except the **Reviewer provenance** line in `records.md` when the workspace allows it.
 
 Read when a unit first reaches `REVIEW`, `MERGE`, `STAGING` or `READY_FOR_OWNER`, or before dispatching a reviewer. [`run.md`](run.md) keeps the loop, caps, **Tracker status**, **After a fix**, **Round log** and **Lessons** that these stages use.
 
@@ -70,7 +70,7 @@ The loop may end without another reviewer round only when all of these hold for 
 
 1. Every finding of the last round was answered `fixed`; none was declined or listed as out of scope.
 2. `git diff <reviewed-head>..<new-head>` changes only files the findings cite, and every hunk overlaps or touches a cited line.
-3. A mechanical comparison proves no code behavior changed: identical `php -w` output for each changed PHP file, or, for other languages, a diff limited to comments or docs. Anything else is not eligible.
+3. The **No-behavior proof** in [`records.md`](records.md#no-behavior-proof) holds for the fix diff. Anything else is not eligible.
 
 The parent then posts `## Code review fix check` from [`records.md`](records.md), reads it back, and logs a `code-review` **Round log** row with result `pass (fix check)`. Any unmet or unclear condition → step 1 with the next round number. A fix check is not an independent review of new behavior, and the three-round cap is unchanged.
 

@@ -38,7 +38,7 @@ Each line is `<command> — <passed/failed counts or exit status> — <duration>
 
 ## Carrying QA forward
 
-Allowed only when the diff from the last QA-tested commit to the new head cannot reach a screen, proved mechanically: the changed file list, and for each code file a comparison with comments and whitespace stripped that shows identical code (PHP: `php -w` output identical before and after). Other languages carry forward only when the change is limited to tests or docs outside any rendered path. The prior QA result must be `verified` or `no-ui-reach` with findings 0. Anything else, or any doubt about reach, runs full QA. Post on the issue, and on GitHub also on the PR:
+Allowed only when the **No-behavior proof** below holds for the diff from the last QA-tested commit to the new head. The prior QA result must be `verified` or `no-ui-reach` with findings 0. Anything else, or any doubt about reach, runs full QA. Post on the issue, and on GitHub also on the PR:
 
 ```md
 ## QA carried forward
@@ -54,6 +54,16 @@ Still required: CI and code review on this commit.
 ```
 
 On GitHub append `<!-- qa-carried-forward: sha=<new-head> from=<qa-sha> -->`. Read it back. A complete record for head is accepted exactly like a `verified` QA result for head; a missing field, an unquoted proof or a non-matching `From QA commit` leaves the QA gate open.
+
+## No-behavior proof
+
+Used by **Carrying QA forward**, **Fix-only close** in `review-and-delivery.md`, and the comment-only check cadence in `run.md`. It holds only when every changed file passes one of these, each quoted with its command output:
+
+- A test or doc file outside any rendered, routed or built path.
+- PHP code: identical `php -w` output before and after, and no changed line holds an annotation or attribute (`@` inside a docblock, or `#[`).
+- Other code: every changed line, trimmed, is blank or a comment line in that language, and no changed line holds a tool directive (`@ts-`, `eslint-`, `prettier-`, `istanbul`, `c8`, `noqa`, `pragma`, `go:`, `webpack`, `@vite`, `type:`).
+
+A file that fails a test, or any doubt, fails the proof: run the full step instead.
 
 ## Code review fix check
 
@@ -76,7 +86,7 @@ On GitHub append `<!-- code-review-fix-check: sha=<new-head> round=<n> findings=
 
 ## Reviewer provenance
 
-Default: zero attribution. Only when the workspace instructions explicitly allow reviewer provenance, `## Code review` gains one line `Reviewer: <provider>/<model> via <harness>` `## Code review reply` gains `Builder: <provider>/<model> via <harness>`, and `## Code review fix check` gains `Checked by: <provider>/<model> via <harness>`, from the live launch record. This exception covers those three code-review comment kinds on GitHub and Linear only, never commits, PRs, code, docs or any other comment.
+Default: zero attribution. Only when the workspace instructions explicitly allow reviewer provenance, `## Code review` gains one line `Reviewer: <provider>/<model> via <harness>`, `## Code review reply` gains `Builder: <provider>/<model> via <harness>`, and `## Code review fix check` gains `Checked by: <provider>/<model> via <harness>`, from the live launch record. This exception covers those three code-review comment kinds on GitHub and Linear only, never commits, PRs, code, docs or any other comment.
 
 ## Staging-event assignment
 

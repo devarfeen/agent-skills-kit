@@ -6,7 +6,7 @@ Read after QA produces artifacts or when resuming an interrupted publication. Th
 
 ## Prepare once
 
-Discover the target's evidence adapter and use its manifest, result-validation and publication-ledger operations. Without an adapter, keep an equivalent small durable record. Bind it to issue, exact checkout/full tested SHA and dirty source identity, runtime/data identity, and artifact hashes. Keep full observations in the local report and grid, rather than parent tool output.
+Discover the target's evidence adapter and use its manifest, result-validation and publication-ledger operations, plus its proof-wide pending-verification listing when it has one. Without that listing, download and hash-check every published attachment of the current proof before cleanup. Without an adapter, keep an equivalent small durable record. Bind it to issue, exact checkout/full tested SHA and dirty source identity, runtime/data identity, and artifact hashes. Keep full observations in the local report and grid, rather than parent tool output.
 
 The publication set is the four routine desktop/phone before/after PNG images and the structured `results.json`. `report.md` and `grid.md` stay local: the readable `## QA` comment carries the grid table and the result. Build no ZIP or other archive. Reuse these images across cells and review; no image per cell or unchanged retry. `no-ui-reach` and early blockers publish only their `results.json` and the comment, without invented images. An explicitly requested or approved additional image or PDF joins the declared set; report and grid never do.
 

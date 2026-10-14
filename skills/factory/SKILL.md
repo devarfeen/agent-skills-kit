@@ -25,7 +25,7 @@ Derive each unit's state from tracker issues, PRs, checks, reviews and deploy ev
 - **Head SHA binds everything.** Review, QA, and risk evidence counts only for the PR's current `headRefOid`; an approval counts only when its review's `commit.oid` is head. A new push sends the PR back to CI.
 - **Staging is the ceiling.** `READY_FOR_OWNER` is terminal. Never suggest production deploys, production PRs/merges, or flag rollouts. Default branches are owner-only except explicitly authorized, non-production delivery `local`; name the owner otherwise.
 - **Unreadable signals stop.** A signal the table needs can't be read (tracker access denied, no deploy workflow found) → report `UNKNOWN` with what is missing. Never guess the more advanced state. A failed or erroring `gh` query is unknown — never an empty result, a pass, or green; report the command and its error.
-- **Zero attribution.** No co-author, AI, or tool attribution in any output.
+- **Zero attribution.** No co-author, AI, or tool attribution in any output, except **Reviewer provenance** in `references/records.md`.
 - Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.
 
 ## Workflow
