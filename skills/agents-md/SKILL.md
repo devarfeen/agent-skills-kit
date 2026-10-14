@@ -1,9 +1,9 @@
 ---
 name: agents-md
 disable-model-invocation: true
-description: "Generate workspace-root AGENTS.md and rules from .code-workspace, or sync existing project runtime blocks. Never writes CLAUDE.md/GEMINI.md; hand-authored edits: writing-for-agents."
+description: "Generate workspace-root AGENTS.md and rules from .code-workspace, or sync project runtime blocks. Never writes CLAUDE.md/GEMINI.md; a request to make a shim, even with AGENTS.md: writing-for-agents."
 metadata:
-  version: "0.6.0"
+  version: "0.6.1"
 ---
 
 # AGENTS.md generator

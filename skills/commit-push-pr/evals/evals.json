@@ -100,10 +100,10 @@
     }
   ],
   "last_run": {
-    "date": "2026-10-12",
-    "method": "3 independent fresh catalog-only judges over the full 540-query mixed set, deterministic shuffle; each judge had a private folder with its own copy of the judge prompt, catalog, and query list and was instructed to read nothing else, with no repository access (instruction-level isolation, not a sandbox; transcripts not inspected). Run after every kit description was rewritten to a 200-character cap. Two earlier sweeps the same day on drafts of those descriptions scored 536/540 and 539/540; the design-system, integration-contract, and orchestrate-herdr descriptions were fixed between sweeps. No query was added, changed, or removed.",
-    "result": "540/540 pass — majority vote passed every query; 532 unanimous, 8 passed 2/3.",
-    "judge_model": "Claude Opus 5.5 (claude-opus-5-5), 3 independent Claude Code Agent-tool subagents",
-    "catalog": "tools/trigger-evals/build-catalog.sh (live kit descriptions 2026-10-12, 28 kit skills) + tools/trigger-evals/catalog-externals.md snapshot dated 2026-10-05 (mattpocock/skills v1.3.1); judged tree: uncommitted working tree on 4b6bb4e"
+    "date": "2026-10-14",
+    "method": "3 independent fresh catalog-only judges; majority vote; no workflow execution",
+    "result": "543/543 pass",
+    "judge_model": "Claude Opus 5.5 (claude-opus-5-5), inherited session model",
+    "catalog": "live kit descriptions and invocation policies + catalog-externals.md; 90d67d469ef5f67734c7592db02a13db8e2495f6 + uncommitted changes"
   }
 }

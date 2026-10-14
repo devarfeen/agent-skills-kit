@@ -21,6 +21,12 @@ re-run `/agents-md` after a marker bump.
   identical, unchanged standalone copy of `ship-policy.md` or
   `staging-handoff.md`. `tools/validate.sh` check 2 now also keeps the three
   `staging-handoff.md` copies byte-identical.
+- **Routing boundaries** — `/agents-md` 0.6.1 sends a request to make a
+  CLAUDE.md shim to `/writing-for-agents`; `/orchestrate-herdr` 0.3.1 names the
+  coding CLI its herdr tabs run and sends a fan-out request that names no tab,
+  CLI or runtime to `/ask-kit`. Trigger sweep: 543/543 on the fourth full
+  sweep (earlier sweeps 541, 542, 542; the last miss was a no-majority split
+  on a `/design-system` near-miss query whose description did not change).
 - **Staging reporter handoff** — `/local-to-staging` 2.0.0, `/deploy-watch`
   2.0.0 and `/staging-fix` 0.4.0 inspect shared staging merge events and
   durable Linear receipts. The original reporter receives manual QA after the

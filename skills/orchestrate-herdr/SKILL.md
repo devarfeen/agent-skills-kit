@@ -1,9 +1,9 @@
 ---
 name: orchestrate-herdr
 disable-model-invocation: true
-description: "Fan a spec (PRD) out to per-issue workers in herdr tabs and monitor them to done. Only inside herdr (HERDR_ENV=1). A tab action or status check with no spec to fan out goes to the herdr companion."
+description: "Fan a spec (PRD) out to per-issue herdr tabs, each running a coding CLI (claude, codex, opencode), and monitor to done. No tab, CLI or runtime named: /ask-kit. Tab action, no spec: herdr companion."
 metadata:
-  version: "0.3.0"
+  version: "0.3.1"
 ---
 
 # Orchestrate herdr
