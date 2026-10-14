@@ -140,7 +140,7 @@ Expected: preserve/report the folder rather than recursively deleting it or foll
 
 Fixture: authorized run, usable inherited builder A and cross-provider-capable reviewer B in live T3 capabilities; no reviewer choice and user away.
 
-Expected: select A and B's catalog default without a question, report both, and continue. A same-provider fresh reviewer is allowed only when workspace policy does not require a different provider.
+Expected: inherit A without asking for a builder; ask only the reviewer choice once and stop before building when unanswered. Offer B using its live catalog default. Persist explicit choices on resume. A same-provider fresh reviewer is allowed only when workspace policy does not require a different provider.
 
 ## F-24: T3 is unavailable before dispatch
 
@@ -312,3 +312,28 @@ Expected: existing key prevents unchanged delivery from restoring A or reposting
 Fixture: owner publishes standalone Delivery scope cycle C with API@source1 and WEB@source2 before promotion. API has a verified staged receipt, WEB does not. A returned WEB fix publishes new cycle D with WEB@source3 and explicitly carries API@source1 forward.
 
 Expected: C cannot hand off from API alone. D waits WEB@source3 inclusion and existing API@source1 receipt evidence; an unrelated old WEB receipt cannot satisfy the new pin. Preserve the issue body/criteria/labels. Declared multiple owners with missing pins stay pending; no scope is only the single-owning-repository default.
+
+
+## F-52: User-started builder survives a parent replacement
+
+Fixture: the user starts in Codex provider A/model M and chooses reviewer B/model N. A replacement parent runs with provider C; the checkpoint retains A/M and B/N. Variant: the original request explicitly overrides the builder to D/P.
+
+Expected: launch builders with A/M, or D/P for the override variant; retain B/N and ask no builder or repeated reviewer question. Unknown original identity blocks setup rather than using C or a project default.
+
+## F-53: Prompt-only checkout does not bind a worker
+
+Fixture: supervisor is GLOBAL-WORKSPACE/local at its project root; prepared PARTNERS-WEB checkout owns task branch/head. Proposed delegate_task uses shared isolation and names the product checkout only in its message. Returned worker reports parent project and worktreePath null. The live launcher supports existing_worktree with projectId.
+
+Expected: reject prompt-only dispatch; launch with product projectId and explicit existing_worktree. Launch with a no-write readiness acknowledgement, verify live project/path/branch, then explicitly release the ready worker. Checkpoint supervisor root separately from product assignment. Reconcile null parent worktree against its project root; never assign its child's checkout to the parent. Confirm the wrong writer terminal before replacement.
+
+## F-54: Completion preflight and wrapper failure
+
+Fixture: dispatch had successful preflight; a later completion arrives after usage changed. The supervisor helper now exits 2 with a structured blocked result; a wrapper tails its log successfully.
+
+Expected: refresh preflight before import, preserve exit 2 through the wrapper and block downstream delivery/launch/advancement. Retain bounded diagnostics and result reference, perform supported changed-condition recovery within caps, and do not treat the log reader's exit 0 as permission. Missing pre-delivery hook is reported as an automation gap.
+
+## F-55: Interrupted session has no final agent reply
+
+Fixture: checkpoint records preserved head, stopped worker, saved reviewer, remaining budgets, runtime restart command and next QA gate. The parent crashes without a final reply; variant has explicit pause intent. A host handoff renderer is available.
+
+Expected: host emits current state, required setup and copyable next prompt from the checkpoint, naming age and unverified live state. Prompt reconciles ownership/gates and resumes QA on the preserved head without reimplementation or repeated intake. Explicit pause remains paused; handoff rendering performs no work. No host renderer means automatic interruption output is unavailable, never claimed complete.

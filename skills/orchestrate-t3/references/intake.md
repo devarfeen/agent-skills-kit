@@ -2,7 +2,7 @@
 
 Loaded by `/factory run`, ask none of these: the run's **Start** names the agent and model, the permission mode is Full access, the proposed groups stand, groups that share a runtime resource run one after another, and leftover threads are monitored instead of launched again.
 
-Otherwise: three decisions, asked as one batched question set after Discover and Group. Reuse choices the user already supplied. Respect the question tool's option and question limits, splitting the batch when required; free-text replies remain available. Zero attribution: omit co-author, AI, and tool attribution from all output.
+Otherwise: inherit the builder and ask the two remaining decisions as one batched question set after Discover and Group. Reuse choices the user already supplied. Respect the question tool's option and question limits, splitting the batch when required; free-text replies remain available. Zero attribution: omit co-author, AI, and tool attribution from all output.
 
 ## Grouping rule
 
@@ -14,13 +14,11 @@ Grouping happens before Intake, so the questions can show it.
 
 Give each group a one-clause reason drawn from the issue text (`#41 + #44 — both change InvoiceTotal.vue`). Record repository-qualified issue references and the group's assigned acceptance criteria. An issue whose surface cannot be told from its text stays on its own, and the reason says so. A blocking relation that could not be read is stated as a gap, never treated as independence.
 
-## 1. Which coding agent
+## Builder identity
 
-List the provider instances and models returned by **Capabilities** in [`t3-tools.md`](t3-tools.md), by product name, and ask which runs the workers. One choice applies to every thread unless the user names a per-group split.
+Inherit the harness, provider instance and model from the session the user started. Resolve live session metadata and verify launchability through **Capabilities** in [`t3-tools.md`](t3-tools.md). Honor explicit user overrides, including per-group splits. Save these choices with the group map and reuse them after interruption or parent replacement. Never ask which agent builds or fall back silently to each project's default. Missing session identity or an unavailable required choice blocks launch with the required setup and continuation prompt.
 
-**User away →** omit `modelSelection`, which takes each project's default model, and say so in the launch update.
-
-## 2. Which permission mode
+## 1. Which permission mode
 
 Read the `runtimeMode` values from the live schema and offer only the two that let a thread work unattended: the one T3 Code's interface calls **Full access** and the one it calls **Auto**. State the consequence of anything stricter: the orchestrator cannot approve a permission prompt, so the thread stops until the user approves it in T3 Code.
 
@@ -28,7 +26,7 @@ A worktree separates files; it does not sandbox commands, credentials, or networ
 
 **User away →** reuse a mode the user already named. With none named, stop before launching — an unattended run in a mode nobody chose is not a default.
 
-## 3. Grouping and leftover threads
+## 2. Grouping and leftover threads
 
 Show the groups with their reasons and ask for changes. Name any runtime resource the workers' tests share — a fixed port, a local database, a Compose project, a gitignored `.env*` file — and propose running those groups one after another.
 

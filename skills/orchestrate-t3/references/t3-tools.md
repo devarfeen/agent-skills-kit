@@ -35,12 +35,12 @@ A thread launched from outside T3 Code needs a `projectId`. Call `t3_project_lis
 
 - `projectId` — from **Project**.
 - `title` — the thread label from the workflow.
-- `modelSelection` — the Intake choice; omit it to take the project's default model.
+- `modelSelection` — the saved inherited builder identity or explicit user override; set it explicitly so a project default cannot change the builder.
 - `runtimeMode` — the Intake choice, set explicitly on every launch.
 - `workspaceStrategy` — `{type: "existing_worktree", worktreePath: <absolute checkout path>, branch: <branch>}`. An omitted strategy means the project root, not a worktree.
-- `message` — the filled worker prompt.
+- `message` — prepend a no-write readiness instruction to the filled worker prompt: "Verify the assigned checkout identity and report ready without edits, commits or tests. Wait for the parent to confirm runtime binding before beginning the assignment."
 
-Save the returned `threadId` and `runId` with the group before the next call. A launch has no retry key: after an error or a lost response, call `t3_thread_list` and look for the title before launching again, or the group gets two threads.
+Never replace explicit binding with `delegate_task` using `isolation: "shared"` and a worktree named only in the prompt. Save the returned `threadId` and `runId` with the group before the next call. Read the launch's live runtime binding and compare project, checkout and branch with the verified checkout record before allowing writes. Mismatches block implementation. After a matching live read and readiness acknowledgement, release the assignment through **Send** with the saved thread ID. Save the implementation run ID from its receipt or a live read before monitoring or registering completion; the readiness turn is not implementation completion. A supervisor at the workspace root keeps its own project/root identity separate from each product-worker assignment, including a root-bound parent whose `worktreePath` is null. A launch has no retry key: after an error or a lost response, call `t3_thread_list` and look for the title before launching again, or the group gets two threads.
 
 ## Wait
 

@@ -9,6 +9,27 @@ re-run `/agents-md` after a marker bump.
 
 ## 2026-10-15
 
+### Breaking
+
+- `/factory` 5.0.0 inherits the builder harness, provider and model from the
+  user-started session instead of asking for them. Explicit overrides remain
+  supported. It asks only for the reviewer and preserves both choices on resume.
+
+### Changed
+
+- `/factory` 5.0.0 and `/orchestrate-t3` 0.8.0 require explicit prepared-checkout
+  launch binding and live identity verification before worker writes. Supervisor
+  identity stays separate from product-worker assignments. Factory repeats
+  supervisor preflight before every completion import and preserves helper
+  failures through wrappers.
+- Both skills save an unfinished-session handoff with current state, required
+  setup and a copyable next prompt. They route to a workspace handoff adapter
+  when available and describe host output from checkpoints after interruption.
+  Bounded recovery continues before parking; explicit pause and stop remain
+  stopped. Host restart and forced-interruption output require host integration.
+- `/orchestrate-t3` 0.8.0 also inherits its workers' builder identity and retains
+  its permission-mode and grouping intake.
+
 ### Fixed
 
 - **Plan-restricted CI policy** — `/factory` 4.4.1 no longer parks a unit

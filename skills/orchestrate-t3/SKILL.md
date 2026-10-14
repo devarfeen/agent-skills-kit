@@ -3,7 +3,7 @@ name: orchestrate-t3
 disable-model-invocation: true
 description: "Fan a spec (PRD) or issue list out to T3 Code worker threads, one worktree per group, and monitor them to done. Needs the T3 Code MCP. Inside herdr use /orchestrate-herdr; one issue is /tdd-loop."
 metadata:
-  version: "0.7.0"
+  version: "0.8.0"
 ---
 
 # Orchestrate T3
@@ -15,7 +15,7 @@ Fan issues out to T3 Code threads — one thread per group of issues, each bound
 Never guess an input.
 
 - **SPEC_REF** or **ISSUES** — a parent issue whose open sub-issues become the work, or an explicit list of issues. Linear `PRWL-100` / `ABC-123`, or a GitHub issue URL or number. From skill args or the request; neither present → ask.
-- **AGENT** — the provider instance and model that run the workers, chosen from the live catalog.
+- **AGENT** — inherit the builder harness, provider and model from the user-started session, unless the user explicitly overrides them; resolve and verify them against the live catalog.
 - **RUNTIME_MODE** — the T3 Code permission mode every thread runs in.
 - **TRACKER** / **TRACKER_TAG** — workspace tracker of record (`G` / `L`), derived per **Resolve** in [`references/tracker-map.md`](references/tracker-map.md), which holds the per-tracker commands cited by bold section name below.
 
@@ -59,9 +59,10 @@ Sort the issues into repository-specific groups per [`references/intake.md`](ref
 
 Ask **one batched question set**, after Group and never before — the questions name the groups. Away-fallbacks and details: [`references/intake.md`](references/intake.md).
 
-1. **Which coding agent** — from **Capabilities**.
-2. **Which permission mode** — the two unattended modes only.
-3. **Grouping and leftover threads** — confirm the groups, shared runtime resources, and threads left from a previous run.
+Inherit and save the builder identity per **Builder identity** in Intake. Ask only:
+
+1. **Which permission mode** — the two unattended modes only.
+2. **Grouping and leftover threads** — confirm the groups, shared runtime resources, and threads left from a previous run.
 
 ### 5. Create worktrees
 
@@ -69,7 +70,7 @@ One worktree per repository-specific group, on a new branch — Linear's `gitBra
 
 ### 6. Launch threads
 
-One thread per group per **Launch**, titled with its repository key and issue identifiers — `PAYMENTS-API · #42` or `PAYMENTS-API · PRWL-127 + PRWL-130` — and the filled [`worker prompt`](references/worker-prompt.md). Launch independent groups together. Shared runtime resources run serially; dependent groups start only after their blocker is verified completed, never after a blocked or errored end state. A launch is recorded when saved `threadId` and `runId` and the first read match the submitted prompt.
+One thread per group per **Launch**, titled with its repository key and issue identifiers — `PAYMENTS-API · #42` or `PAYMENTS-API · PRWL-127 + PRWL-130` — and the filled [`worker prompt`](references/worker-prompt.md). Launch independent groups together. Shared runtime resources run serially; dependent groups start only after their blocker is verified completed, never after a blocked or errored end state. A launch is recorded when saved `threadId` and `runId` and the first read match the submitted prompt and verified project/worktree/branch binding. A mismatch blocks worker writes and enters the existing launch-recovery path.
 
 ### 7. Monitor
 
@@ -86,7 +87,7 @@ Before fan-out or provider handoff, apply **Context** in the tool reference; pre
 
 ### 8. Report
 
-Report agent/mode, group map (repository-qualified issues, reason, checkout, branch, title and `threadId`), end states, test tails, and `AC map` / `Decisions` / `Open items`. Split issues name remaining repository or combined-verification gates. List same-repository files changed by multiple branches (`git diff --name-only <base>...<branch>`) as merge risk. Worktrees and threads stay; cleanup is the user's call.
+Report agent/mode, group map (repository-qualified issues, reason, checkout, branch, title and `threadId`), end states, test tails, and `AC map` / `Decisions` / `Open items`. Split issues name remaining repository or combined-verification gates. List same-repository files changed by multiple branches (`git diff --name-only <base>...<branch>`) as merge risk. Worktrees and threads stay; cleanup is the user's call. For every unfinished group, emit and checkpoint the standard handoff in [`references/session-handoff.md`](references/session-handoff.md). Save it after each state change for host output after interruption. Honor explicit pause/stop intent; no automatic restart is implied.
 
 ## Completion criteria
 
