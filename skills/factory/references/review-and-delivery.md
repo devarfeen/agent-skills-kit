@@ -58,11 +58,21 @@ A fresh reviewer inspects what the builder produced; both settle findings on the
    ```
 
    Set PROVENANCE to `allowed` with the live launch record's values only when the workspace instructions explicitly allow reviewer provenance ([`records.md`](records.md) **Reviewer provenance**); otherwise `not allowed`. A reviewer that could not post → the run preserves its findings and applies [`records.md`](records.md) formatting before posting to Linear. Read the comment back from the issue; the thread's word is not the record.
-2. **Settled?** `findings=0` for head → the loop ends; go to `risk-review`.
+2. **Settled?** `findings=0` for head, from a review or a valid **Fix-only close** record → the loop ends; go to `risk-review`.
 3. **Answer.** Send the comment to the unit's builder through **Execution**; a stopped worker resumes on the same verified checkout. For each finding the builder either fixes it through `tdd-loop` and commits, or declines it with a reason; a finding outside the issue's scope is declined as such and listed under Needs user. Post each answer as `fixed <sha>` or `declined — <reason>`. Linear uses `## Code review reply` with Round, Fixed, Declined; GitHub retains `<!-- code-review-reply: round=<n> fixed=<n> declined=<n> -->`. Add one `Builder: <provider>/<model> via <harness>` line only under the same **Reviewer provenance** permission.
-4. **Again.** Commits were made → **After a fix**: the new head passes CI and QA again before the next review round. Then step 1 with the next round number.
+4. **Again.** Commits were made → **After a fix**: the new head passes CI and QA again before the next review round. Then apply **Fix-only close**; when it does not hold, step 1 with the next round number.
 
 Three rounds. Findings still open after the third park the unit, quoting them. Each round is a `code-review` row in the **Round log**, with `<n> findings` or `pass` as its result.
+
+### Fix-only close
+
+The loop may end without another reviewer round only when all of these hold for the new head:
+
+1. Every finding of the last round was answered `fixed`; none was declined or listed as out of scope.
+2. `git diff <reviewed-head>..<new-head>` changes only files the findings cite, and every hunk overlaps or touches a cited line.
+3. A mechanical comparison proves no code behavior changed: identical `php -w` output for each changed PHP file, or, for other languages, a diff limited to comments or docs. Anything else is not eligible.
+
+The parent then posts `## Code review fix check` from [`records.md`](records.md), reads it back, and logs a `code-review` **Round log** row with result `pass (fix check)`. Any unmet or unclear condition → step 1 with the next round number. A fix check is not an independent review of new behavior, and the three-round cap is unchanged.
 
 ## Merge
 

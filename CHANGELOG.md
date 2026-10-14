@@ -11,6 +11,11 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- **Fix-only review close** — `/factory` 4.3.0 ends the review loop without
+  another reviewer round when every finding was fixed, the fix touches only
+  cited lines and a mechanical comparison proves no behavior change. The
+  parent posts a `## Code review fix check` record bound to head; any doubt
+  runs the next round. The three-round cap is unchanged.
 - **Factory run feedback** — `/factory` 4.3.0 asks the start question batch
   again: which agent and model builds and which reviews, with options from the
   live T3 or native executor catalog; user away stops the run, and it asks

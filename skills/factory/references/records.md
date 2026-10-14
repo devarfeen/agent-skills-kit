@@ -13,6 +13,7 @@ Use when reading or publishing issue workflow records. Linear comments contain c
 | `## QA carried forward` | `Commit`, `From QA commit`, `Prior QA record`, `Why no new QA`, `Changed files`, `Proof`, `Not re-tested`, `Still required` | `qa-carried-forward` (GitHub marker) |
 | `## Code review` | `Commit`, `Round`, `Findings`; `Reviewer` only under **Reviewer provenance** | `code-review` |
 | `## Code review reply` | `Round`, `Fixed`, `Declined`; `Builder` only under **Reviewer provenance** | `code-review-reply` |
+| `## Code review fix check` | `Commit`, `Round`, `Reviewed commit`, `Findings fixed`, `Changed lines`, `Proof`, `Not reviewed again`, `Findings`; `Checked by` only under **Reviewer provenance** | `code-review-fix-check` |
 | `## Delivered` | `PR`, `Merge commit`, `Base`, `Checks` | `factory-delivered` |
 | `## QA escape` | `Class`, `Area`, `PR`, `Tested commit`, `Reproduced` | `qa-escape` |
 | `## Manual QA assignment` | `PR` (URL list), `Merge commit`, `Staging commit`, `Repository`, `Delivery key`, `Reporter`, `Result` | `factory-qa-assigned` (history only when provenance/key absent) |
@@ -54,9 +55,28 @@ Still required: CI and code review on this commit.
 
 On GitHub append `<!-- qa-carried-forward: sha=<new-head> from=<qa-sha> -->`. Read it back. A complete record for head is accepted exactly like a `verified` QA result for head; a missing field, an unquoted proof or a non-matching `From QA commit` leaves the QA gate open.
 
+## Code review fix check
+
+Written by the parent for **Fix-only close** in `review-and-delivery.md`. It closes the review loop for head; it does not replace review of new behavior.
+
+```md
+## Code review fix check
+
+Commit: <full new head SHA>
+Round: <round whose findings it closes>
+Reviewed commit: <full SHA the reviewer reviewed>
+Findings fixed: <n> of <n> — <finding numbers>
+Changed lines: <path:line-range> — cited by finding <n>
+Proof: <command and its result, e.g. "php -w diff of config/navigation.php: identical code">
+Not reviewed again: no new independent review ran; the round <n> review stands for this commit.
+Findings: 0
+```
+
+On GitHub append `<!-- code-review-fix-check: sha=<new-head> round=<n> findings=0 -->`. Read it back. A missing field, an unquoted proof or a `Reviewed commit` that does not match the last review leaves the review gate open.
+
 ## Reviewer provenance
 
-Default: zero attribution. Only when the workspace instructions explicitly allow reviewer provenance, `## Code review` gains one line `Reviewer: <provider>/<model> via <harness>` and `## Code review reply` gains `Builder: <provider>/<model> via <harness>`, from the live launch record. This exception covers those two comment kinds on GitHub and Linear only, never commits, PRs, code, docs or any other comment.
+Default: zero attribution. Only when the workspace instructions explicitly allow reviewer provenance, `## Code review` gains one line `Reviewer: <provider>/<model> via <harness>` `## Code review reply` gains `Builder: <provider>/<model> via <harness>`, and `## Code review fix check` gains `Checked by: <provider>/<model> via <harness>`, from the live launch record. This exception covers those three code-review comment kinds on GitHub and Linear only, never commits, PRs, code, docs or any other comment.
 
 ## Staging-event assignment
 
