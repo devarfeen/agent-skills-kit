@@ -3,7 +3,7 @@ name: factory
 disable-model-invocation: true
 description: "Shows where a spec (PRD), ticket, or PR stands in the factory workflow and names the one skill that moves it on. Read-only unless the user starts /factory run. Never closes issues or passes staging."
 metadata:
-  version: "4.2.0"
+  version: "4.2.1"
 ---
 
 # factory
@@ -63,7 +63,7 @@ Print the output below. Report mode ends here: do not run the suggested skill, e
 
 ## Run mode
 
-The user's `/factory run <reference>` approves the whole chain. Read [`references/run.md`](references/run.md) first.
+The user's `/factory run <reference>` approves the whole chain. Read [`references/run.md`](references/run.md) first; its **Stage map** names the late-stage files ([`references/review-and-delivery.md`](references/review-and-delivery.md), [`references/returned-by-qa.md`](references/returned-by-qa.md)) to read when a unit first reaches those states.
 
 1. **Intake.** Resolve units as in step 1 and apply **Triage** before builder/runtime work. A fully specified ticket may receive its narrow eligibility transition under run authority; ambiguous work parks. Label intake retains its reporter-follow-up path. Missing criteria restating existing outcomes are posted as a comment. **Start** discovers base/CI policy and selects available agents, honoring explicit choices.
 2. **Loop.** Follow **Dependency-aware scheduling**: isolated independent units may overlap within capacity; the parent serializes integration. For each ready unit: place it (steps 2–4), carry out its `Next` per **Stage map**, and place it again; log it and apply **Lessons**. Per unit: status In Progress, its own worktree and **Task stack**, a builder thread, agentic QA, a PR, CI, the **Review loop** between the reviewer and the builder, risk review, **Merge**, **Handover** with status In Review, **Cleanup**. For setup or local-runtime blockers, read [`references/readiness-and-recovery.md`](references/readiness-and-recovery.md); **Loading a stage skill** governs recovery and stops.

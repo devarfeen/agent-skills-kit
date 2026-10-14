@@ -4,6 +4,8 @@ Zero attribution: never add or leave co-author, AI, tool, or generator attributi
 
 Read when preparing staging delivery references or inspecting manual-QA assignment. The shared GitHub Action owns reassignment and its issue comment when delivered changes merge into or reach the confirmed staging branch. It runs on that event, independently of deployment success. Skills inspect its configuration and records; they never repair a missing handoff by assigning, mentioning QA users, or posting a substitute notification.
 
+`/local-to-staging`, `/deploy-watch` and `/staging-fix` each ship this file so they install standalone. An earlier read of another skill's copy counts only when neither file changed since that read and a hash (`sha256sum`, or `shasum -a 256`) shows them identical; otherwise read this copy in full.
+
 ## Discovery and delivery evidence
 
 Resolve the handoff adapter from the caller's repository/workspace instructions and staging workflow configuration. Inspect its documented event trigger, issue-reference parser, reporter source, durable deduplication store, owner-delivery manifest and record locator. Use only local files, Git refs, GitHub and tracker records; discovery grants no staging browser, API or server access. Missing configuration or unreadable evidence means `handoff unconfigured` or `handoff pending`, with the exact missing evidence.

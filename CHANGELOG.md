@@ -11,6 +11,16 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- **Instruction loading** — `/factory` 4.2.1 keeps intake, scheduling, build
+  and round records in `run.md`. Review loop, merge, staging, handover and
+  cleanup move to `references/review-and-delivery.md`; the `QA_RETURNED` path
+  moves to `references/returned-by-qa.md`. The stage map names each file at
+  the state that needs it. Gates and caps are unchanged. `/commit-push-pr`
+  0.8.1, `/commit-push-close` 0.5.1, `/local-to-staging` 2.0.1,
+  `/deploy-watch` 2.0.1 and `/staging-fix` 0.4.1 reuse an earlier read of an
+  identical, unchanged standalone copy of `ship-policy.md` or
+  `staging-handoff.md`. `tools/validate.sh` check 2 now also keeps the three
+  `staging-handoff.md` copies byte-identical.
 - **Staging reporter handoff** — `/local-to-staging` 2.0.0, `/deploy-watch`
   2.0.0 and `/staging-fix` 0.4.0 inspect shared staging merge events and
   durable Linear receipts. The original reporter receives manual QA after the

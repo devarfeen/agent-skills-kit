@@ -3,7 +3,7 @@ name: commit-push-pr
 disable-model-invocation: true
 description: "Ship issue work as a pull request: structured commit, push, PR with Closes #N. Use only when the user explicitly asks for a PR; a bare ship it is /commit-push-close."
 metadata:
-  version: "0.8.0"
+  version: "0.8.1"
 ---
 
 # commit-push-pr

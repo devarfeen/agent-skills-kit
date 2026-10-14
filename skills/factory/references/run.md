@@ -2,7 +2,7 @@
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
-Mechanics for `run` mode. `SKILL.md` holds the loop; this file holds how each part is carried out.
+Mechanics for `run` mode. `SKILL.md` holds the loop; this file holds intake, scheduling, build and the per-round records. Late-stage mechanics load when a unit reaches them: [`review-and-delivery.md`](review-and-delivery.md) for **Review loop**, **Merge**, **Staging**, **Handover** and **Cleanup**; [`returned-by-qa.md`](returned-by-qa.md) for `QA_RETURNED`. Every gate in those files binds as if it were here.
 
 ## Contents
 
@@ -12,7 +12,6 @@ Mechanics for `run` mode. `SKILL.md` holds the loop; this file holds how each pa
 - Stage map
 - Dependency-aware scheduling
 - Tracker status
-- Returned by QA
 - After a fix
 - Round log
 - Lessons
@@ -20,12 +19,6 @@ Mechanics for `run` mode. `SKILL.md` holds the loop; this file holds how each pa
 - Readiness and recovery
 - Build
 - Screenshots on the issue
-- Review loop
-- Merge
-- Staging
-- Handover
-- Cleanup
-- QA artifact cleanup
 
 ## Loading a stage skill
 
@@ -78,16 +71,16 @@ Place the unit with `states.md`, then act on its state. `Next` in that table is 
 
 | State | Run action |
 | ----- | ---------- |
-| `QA_RETURNED` | **Returned by QA** below |
+| `QA_RETURNED` | **Returned by QA** in [`returned-by-qa.md`](returned-by-qa.md) |
 | `BUILDING` | Existing non-draft PR lacking only the current-head acceptance verdict → load `commit-push-pr` in its verified PR checkout to check criteria and refresh the handoff; preserve its branch and create no duplicate PR. Otherwise **Build** below |
 | `CI` | Apply [`ci-policy.md`](ci-policy.md): pending known checks → wait in bounded polls while other ready units may advance; failing → load `ci-loop`. Missing/unreadable required checks → park, never wait for nonexistent CI or waive a required gate |
 | `QA` | Load `agentic-qa`, then **Screenshots on the issue**. Findings → **After a fix**. Local-runtime blockers → **Readiness and recovery**, then repeat affected QA within its cap. Remaining `blocked` or `partial` → park, naming the missing input or gap cells |
 | `CHANGES` | Risk, QA, or code-review findings → **After a fix**. `CHANGES_REQUESTED` from a person → park; name `/pr-feedback <pr>` |
-| `REVIEW` | **Review loop** until it settles on head, then load `risk-review`. Low tier → `MERGE`; high tier → reviewers requested, unit parks at `HUMAN_REVIEW` for a person to approve and merge |
-| `MERGE`, PR open | **Merge** below |
-| `MERGE`, PR merged into `local` | **Handover**, then **Cleanup**. Done for this run: it has not reached staging, and the run never promotes. Name `/local-to-staging` |
-| `STAGING` | **Staging** below |
-| `READY_FOR_OWNER` | **Handover** when no delivery record matches this PR and merge revision, then **Cleanup**. Done |
+| `REVIEW` | Read [`review-and-delivery.md`](review-and-delivery.md). **Review loop** until it settles on head, then load `risk-review`. Low tier → `MERGE`; high tier → reviewers requested, unit parks at `HUMAN_REVIEW` for a person to approve and merge |
+| `MERGE`, PR open | **Merge** in `review-and-delivery.md` |
+| `MERGE`, PR merged into `local` | **Handover**, then **Cleanup**, in `review-and-delivery.md`. Done for this run: it has not reached staging, and the run never promotes. Name `/local-to-staging` |
+| `STAGING` | **Staging** in `review-and-delivery.md` |
+| `READY_FOR_OWNER` | **Handover** (`review-and-delivery.md`) when no delivery record matches this PR and merge revision, then **Cleanup**. Done |
 | `OUTCOME`, `TICKETS`, `CI_STUCK`, `QA_STUCK`, `HUMAN_REVIEW`, `DEPLOY_FAILED`, `UNKNOWN` | Park with the state's evidence and its `Next` — a person decides here |
 
 For staged units, report the event-owned handoff from [records.md](records.md) independently of deployment state, including `DEPLOY_FAILED` or unreadable deploy routing. A handoff does not clear the parked deploy gate.
@@ -115,25 +108,7 @@ The issue's status follows the work, so a person reading the tracker sees where 
 
 Take each status name from the workspace's issue-tracker document when it lists them; otherwise use the tracker's own status of that name for the issue's team (Linear: the live status list). Not found → skip the change and report it under Needs user; never create a status. GitHub issues have no status: skip, unless the workspace names a label or project field for each. Read every change back.
 
-Never set a completed or cancelled status and never close an issue. The person doing manual QA closes it.
-
-**Closed by the merge.** A tracker can complete an issue by itself when a linked PR merges: Linear's GitHub automation does it from the branch name alone, and GitHub does it from a closing keyword. So at **Handover**, before the comment, read the issue's status. Completed, cancelled, or closed since the merge → put it back first: set **In Review**, or `gh issue reopen <n>` on GitHub, and read it back. Then add to the comment's Notes `Reopened: the merge closed this issue; it stays open for manual QA.`, and report under Needs user that the tracker's merge automation for `<base>` completes issues and should move them to In Review instead. The run cannot read or change that setting.
-
-## Returned by QA
-
-A person found a problem in work an agent called done. The run takes it through `qa-escape` and back into the build; it never fixes a returned issue without that record.
-
-1. **Record.** Load `qa-escape` for the unit. Its QA report is what the reporter wrote on the issue since the reopen, with their screenshots. Expected or actual missing → park the unit, naming that field as a question for the reporter. Reproduce on the local build that holds the fix; staging only with the user's own approval in this session. Where the reporter tested is read from their report and the branch ancestry, never asked: a fault that does not show locally, on a fix the tested branch does not contain, is `not-deployed`.
-2. **Act on the marker it posts.**
-   - `class=not-deployed` → build nothing, and a label run removes its label from the issue. The unit keeps its PR; when that PR is merged into `local`, name `/local-to-staging` and say the reporter tested a build without the fix. The run never promotes.
-   - `reproduced=no` → park with what was tried.
-   - `class=not-a-regression` → park: the fault predates this PR and needs its own issue.
-   - Any other class → **Build**, in a new worktree from the PR base. The worker's first Red is the regression test `qa-escape` named, and its prompt carries the reproduction brief. The unit then follows the usual path to a new PR.
-3. **Log** one **Round log** row with Check `qa-escape` and the class as Cause, so a person's findings count toward **Lessons** too.
-
-A delivered issue no longer carries the run label, so a label run meets it again only when a person puts the label back. That, like a reopen, is how an issue is sent back.
-
-A guard that `qa-escape` proposes at three issues is listed under Needs user in the run report. The run never applies one.
+Never set a completed or cancelled status and never close an issue. The person doing manual QA closes it. **Handover** in [`review-and-delivery.md`](review-and-delivery.md) restores an issue the merge closed.
 
 ## After a fix
 
@@ -210,130 +185,3 @@ Place the unit again; it is now in `CI` or beyond.
 After every QA round, publish its reviewed report/grid and four routine desktop/phone before/after images through [evidence-publication.md](evidence-publication.md). Reuse images across cells and review; unchanged retries reuse verified attachments. Groups publish to each issue's own tracker. Run authorization covers these evidence comments/uploads, not another image host or tracker.
 
 Use the target's evidence adapter when available. Build the complete manifest once, derive missing archive metadata locally, save transaction state, reconcile uncertain finalization, and read back remote bytes before claiming publication. Format Linear fields through [records.md](records.md). Preserve withheld/unverified artifacts and report publication failures without changing the QA verdict. Cleanup follows [qa-artifact-cleanup.md](qa-artifact-cleanup.md).
-
-## Review loop
-
-A fresh reviewer inspects what the builder produced; both settle findings on the issue, where a person can read the exchange. **Execution** selects a different provider when available and reports same-provider review. Runs once CI and QA pass on head.
-
-1. **Review.** Apply **Independent review** in [`execution-and-continuity.md`](execution-and-continuity.md#independent-review) to the reviewer and any child lanes. Dispatch a fresh read-only reviewer through **Execution**, titled `<issue-id> review`, bound to the unit's worktree, with this prompt:
-
-   ```md
-   TRACKER: [GitHub|Linear]
-   ISSUE: [NATIVE_IDENTIFIER]
-   BASE: [PINNED_BASE_SHA]
-   HEAD: [PINNED_HEAD_SHA]
-   CHECKOUT: [ABSOLUTE_WORKTREE_PATH]
-   BRANCH: [VERIFIED_BRANCH]
-   CRITERIA: [SOURCE AND COMPLETE ACCEPTANCE CRITERIA]
-   INSTRUCTIONS: [APPLICABLE POLICY AND STANDARD PATHS; EFFECTIVE AUTHORIZATION]
-   ROUND: [N]
-   SINCE: [SHA_REVIEWED_LAST_ROUND | none]
-
-   Verify checkout, branch and HEAD before reviewing. Review its diff against BASE
-   with `/code-review` when installed,
-   else against the issue's acceptance criteria and the project's documented
-   standards. With SINCE set, review only the commits after it and the findings
-   the builder declined in its last reply on the issue. Edit, commit, and push
-   nothing.
-
-   Post one comment on ISSUE through TRACKER, headed
-   `## Code review — <short-sha> · round <ROUND>`: numbered findings, each with
-   file and line, what is wrong, and why it matters for this issue. A declined
-   finding you accept is dropped; one you still hold stays, with your answer to
-   the reason given. On Linear use heading `## Code review` and readable fields
-   Commit (full head SHA), Round, and Findings; emit no HTML marker.
-   On GitHub retain `<!-- code-review: sha=<head-sha> round=<ROUND> findings=<n> -->`.
-   Cannot post → end your message with the comment text instead.
-
-   Return the concise result specified by Independent review; keep the complete
-   findings in the posted comment or report. A posting failure returns the full
-   comment draft as the required exception. Any child review lanes start fresh
-   with only their axis inputs and conversation inheritance disabled.
-
-   Zero attribution: name no agent, model, or tool in the comment.
-   ```
-
-   A reviewer that could not post → the run preserves its findings and applies [`records.md`](records.md) formatting before posting to Linear. Read the comment back from the issue; the thread's word is not the record.
-2. **Settled?** `findings=0` for head → the loop ends; go to `risk-review`.
-3. **Answer.** Send the comment to the unit's builder through **Execution**; a stopped worker resumes on the same verified checkout. For each finding the builder either fixes it through `tdd-loop` and commits, or declines it with a reason; a finding outside the issue's scope is declined as such and listed under Needs user. Post each answer as `fixed <sha>` or `declined — <reason>`. Linear uses `## Code review reply` with Round, Fixed, Declined; GitHub retains `<!-- code-review-reply: round=<n> fixed=<n> declined=<n> -->`.
-4. **Again.** Commits were made → **After a fix**: the new head passes CI and QA again before the next review round. Then step 1 with the next round number.
-
-Three rounds. Findings still open after the third park the unit, quoting them. Each round is a `code-review` row in the **Round log**, with `<n> findings` or `pass` as its result.
-
-## Merge
-
-The run merges a PR itself, through GitHub, when all of these hold for head: the CI gate in [`ci-policy.md`](ci-policy.md) is satisfied; agentic-qa `verified` or `no-ui-reach`; the **Review loop** settled; risk-review `tier=low` with `blocking=0`; and no review thread is unresolved or changes requested; and the PR base is an authorized delivery `local` or the staging branch. Re-read head, base, checks and paginated threads immediately before merging; a moved head re-enters CI, and an unreadable gate parks. A PR on any other base is the owner's. A high tier waits at `HUMAN_REVIEW` for a person to approve and merge.
-
-Pick the merge method from repository policy (`gh repo view --json mergeCommitAllowed,squashMergeAllowed,rebaseMergeAllowed`), preferring the one the workspace names.
-
-1. `gh pr merge <pr> --auto --<merge|squash|rebase> --match-head-commit <head-sha>`, then `gh pr view <pr> --json state,mergeCommit,autoMergeRequest`. When the repository has no auto-merge and the discovered CI policy and every required check permit merging, run the same command without `--auto`; skipped checks count only when that policy accepts them. Never `--admin`, never `--delete-branch`. A refusal is quoted and the unit parks.
-2. Once merged, `git fetch origin`, then in the repository's primary checkout: on the base branch with a clean tree → `git merge --ff-only origin/<base>`; on another branch → `git fetch origin <base>:<base>`. A dirty tree or a branch that cannot fast-forward is left as it is and reported; never stash, reset, or force.
-
-## Staging
-
-A PR on staging, including an authorized `local` PR whose merge is in staging → load `deploy-watch` with the unit's explicit tracker issue identifiers and report its conclusion. Staging browsing needs this session's user approval and user-provided SSH access; without both, watch GitHub only. The shared staging-event Action owns manual-QA assignment as changes reach staging, independently of deploy success. Deploy-watch reads its durable records and reports missing/unconfigured handoff; it makes no fallback assignment. Use the original reporter and full owner-delivery evidence in [records.md](records.md). A failure parks at `DEPLOY_FAILED`. Deploy-only success without a pass marker → **Handover**, **Cleanup**, then park with smoke or build-identity proof pending; never loop on the same missing approval or claim `READY_FOR_OWNER`.
-
-A PR merged into `local` has not reached staging. Say `not staged` and name `/local-to-staging`; its merge triggers configured event automation. The run never promotes or emits pre-staging QA-user mentions or bespoke handoff notifications.
-
-## Handover
-
-For cross-repository tickets, publish the standalone pinned `## Delivery scope` comment in [records.md](records.md) once all actual source commits are known and before promotion; preserve the issue body. Missing pins leave that handoff pending.
-
-For each issue whose PR is `MERGED`, once per delivered PR and merge revision. A complete matching delivery record skips repeat handover; an older/different delivery does not suppress a returned fix. Write the comment from evidence read this run, post through the issue's tracker, and read back:
-
-```md
-## Delivered
-
-PR: <url>
-Merge commit: <full-merge-sha>
-Base: <base>
-Staging: <fresh inclusion SHA and separate deploy/handoff evidence | not staged>
-
-## Acceptance criteria
-
-1. <criterion> — <met | deferred> — <test name, or agentic-qa cell and evidence path>
-
-## QA
-
-Commit: <full-tested-head-sha>
-Result: <actual-QA-result>
-Findings: <actual-finding-count>
-Rechecks: <actual-recheck-count>
-Before / After: <the round's durable evidence comment>
-Code review: <n> rounds — <n> fixed, <n> declined
-Risk review: tier <actual tier>, blocking <actual count> — <marker URL>
-
-## Verification steps
-
-<technical reproduction steps and setup; local delivery records explicitly say not staged>
-
-## Notes
-
-<gaps, deferred criteria, declined review findings, follow-ups; omit when none>
-
-```
-
-First apply **Closed by the merge** in **Tracker status**; after the comment, set **In Review** per that section. A run started with a label then removes that label from the issue — `gh issue edit <n> --remove-label <label>`, or the Linear label removal — and reads the labels back: the label means an agent should work the issue now, and that is no longer true. A parked unit and a `needs-info` issue keep it, so the next run looks at them again. A run started with an issue reference removes no label. Assign nobody here and emit no QA-user mention or bespoke pre-staging notification. Retain canonical `Issue: <identifier>` commit trailers and non-closing `Ref <identifier>` PR body references for all delivered issues. Pass issue identifiers and stable issue-attributable source commits/original PR URLs to the caller's event adapter; a delivery comment published after merge cannot be its only discovery source. Read [records.md](records.md) for original-reporter, cross-repository owner inclusion and durable-key proof. The event alone assigns/comments when the complete delivery reaches staging, independently of deploy success; missing automation is reported, never replaced by a skill. Handoff changes no criteria, workflow labels or status and never closes the issue. The run retains its separate authorized delivery status/label handling above and never closes the issue.
-
-On GitHub append `<!-- factory-delivered: pr=<n> merge=<merge-sha> base=<base> -->` after the template. On Linear read back `## Delivered` with PR, Merge commit and Base per [`records.md`](records.md). Link durable QA evidence rather than local files that cleanup will remove.
-
-Issues of parked or unmerged units get no handover.
-
-## Cleanup
-
-Automatic after **Handover**. Code/worktree cleanup requires a `MERGED` PR and branch tip equal to its final `headRefOid`; otherwise keep those resources and name them. QA artifact cleanup uses its independent merge, ownership and publication proofs and can run when branches/worktrees are already absent.
-
-Per cleanable unit, and for its QA base worktree:
-
-1. Stop each runtime with its recorded task adapter command or exact start configuration (Compose fallback uses the same project, project directory and file plus `down`). Verify its task-owned services stopped before deleting temporary configuration. A failed stop skips further cleanup for that runtime and worktree; report it.
-2. Apply **QA artifact cleanup** to the unit's recorded evidence before removing its worktrees. Unverified publication retains local evidence and is reported.
-3. `git -C <worktree> status --porcelain --ignored`. Modified or untracked files, or ignored files that are not dependency or build output, → name them and skip this worktree.
-4. `git worktree remove <path>` — never `--force`.
-5. `git branch -d <branch>`. After a squash or rebase merge `-d` refuses; `-D` is allowed only for a branch whose tip is the merged PR's `headRefOid`.
-6. `git push origin --delete <branch>` when the remote branch still exists.
-
-End with the runtime's task-service read-back (`docker compose ls` when applicable), `git worktree list`, and `git branch --list` for each repository.
-
-## QA artifact cleanup
-
-After confirmed merge and handover, automatically follow [`qa-artifact-cleanup.md`](qa-artifact-cleanup.md) for this unit's recorded local QA files. This has its own publication/ownership guards; code/worktree cleanup does not authorize broad evidence deletion. An already-delivered unit can retry retained evidence cleanup without reposting handover.

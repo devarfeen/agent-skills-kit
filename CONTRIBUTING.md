@@ -206,7 +206,8 @@ Skills install standalone via `npx skills add … --skill <name>`, so a skill
 may not reference another skill's files. Shared text is therefore *duplicated by
 design* and must stay **byte-identical** across its copies — currently
 `references/ship-policy.md` (both ship skills) and `references/context-terms.md`
-(`feature-discovery` + `feature-prompt`). Edit all copies together;
+(`feature-discovery` + `feature-prompt`) and `references/staging-handoff.md`
+(`local-to-staging`, `deploy-watch`, `staging-fix`). Edit all copies together;
 `tools/validate.sh` check 2 fails when a pair differs. If you introduce another
 shared reference, add its pair to the validator's `DUP_PAIRS` list in the same
 PR.
@@ -293,7 +294,7 @@ eval pass.
 | Any runtime fact in `skills/orchestrate-herdr/references/` — `herdr-commands.md` CLI syntax and lifecycle states, `tracker-map.md` `gh` and Linear MCP calls | Re-verify against the *installed* surface in the same PR, not prose docs: `herdr <group> --help` plus `herdr --skill` for herdr (its binary is the stated authority for its own syntax), the live tool schema for Linear MCP, `gh <cmd> --help` for GitHub. A flag, subcommand, or enum value absent from `--help` is phantom tooling — the defect class `writing-kit-skills` names |
 | A skill's frontmatter `description` (at most 200 characters — `validate.sh` check 19; what it does in one clause, the main trigger, and the nearest sibling) | Re-run the trigger evals, restamp that skill's `last_run`, and refresh `tools/trigger-evals/last-run-descriptions.json` (`score.py … --write-snapshot --record-run --judge-model <actual-model>`). Check 10 validates descriptions, query content, the complete catalog and invocation policies; any changed input requires a new sweep |
 | Any file in a skill folder outside `evals/` | That skill's `metadata.version` — patch, minor, or major per the one-minute version; `validate.sh` check 16 |
-| A stage `/factory run` loads, or a stage skill's approval gate | `skills/factory/references/run.md` (stage map) and that skill's **Run authorization** line stay in agreement; a ship-policy change moves both copies |
+| A stage `/factory run` loads, or a stage skill's approval gate | `skills/factory/references/run.md` (stage map), the late-stage file it names (`review-and-delivery.md`, `returned-by-qa.md`) and that skill's **Run authorization** line stay in agreement; a ship-policy change moves both copies |
 | A step that tells the agent to run another skill | The house rule in `skills/writing-kit-skills/SKILL.md` ("Calling another skill"): name the Skill-tool call for a model-invoked target; for a user-invoked target, tell the user to run it, except the documented user-started factory stage chain and T3/factory checkout-helper loading |
 | Added/removed/renamed a skill, or changed where it sits in the workflow | The map in `skills/ask-kit/SKILL.md` — a router that omits a skill, or still names a removed one, misroutes |
 | Any skill behavior change | A dated `CHANGELOG.md` entry with the skill's new version |

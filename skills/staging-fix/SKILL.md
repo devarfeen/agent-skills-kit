@@ -3,7 +3,7 @@ name: staging-fix
 disable-model-invocation: true
 description: "Fix a staging bug without touching a server: fix locally with a test, then a PR to the staging branch with auto-merge. Use for staging is broken. Inspecting staging alone is not this skill."
 metadata:
-  version: "0.4.0"
+  version: "0.4.1"
 ---
 
 # staging-fix

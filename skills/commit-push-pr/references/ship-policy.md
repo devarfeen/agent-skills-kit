@@ -2,7 +2,7 @@
 
 Shared rules for `commit-push-close` and `commit-push-pr`. Both ship one issue iteration. **Ship output** includes the commit message, issue content, PR title/body, and QA comments. Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
-> Duplicated so each skill installs standalone; keep both copies byte-identical. Load this policy once per unchanged session, then consult the named sections for the active step. Templates and examples are needed only while drafting.
+> Duplicated so each skill installs standalone; keep both copies byte-identical. Load this policy once per unchanged session, then consult the named sections for the active step. An earlier read of the sibling skill's copy counts only when neither file changed since that read and a hash (`sha256sum`, or `shasum -a 256`) shows them identical; otherwise read this copy in full. Templates and examples are needed only while drafting.
 
 ## Tracker
 
