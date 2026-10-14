@@ -7,6 +7,17 @@ their new versions, so a workspace on an older copy can see what an update
 brings. Generated `AGENTS.md` files carry the `agents-md` marker version;
 re-run `/agents-md` after a marker bump.
 
+## 2026-10-15
+
+### Fixed
+
+- **Plan-restricted CI policy** — `/factory` 4.4.1 no longer parks a unit
+  when GitHub refuses branch protection and ruleset reads with its
+  plan-restriction 403 on a private repo. Once the private visibility, the
+  caller's admin permission and a `free` owner plan are confirmed, the run
+  records `no GitHub-enforced checks (plan)`. It then gates on PR-triggered
+  workflows and mandated local checks. Any other 403 stays `UNKNOWN`.
+
 ## 2026-10-14
 
 ### Changed

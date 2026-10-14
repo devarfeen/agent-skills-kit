@@ -264,9 +264,9 @@ Expected: none clears the affected gate from old proof. Inspect current cause an
 
 ## F-44: No applicable CI versus unknown policy
 
-Fixture: preflight for authorized local base finds no applicable PR workflow; complete successful protection/ruleset discovery establishes no required remote checks, and mandatory local gates have valid proof. Variants: gh pr checks returns empty but ruleset API errors 403; protection returns 404 but rulesets were not read; an inherited rule requires security-scan with no run.
+Fixture: preflight for authorized local base finds no applicable PR workflow; complete successful protection/ruleset discovery establishes no required remote checks, and mandatory local gates have valid proof. Variants: gh pr checks returns empty but ruleset API errors 403; protection returns 404 but rulesets were not read; an inherited rule requires security-scan with no run; private repo on a `free` org plan where protection, rulesets and effective-rules queries all return the 403 "Upgrade to GitHub Pro or make this repository public" message for an admin caller; the same message for a non-admin caller.
 
-Expected: first records no applicable GitHub CI with policy/local evidence and never waits for a nonexistent run. Variants remain unknown or blocked before runtime/build; empty checks/protection 404 cannot waive rulesets. Never bypass a required check or switch base to evade policy.
+Expected: first records no applicable GitHub CI with policy/local evidence and never waits for a nonexistent run. The verified plan-restriction variant records `no GitHub-enforced checks (plan)` with quoted evidence and proceeds on workflow and local gates. Other variants, including the non-admin caller, remain unknown or blocked before runtime/build; empty checks/protection 404 cannot waive rulesets. Never bypass a required check or switch base to evade policy.
 
 ## F-45: Known pending, failed and absent required checks
 
