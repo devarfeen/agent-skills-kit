@@ -20,6 +20,8 @@ Keep each project's commit and remote tied to its own repository. Existing draft
 
 ## Run authorization
 
+A ship skill starts only when the user invokes it or a user-started `/factory run` loads it; another skill or agent may only suggest it. The run loads `/commit-push-pr`, never `/commit-push-close`.
+
 Applies only when `/factory run` loaded the ship skill; a ship skill the user ran directly keeps every approval below.
 
 The user's start of the run is the combined draft approval. Prepare the drafts, print them, then commit, push, open the PR, and post the QA comment without waiting. It also settles these points raised elsewhere in this policy:

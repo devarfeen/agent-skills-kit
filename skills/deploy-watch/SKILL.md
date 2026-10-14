@@ -3,7 +3,7 @@ name: deploy-watch
 disable-model-invocation: true
 description: "Watch a merged PR's staging deploy run, run an approved smoke check on staging, and record pass or fail on the PR. Never touches a server or triggers a deploy. A broken deploy is /staging-fix."
 metadata:
-  version: "2.0.1"
+  version: "2.0.2"
 ---
 
 # deploy-watch
@@ -28,6 +28,7 @@ deploy-watch proves a merged change reached staging and works there, using only 
 - **The run must contain the merge commit.** A deploy run counts when its `headSha` is the PR's merge commit, or a later staging commit that contains it — proven with `git merge-base --is-ancestor <merge-sha> <run-head-sha>` and quoted. Re-run after a `/staging-fix` uses the newest such run.
 - **Smoke is read-only.** Navigate and read; never submit forms that create, change, or delete staging data unless the user approves that single step.
 - **One approval before any remote write.** Show the result comment and wait. User away → print it and stop.
+- **User-invoked only.** Start only when the user invokes this skill or a user-started `/factory run` loads it. Never start it on your own or from another skill; others may only suggest it.
 - **Run authorization.** Loaded by `/factory run`, the run's start approves posting the deploy result comment. Step 6 only inspects event-owned handoff. Smoke approval stays the user's own.
 - Redact before anything leaves the session: replace tokens, keys, cookies, session IDs, passwords, emails, and customer identifiers in quoted evidence with `<redacted>`, keeping only the lines that show the fault.
 - A failed or erroring `gh` query is unknown — never an empty result, a pass, or green; report the command and its error.

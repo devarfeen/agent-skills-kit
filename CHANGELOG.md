@@ -11,6 +11,13 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- **Ship skills are user-invoked only** — `/local-to-staging` 2.1.1,
+  `/staging-to-production` 0.2.1, `/staging-fix` 0.5.1, `/deploy-watch` 2.0.2,
+  `/commit-push-pr` 0.9.1 and `/commit-push-close` 0.6.1 now state in the body
+  that they start only when the user invokes them or a user-started
+  `/factory run` loads them; any other skill or agent may only suggest them.
+  The frontmatter already disabled model invocation. The body rule covers
+  runtimes that ignore that flag.
 - **Factory run ships to staging** — `/factory` 4.4.0 run mode now loads the
   promotion and staging skills itself. After a merge into `local` it runs
   `/local-to-staging` 2.1.0 once per round for the run's repos, then
