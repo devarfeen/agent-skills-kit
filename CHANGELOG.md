@@ -17,6 +17,11 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- `/factory` 5.1.0 checks a workspace adapter's read-only local telemetry source
+  when MCP omits usage or window data. It binds occupancy to the current root
+  native thread and preserves sample freshness on macOS, Linux and WSL2.
+  Return contracts must fit the allowance with metadata, transport overhead
+  and all pending returns, without understating costs or raising caps to pass.
 - `/factory` 5.0.0 and `/orchestrate-t3` 0.8.0 require explicit prepared-checkout
   launch binding and live identity verification before worker writes. Supervisor
   identity stays separate from product-worker assignments. Factory repeats
