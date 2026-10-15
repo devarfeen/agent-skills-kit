@@ -3,7 +3,7 @@ name: agentic-qa
 disable-model-invocation: true
 description: "Agent-run functional QA of a PR or branch that can reach a screen: drives acceptance criteria through the running app and records the result on the PR. Never edits code. Pixel checks are /pixel-audit."
 metadata:
-  version: "0.7.0"
+  version: "0.8.0"
 ---
 
 # agentic-qa
@@ -33,7 +33,7 @@ Drive the change through the running app; judge visible behavior, logs and reque
 - **Three re-checks per finding.** A finding that still fails on its third re-check against a new head is escalated to the engineer by name in the report; it is not re-queued again.
 - **One approval before any remote write.** Show the PR comment and wait. User away → print it and stop.
 - **Run authorization.** Loaded by `/factory run`, the run's start approves posting the comment. Staging, and any mutating step there, keeps its own approval.
-- **Zero attribution.** No co-author, AI, or tool attribution in the comment, evidence files, or any output.
+- **Zero attribution.** Omit co-author, AI, tool and generator attribution, except workspace-permitted comment Tester fields per [QA records](references/qa-records.md). Evidence stays attribution-free.
 - Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`GLOSSARY-MAP.md` at repo root; legacy `CONTEXT-MAP.md`), else the repo root.
 - Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
 - Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.

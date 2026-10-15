@@ -1,6 +1,6 @@
 # Factory run — review and delivery
 
-Zero attribution: never add or leave co-author, AI, or tool attribution in any output, except the **Reviewer provenance** line in `records.md` when the workspace allows it.
+Zero attribution: never add or leave co-author, AI, or tool attribution in any output, except the workflow identity fields under **Reviewer provenance** in `records.md` when the workspace allows them.
 
 Read when a unit first reaches `REVIEW`, `MERGE`, `STAGING`, `DEPLOY_FAILED` or `READY_FOR_OWNER`, or before dispatching a reviewer. [`run.md`](run.md) keeps the loop, caps, **Tracker status**, **After a fix**, **Round log** and **Lessons** that these stages use.
 
@@ -34,7 +34,7 @@ A fresh reviewer inspects what the builder produced; both settle findings on the
    INSTRUCTIONS: [APPLICABLE POLICY AND STANDARD PATHS; EFFECTIVE AUTHORIZATION]
    ROUND: [N]
    SINCE: [SHA_REVIEWED_LAST_ROUND | none]
-   PROVENANCE: [allowed — Reviewer: <provider>/<model> via <harness> | not allowed]
+   PROVENANCE: [allowed — verified worker identity per records.md | not allowed]
 
    Preserve THREAD_BINDING and run commands with explicit CHECKOUT working
    directories. Verify checkout, branch and HEAD before reviewing. Review its diff against BASE
@@ -62,9 +62,9 @@ A fresh reviewer inspects what the builder produced; both settle findings on the
    PROVENANCE is allowed, add its one `Reviewer:` line to the comment.
    ```
 
-   Set PROVENANCE to `allowed` with the live launch record's values only when the workspace instructions explicitly allow reviewer provenance ([`records.md`](records.md) **Reviewer provenance**); otherwise `not allowed`. A reviewer that could not post → the run preserves its findings and applies [`records.md`](records.md) formatting before posting to Linear. Read the comment back from the issue; the thread's word is not the record.
+   Set PROVENANCE to `allowed` with that reviewer's verified launch/execution identity only when the workspace instructions explicitly allow reviewer provenance ([`records.md`](records.md) **Reviewer provenance**); otherwise `not allowed`. Preserve host harness, coding agent, requested model and any exposed resolved model, including distinct axis identities; Auto without a resolved model says unavailable. A reviewer that could not post → the run preserves its findings and applies [`records.md`](records.md) formatting before posting to Linear. Read the comment back from the issue and compare the identity with the worker records; the thread's word is not the record.
 2. **Settled?** `findings=0` for head, from a review or a valid **Fix-only close** record → the loop ends; go to `risk-review`.
-3. **Answer.** Send the comment to the unit's builder through **Execution**; a stopped worker resumes on the same verified checkout. For each finding the builder either fixes it through `tdd-loop` and commits, or declines it with a reason; a finding outside the issue's scope is declined as such and listed under Needs user. Post each answer as `fixed <sha>` or `declined — <reason>`. Linear uses `## Code review reply` with Round, Fixed, Declined; GitHub retains `<!-- code-review-reply: round=<n> fixed=<n> declined=<n> -->`. Add one `Builder: <provider>/<model> via <harness>` line only under the same **Reviewer provenance** permission.
+3. **Answer.** Send the comment to the unit's builder through **Execution**; a stopped worker resumes on the same verified checkout. For each finding the builder either fixes it through `tdd-loop` and commits, or declines it with a reason; a finding outside the issue's scope is declined as such and listed under Needs user. Post each answer as `fixed <sha>` or `declined — <reason>`. Linear uses `## Code review reply` with Round, Fixed, Declined; GitHub retains `<!-- code-review-reply: round=<n> fixed=<n> declined=<n> -->`. Add the builder's verified `Builder` field per **Reviewer provenance** when permitted.
 4. **Again.** Commits were made → **After a fix**: the new head passes CI and QA again before the next review round. Then apply **Fix-only close**; when it does not hold, step 1 with the next round number.
 
 Three rounds. Findings still open after the third park the unit, quoting them. Each round is a `code-review` row in the **Round log**, with `<n> findings` or `pass` as its result.
@@ -131,6 +131,7 @@ Commit: <full-tested-head-sha>
 Result: <actual-QA-result>
 Findings: <actual-finding-count>
 Rechecks: <actual-recheck-count>
+Tester: <original QA worker identity, only when workspace QA provenance is allowed>
 Before / After: <the round's durable evidence comment>
 Carried forward: <## QA carried forward link for the final head | none>
 Code review: <n> rounds — <n> fixed, <n> declined

@@ -11,6 +11,13 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- `/factory` 5.5.0 and `/agentic-qa` 0.8.0 require worker identity in
+  workspace-permitted review and QA comment fields, including carried-forward
+  and delivery QA. Identity distinguishes host harness, coding agent and model;
+  Auto aliases retain an explicit unavailable resolved model when the runtime
+  exposes none. Publication read-back checks worker records. Evidence files,
+  PR bodies and commits retain zero attribution; metadata repairs do not rerun
+  or alter historical gate results.
 - `/factory` 5.4.1 and `/orchestrate-t3` 0.11.1 align entrypoint wording,
   README, GUIDE and BEST-PRACTICES with the implemented operating modes.
   Documentation distinguishes stateless reports from durable runs, preserves

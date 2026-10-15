@@ -1,6 +1,6 @@
 # QA records and fixtures
 
-Zero attribution: never add co-author, AI, tool, or generator attribution to any output.
+Zero attribution: never add co-author, AI, tool, or generator attribution to any output, except the permitted comment-only Tester field below.
 
 Read before fixture preparation or producing the QA report. Discover the target's evidence adapter from current instructions; use its supported result schema and manifest commands. Without an adapter, retain the same identities and checks in the report and manifest. Standalone installs do not assume a workspace script path.
 
@@ -11,6 +11,12 @@ The builder or runtime repair owner prepares fixtures before the read-only teste
 Record fixture identifier, source/schema revision, task data identity, role and tenant references, setup command and producer exit status, and the permitted restore/cleanup command. Refer to credentials by key name. Required external services need their own task fixture or explicit unavailable result; permanent service data is not a fixture fallback.
 
 For authorization rows, prove the permitted role can perform the same action and that the restricted role's effective grants deny it. Inspect both legacy and framework permissions when both determine access. Assert the server response and persisted state; a hidden button is insufficient. Tenant-isolation rows need a valid same-tenant control and a separate foreign-tenant record. Fixture failure goes to the repair owner before browser acceptance begins.
+
+## Comment identity
+
+When workspace instructions allow QA provenance, require `Tester: <provider>/<requested-model> via <harness> (coding agent: <agent>; resolved model: <actual-model-or-unavailable>)` in the GitHub/Linear QA comment. Use the tester's launch/execution records, supplied by the caller when needed. Distinguish the host harness from the coding agent; a T3 Code worker may use Codex or Cursor. Keep Auto/default aliases and state `resolved model: unavailable` when execution metadata exposes no concrete model; never guess. A concrete requested/executed model needs no duplicate suffix. Before publication and on read-back compare this field with those records. Without workspace permission, omit it.
+
+QA carried forward and QA nested in delivery comments retain the original tester and evidence link, without claiming a fresh run. Supply identity separately from `report.md`, `grid.md`, `results.json` and other evidence files, which stay attribution-free. Correct historical comment metadata without changing its original SHA, result, findings, counts or evidence. Posting still requires the calling workflow's authorization.
 
 ## Result and evidence identity
 

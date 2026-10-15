@@ -1,6 +1,6 @@
 # Workflow records
 
-Zero attribution: never add or leave co-author, AI, tool, or generator attribution in any output, except the **Reviewer provenance** line below when the workspace allows it.
+Zero attribution: never add or leave co-author, AI, tool, or generator attribution in any output, except the workflow identity fields under **Reviewer provenance** when the workspace allows them.
 
 Use when reading or publishing issue workflow records. Linear comments contain clean Markdown headings, evidence, and readable fields. Emit no HTML control markers in Linear comments. Keep GitHub marker formats and internal evidence contracts where their consumers require them; read legacy Linear markers for existing history.
 
@@ -11,8 +11,8 @@ Read only the records needed by the active gate. Discover supported comment-by-I
 | Heading | Required fields | Equivalent legacy record |
 | --- | --- | --- |
 | `## Acceptance criteria` | Numbered criteria, preserving the issue's stated outcomes | `factory-criteria` |
-| `## QA` | `Commit`, `Result`, `Findings`, `Rechecks`, `Checks` | `agentic-qa` |
-| `## QA carried forward` | `Commit`, `From QA commit`, `Prior QA record`, `Why no new QA`, `Changed files`, `Proof`, `Not re-tested`, `Still required` | `qa-carried-forward` (GitHub marker) |
+| `## QA` | `Commit`, `Result`, `Findings`, `Rechecks`, `Checks`; `Tester` under **Reviewer provenance** | `agentic-qa` |
+| `## QA carried forward` | `Commit`, `From QA commit`, `Prior QA record`, `Why no new QA`, `Changed files`, `Proof`, `Not re-tested`, `Still required`; `Tester` under **Reviewer provenance** | `qa-carried-forward` (GitHub marker) |
 | `## Code review` | `Commit`, `Round`, `Findings`; `Reviewer` only under **Reviewer provenance** | `code-review` |
 | `## Code review reply` | `Round`, `Fixed`, `Declined`; `Builder` only under **Reviewer provenance** | `code-review-reply` |
 | `## Code review fix check` | `Commit`, `Round`, `Reviewed commit`, `Findings fixed`, `Changed lines`, `Proof`, `Not reviewed again`, `Findings`; `Checked by` only under **Reviewer provenance** | `code-review-fix-check` |
@@ -48,6 +48,7 @@ Allowed only when the **No-behavior proof** below holds for the diff from the la
 Commit: <full new head SHA>
 From QA commit: <full SHA that QA tested>
 Prior QA record: <link to the ## QA comment>
+Tester: <original tester identity, only when workspace QA provenance is allowed>
 Why no new QA: the change cannot reach a screen — <one plain sentence, e.g. "only a code comment was added">
 Changed files: <path> — <comment-only | test-only | docs-only>
 Proof: <command and its result, e.g. "php -w diff of config/navigation.php: identical code">
@@ -82,13 +83,16 @@ Changed lines: <path:line-range> — cited by finding <n>
 Proof: <command and its result, e.g. "php -w diff of config/navigation.php: identical code">
 Not reviewed again: no new independent review ran; the round <n> review stands for this commit.
 Findings: 0
+Checked by: <checking worker identity, only when workspace reviewer provenance is allowed>
 ```
 
 On GitHub append `<!-- code-review-fix-check: sha=<new-head> round=<n> findings=0 -->`. Read it back. A missing field, an unquoted proof or a `Reviewed commit` that does not match the last review leaves the review gate open.
 
 ## Reviewer provenance
 
-Default: zero attribution. Only when the workspace instructions explicitly allow reviewer provenance, `## Code review` gains one line `Reviewer: <provider>/<model> via <harness>`, `## Code review reply` gains `Builder: <provider>/<model> via <harness>`, and `## Code review fix check` gains `Checked by: <provider>/<model> via <harness>`, from the live launch record. This exception covers those three code-review comment kinds on GitHub and Linear only, never commits, PRs, code, docs or any other comment.
+Default: zero attribution. When workspace instructions explicitly allow it, require `Reviewer` in `## Code review`, `Builder` in `## Code review reply`, `Checked by` in `## Code review fix check`, and `Tester` in QA sections only when QA provenance is also allowed. This includes `## QA carried forward` and QA nested in delivery comments. Each field reads `<provider>/<requested-model> via <harness> (coding agent: <agent>; resolved model: <actual-model-or-unavailable>)`. Record the worker's host harness and coding agent separately; T3 Code may host Cursor or Codex. Use that worker's launch/execution records, not the publishing parent's identity. Distinct review-axis identities stay labelled within `Reviewer`.
+
+For Auto/default aliases, retain the requested alias and the concrete model reported by execution metadata. When none is exposed, write `resolved model: unavailable`; never infer it from the catalog, another lane or the agent's self-description. A concrete requested/executed model needs no duplicate suffix. Carry-forward and delivery QA copy the original tester and retain the prior QA link, without claiming a fresh test. Identity fields belong only in the permitted GitHub/Linear comment sections, never commits, PR titles/bodies, code, evidence files or other documents/comments. Pass identity separately from attribution-free worker reports.
 
 ## Staging-event assignment
 
@@ -114,4 +118,4 @@ On GitHub PRs retain the existing comments: `agentic-qa` with `sha`, `result`, `
 
 ## Publication and read-back
 
-The factory formats its Linear criteria, QA, QA carried forward, review/reply and delivery comments with the fields above before posting. Pass the format to workers; a worker's marker-bearing draft is formatted before publication while preserving its findings and revision. Read the saved comment back and check all required fields and evidence links. A clean-looking comment without complete gate evidence is not a pass.
+The factory formats its Linear criteria, QA, QA carried forward, review/reply and delivery comments with the fields above before posting. Pass the format to workers; a worker's marker-bearing draft is formatted before publication while preserving its findings and revision. Before posting and on read-back, compare permitted identity fields with the worker launch/execution records; repair missing fields or mismatches. Historical identity omissions need a metadata correction, not a fresh QA/review run: preserve SHA, verdict, counts, findings, evidence and original creation-time ordering. Read the saved comment back and check all required fields and evidence links. A clean-looking comment without complete gate evidence is not a pass.

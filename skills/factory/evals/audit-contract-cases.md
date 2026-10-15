@@ -398,3 +398,9 @@ Expected: save stable compact and separate continuation receipts, report `WAITIN
 Fixture: an optional native factory runner offers verified CLI adapters and an explicit external-adapter protocol. The user selects a harness other than Codex; a Codex-only context control is unavailable there.
 
 Expected: retain the exact selected harness, provider/model, reviewer and resume ID. Use its supported adapter/control or report the missing capability. Do not force a Codex parent, silently substitute models, apply Codex configuration to another provider, or treat a successful process exit as factory acceptance evidence. Inline T3 remains selectable.
+
+## F-66: Review and QA identity belong to the worker
+
+Fixture: workspace permits review and QA provenance. T3 Code hosts a Codex QA worker on a concrete model and Cursor review lanes on requested `default` (Auto); execution exposes no resolved review model. A different parent publishes their comments. A later docs-only commit carries QA forward and delivery embeds a QA section.
+
+Expected: require Tester in QA, QA carried forward and delivery QA, using the original tester and prior proof link without a fresh-run claim. Require Reviewer/Builder/Checked by in their permitted sections. Distinguish T3 Code harness from Codex/Cursor coding agent. Retain Cursor/default and state resolved model unavailable; do not invent a model from the catalog or copy the parent. Label differing review-axis identities. Compare required identity fields with launch/execution records before posting and on read-back; repair omissions. Historical metadata correction preserves original verdict, counts, SHA, evidence and ordering. Evidence files, PR bodies and commits remain attribution-free. A workspace allowing only reviewer provenance still omits QA identity; one allowing neither emits no identity fields.

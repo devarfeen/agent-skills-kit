@@ -1,6 +1,6 @@
 # Evidence publication
 
-Zero attribution: never add co-author, AI, tool, or generator attribution to any output.
+Zero attribution: never add co-author, AI, tool, or generator attribution to any output, except permitted QA comment fields in [records.md](records.md#reviewer-provenance). Evidence files stay attribution-free.
 
 Read after QA produces artifacts or when resuming an interrupted publication. The QA worker in [`execution-and-continuity.md`](execution-and-continuity.md#qa-worker) runs this publication when the executor supports one. Starting `/factory run` authorizes sanitized evidence comments and uploads to the unit's own tracker; this reference grants no other remote writes. Workspace tracker restrictions override generic examples.
 

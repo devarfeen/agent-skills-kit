@@ -1,6 +1,6 @@
 # Execution and continuity
 
-Zero attribution: never add co-author, AI, or tool attribution in any output.
+Zero attribution: never add co-author, AI, or tool attribution in any output, except permitted workflow comment fields in [records.md](records.md#reviewer-provenance).
 
 At run start read **Select once**; before dispatch read **Dispatch** and **Supervise and recover**. Load **Independent review**, **QA worker**, and **End and resume** only at their matching stage. Reuse unchanged sections after checkpointing instead of reloading the full reference. The parent owns advancement through the factory stages; a worker's last message cannot end the run while authorized, unblocked stages remain.
 
@@ -44,7 +44,7 @@ Return at most 400 words to the parent: tested base/head, findings by axis/sever
 
 ## QA worker
 
-Dispatch QA browser work only after **Browser admission** in [`readiness-and-recovery.md`](readiness-and-recovery.md) passes for its pinned BASE and HEAD. Runtime preparation owns readiness; a waiting QA stage launches no browser or fallback. Run admitted browser work and evidence publication in a QA worker when the executor supports one. It loads `agentic-qa` and then [`evidence-publication.md`](evidence-publication.md) on the unit's verified head checkout and ready stack URL, under the unit's browser lease and the run's authorization; it edits no code. It returns a bounded summary: result, cell counts (pass, fail, gap, not reachable), finding IDs with one line each, local evidence paths, uploaded attachment IDs, the posted comment ID and the `Checks:` lines it ran. Without worker support the parent runs both itself under the same limits, checking images by metadata only.
+Dispatch QA browser work only after **Browser admission** in [`readiness-and-recovery.md`](readiness-and-recovery.md) passes for its pinned BASE and HEAD. Runtime preparation owns readiness; a waiting QA stage launches no browser or fallback. Run admitted browser work and evidence publication in a QA worker when the executor supports one. It loads `agentic-qa` and then [`evidence-publication.md`](evidence-publication.md) on the unit's verified head checkout and ready stack URL, under the unit's browser lease and the run's authorization; it edits no code. Pass its verified launch identity and workspace QA-provenance permission separately from evidence files, following [records.md](records.md#reviewer-provenance). It returns a bounded summary: result, cell counts (pass, fail, gap, not reachable), finding IDs with one line each, local evidence paths, uploaded attachment IDs, the posted comment ID and the `Checks:` lines it ran. Without worker support the parent runs both itself under the same limits, checking images by metadata only.
 
 The parent never reads image bytes or saved oversized tool output into its context. It checks images by metadata (dimensions, byte size, hash) from a local tool, and queries a large saved result for the fields it needs (for example with `grep` or a JSON query) instead of reading the file. Gate decisions still read the posted record back, in bounded sections.
 
