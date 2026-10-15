@@ -15,7 +15,7 @@ claude mcp login t3
 
 The MCP URL comes from T3 Code's **Settings → Connections → Copy MCP URL**; other runtimes add it as a remote HTTP MCP server with OAuth. On the sign-in page the user picks the access mode. **Read only** cannot launch threads, and a thread never runs with more permission than that mode.
 
-Call `orchestrator_capabilities` once. A permission error on it, or on the first launch, means the sign-in mode is too low: report it under Needs user and stop.
+Call `orchestrator_capabilities` once; retain its result reference and bounded usable-provider summary for this run. Refresh only after reconnect or changed availability/model evidence. A permission error on it, or on the first launch, means the sign-in mode is too low: report it under Needs user and stop.
 
 ## Capabilities
 
@@ -48,7 +48,7 @@ A launch has no assumed retry key: after an error or lost response, reconcile li
 
 ## Wait
 
-`t3_thread_wait` with the saved `threadId` and `runId` blocks until the run reaches a terminal state or the timeout passes. Issue the waits for all threads together. `timedOut: true` leaves the work running; wait again.
+`t3_thread_wait` with the saved `threadId` and `runId` blocks until the run reaches a terminal state or the timeout passes. Issue waits of at most 60 seconds for all threads together. `timedOut: true` leaves the work running; wait again. Compare cheap progress deltas; after five minutes without progress inspect pending requests/authentication, live commands and supported provider/host health. A verified running long command differs from no events or dead transport; elapsed time alone never authorizes a competing writer.
 
 | Status | Meaning for the orchestrator |
 | :--- | :--- |
@@ -59,13 +59,19 @@ A launch has no assumed retry key: after an error or lost response, reconcile li
 
 ## Read
 
-`t3_thread_read` with the saved `threadId` returns the thread's messages. Use live pagination/output limits when supported and take the worker's report from its last assistant message. When the result marks an item as truncated, fetch the rest with that item's ID and the next text offset it returns; a partly read report is not evidence. Save large output to a durable report/log and inspect bounded sections rather than putting every worker transcript in the parent context.
+`t3_thread_read` with the saved `threadId` returns the thread's messages. For routine monitoring prefer supported state/summary views and small cursor/delta reads discovered in the live schema. Fetch report items only when a turn changes or a gate needs their evidence; retain cursors and result references. Never assume a `summaryOnly` or limit flag exists. Take the worker's report from its last assistant message. When the result marks an item as truncated, fetch the rest with that item's ID and the next text offset it returns; a partly read report is not evidence. Save large output to a durable report/log and inspect bounded sections rather than putting every worker transcript in the parent context.
 
 ## Context
 
-Reserve at least 25% of the parent's receiving context budget before large returns or provider handoff; account for pending tool payloads and inherited messages, not only current text. Child capacity cannot absorb an oversized parent envelope. Workers return concise evidence and complete report paths; complete acceptance maps and findings remain readable on demand.
+Check context at phase boundaries and before large reads, fan-out, completion imports or provider handoff. At 60% observed root occupancy, checkpoint and compact through supported controls before the next long phase; act earlier if projected payloads threaten the reserve. A reserve guard is not the model's hard ceiling. Reserve at least 25% of the parent's receiving context budget; account for pending tool payloads and inherited messages, not only current text. Child capacity cannot absorb an oversized parent envelope. Scoped workers start without full parent conversation inheritance when supported and receive only their objective, instructions, verified checkout, ownership and needed facts. Reviewer isolation remains mandatory. Subagents reduce root growth through bounded returns; they do not compact the parent. Workers return concise evidence and complete report paths; complete acceptance maps and findings remain readable on demand.
 
 Use supported harness compaction before the handoff when needed. The live MCP schema may expose no compact operation; never invent one or claim it ran. Without supported compaction, reduce payloads through supported controls or save checkout/head, thread/run IDs, status, budgets and outstanding gates for an authorized fresh parent thread with a neutral handoff. Confirm active writers and follow **Recover** before resuming. Context reduction never clears an unread gate or authorizes duplicate dispatch.
+
+## Queued native compaction
+
+When the installed provider adapter supports native compaction and the live send schema accepts queued messages, submit the exact attachment-free `/compact` through `t3_thread_send` with `mode:"queue"` and a stable boundary `clientRequestId`. Save its thread/message/run receipt, then queue a separate idempotent continuation naming that compact run and the durable checkpoint. Persist both receipts before ending the current turn. Use `WAITING_COMPACTION` with the next automatic action and `Needs user: None`; never wait in this turn for its own queued maintenance run.
+
+The continuation verifies that exact compact run completed, reconciles workers/checkout and checks fresh same-native-thread occupancy before retrying a budget-blocked handoff. Unsupported or failed compaction clears no gate. Preserve the original provider/harness/model and budgets. Lost receipts use the same supported idempotency key, not a new request. Prefer this boundary before fan-out with no pending child completions. Automatic child completions can outrank ordinary queued turns, so this procedure does not implement a pre-delivery context guard. Early harness-native compaction remains useful; a binary install alone needs no archive patching.
 
 ## Questions
 

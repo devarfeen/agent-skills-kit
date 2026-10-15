@@ -402,13 +402,13 @@ Variations branch off this line:
 
 ## Factory Workflow
 
-The factory group (`factory-workflow` in `npx skills`) covers what happens after a PR opens. It runs as a state machine: `/factory` works out where each unit stands from the tracker, the PR, CI, review comments, and deploy runs, then names the one skill that moves it forward. It has no state file, so you can re-run it at any point. Its table carries a `Since` column — the time of the signal that placed each unit — orders healthy units oldest first, and flags a unit sitting more than 3 days in one state as `stalled`.
+The factory group (`factory-workflow` in `npx skills`) covers what happens after a PR opens. It runs as a state machine: `/factory` works out where each unit stands from the tracker, the PR, CI, review comments, and deploy runs, then names the one skill that moves it forward. Report mode has no state file; run mode saves checkpoints for execution recovery. Its table carries a `Since` column — the time of the signal that placed each unit — orders healthy units oldest first, and flags a unit sitting more than 3 days in one state as `stalled`.
 
-**Run mode.** `/factory run <issue or label>` — for example `/factory run PRWL-127` or `/factory run automate` — makes the factory follow its own advice. It asks one thing at the start: which agent and model reviews the code. The builder is the agent and model you started the run in. After that it asks nothing. For each issue it:
+**Run mode.** `/factory run <issue or label>` — for example `/factory run PRWL-127` or `/factory run automate` — makes the factory follow its own advice. It asks for the reviewer agent and model only when that choice is missing. The builder is the harness, provider and model you started the run in, unless you explicitly override them. The run preserves those choices across recovery and continues authorized work automatically; genuine human decisions, access gates and exhausted recovery caps can still park a unit. For each issue it:
 
 1. sets the issue In Progress and posts any missing acceptance criteria as a comment on it, never editing the issue itself;
 2. creates a worktree and starts that issue's own copy of the app from it;
-3. builds in a T3 Code thread named after the issue, with full access;
+3. builds through the selected local executor, using T3 when available and compatible with the saved choice, with the verified checkout and authorized runtime mode;
 4. runs `/agentic-qa`, opens the PR, and drives CI;
 5. has the second agent review the code and post its findings on the issue; the builder fixes or declines each one, for up to three rounds;
 6. runs `/risk-review` and, for a low tier, merges into `local` or the staging branch through GitHub;
@@ -418,7 +418,7 @@ The factory group (`factory-workflow` in `npx skills`) covers what happens after
 
 These ship skills stay available as your own slash commands. Inside a run they skip their usual approval prompt, because starting the run approved them.
 
-With several issues — a label, or a spec with sub-issues — it works them one at a time and finishes or parks each before starting the next. Issues with an open PR go first, then issues QA sent back, then the rest, oldest first. Each issue starts from a base that already has the earlier ones, and gets the lessons they taught.
+With several issues, ready independent units may overlap within runtime capacity when their checkout, data and browser ownership are isolated. Dependent units wait for verified prerequisites; parent integration stays serial. The run preserves issue priority and gives later workers the applicable lessons from earlier work.
 
 It parks an issue, and moves to the next, when a person is needed: a high risk tier, three failed rounds, a problem it cannot reproduce, or a fact only the reporter has. It never closes an issue, never edits a tracked compose file, and never goes past staging. Plain `/factory` stays read-only.
 
@@ -426,7 +426,7 @@ It parks an issue, and moves to the next, when a person is needed: a high risk t
 
 **Manual QA starts on staging.** The run does not assign anyone. When `/local-to-staging` or `/deploy-watch` sees the change deployed on staging, it assigns the issue to the manual QA person (the one your issue-tracker document names, otherwise the issue's reporter) and says which build to test. The status stays In Review; the tester closes the issue.
 
-**One app per issue.** The copy of the app is described by a temporary compose file in the gitignored `.worktrees/` folder and deleted at cleanup. Dependencies and `.env` are mounted read-only from your main checkout, and the database is shared, so an issue with a migration runs alone for its project.
+**One runtime per issue.** Use the workspace task adapter or the project's supported runtime descriptor. BASE and HEAD have separate runtime state, writable outputs, test data and browser sessions; shared infrastructure may host private task data. Prove the assigned checkout and applicable readiness before dispatch, then verify HEAD before QA. Starting services or receiving an HTTP response alone does not prove readiness. An unready application stays with its runtime owner and cannot trigger a browser-tool fallback.
 
 **What a run learns.** Each check round — a QA result, a CI attempt, a risk review, a code review — is logged as one row in `specs/factory/rounds.md`: what failed, the cause, and what the worker tried. When the same cause shows up in three issues of one project, the run writes a one-line instruction into `specs/factory/lessons.md` and pastes that project's lessons into every later worker prompt, in this run and the next. It does not ask first; the run report lists each line it added, and you can edit or delete any of them. A lesson only changes how a worker works. It never changes a criterion, a test, a gate, or a cap, and a fix that deletes a test or removes an assertion parks the issue. Neither file is state: `/factory` still places every issue from the tracker and the PR alone.
 
@@ -434,9 +434,13 @@ It parks an issue, and moves to the next, when a person is needed: a high risk t
 
 **Screenshots.** After every QA round the run puts that round's before and after screenshots on the issue. On Linear it attaches the images. On GitHub it posts a comment listing the local file paths, because `gh` cannot attach an image; drag them in yourself if you want them there. Images are never sent anywhere except the issue's own tracker.
 
-**When a run stops early.** If a run is interrupted, paused, or ends with work unfinished, it saves a handoff for each unfinished issue: where it stands, what setup it needs, and a prompt you can paste to resume. Resuming keeps the builder and reviewer you already chose and does not ask again. A pause or stop you asked for stays stopped. `/orchestrate-t3` saves the same handoff for each unfinished group.
+**Waiting and recovery.** `WAITING_WORKERS` and `WAITING_RUNTIME` name the owner and next automatic action, with `Needs user: None`. They do not ask you to paste a continuation prompt. `WAITING_COMPACTION` yields only after the supported maintenance and continuation requests are saved. Genuine blockers explain the failed condition, attempted recovery and three reasoned recovery choices; unavailable choices are identified rather than invented. A manual recovery prompt appears only at a real human boundary or after interruption. Resuming preserves the builder, reviewer, checkout ownership and remaining budgets. An explicit pause or stop stays stopped until you authorize continuation. `/orchestrate-t3` uses the same handoff contract.
 
-**Before a run builds.** It checks that T3 Code is connected, and that each repository has a test command, a PR base, and a local compose file to copy the app from. A repository missing one is parked with the reason.
+**Before a run builds.** It verifies the selected executor, checkout, canonical checks, delivery base and project-appropriate runtime. T3-only requests retain that requirement; an authorized native executor is another path. Runtime setup uses the project's actual stack rather than requiring Compose for every project. Missing essential capabilities park only the affected units.
+
+**Operating modes.** T3's installed binary can use supported queued native compaction followed by a separate continuation. Automatic child completions may outrank that maintenance request, so queue acceptance is not a pre-delivery guarantee. Where a workspace provides a native controller, select its harness and model explicitly and resume only its saved session ID. Its adapters and commands belong to that workspace; installing this kit does not install a controller script. Checkpoint-assisted observation is a third path for displaying verified recovery steps without restarting a harness. None of these modes installs an OS sleep policy or guarantees recovery from host suspension.
+
+**Context and readable status.** Check root usage at phase boundaries and before long reads or returns. At 60% observed occupancy, save a bounded checkpoint and use supported compaction before the next long phase, preserving the existing 25% reserve and pending-result costs. Scoped workers return concise receipts and complete evidence paths; repeated full histories still fill the parent. Use separate Markdown fields with text states and semantic color badges. ANSI belongs only in a supported terminal renderer.
 
 ```text
 BUILDING -> CI -> QA -> REVIEW -> risk gate --low--> MERGE -> STAGING -> READY_FOR_OWNER
@@ -593,7 +597,7 @@ If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, st
 - **Domain Ambiguity:** Stay in `/grill-with-docs` (updates `GLOSSARY.md` inline).
 - **Too Many Questions / Drift:** Narrow to one thin slice with `/feature-prompt`, then resume `/grill-with-docs`.
 - **High-Fidelity Uncertainty (feel/UI/interaction):** `/handoff` -> `/prototype` -> back to `/grill-with-docs`.
-- **Context Budget Pressure:** Treat `~120K` as a caution threshold during planning-heavy sessions. At the next phase boundary, pick in order: continue, `/clear`, `/handoff`, a sub-agent, then `/compact` — see [Phase boundaries](BEST-PRACTICES.md#phase-boundaries). Never compact mid-phase.
+- **Context Budget Pressure:** For factory runs, use observed model-relative occupancy: checkpoint at 60% and preserve the 25% reserve, including pending returns. Other planning sessions use the [phase-boundary guidance](BEST-PRACTICES.md#phase-boundaries). A reserve rejection is not proof of a hard model limit; repeating the same request does not free context.
 - **Broken Tests:** Stay in `/tdd-loop` or pivot to `/diagnosing-bugs`.
 - **Worktree Setup Blocked:** Preserve the source checkout and pause dependent task edits; resolve the failed setup rather than silently working in place.
 - **Worktree Cleanup Refused:** Preserve the checkout and branch; inspect unfinished work, branch ownership, or integration evidence before retrying. Never force removal to finish a checklist.

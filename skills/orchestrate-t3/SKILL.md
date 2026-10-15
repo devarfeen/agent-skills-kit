@@ -3,7 +3,7 @@ name: orchestrate-t3
 disable-model-invocation: true
 description: "Fan a spec (PRD) or issue list out to T3 Code worker threads, one worktree per group, and monitor them to done. Needs the T3 Code MCP. Inside herdr use /orchestrate-herdr; one issue is /tdd-loop."
 metadata:
-  version: "0.9.0"
+  version: "0.11.1"
 ---
 
 # Orchestrate T3
@@ -37,7 +37,7 @@ T3 Code tool calls are cited by bold section name from [`references/t3-tools.md`
 
 ## Workflow
 
-Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field. Transitions: worktrees created, threads launched, any thread status change, final report.
+Use the portable status contract in [`references/session-handoff.md`](references/session-handoff.md) at phase and worker state changes. Waiting on children keeps this session active; no user continuation prompt. A supported queued compaction boundary yields only after saving both maintenance and automatic-continuation receipts.
 
 ### 1. Pre-flight
 
@@ -76,7 +76,7 @@ One thread per group per **Launch**, titled with its repository key and issue id
 
 Wait on every running thread per **Wait**; read a settled one per **Read**. After compaction or restart, follow **Recover** before any call.
 
-Before fan-out or provider handoff, apply **Context** in the tool reference; preserve parent capacity for pending returns and compact through supported controls before the handoff.
+At phase boundaries, before fan-out, large reads, completion imports or provider handoff, apply **Context** in the tool reference.
 
 - **Working** → leave it. A long test run is not a stall; a wait that timed out is waited on again.
 - **Waiting** → apply the question rule. No pending question means a permission prompt: surface it under Needs user and never relaunch the thread.
@@ -87,7 +87,7 @@ Before fan-out or provider handoff, apply **Context** in the tool reference; pre
 
 ### 8. Report
 
-Report agent/mode, group map (repository-qualified issues, reason, checkout, branch, title and `threadId`), end states, test tails, and `AC map` / `Decisions` / `Open items`. Split issues name remaining repository or combined-verification gates. List same-repository files changed by multiple branches (`git diff --name-only <base>...<branch>`) as merge risk. Worktrees and threads stay; cleanup is the user's call. For every unfinished group, emit and checkpoint the standard handoff in [`references/session-handoff.md`](references/session-handoff.md). Save it after each state change for host output after interruption. Honor explicit pause/stop intent; no automatic restart is implied.
+Report agent/mode, group map (repository-qualified issues, reason, checkout, branch, title and `threadId`), end states, test tails, and `AC map` / `Decisions` / `Open items`. Split issues name remaining repository or combined-verification gates. List same-repository files changed by multiple branches (`git diff --name-only <base>...<branch>`) as merge risk. Worktrees and threads stay; cleanup is the user's call. For unfinished groups, checkpoint the [standard handoff](references/session-handoff.md); emit it only at a real human boundary or interruption. Honor explicit pause/stop intent; no automatic restart is implied.
 
 ## Completion criteria
 

@@ -88,6 +88,8 @@ A phase is a chunk of work inside a session: the grilling, the build, the QA. De
 
 Every move except continuing replaces the session with a summary of it, so rule out continuing first. Clearing a context that still mattered loses the reasons behind the work, and reading the diff back does not return them. Matt's router puts the window where reasoning stays sharp near 150K tokens; this kit treats ~120K as the point to start asking.
 
+Factory runs use their measured context contract: checkpoint at 60% root occupancy before another long phase and retain at least 25% for envelopes, pending results and decisions. A sub-agent does not compact the parent. Give workers scoped inputs and read bounded receipts instead of repeatedly importing full histories. A supported queued maintenance boundary needs a saved automatic continuation before the current turn ends; it does not ask a person to restart normal active work.
+
 ### Suggest, never auto-chain
 
 This is the single most important habit. After a step finishes, the agent should **suggest** a sensible next skill — and then stop. It must never silently advance to the next phase on its own.
@@ -405,7 +407,8 @@ How to read it:
 
 - **First matching row wins.** `/factory` checks the states in the table's order, top to bottom, and the first whose condition holds is the unit's state. Order matters: a reopened issue is `QA_RETURNED` even though its old PR is merged, and a stuck CI is `CI_STUCK` before it is `CI`.
 - **A new push resets the gates.** Markers and approvals count only for the commit they name. Push again and the PR goes back to `CI`; old approvals and markers no longer pass anything. `reviewDecision` alone never counts as an approval, because it survives pushes.
-- **Stateless, and it only suggests.** `/factory` keeps no state file, so re-running it from any point gives the same answer. It names one skill per unit and stops; it never runs that skill, never auto-chains, and never merges or suggests merging toward production. The single exception is a run you start yourself with `/factory run`, which still never merges toward production. A run does keep a log of its check rounds and the lessons drawn from them under `specs/factory/`, but placing a unit never reads either file.
+- **Report mode is stateless.** `/factory` places units from current tracker/PR evidence, names one skill per unit and stops. User-started `/factory run` carries the authorized chain, keeps durable execution checkpoints and a round/lesson log, and still never merges toward production. A checkpoint preserves ownership and recovery budgets; it does not replace current gate evidence.
+- **Active waiting has an automatic next action.** Worker/runtime waits keep the supervisor responsible and need no manual resume prompt. A queued compaction boundary yields only after maintenance and continuation receipts are durable. Real human blockers explain the cause and recovery choices; explicit pause/stop intent remains binding. Preserve the chosen harness/provider/model across all three operating modes described in the [factory guide](GUIDE.md#factory-workflow).
 - **`READY_FOR_OWNER` is the end.** Staging is the ceiling. Production promotion and feature-flag rollout belong to the owner.
 - **Blocked units come first.** For a spec with several units, `QA_RETURNED`, `DEPLOY_FAILED`, `CI_STUCK`, `QA_STUCK`, `CHANGES`, and `UNKNOWN` are listed before healthy ones. Healthy units follow oldest first, and one that has sat in a state for more than 3 days is flagged `stalled`.
 - **Incidents sit outside the path.** Use `/incident-triage`, then re-enter at `BUILDING` with the fix ticket it proposes.

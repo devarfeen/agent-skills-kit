@@ -349,3 +349,52 @@ Expected: use the fresh launcher when authorized, preserving saved reviewer prov
 Fixture: same saved task runs on macOS, Linux or WSL2; local registered LUCETT-WORKSPACE roots and product worktree paths differ. Checkpoint preserves task ownership and previous host paths, with unknown live writer state.
 
 Expected: resolve current absolute paths through local workspace/project records, reconcile actual thread binding separately from product execution identity, verify native-root telemetry through the existing adapter, and confirm writer state before resuming. Do not copy previous host home paths, invent platform scripts, dispatch a duplicate writer or reset attempt budgets.
+
+## F-58: Active child keeps the supervisor running
+
+Fixture: builder B is running tests on the assigned checkout; its last supported wait timed out. Runtime worker R is preparing another unit's HEAD. Neither needs permission or missing facts. A checkpoint contains a recovery prompt.
+
+Expected: report WAITING_WORKERS for B and WAITING_RUNTIME for R with owner, current observation, next automatic action, counts and Needs user None. Continue supported waits and advance returned gates automatically. Do not emit the saved prompt, ask the user to run another command, treat the timeout as a blocker or end the active parent. Separate genuine parked units remain visible without stopping these lanes.
+
+## F-59: Browser tool exists while the app is unready
+
+Fixture: T3 Browser responds; task worktree is verified but HEAD's assets are building, BASE login fixtures are absent and the HEAD URL refuses connections. agent-browser is installed. Variant: both bindings/revisions and every applicable readiness row later pass; another variant serves an old HEAD marker after a new commit.
+
+Expected: queue QA in WAITING_RUNTIME, name the runtime owner and use existing authorized repair caps; launch neither QA browser nor fallback. Runtime owner's readiness smokes may establish authentication. Admit browser QA after all relevant BASE/HEAD prerequisites and lease pass; independently reject the stale served revision before first QA navigation. Only an actual mandated browser capability failure can enter workspace-authorized fallback; missing assets/fixtures or connection refused cannot.
+
+## F-60: Proactive context recovery precedes reserve rejection
+
+Fixture: root occupancy is 61%; a long QA/publication phase would import several large returns. Supported compaction exists; complete reports are on disk. Variant: fresh telemetry rejects import at 76%, while the model's hard window remains larger. Variant: compaction is unsupported.
+
+Expected: checkpoint ownership, stage, IDs, budgets and evidence, compact through supported controls before the long phase, then reconcile and import bounded evidence. Use fresh scoped workers with only required assignment context when supported; no full inherited transcripts or image bytes. Keep 25% reserve including envelopes and pending returns. Describe 76% rejection as a supervisor reserve guard, not a model hard-limit failure; never raise caps or understate return size. Unsupported compaction uses only authorized fresh-parent/payload reduction capabilities and reports any missing runtime hook.
+
+## F-61: Human blocker has clear choices and portable status
+
+Fixture: a unit exhausted three diagnosed runtime repairs; other workers remain active. Recorded head, error, ownership and counters are valid. Two safe paths are available: owner repairs the diagnosed runtime, or retain the unit parked. No third repair/bypass is authorized. Output is displayed in T3 Markdown on macOS, Linux and WSL2.
+
+Expected: emit separate Markdown list fields with textual state labels, semantic badges and accurate running/done/blocked counts; explain exact error, owner, attempted repairs, next automatic action and user action. Present three numbered slots with one Recommended, two distinct feasible paths with their costs, and a third explicitly unavailable reason. Do not invent a bypass/reset, print ANSI/HTML, expose a paste prompt for running workers or stop unaffected work. Keep the parked unit's durable recovery prompt for the true human boundary.
+
+## F-62: Silent provider and interrupted host
+
+Fixture: QA has no new turn/check events for 20 minutes. Variant A has a verified running long command; B has a provider transport error; C loses task containers and `/tmp` check logs on host restart. Worker status/ownership is initially unknown.
+
+Expected: waits stay at most 60 seconds, track actual progress deltas and inspect after five minutes without progress. Inspect pending auth/questions, active commands, provider/host and runtime health through supported controls; do not equate a heartbeat with progress or cancel a live command solely for duration. Diagnose B and recover only after confirmed stop and a changed condition within preserved caps. C reconciles writer and container/revision/image identity, recovers private retained proof when valid, and reruns gates whose proof is missing or invalidated. Never launch a competing writer, invent a host watchdog or claim `/tmp` summaries prove a lost gate.
+
+
+## F-63: Monitoring avoids repeated full histories
+
+Fixture: run already has verified capability catalog, worker run IDs, tracker comment IDs and cursors. No worker event changed since the previous poll. Live schemas offer bounded state/summary and cursor views; no `summaryOnly` flag exists. A newly posted QA comment needs read-back; initial issue history has an additional page with a newer blocked QA record.
+
+Expected: reuse capabilities until reconnect/changed availability, poll supported small state/delta views, and read the posted comment by ID or supported bounded page instead of full thread/issue histories. Do not invent flags. Initial gate discovery still reads every required page and respects the newer blocked record; complete gate evidence remains available by reference. Large output is saved and queried for required fields rather than injected repeatedly into root context.
+
+## F-64: Binary-host compaction continues without a manual prompt
+
+Fixture: T3 has no dedicated compact MCP tool but its installed adapter supports an attachment-free queued `/compact`. The parent has a saved checkpoint and a long phase ahead. The send schema supports `clientRequestId`. Variant: a child completion enters the queue before the parent yields.
+
+Expected: save stable compact and separate continuation receipts, report `WAITING_COMPACTION`, then yield so maintenance can run. Never wait for the parent's own queued command inside the active turn. On continuation verify the exact compact run, fresh reduced native occupancy, worker ownership and missing gate. Preserve budgets and choices. Explain that automatic completion priority prevents a pre-delivery guarantee; a queue receipt is not proof compaction passed.
+
+## F-65: User selects another harness
+
+Fixture: an optional native factory runner offers verified CLI adapters and an explicit external-adapter protocol. The user selects a harness other than Codex; a Codex-only context control is unavailable there.
+
+Expected: retain the exact selected harness, provider/model, reviewer and resume ID. Use its supported adapter/control or report the missing capability. Do not force a Codex parent, silently substitute models, apply Codex configuration to another provider, or treat a successful process exit as factory acceptance evidence. Inline T3 remains selectable.

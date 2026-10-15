@@ -75,9 +75,11 @@ checks to the parent for bounded repair; keep stack/config writes with its
 assigned repair owner. Synthetic checks do not clear an unverified real route.
 When STACK is supplied, read its task binding and independently verify live
 source, working directory/user and revision; its path alone is not proof.
-Keep BASE and HEAD state separate. Follow workspace browser tool/mode policy
-and fallback rules. Within factory, run focused checks per fix; its parent
-owns the complete canonical check after final integration, once per batch.
+Keep BASE and HEAD state separate. During factory, the parent admits browser QA
+only after pinned BASE/HEAD runtime readiness and a browser lease. Await that
+release; report unready services to the runtime owner rather than starting a
+browser or fallback. Follow workspace browser tool/mode policy and fallback
+rules. Within factory, run focused checks per fix; its parent owns the complete canonical check after final integration, once per batch.
 Standalone work retains the project's required worker checks.
 
 Do not work on the full spec. Do not redo spec orchestration. Do only the

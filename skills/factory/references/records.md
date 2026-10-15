@@ -4,6 +4,8 @@ Zero attribution: never add or leave co-author, AI, tool, or generator attributi
 
 Use when reading or publishing issue workflow records. Linear comments contain clean Markdown headings, evidence, and readable fields. Emit no HTML control markers in Linear comments. Keep GitHub marker formats and internal evidence contracts where their consumers require them; read legacy Linear markers for existing history.
 
+Read only the records needed by the active gate. Discover supported comment-by-ID, cursor, update filters or field projection from the live schema; save posted IDs and read those records back instead of repeatedly listing full history. When direct reads are unavailable, page small bounded results and retain the last observed cursor/ID. Initial discovery still follows all pages needed to establish the newest valid record; bounded output cannot hide a newer failure. Save large tool results outside root context and extract required fields.
+
 ## Linear fields
 
 | Heading | Required fields | Equivalent legacy record |

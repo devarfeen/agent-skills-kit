@@ -54,6 +54,8 @@ A worker blocked on a human decision gets its issue flipped to `ready-for-human`
 
 ## Verify
 
+Read back posted comments by saved ID or supported cursor/delta query from the live schema; avoid rereading all issue history after every write. Without direct reads, retain bounded page references and inspect enough pages to verify the record. Required complete discovery/pagination and head-bound gate reads remain mandatory.
+
 Read-back for the completion criteria — quote what these return, never assert from memory.
 
 - **GitHub** — `gh issue view <n> --json state,title,labels,comments`

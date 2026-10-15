@@ -7,6 +7,38 @@ their new versions, so a workspace on an older copy can see what an update
 brings. Generated `AGENTS.md` files carry the `agents-md` marker version;
 re-run `/agents-md` after a marker bump.
 
+## 2026-10-16
+
+### Changed
+
+- `/factory` 5.4.1 and `/orchestrate-t3` 0.11.1 align entrypoint wording,
+  README, GUIDE and BEST-PRACTICES with the implemented operating modes.
+  Documentation distinguishes stateless reports from durable runs, preserves
+  harness choice, explains active waits and queued compaction, and records
+  readiness, context and host limitations. Execution behavior is unchanged.
+- `/agents-md` 0.6.2 updates the factory companion's manifest wording to retain
+  executor choice and ask only for a missing reviewer. Generator templates and
+  their version marker are unchanged.
+- `/factory` 5.4.0 and `/orchestrate-t3` 0.11.0 support binary-host queued
+  native compaction with a separately queued continuation and durable receipts.
+  `WAITING_COMPACTION` names that automatic boundary. Child completion priority
+  remains explicit; this is not a pre-delivery guard. Optional native runners
+  preserve any selected harness/provider/model instead of forcing one CLI.
+- `/factory` 5.3.0 and `/orchestrate-t3` 0.10.0 keep active supervisors waiting
+  for workers and runtime preparation, then continue automatically. Portable
+  Markdown status lists use semantic color badges, owner/action fields and
+  worker counts. Recovery prompts stay in checkpoints during active work;
+  genuine human blockers show three reasoned recovery options with preserved
+  gates and attempt caps.
+- Both workflows checkpoint at 60% observed root context occupancy and use
+  supported compaction before the next long phase, accounting for pending
+  returns and the existing 25% reserve. Stage-scoped instructions, fresh scoped
+  workers and bounded reports reduce root growth. Host restart and automatic
+  delivery still require actual supported runtime integration.
+- `/factory` admits browser QA only after verified task worktree, BASE/HEAD
+  services, served revision and applicable readiness checks. An unready app
+  waits for its runtime owner; it cannot trigger browser-tool fallback.
+
 ## 2026-10-15
 
 ### Breaking

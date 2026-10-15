@@ -3,12 +3,12 @@ name: factory
 disable-model-invocation: true
 description: "Shows where a spec (PRD), ticket, or PR stands in the factory workflow and names the one skill that moves it on. Read-only unless the user starts /factory run. Never closes issues or passes staging."
 metadata:
-  version: "5.2.0"
+  version: "5.4.1"
 ---
 
 # factory
 
-Derive each unit's state from tracker issues, PRs, checks, reviews and deploy evidence; verify its exit gate and name the next skill. Keep no state file.
+Derive state and next skill from tracker, PR, check, review and deploy evidence. Reports are stateless; runs preserve execution checkpoints.
 
 ## Inputs
 
@@ -26,7 +26,7 @@ Derive each unit's state from tracker issues, PRs, checks, reviews and deploy ev
 - **Staging is the ceiling.** `READY_FOR_OWNER` is terminal. Never suggest production deploys, production PRs/merges, or flag rollouts. Default branches are owner-only except explicitly authorized, non-production delivery `local`; name the owner otherwise.
 - **Unreadable signals stop.** A signal the table needs can't be read (tracker access denied, no deploy workflow found) → report `UNKNOWN` with what is missing. Never guess the more advanced state. A failed or erroring `gh` query is unknown — never an empty result, a pass, or green; report the command and its error.
 - **Zero attribution.** No co-author, AI, or tool attribution in any output, except **Reviewer provenance** in `references/records.md`.
-- Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.
+- At phase transitions use the portable status and waiting contract in [`references/session-handoff.md`](references/session-handoff.md).
 
 ## Workflow
 
@@ -68,9 +68,9 @@ The user's `/factory run <reference>` approves the whole chain. Read [`reference
 1. **Intake.** Resolve units as in step 1 and apply **Triage** before builder/runtime work. A fully specified ticket may receive its narrow eligibility transition under run authority; ambiguous work parks. Label intake retains its reporter-follow-up path. Post missing criteria only to restate existing outcomes. Apply **Start** to inherit the builder. Ask only "Which agent and model reviews?", unless already answered.
 
    Reviewer unanswered → stop with the setup and continuation prompt. Preserve the choices on resume. After this intake the run asks nothing more.
-2. **Loop.** Follow **Dependency-aware scheduling**: isolated independent units may overlap within capacity; the parent serializes integration. For each ready unit: place it (steps 2–4), carry out its `Next` per **Stage map**, and place it again; log it and apply **Lessons**. Per unit: status In Progress, its own worktree and **Task stack**, a builder thread, agentic QA in a QA worker, a PR, CI, the **Review loop** between the reviewer and the builder, risk review, **Merge**, **Handover** with status In Review, **Cleanup**, **Promotion**, **Staging**. For setup or local-runtime blockers, read [`references/readiness-and-recovery.md`](references/readiness-and-recovery.md); **Loading a stage skill** governs recovery and stops.
-3. **Parks.** A unit whose next actor is a person — a high risk tier, a spent cap, a fact only the reporter holds — is parked with its evidence; the run continues. No tracked compose file or issue body is edited; no issue is closed.
-4. **Run report.** The output table, each parked unit's [standard handoff](references/session-handoff.md), the criteria drafted, **Production readiness**, and **Lessons** report.
+2. **Loop.** Wait for active children and continue automatically; a worker turn ending is not a factory stop. Follow **Dependency-aware scheduling**: isolated independent units may overlap within capacity; the parent serializes integration. For each ready unit: place it (steps 2–4), carry out its `Next` per **Stage map**, and place it again; log it and apply **Lessons**. Per unit: status In Progress, its own worktree and **Task stack**, a builder thread, agentic QA in a QA worker, a PR, CI, the **Review loop** between the reviewer and the builder, risk review, **Merge**, **Handover** with status In Review, **Cleanup**, **Promotion**, **Staging**. For setup or local-runtime blockers, read [`references/readiness-and-recovery.md`](references/readiness-and-recovery.md); **Loading a stage skill** governs recovery and stops.
+3. **Parks.** Park units awaiting a person — high risk review, a spent cap, reporter-only facts — with evidence; continue the run. No tracked compose file or issue body is edited; no issue is closed.
+4. **Run report.** When no automatic work remains, print the output table, parked units' [standard handoffs](references/session-handoff.md), drafted criteria, **Production readiness**, and **Lessons**.
 
 ## Output
 

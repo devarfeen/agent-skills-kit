@@ -33,6 +33,12 @@ Prepare BASE before implementing and check HEAD's runtime before QA. BASE readin
 
 Run focused red/green and surrounding checks per fix. Run the canonical full check once after final integration and the last edit for each batch in the integration checkout; keep every mandatory subcheck. Capture the shared ship policy’s **Check evidence and reuse** record for shipping; valid inspected proof removes duplicate checks at that boundary, not the final integrated gate. Later changes rerun affected gates; a previous failure still requires its real passing rerun. Save producer status and bounded summaries with full log paths. Refresh failure predicates from the current run: a stale earlier error string cannot diagnose a repaired runtime.
 
+## Browser admission
+
+The parent admits browser QA only after worktree identity, separate BASE/HEAD services and all applicable readiness rows above pass. Pin checkout/base/head, backing URL, required service health, assets, fixtures/authentication and browser lease in the dispatch record. A successful socket/HTTP health check alone does not satisfy this record. Readiness authentication smokes belong to the runtime owner; they do not authorize a QA worker or acceptance run early. Before QA's first navigation, recheck affected proofs and served revision; reject a moved head or stale build.
+
+While preparation or an authorized repair runs, use `WAITING_RUNTIME` with owner and next automatic readiness check. Queue QA without acquiring/launching its browser. Failed readiness returns to the runtime owner under existing repair caps, not to a different browser. A browser fallback is considered only when the mandated browser tool is actually unavailable or lacks a required capability, under workspace browser policy. Connection refused, loading assets, bad credentials, missing fixtures and a wrong served revision are runtime failures; they cannot trigger `agent-browser` fallback. If repairs exhaust or need human authority, park with exact proof and recovery options; keep independent lanes active.
+
 ## Classify before retrying
 
 Read the first decisive error and its reproduction. Separate missing command, shell parsing, authentication, runtime configuration, product regression, missing essential fact, and prohibited/unauthorized access. A local URL or mount does not change the backing target's access class.
@@ -42,6 +48,8 @@ Only authorized task-owned local runtime/configuration failures enter this recov
 ## Repair and resume
 
 The parent owns runtime repairs; a read-only QA worker reports the reproduction and affected cells. Assign a scoped local repair worker only when useful and permitted. Write ownership stays explicit. Existing authorization answers routine local permission questions; checkout ownership does not prohibit authorized discovery reads.
+
+At intake retain explicit prerequisite-repair scope and apply any workspace standing grant for task-related runtime/check-tool compatibility repairs, including reproduced BASE failures. Being present on BASE does not itself require new permission. Preserve acceptance criteria and test semantics; unrelated product defects retain their scope gate. Carry that authority into assignments and recovery checkpoints rather than asking again on resume.
 
 Allow **three local-runtime repair attempts per unit per run**, shared across setup and later stages. Record each cause and changed condition before retrying. An unchanged diagnosed condition is not a retry: stop it and report the failed repair. Renaming a cause, changing phase, or relaunching a worker does not reset the count. Each actual QA re-check or CI attempt also counts against its existing stage cap; repair does not extend those caps.
 
