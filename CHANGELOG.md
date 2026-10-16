@@ -11,6 +11,11 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- `/factory` 5.6.1 and `/orchestrate-herdr` 0.4.1 launch and resume Codex with
+  `--no-daemon` under herdr. Codex 0.163's shared app-server daemon ran
+  commands outside the herdr pane, so `HERDR_ENV` was missing, the factory
+  stopped at its herdr check, and herdr never received the Codex session ID.
+  The restore check now also requires `--no-daemon` for Codex.
 - `/factory` 5.6.0 adds a herdr execution backend. **Select once** now picks
   herdr (when the user or a controller turn contract names it), then T3, then
   native local agents. T3-only execution text moves unchanged to

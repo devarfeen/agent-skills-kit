@@ -26,7 +26,7 @@ Reuse the user's established permission-mode preference without asking again. A 
 - its elevated interactive preset from the workspace's Runtime tool-calling table, verified against the installed CLI's `--help`; if the table is absent, derive the offered flags from that help and explain their effect
 - the **bare launch token**, with the consequence stated: every worker pauses at its own approvals
 
-A worktree separates files, but does not sandbox commands, credentials, or network access; an external container or VM supplies that boundary. Do not pass non-interactive subcommands such as `opencode run` through `agent start`; verify flags on the interactive launch command.
+A worktree separates files, but does not sandbox commands, credentials, or network access; an external container or VM supplies that boundary. Do not pass non-interactive subcommands such as `opencode run` through `agent start`; verify flags on the interactive launch command. Codex launches always add `--no-daemon` (see **Start agent** in `herdr-commands.md`); it is required, not a permission choice.
 
 The answer becomes `CODING_CLI`: the launch token plus flags. Under `herdr agent start`, flags go after `--`, never inside `--kind`.
 

@@ -69,6 +69,8 @@ herdr agent start <agent-name> --kind <AGENT_KIND> --pane <root-pane-id> \
 
 `--kind` is a closed enum of supported agents. Run `herdr agent start --help` for the current list and check `AGENT_KIND` against it. Cursor's kind is `cursor` although its launch token is `agent`. An absent kind stops that launch. Native launch flags go **after `--`**, never as part of `--kind`.
 
+Codex always gets `--no-daemon` under herdr. Its shared app-server daemon runs commands outside the pane, so they lose `HERDR_ENV`, herdr control fails inside the worker, and herdr's Codex session hook never reports the session ID.
+
 The command returns only once herdr has detected the agent in that pane and it is ready for input, so no readiness polling is needed. Startup defaults to a 30-second wait (max 300000ms). An agent blocked during startup returns `agent_not_ready` immediately but keeps the name usable for `agent read` — wait for idle before prompting.
 
 ## Submit
@@ -119,7 +121,7 @@ Resume needs the exact native session ID from `agent get` → `.result.agent.age
 
 ```bash
 herdr agent start <agent-name> --kind claude --pane <pane-id> -- --resume <session-id> <flags...>
-herdr agent start <agent-name> --kind codex --pane <pane-id> -- resume <session-id> <flags...>
+herdr agent start <agent-name> --kind codex --pane <pane-id> -- resume <session-id> --no-daemon <flags...>
 ```
 
 No reported session ID → do not resume; never use a "latest" or picker form. After a server restart herdr restores agents by session ID but without their launch flags: compare `terminal_id` with the saved one and the `process-info` argv with the saved flags before prompting. A restart gives each pane a new `terminal_id`; a relaunch in the same pane keeps it. Codex reports its session only when herdr's Codex `SessionStart` hook is trusted in Codex.
