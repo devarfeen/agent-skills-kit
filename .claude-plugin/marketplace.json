@@ -72,7 +72,7 @@
     {
       "name": "factory-workflow",
       "source": "./",
-      "description": "Factory workflow skills: a conductor that reads where work stands and names the next gate, plus CI repair, agentic QA, risk-gated review, staging deploy watch, QA-escape intake, and incident triage.",
+      "description": "Factory workflow skills: a conductor that reads where work stands and names the next gate, plus CI repair, agentic QA, risk-gated review, staging deploy watch, QA-escape intake, QA issue reporting, and incident triage.",
       "skills": [
         "./skills/factory",
         "./skills/ci-loop",
@@ -80,6 +80,7 @@
         "./skills/risk-review",
         "./skills/deploy-watch",
         "./skills/qa-escape",
+        "./skills/report-issue",
         "./skills/incident-triage"
       ]
     }

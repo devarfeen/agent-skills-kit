@@ -3,7 +3,7 @@ name: ask-kit
 disable-model-invocation: true
 description: "Route kit skill-map and workflow questions or pick the next agent-skills-kit skill; names one recommendation, never runs it. Existing work: /factory. Matt-only routing: ask-matt."
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # ask-kit
@@ -45,6 +45,7 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 | May this PR merge without an engineer | `/risk-review` |
 | A PR merged to staging; did the deploy land | `/deploy-watch` |
 | Staging is broken | `/staging-fix` |
+| QA or a reporter found a new problem; file it as a complete issue | `/report-issue` |
 | Human QA found a bug after the work was called done | `/qa-escape` |
 | Promote every project from local to staging | `/local-to-staging` |
 | Is staging ready for production | `/staging-to-production` |

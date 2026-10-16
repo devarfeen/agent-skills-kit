@@ -62,6 +62,7 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | `/pixel-audit` | kit | verify | per-page visual conformance | |
 | `/integration-contract` | kit | verify | multi-project seams — build after /to-tickets, gate before the spec ships | |
 | `/agentic-qa` | kit | verify | agent-run functional QA on any change that can reach a screen — state × viewport × role grid, console and network gate; never edits code | |
+| `/report-issue` | kit | verify | a reporter's problem statement and screenshots → one templated, code-traced, routed, prioritised and scheduled tracker issue after one draft approval; never edits code | |
 | `/qa-escape` | kit | verify | a bug human QA found after an agent said done → reproduction, escape class on the issue, regression test first; durable guard at 3 with approval | |
 | `/ci-loop` | kit | verify | an open PR's failing CI → green — up to 3 fix-and-push attempts under one approval; never edits the gate | |
 | `/risk-review` | kit | verify | specialist lenses + fixed-rubric low/high tier on a green PR; low offers auto-merge, high requests an engineer | |

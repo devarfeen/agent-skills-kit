@@ -136,10 +136,10 @@
     }
   ],
   "last_run": {
-    "date": "2026-10-14",
+    "date": "2026-10-16",
     "method": "3 independent fresh catalog-only judges; majority vote; no workflow execution",
-    "result": "543/543 pass",
+    "result": "565/565 pass",
     "judge_model": "Claude Opus 5.5 (claude-opus-5-5), inherited session model",
-    "catalog": "live kit descriptions and invocation policies + catalog-externals.md; 90d67d469ef5f67734c7592db02a13db8e2495f6 + uncommitted changes"
+    "catalog": "live kit descriptions and invocation policies + catalog-externals.md; 94792c376f080bf04155445a128a7c02ffa54c2c + uncommitted changes"
   }
 }

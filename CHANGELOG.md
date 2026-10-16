@@ -9,6 +9,21 @@ re-run `/agents-md` after a marker bump.
 
 ## 2026-10-16
 
+### Added
+
+- `/report-issue` 0.1.0 turns a reporter's problem statement and screenshots
+  into one tracker issue. It reads the live templates and workspace issue
+  policy, traces the problem to code in each candidate project, searches for
+  duplicates, and drafts title, primary project, involved PROJECT-CODEs,
+  labels, priority, cycle and due date with a reason each. The issue is created
+  only after one draft approval, then read back field by field. The body lists code-found edge cases to check, each with its source, apart from
+  the acceptance criteria. Batch mode drafts up to 10 problems at once, merges
+  duplicates within the batch and takes per-item approval. The template's
+  workflow label is kept only when six agent-ready checks pass, so a created
+  issue meets `/factory run` intake; otherwise it gets `needs-triage`. It never
+  edits code. `/ask-kit` 0.1.1 routes to it; `/agents-md` 0.6.3 adds its
+  manifest row.
+
 ### Changed
 
 - `/factory` 5.13.0 starts user-only stage skills the way the user would: the

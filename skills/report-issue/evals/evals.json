@@ -1,0 +1,112 @@
+{
+  "skill": "report-issue",
+  "kind": "trigger-eval",
+  "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
+  "queries": [
+    {
+      "q": "Report this issue: the invoice list page crashes when a tenant has no invoices, screenshot attached",
+      "expect": "trigger"
+    },
+    {
+      "q": "Log a bug in Linear for me — the save button on the stock transfer form does nothing. Here's a screenshot",
+      "expect": "trigger"
+    },
+    {
+      "q": "I'm QA. Turn this problem and screenshot into a proper ticket with labels, priority and cycle",
+      "expect": "trigger"
+    },
+    {
+      "q": "Create an issue from this: filters reset after I save a transfer, see attached image",
+      "expect": "trigger"
+    },
+    {
+      "q": "Write up this problem as a tracker issue using our bug template and put it in the right project",
+      "expect": "trigger"
+    },
+    {
+      "q": "Found something while testing: the driver app shows the wrong delivery date. Please raise a ticket",
+      "expect": "trigger"
+    },
+    {
+      "q": "Here's what I saw on the dashboard and a screenshot — file it so a dev can pick it up",
+      "expect": "trigger"
+    },
+    {
+      "q": "Open a ticket for this improvement: the CSV export should include the tenant name",
+      "expect": "trigger"
+    },
+    {
+      "q": "Raise an issue for this broken page, figure out which repo it belongs to and how urgent it is",
+      "expect": "trigger"
+    },
+    {
+      "q": "QA here, I don't know the code — can you file this bug properly and send me the link?",
+      "expect": "trigger"
+    },
+    {
+      "q": "I tested the partners portal today and found these 4 problems, screenshots attached — file them all",
+      "expect": "trigger"
+    },
+    {
+      "q": "Batch report: wrong date on the driver app, export missing tenant name, and the save button does nothing",
+      "expect": "trigger"
+    },
+    {
+      "q": "QA reopened PRWL-118 — the fix we shipped still crashes on an empty list",
+      "expect": "no-trigger",
+      "route": "/qa-escape"
+    },
+    {
+      "q": "Debug this: the invoice page throws a 500 when the list is empty",
+      "expect": "no-trigger",
+      "route": "/diagnosing-bugs"
+    },
+    {
+      "q": "Go through the needs-triage issues and make them agent-ready",
+      "expect": "no-trigger",
+      "route": "/triage"
+    },
+    {
+      "q": "Turn what we discussed into a spec issue",
+      "expect": "no-trigger",
+      "route": "/to-spec"
+    },
+    {
+      "q": "Break this spec into sub-issues with dependencies",
+      "expect": "no-trigger",
+      "route": "/to-tickets"
+    },
+    {
+      "q": "Fix this bug test-first: totals are off by one cent",
+      "expect": "no-trigger",
+      "route": "/tdd-loop"
+    },
+    {
+      "q": "Here are ten small spacing and copy nits from QA, batch them up",
+      "expect": "no-trigger",
+      "route": "/polish-batch"
+    },
+    {
+      "q": "Production checkout is down for everyone right now",
+      "expect": "no-trigger",
+      "route": "/incident-triage"
+    },
+    {
+      "q": "Work PRWL-212 end to end",
+      "expect": "no-trigger",
+      "route": "/factory"
+    },
+    {
+      "q": "I have a rough idea for a new reporting feature, help me shape it",
+      "expect": "no-trigger",
+      "route": "/feature-prompt"
+    }
+  ],
+  "last_run": {
+    "date": "2026-10-16",
+    "method": "3 independent fresh catalog-only judges; majority vote; no workflow execution",
+    "result": "565/565 pass",
+    "judge_model": "Claude Opus 5.5 (claude-opus-5-5), inherited session model",
+    "catalog": "live kit descriptions and invocation policies + catalog-externals.md; 94792c376f080bf04155445a128a7c02ffa54c2c + uncommitted changes"
+  }
+}

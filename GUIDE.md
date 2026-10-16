@@ -468,6 +468,7 @@ human QA finds a bug later -> QA_RETURNED -> /qa-escape -> BUILDING
 | :--- | :--- |
 | CI red on the PR | `/ci-loop <pr>` — up to 3 fix-and-push attempts under one approval; never edits tests or workflows to pass. A flake in code the PR added is fixed as a code failure (wait on the real condition), not retried; "passes locally" means comparing CI and local environments first; a head commit it didn't push stops the loop as `head moved` |
 | CI green, change can reach a screen | `/agentic-qa <pr>` — state × viewport × role (plus keyboard-only) grid against the running app, console and network gate; a cell fails only after one exact replay, and writes must survive a reload; reports findings, never edits code |
+| QA or a reporter found a new problem | `/report-issue <problem> [screenshots]` — one templated issue with acceptance criteria, code leads, labels, priority, cycle and due date, created after you approve its draft. A bug on delivered work goes to `/qa-escape` instead |
 | Human QA found a bug after done | `/qa-escape <issue>` — reproduction (also run once on the PR's base commit, so pre-existing bugs are classed `not-a-regression`), escape class recorded on the issue, regression test to write first with its proof: fails at the tested commit, passes at base |
 | CI green and QA passed, not yet reviewed | `/risk-review <pr>` — specialist lenses, then a fixed-rubric tier; low offers auto-merge, high requests an engineer. The author's `Door:` claim is checked against the diff: a one-way door, or a `two-way` claim the diff contradicts, is high. Changes requested or an unresolved review thread blocks any merge action whatever the tier; a lane that fails counts as `not assessed`, never as low risk |
 | Merged to `staging` | `/deploy-watch <pr>` — watches the deploy run (up to 2× its usual time, then `unverified`), smoke-checks staging with your approval against a baseline of errors staging already shows, records pass or fail; a 200 without a build identifier is `build unconfirmed` |
@@ -545,6 +546,7 @@ One sign per skill that you can check without opening its `SKILL.md`. If you do 
 | `/polish-batch` | Every nit you reported is a row in the punch-list, and nothing was fixed until you said dispatch. |
 | `/integration-contract` | A contract file with a gate log, or `single project — no contract needed`. |
 | `/agentic-qa` | A grid with no blank cell and a `VERIFIED`, `PARTIAL`, or `BLOCKED` comment on the PR. |
+| `/report-issue` | The created issue's identifier and link, with every field read back equal to the draft you approved. |
 | `/qa-escape` | A reproduction with a run count, and a marker comment naming the escape class on the issue. |
 | `/ci-loop` | One line per attempt, three at most, ending in green checks or a named stop reason with a quoted log line. |
 | `/risk-review` | One marker comment for the head SHA with a tier, and every fired trigger citing `file:line`. |
@@ -568,9 +570,22 @@ Use two valid issue paths:
 - **Planned work:** `/feature-discovery` -> `/feature-prompt` -> `/grill-with-docs` -> `/to-spec` -> `/to-tickets` -> `/implement` (or `/tdd-loop` directly; `/implement-spec` for the whole spec in one run) -> `/code-review` -> `/commit-push-*`. The spec and ticket issues exist before coding. `/to-spec` and `/to-tickets` apply ready labels in the normal path, so no separate `/triage` step is required.
 - **Foggy work:** `/wayfinder` -> chart the map -> resolve one ticket per session -> map exhausted -> rejoins planned work at `/to-spec`. The map's `Way:` issues are closed before the spec exists.
 - **Existing or incoming issue work:** use `/triage` when an issue needs state changes, reporter follow-up, `ready-for-human`, `wontfix`, or an agent brief before implementation.
+- **Reporter-found problems:** `/report-issue <problem> [screenshots]` -> one draft -> approved issue -> `/factory run <issue>` when it is `ready-for-agent`, otherwise `/triage`. See [Reporting a problem](#reporting-a-problem).
 - **Ad hoc work:** one-line request -> `/diagnosing-bugs` or direct fix -> `/tdd-loop` when useful -> `/commit-push-*`. Do not fabricate a detailed GitHub issue before coding. The ship skill creates the issue at the end from the original request, final diff, decisions, and validation.
 
 If an ad hoc request becomes large, ambiguous, cross-project, or multi-slice, stop and route it through `/feature-prompt` or `/to-tickets` before continuing. If it turns out the scope is gated on unresolved decisions, route to `/wayfinder` instead. Use `/triage` only if there is already an issue whose state or labels need repair.
+
+### Reporting a problem
+
+`/report-issue` is for the person who finds a problem but does not know the code, usually QA. Give it the problem in plain words and any screenshots:
+
+```text
+/report-issue The invoice list shows a blank page for a new tenant. Expected an empty-state message. ~/Pictures/invoices.png
+```
+
+It reads the workspace issue rules and the live tracker templates, traces the screen, URL or error text to code in each candidate project, and searches the tracker for duplicates. It then shows one draft: title in the workspace format, primary project and every other PROJECT-CODE involved, template, labels, priority, cycle and due date, each with a one-line reason. Reply `yes` or name the fields to change. It creates the issue, uploads the screenshots, reads every field back and returns the link.
+
+The draft is shaped for `/factory run` intake: one classification label, numbered acceptance criteria in the body, steps or an entry route, and code leads marked as leads. The template's workflow label (for example `ready-for-agent`) is kept only when all six agent-ready checks pass; otherwise the issue gets `needs-triage` and the triage note names the failed checks. Priority, cycle and due-date defaults live in the skill's `references/triage-rules.md`; workspace issue policy overrides them. The body also lists **edge cases to check**, found in the traced code (roles, empty and error states, validation, edit versus create, other callers), each with its `path:line`. They guide the builder and `/agentic-qa` and are never acceptance criteria; an edge case that needs a product decision keeps the issue at `needs-triage`. Add `repro` to try a local reproduction first. Several problems in one message, or `batch`, drafts up to 10 issues at once: problems with the same symptom merge, and you answer `yes`, `yes 1,3`, `drop 2` or `<n>: <change>` against one table. An open duplicate gets a comment instead of a new issue; a closed, delivered one routes to `/qa-escape`. The skill never edits code and never changes a label vocabulary.
 
 ## Workflow Gates
 
