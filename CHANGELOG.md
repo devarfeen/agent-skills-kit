@@ -11,6 +11,12 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- `/factory` 5.12.0 and `/orchestrate-herdr` 0.5.0 merge the herdr execution
+  backend branch (factory 5.6.0/5.6.1, orchestrate-herdr 0.4.0/0.4.1 below)
+  into the 5.7.0 to 5.11.0 line. Builder briefs, fixture rehearsal, compact
+  receipts, delivery drafts and cleanup now apply on every backend; the
+  backend files map dispatch, waits, review independence and recovery to
+  herdr or T3. No gate, cap or record changes.
 - `/factory` 5.11.0 keeps temporary runtime helpers outside application lint
   and typo scopes and requires lossless binary fixture capture plus restoration
   of counters changed by the fixture. These guards follow the PRWL-115 local
@@ -42,6 +48,25 @@ re-run `/agents-md` after a marker bump.
   Optional host env mirrors require task ownership receipts; pre-existing and
   changed files remain protected. Eligibility and actual deletion are reported
   separately. Runtime and publication gates remain unchanged.
+- `/factory` 5.6.1 and `/orchestrate-herdr` 0.4.1 launch and resume Codex with
+  `--no-daemon` under herdr. Codex 0.163's shared app-server daemon ran
+  commands outside the herdr pane, so `HERDR_ENV` was missing, the factory
+  stopped at its herdr check, and herdr never received the Codex session ID.
+  The restore check now also requires `--no-daemon` for Codex.
+- `/factory` 5.6.0 adds a herdr execution backend. **Select once** now picks
+  herdr (when the user or a controller turn contract names it), then T3, then
+  native local agents. T3-only execution text moves unchanged to
+  `references/backend-t3.md`. The new `references/backend-herdr.md` maps
+  dispatch, waits, review independence, the QA worker, recovery, parent
+  continuity and cleanup to the herdr CLI. States, gates, caps and records are
+  unchanged.
+- `/orchestrate-herdr` 0.4.0 adds a factory-stage reference that answers Intake
+  from the factory's **Start**. It also adds resume, long-command and
+  notification commands, warns that bare `herdr server` starts a server, and
+  corrects the worktree example: `--workspace` and `--cwd` are alternatives,
+  and `--path` sets placement.
+- `tools/validate.sh` runs under macOS's default bash 3.2. A heredoc with an
+  apostrophe inside `$(...)` is now defined in a function.
 - `/factory` 5.5.0 and `/agentic-qa` 0.8.0 require worker identity in
   workspace-permitted review and QA comment fields, including carried-forward
   and delivery QA. Identity distinguishes host harness, coding agent and model;
