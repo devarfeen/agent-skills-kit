@@ -7,6 +7,31 @@ their new versions, so a workspace on an older copy can see what an update
 brings. Generated `AGENTS.md` files carry the `agents-md` marker version;
 re-run `/agents-md` after a marker bump.
 
+## 2026-10-17
+
+### Changed
+
+- Edge cases now travel from the builder to QA, shipping and review instead of
+  stopping in the builder's report. `/orchestrate-t3` 0.12.0 and
+  `/orchestrate-herdr` 0.6.0 worker prompts keep the AC map per path (happy,
+  edge, failure, alternative, or a not-applicable reason) and write it to
+  `ac-map.md` outside the checkout.
+- `/factory` 5.14.0 reads `ac-map.md` back before QA and returns a missing path
+  row to the builder; passes it to `agentic-qa`, shipping and the reviewer; has
+  a fix round add the finding as a row and check its sibling cases; adds an
+  **Edge inventory** to the builder brief (issue edge cases, code guards,
+  escape classes, default states); and requires the round-log Cause to name the
+  missing check, not the symptom, so **Lessons** can count it.
+- `/agentic-qa` 0.9.0 reads the AC map from `AC_MAP:` or the QA handoff, and
+  gives every surface the **Default states** empty, error, loading, long
+  content and alternative entry, or a not-applicable reason. A fail in one of
+  these states is checked across the whole grid in the same round.
+- `/commit-push-pr` 0.10.0 and `/commit-push-close` 0.7.0 publish the AC map's
+  edge, failure and alternative rows under `Edge coverage` in the QA handoff.
+  The acceptance verdict does not change.
+- `/qa-escape` 1.1.0 reads the AC map from the QA handoff's `Edge coverage`,
+  on the PR or, for a direct close, on the issue.
+
 ## 2026-10-16
 
 ### Added

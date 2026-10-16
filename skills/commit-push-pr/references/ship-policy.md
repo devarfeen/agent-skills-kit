@@ -107,6 +107,8 @@ Publish the result under `Acceptance criteria` in the QA handoff, bound by its `
 
 An existing issue without either criteria source → record `Acceptance: none in issue`, with no verdict; never invent criteria. Skip the check for an issue created inline. Never tick the issue's checkboxes; the QA handoff carries the result.
 
+When a `/tdd-loop` AC map exists for the shipped content (an `ac-map.md` the caller names, or the implementing session's `AC map` and `Edges` lines), publish its edge, failure and alternative rows under `Edge coverage` in the QA handoff, each with its proof, deferral reason or not-applicable reason, plus the span check. Copy rows; never invent one. Edge rows do not change the acceptance verdict; QA, review and `/qa-escape` read them. No map → `Edge coverage: no AC map supplied`.
+
 ## Check evidence and reuse
 
 Before drafting or shipping, inspect existing check proof and run only missing or invalidated checks. Do not rerun a valid canonical full check merely because the workflow entered shipping, a result came from a worker, or a commit changed only its SHA. One final canonical full check must cover the combined integrated batch after its last edit in the integration checkout, preserving every mandatory subcheck/assertion/coverage threshold. Focused red/green and surrounding checks remain required during fixes.
@@ -221,6 +223,11 @@ Change: <actual commit SHA and branch; PR link when available>
 - [x] <criterion> — test: `<command>` passed | browser: <flow> → <asserted outcome>
 - [ ] <criterion> — pending manual: <check> (<why it is not automated>) | deferred: <follow-up or reason>
 <or `Acceptance: none in issue`; omit for an issue created inline>
+
+### Edge coverage
+- AC-<n> <edge | failure | alternative>: <input or state → observable result> — test: `<name>` | agentic-qa (<surface>) | deferred: <reason> | not applicable: <reason>
+Span check: <finding | none found>
+<or `Edge coverage: no AC map supplied`>
 
 ### Verification
 Status: <VERIFIED | PARTIAL | BLOCKED> — source: <executed now | supplied | mixed>

@@ -3,7 +3,7 @@ name: qa-escape
 disable-model-invocation: true
 description: "Record a bug human QA found after delivery, including factory QA_RETURNED: reproduce it and identify the missed check. No prior delivery: /diagnosing-bugs."
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # qa-escape
@@ -39,7 +39,7 @@ First check the fix was there to test: `git merge-base --is-ancestor <pr-merge-s
 
 ### 2. Read the agent's claim
 
-From the PR: the agentic-qa status and grid, the risk-review tier, the tdd-loop `AC map`. Name what was claimed for this behavior — a cell marked pass, a cell marked not reachable, a row that never existed, or no agentic-qa run at all.
+From the PR (the issue for a direct close): the agentic-qa status and grid, the risk-review tier, the tdd-loop AC map (the QA handoff's `Edge coverage`). Name what was claimed for this behavior — a cell marked pass, a cell marked not reachable, a row that never existed, or no agentic-qa run at all.
 
 ### 3. Classify and trace
 

@@ -3,7 +3,7 @@ name: orchestrate-herdr
 disable-model-invocation: true
 description: "Fan a spec (PRD) out to per-issue herdr tabs, each running a coding CLI (claude, codex, opencode), and monitor to done. No tab, CLI or runtime named: /ask-kit. Tab action, no spec: herdr companion."
 metadata:
-  version: "0.5.0"
+  version: "0.6.0"
 ---
 
 # Orchestrate herdr

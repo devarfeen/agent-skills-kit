@@ -3,7 +3,7 @@ name: agentic-qa
 disable-model-invocation: true
 description: "Agent-run functional QA of a PR or branch that can reach a screen: drives acceptance criteria through the running app and records the result on the PR. Never edits code. Pixel checks are /pixel-audit."
 metadata:
-  version: "0.8.0"
+  version: "0.9.0"
 ---
 
 # agentic-qa
@@ -13,7 +13,7 @@ Drive the change through the running app; judge visible behavior, logs and reque
 ## Inputs
 
 - **Change** — a PR number or branch. Read the diff, the head SHA, and the linked issue.
-- **Acceptance criteria** — the issue's body section/checklist, otherwise its newest standalone `## Acceptance criteria` comment (legacy criteria markers remain readable), plus any `/tdd-loop` `AC map`. Cover rows marked `agentic-qa (<surface>)`. No criteria → `BLOCKED`.
+- **Acceptance criteria** — the issue's body section/checklist, otherwise its newest standalone `## Acceptance criteria` comment (legacy criteria markers remain readable), plus the `/tdd-loop` AC map per [`references/qa-grid.md`](references/qa-grid.md). No criteria → `BLOCKED`.
 - **Isolated worktree** — the app runs from `<project-repo>/.worktrees/pr-<n>` at the head SHA (detached is fine; the tester commits nothing): reuse the verified PR or factory task worktree; before a PR exists use `.worktrees/qa-<branch-slug>`. Otherwise use `git worktree add --detach` per workspace policy. Only an explicitly started `/factory run` or `/orchestrate-t3` may read/follow `using-git-worktrees` for its task setup; direct skill use requires the user's invocation. Before commands there, report and verify path, owning repo/common Git directory, branch or detached state, starting SHA and baseline against workspace rules. Setup failure or mismatch blocks; never use the main checkout as fallback. Leave and report the worktree; cleanup follows workspace policy. The base-commit baseline runs from its own worktree, `.worktrees/pr-<n>-base`.
 - **Running app** — local URL from that worktree at head. Staging needs this session's explicit user approval and user-provided SSH access under the global rule; read-only unless each mutation is separately approved. Neither → `BLOCKED`.
 - **Roles** — each role that can see the touched surfaces, with test logins referenced by env var name only, never values. A role with no login → gap cells; if required to verify a criterion, result `BLOCKED`, otherwise `PARTIAL`.
@@ -46,7 +46,7 @@ Trace each changed file to a screen per the reference. Quote one path per reacha
 
 ### 2. Build the grid
 
-Use `<change>` as the PR number or sanitized branch name before a PR exists. Rows: each acceptance criterion and each path it owes, each escape class for the area, and one row per neighbouring flow — other screens that call the changed code, sibling entry points, create vs edit. Columns: relevant states, roles, and desktop/phone widths from target policy; record coverage reasons per the reference. Write the grid to `<artifacts-root>/specs/qa/<change>-<short-sha>/grid.md` before driving anything; template in the reference.
+Use `<change>` as the PR number or sanitized branch name before a PR exists. Rows: each acceptance criterion and each AC map path it owes, each escape class for the area, each surface's default states, and one row per neighbouring flow — other screens that call the changed code. Columns: relevant states, roles, and desktop/phone widths from target policy; record coverage reasons per the reference. Write the grid to `<artifacts-root>/specs/qa/<change>-<short-sha>/grid.md` before driving anything; template in the reference.
 
 ### 3. Baseline
 
@@ -85,7 +85,7 @@ Then at most 3 bullets naming the highest-impact findings. A QA worker returns o
 
 ## Completion criteria
 
-- [ ] Reachable runnable change: grid exists with no blank cells, proved unreachable reasons and named gaps. No-UI/early-block result: report records its reach trace or blocker; grid is not required
+- [ ] Reachable runnable change: grid exists with no blank cells, proved unreachable reasons, named gaps and covered default states. No-UI/early-block result: report records its reach trace or blocker; grid is not required
 - [ ] Every fail has a reproduction batch, expected, actual, and an evidence path that exists
 - [ ] The checkout record was reported before the app started, and `git status` in that worktree shows no change to source, test, or config files from this run
 - [ ] Existing PR: current-head marker read back, or draft printed pending approval. No PR: marker retained in report for later posting only if the shipped SHA still matches
