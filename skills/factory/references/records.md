@@ -6,6 +6,8 @@ Use when reading or publishing issue workflow records. Linear comments contain c
 
 Read only the records needed by the active gate. Discover supported comment-by-ID, cursor, update filters or field projection from the live schema; save posted IDs and read those records back instead of repeatedly listing full history. When direct reads are unavailable, page small bounded results and retain the last observed cursor/ID. Initial discovery still follows all pages needed to establish the newest valid record; bounded output cannot hide a newer failure. Save large tool results outside root context and extract required fields.
 
+Retain inspected source identities and completeness through [supervisor receipts](supervisor-receipts.md). Recheck supported metadata for new, edited or deleted relevant records before reuse; a saved cursor or issue timestamp alone cannot establish that no newer failure exists. Missing delta/version coverage repeats the necessary bounded discovery. The full matching gate record and its existing reuse rules still decide advancement.
+
 ## Linear fields
 
 | Heading | Required fields | Equivalent legacy record |

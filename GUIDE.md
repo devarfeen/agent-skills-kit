@@ -407,12 +407,12 @@ The factory group (`factory-workflow` in `npx skills`) covers what happens after
 **Run mode.** `/factory run <issue or label>` — for example `/factory run PRWL-127` or `/factory run automate` — makes the factory follow its own advice. It asks for the reviewer agent and model only when that choice is missing. The builder is the harness, provider and model you started the run in, unless you explicitly override them. The run preserves those choices across recovery and continues authorized work automatically; genuine human decisions, access gates and exhausted recovery caps can still park a unit. For each issue it:
 
 1. sets the issue In Progress and posts any missing acceptance criteria as a comment on it, never editing the issue itself;
-2. creates a worktree and starts that issue's own copy of the app from it;
-3. builds through the selected local executor, using T3 when available and compatible with the saved choice, with the verified checkout and authorized runtime mode;
-4. runs `/agentic-qa`, opens the PR, and drives CI;
+2. creates isolated BASE and HEAD worktrees and runtimes, prepares required infrastructure and rehearses restoration of any mutable fixtures;
+3. gives the builder a precise component contract, test obligations and documentation duties, then builds through the selected local executor with the verified checkout and runtime;
+4. runs `/agentic-qa`, prepares private PR text and neutral reviewer inputs during QA, then opens the PR after matching QA and local gates pass and drives CI;
 5. has the second agent review the code and post its findings on the issue; the builder fixes or declines each one, for up to three rounds;
 6. runs `/risk-review` and, for a low tier, merges into `local` or the staging branch through GitHub;
-7. posts the handover comment, sets the issue In Review, and removes the app copy, the worktree, and the branches;
+7. posts the handover comment, sets the issue In Review, and verifies cleanup of task-owned runtimes, evidence and worktrees after restoration, publication and integration gates pass;
 8. promotes `local` to staging with `/local-to-staging` for the repos it merged into, then runs `/deploy-watch`. A failed deploy gets one `/staging-fix`, whose PR goes through the same gates;
 9. ends with a read-only `/staging-to-production` readiness report. You run the production commands yourself.
 
@@ -428,6 +428,16 @@ It parks an issue, and moves to the next, when a person is needed: a high risk t
 
 **One runtime per issue.** Use the workspace task adapter or the project's supported runtime descriptor. BASE and HEAD have separate runtime state, writable outputs, test data and browser sessions; shared infrastructure may host private task data. Prove the assigned checkout and applicable readiness before dispatch, then verify HEAD before QA. Starting services or receiving an HTTP response alone does not prove readiness. An unready application stays with its runtime owner and cannot trigger a browser-tool fallback.
 
+**Builder brief and optional intake.** The parent discovers exact component behavior, preserved paths, allowed equivalents, tests and documentation obligations before implementation. Reporter-provided context helps, but optional template fields stay optional. The builder acknowledges the brief and returns evidence for each obligation. Missing reporter details do not authorize invented scope.
+
+**Fixtures before QA.** The runtime owner captures original state privately, prepares deterministic data, restores and measures the original state, then prepares again. Capture includes related rows, timestamps, losslessly encoded binary values and counters changed by the fixture. After QA, the owner stops writers, restores the same snapshot and measures it again. Incomplete restoration preserves the runtime and snapshot. Temporary helpers stay outside application lint and typo scopes.
+
+**Prepare during QA; release after gates.** Drafting PR text and neutral reviewer inputs can overlap QA. Receipts bind those drafts to the checkout, revision, criteria, policies and input bytes. Shipping revalidates them before use. A changed source invalidates the affected draft; independent review still waits for current-head QA and CI. Measure stage overlap separately from full factory elapsed time.
+
+**Cleanup is verified separately.** Remote evidence bytes and the QA comment must be read back before eligible local evidence is deleted. The adapter inventories task-owned files and records actual deletion separately from eligibility. Optional host env mirrors need ownership receipts. Pre-existing or changed files stay protected; an old folder without an ownership receipt is retained and named. Remove only integrated, clean worktrees no active process needs, without force. Branch deletion retains its separate ownership and authorization gates.
+
+**Review and QA identity.** Where workspace policy permits the workflow fields, comments identify the worker's host harness, coding agent, provider and requested model from launch and execution records. Unavailable resolved models stay explicit. Ordinary docs, commits and PR bodies retain zero attribution.
+
 **What a run learns.** Each check round — a QA result, a CI attempt, a risk review, a code review — is logged as one row in `specs/factory/rounds.md`: what failed, the cause, and what the worker tried. When the same cause shows up in three issues of one project, the run writes a one-line instruction into `specs/factory/lessons.md` and pastes that project's lessons into every later worker prompt, in this run and the next. It does not ask first; the run report lists each line it added, and you can edit or delete any of them. A lesson only changes how a worker works. It never changes a criterion, a test, a gate, or a cap, and a fix that deletes a test or removes an assertion parks the issue. Neither file is state: `/factory` still places every issue from the tracker and the PR alone.
 
 **Issues QA sent back.** When a person reopens an issue or reports a problem on shipped work, the run no longer hands it straight to you. It runs `/qa-escape` first: reproduces the problem, records why the agent's checks missed it, and posts that on the issue. Then it rebuilds, starting from a failing test for that exact problem, and takes the fix through the usual gates. Three cases still come back to you: the problem cannot be reproduced, it existed before the change, or the fix was simply not on the environment QA tested (the run builds nothing and promotes the fix to staging). Approving a durable guard also stays yours.
@@ -441,6 +451,8 @@ It parks an issue, and moves to the next, when a person is needed: a high risk t
 **Operating modes.** T3's installed binary can use supported queued native compaction followed by a separate continuation. Automatic child completions may outrank that maintenance request, so queue acceptance is not a pre-delivery guarantee. Where a workspace provides a native controller, select its harness and model explicitly and resume only its saved session ID. Its adapters and commands belong to that workspace; installing this kit does not install a controller script. Checkpoint-assisted observation is a third path for displaying verified recovery steps without restarting a harness. None of these modes installs an OS sleep policy or guarantees recovery from host suspension.
 
 **Context and readable status.** Check root usage at phase boundaries and before long reads or returns. At 60% observed occupancy, save a bounded checkpoint and use supported compaction before the next long phase, preserving the existing 25% reserve and pending-result costs. Scoped workers return concise receipts and complete evidence paths; repeated full histories still fill the parent. Use separate Markdown fields with text states and semantic color badges. ANSI belongs only in a supported terminal renderer.
+
+Read compact supervisor receipts before reloading full histories, comments or capability catalogs. Reuse cached source material only after a supported fresh version check and complete discovery match its recorded scope and bytes. Receipts retain ownership, choices, counters and evidence pointers; they neither refresh liveness nor pass an acceptance gate.
 
 ```text
 BUILDING -> CI -> QA -> REVIEW -> risk gate --low--> MERGE -> STAGING -> READY_FOR_OWNER

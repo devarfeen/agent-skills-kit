@@ -131,7 +131,7 @@ with the [groups `npx skills` shows](#skill-groups) under this repo's command.
 | [`incident-triage`](skills/incident-triage/SKILL.md) | companion | Read-only incident triage: timeline, ranked causes with evidence (always including one that isn't a recent change), owner-run mitigations, one redacted incident note with a Resolution section — production never accessed; a suspected breach goes straight to the owner | `We have an incident: checkout 502s since 14:00` |
 | [`writing-kit-skills`](skills/writing-kit-skills/SKILL.md) | — | Kit-internal house style for authoring and editing this repo's skills: skeleton, word budget, the seven canonical one-liners, output caps, eval gates, and matching each rule's form to the failure it fixes | `Rewrite this SKILL.md to house style` |
 
-Documentation release: `/factory` **5.4.1** and `/orchestrate-t3` **0.11.1**. The [factory guide](GUIDE.md#factory-workflow) explains automatic active waits, readiness before browser work, context checkpoints, queued compaction and the three operating modes. Harness choice stays explicit; an optional native controller belongs to the workspace and is not bundled with these skills.
+Current workflow versions: `/factory` **5.11.0** and `/orchestrate-t3` **0.11.1**. The [factory guide](GUIDE.md#factory-workflow) covers builder contracts, fixture restoration rehearsals, compact supervisor receipts, private PR preparation during QA and verified cleanup. It also explains active waits, context checkpoints and the three operating modes. Harness choice stays explicit; an optional native controller belongs to the workspace and is not bundled with these skills.
 
 ### Global install commands
 

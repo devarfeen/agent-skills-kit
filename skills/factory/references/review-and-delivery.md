@@ -18,7 +18,7 @@ Read when a unit first reaches `REVIEW`, `MERGE`, `STAGING`, `DEPLOY_FAILED` or 
 
 ## Review loop
 
-A fresh reviewer inspects what the builder produced; both settle findings on the issue, where a person can read the exchange. **Execution** selects a different provider when available and reports same-provider review. Runs once CI and QA pass on head.
+A fresh reviewer inspects what the builder produced; both settle findings on the issue, where a person can read the exchange. **Execution** selects a different provider when available and reports same-provider review. Runs once CI and QA pass on head. Reuse neutral inputs prepared during QA only after [delivery drafts](delivery-drafts.md) revalidates their bytes, current PR revision, criteria, instructions and saved choice. Preparation contains no findings or verdict and grants no early reviewer dispatch.
 
 1. **Review.** Apply **Independent review** in [`execution-and-continuity.md`](execution-and-continuity.md#independent-review) to the reviewer and any child lanes. Dispatch a fresh read-only reviewer through **Execution**, titled `<issue-id> review`, assigned the unit's execution worktree and the workspace-required thread binding, with this prompt:
 
@@ -165,7 +165,7 @@ Per cleanable unit, for both its HEAD and its BASE task runtime:
 
 1. Call the workspace task adapter's destroy command for each task runtime of the unit. It removes only that task's own services, volumes, networks, databases, private state and `/tmp/<task-id>/`; it never touches canonical or shared resources. A workspace approval gate for the destroy stays binding: report it under Needs user and keep the runtime. Without an adapter destroy command, stop the runtime with its recorded command (Compose fallback: same project, project directory and file plus `down`), verify its services stopped, and report every task-owned resource that remains. A failed destroy skips further cleanup for that runtime and worktree, keeps the rest, and is reported.
 2. Apply **QA artifact cleanup** to the unit's recorded evidence, every round included, before removing its worktrees. Unverified publication retains local evidence and is reported.
-3. `git -C <worktree> status --porcelain --ignored`. Modified or untracked files, or ignored files that are not dependency or build output, → name them and skip this worktree.
+3. Before the Git check, let the task adapter remove only its unchanged generated host env mirror under its ownership receipt. Prefer its private env mount; when a host mirror is necessary, create it through the adapter, never an unrecorded copy. Pre-existing or changed envs remain protected. Then `git -C <worktree> status --porcelain --ignored`. Modified or untracked files, or ignored files that are not dependency or build output, → name them and skip this worktree.
 4. `git worktree remove <path>` — never `--force`.
 5. `git branch -d <branch>`. After a squash or rebase merge `-d` refuses; `-D` is allowed only for a branch whose tip is the merged PR's `headRefOid`.
 6. `git push origin --delete <branch>` when the remote branch still exists.

@@ -11,6 +11,37 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- `/factory` 5.11.0 keeps temporary runtime helpers outside application lint
+  and typo scopes and requires lossless binary fixture capture plus restoration
+  of counters changed by the fixture. These guards follow the PRWL-115 local
+  replay. README, GUIDE and BEST-PRACTICES now cover builder briefs, fixture
+  rehearsal, compact receipts, private delivery drafts and verified cleanup.
+  The replay measured overlapping preparation, not full factory speedup.
+- `/factory` 5.10.0 prepares private PR text and neutral reviewer inputs while
+  its QA worker runs. Revision-bound receipts invalidate stale drafts; shipping
+  waits for matching QA and local gates, and independent review still waits for
+  current-head CI and QA. Fixes repeat QA before PR updates. Existing owners,
+  worker choices, publication read-back and attempt caps remain authoritative.
+- `/factory` 5.9.0 resumes and advances through compact supervisor receipts
+  before expanding thread history, tracker records or capability catalogs.
+  Source reuse needs matching scope/bytes, complete discovery and fresh
+  supported version checks; missing signals refresh the affected source.
+  Cached summaries never replace live ownership, budgets or gate evidence.
+- `/factory` 5.8.0 gives T3 and native builders an evidence-based brief before
+  implementation: exact component behavior, permitted equivalents, preserved
+  paths, tests and documentation duties. The existing write acknowledgement
+  and completion receipt check those duties. Optional reporter answers remain
+  optional; repository discovery fills technical details without inventing scope.
+- `/factory` 5.7.0 prepares only task-required shared infrastructure, preserves
+  existing data mounts, and blocks ambiguous database storage. Mutable QA
+  fixtures require a schema-based recipe, private original snapshot, measured
+  restore rehearsal before QA, and restoration on every QA exit. Readiness
+  handoffs carry exact preparation/recovery commands and producer results.
+- `/factory` 5.6.0 uses adapter-owned local-file inventories and resumable
+  evidence cleanup, including generated controls and reserved download copies.
+  Optional host env mirrors require task ownership receipts; pre-existing and
+  changed files remain protected. Eligibility and actual deletion are reported
+  separately. Runtime and publication gates remain unchanged.
 - `/factory` 5.5.0 and `/agentic-qa` 0.8.0 require worker identity in
   workspace-permitted review and QA comment fields, including carried-forward
   and delivery QA. Identity distinguishes host harness, coding agent and model;

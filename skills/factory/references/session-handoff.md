@@ -16,6 +16,8 @@ Use Markdown list items so T3 and CLI render separate fields. Semantic emoji pro
 
 `RUNNING` advances work. `WAITING_WORKERS` means a child or known queued check is active; wait with supported controls and continue on its result. `WAITING_RUNTIME` means authorized preparation/repair is active; its owner finishes readiness before dependent work starts. Neither is human-blocked, and neither emits a paste/run prompt or ends the active supervisor turn. `WAITING_COMPACTION` may yield only after durable compact and continuation receipts under the runtime's supported maintenance boundary; it also needs no user action. Name the owner, observed progress and next automatic action. A timeout alone changes neither ownership nor state. Count only evidenced human/capability failures as blocked. `BLOCKED` names the missing human decision, authority, fact or exhausted gate; `PAUSED`/`STOPPED` preserve explicit user intent. `COMPLETE` requires every requested gate or the authorized ceiling; child completion alone cannot earn it.
 
+Preserve any [delivery draft](delivery-drafts.md) receipt locator/digest with existing evidence references. A replacement parent revalidates it before use; prepared text never proves QA, CI, publication or review.
+
 ## Human boundary
 
 When a unit truly needs a person, state why, owner, attempted recovery, preserved head and budgets, next automatic action after resolution, and the exact user action. Keep independent work running. Present three distinct, reasoned options in a numbered list, with one **Recommended** choice: each states action, benefit, cost and preserved gate. Offer only feasible, authorized paths; when fewer than three exist, label remaining slots unavailable with the reason. Retaining the parked unit for its owner is a valid option. Options never reset caps, weaken acceptance, grant access or bypass review. Do not ask for a choice while workers or authorized runtime work merely run. A pause/stop needs no unsolicited recovery menu.
@@ -23,6 +25,8 @@ When a unit truly needs a person, state why, owner, attempted recovery, preserve
 ## Durable handoff
 
 Persist these fields for each unfinished unit/group; render them at its real human boundary or interruption. Limit prose to 400 words; link longer evidence without dropping blockers or required steps.
+
+A replacement parent starts from [supervisor receipts](supervisor-receipts.md) when supported, then reconciles live state. Preserve source versions/cursors and evidence references with the existing checkpoint rather than importing old thread history.
 
 - **Current state:** requested stop/pause or blocker, actual thread project/root and separate execution checkout/branch/head, checkpoint reference, original builder and chosen reviewer, worker IDs/status/ownership, last verified gate, next missing gate, remaining recovery/stage budgets, and evidence paths. Mark stale or unavailable live status unknown.
 - **Required setup:** exact supported repair, connection or runtime restart steps and their authorization requirements. Use `None` when no setup is needed. Separate authorized local work from user-only access or decisions. Include the diagnosed failed condition and recovery already attempted.
