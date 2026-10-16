@@ -31,6 +31,7 @@ A fresh reviewer inspects what the builder produced; both settle findings on the
    THREAD_BINDING: [REQUIRED_THREAD_PROJECT_AND_ROOT]
    BRANCH: [VERIFIED_BRANCH]
    CRITERIA: [SOURCE AND COMPLETE ACCEPTANCE CRITERIA]
+   AC_MAP: [BUILDER ac-map.md PATH | none]
    INSTRUCTIONS: [APPLICABLE POLICY AND STANDARD PATHS; EFFECTIVE AUTHORIZATION]
    ROUND: [N]
    SINCE: [SHA_REVIEWED_LAST_ROUND | none]
@@ -43,6 +44,11 @@ A fresh reviewer inspects what the builder produced; both settle findings on the
    standards. With SINCE set, review only the commits after it and the findings
    the builder declined in its last reply on the issue. Edit, commit, and push
    nothing.
+
+   AC_MAP is the builder's coverage claim, not criteria. Check it against
+   the diff: name each changed branch, guard, or entry point that no row
+   proves, and each deferral or not-applicable reason that does not hold.
+   Report these as findings; never add acceptance criteria.
 
    Post one comment on ISSUE through TRACKER, headed
    `## Code review — <short-sha> · round <ROUND>`: numbered findings, each with

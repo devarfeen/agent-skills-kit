@@ -10,7 +10,7 @@ Fill `TRACKER` with the workspace tracker per **Resolve** in [`tracker-map.md`](
 
 Fill the repository/common-directory identity, starting commit, baseline evidence, and applicable instruction pointers from that record. `AC_SCOPE` lists this repository assignment's criteria; for a split issue, other repository assignments remain outside the thread's write scope.
 
-`AUTHORIZATION` names the applicable access-policy pointers and their effective revision or content hash; recheck them after policy changes. `LESSONS`, `STACK`, and `READINESS` are filled only by `/factory run`: project lessons, the app URL/command prefix, and readiness proof for the assigned runtime. Otherwise drop those lines and their instructions rather than sending empty fields.
+`AUTHORIZATION` names the applicable access-policy pointers and their effective revision or content hash; recheck them after policy changes. `LESSONS`, `STACK`, and `READINESS` are filled only by `/factory run`: project lessons, the app URL/command prefix, and readiness proof for the assigned runtime. Otherwise drop those lines and their instructions rather than sending empty fields. `REPORT_DIR` is an absolute directory outside `CHECKOUT` for the complete report and `ac-map.md`: the unit's log directory under `/factory run`, otherwise `/tmp/<issue-id>/`.
 
 ```md
 TRACKER: [GitHub|Linear]
@@ -30,6 +30,7 @@ AC_SCOPE: [ASSIGNED_CRITERIA]
 LESSONS: [LESSON_LINES]
 STACK: [APP_URL] · [EXEC_PREFIX]
 READINESS: [CHECKOUT_RUNTIME_IDENTITY_CHECK_RESULTS_AND_LOG_PATH]
+REPORT_DIR: [ABSOLUTE_DIRECTORY_OUTSIDE_CHECKOUT]
 
 Work only on this repository assignment, committing only to BRANCH, inside
 CHECKOUT. Read INSTRUCTIONS before edits. Preserve THREAD_BINDING; it does not select
@@ -57,7 +58,12 @@ newest standalone `## Acceptance criteria` comment; legacy criteria records rema
 `qa-escape` for this area, and the `## QA escape guards` lines in AGENTS.md.
 Map every assigned criterion in AC_SCOPE to a test, to `agentic-qa (<surface>)` when only a running
 app can prove it, or to a deferral with its reason. Never report UI behavior
-as verified from unit tests.
+as verified from unit tests. Keep the map per path: one row per criterion for
+each of happy, edge, failure and alternative, or a row saying that path does
+not apply and why, plus the span check. Write the full map to `ac-map.md`
+in REPORT_DIR. It holds only the rows and the span check: scenario, proof,
+and a one-line deferral or not-applicable reason, never implementation
+reasoning. QA, shipping and review read that file.
 
 A criterion a user would see is done only when a user can reach it: name the
 route, menu item, button, or form that opens it in its AC map row. Before
@@ -107,12 +113,12 @@ Report back when completed, errored, or blocked.
 
 Completion requires test evidence: the test command and its passing output.
 Return at most 400 words of decisive evidence and the complete report/log
-paths; keep every acceptance-map row and finding in that complete record.
+paths in REPORT_DIR; keep every acceptance-map row and finding in that complete record.
 Do not paste raw tool transcripts into the return. Preserve the four closing
 fields below, using the report path for any detail too long for this summary.
 End the report with four fields, one line each:
 Status: <completed | blocked — decision needed | errored — cause>
-AC map: <AC-n → test name | agentic-qa (surface) | deferred — why; every assigned criterion listed>
+AC map: <ac-map.md path> — <AC-n path → test name | agentic-qa (surface) | deferred — why; every assigned criterion listed>
 Decisions: <choices made that the issue didn't dictate, or "none">
 Open items: <what a next session must resolve, or "none">
 ```

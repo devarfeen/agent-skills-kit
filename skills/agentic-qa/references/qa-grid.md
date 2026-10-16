@@ -2,6 +2,19 @@
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
+## Contents
+
+- Reach trace
+- Grid template
+- AC map
+- Default states
+- Runtime and browser preparation
+- agent-browser command notes
+- State recipes (agent-browser)
+- Report template
+- Findings
+- Not reachable
+
 ## Reach trace
 
 A change reaches a screen when any changed file sits on a path that ends at something a user sees. Trace forward from each changed file until one of these holds, and quote the chain:
@@ -37,7 +50,25 @@ Roles: admin (QA_ADMIN_EMAIL / QA_ADMIN_PASSWORD), viewer (QA_VIEWER_EMAIL / QA_
 | Neighbour: invoice list total column | default | pass | pass | pass | pass |
 ```
 
-Select states and roles from the changed behavior, criteria, and escape classes. Record the coverage reason for each row; do not multiply unreachable states across every role. Merge identical cells with `same` only when the reason is identical. Each fail gets an ID that the report expands.
+Select states and roles from the changed behavior, criteria, AC map, escape classes and **Default states**. Record the coverage reason for each row; do not multiply unreachable states across every role. Merge identical cells with `same` only when the reason is identical. Each fail gets an ID that the report expands.
+
+## AC map
+
+Read the `/tdd-loop` AC map from the `AC_MAP:` file a caller names; otherwise from an `ac-map.md` or `/tdd-loop` summary `AC map` line the implementing session or PR names; otherwise from the `Edge coverage` section of the newest QA handoff for head. Cover rows marked `agentic-qa (<surface>)`; give each `deferred` row a cell when the app can show it, or record why it cannot. No map → build the grid from criteria and write `AC map: none` in the report.
+
+## Default states
+
+Each reachable surface gets a row for every state below, or a line under the grid: `<surface> <state>: not applicable — <reason a reviewer could disagree with>`.
+
+| State | Applies when |
+| ----- | ------------ |
+| Empty | The surface lists, searches, or shows optional data |
+| Error | The surface sends a request or submits a form; assert visible feedback, not only the absence of a crash |
+| Loading | A request can be in flight while the user acts; include double submit |
+| Long content | The surface shows names, labels, or user, seeded, or translated text: the longest real value from fixtures, enums, or locales, one unbroken word over 20 characters, and non-ASCII text |
+| Alternative entry | A sibling entry point — another route, step control, shortcut, or role — reaches the same behavior: a stepper beside Next, edit beside create |
+
+A fail in one of these states is checked in the same state on every other surface, width, role, locale and entry point of the grid in the same round, so one round reports all the fails it causes.
 
 ## Runtime and browser preparation
 

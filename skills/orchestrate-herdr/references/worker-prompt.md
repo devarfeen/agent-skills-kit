@@ -6,6 +6,8 @@ Fill `TRACKER` with the workspace tracker per **Resolve** in [`tracker-map.md`](
 
 `BRANCH` follows `ISOLATION`. In `worktree` and `branch` mode it is that issue's branch — Linear supplies `gitBranchName`, GitHub has no native name so use `<issue-number>-<slug>`. In `shared` mode there is no per-issue branch: drop the `BRANCH` line and the clause naming it, rather than sending an empty field.
 
+`REPORT_DIR` is an absolute directory outside the checkout for `ac-map.md`: `/tmp/<issue-id>/` unless the caller names a log directory.
+
 `LESSONS` is filled only by `/factory run`, with the lesson lines it passes for this issue's project. Otherwise drop the `LESSONS` line and the sentence naming it.
 
 Append the verified checkout and instruction block from `checkout-binding.md`. Set the expected branch from `BRANCH`, or the recorded shared branch in shared mode; never infer checkout identity from the issue.
@@ -16,6 +18,7 @@ ISSUE: [NATIVE_IDENTIFIER]
 ISSUE_URL: [ISSUE_URL]
 BRANCH: [BRANCH_NAME]
 LESSONS: [LESSON_LINES]
+REPORT_DIR: [ABSOLUTE_DIRECTORY_OUTSIDE_CHECKOUT]
 
 Work only on this issue, committing only to BRANCH.
 
@@ -31,7 +34,12 @@ Before coding, read the issue's acceptance criteria, any issues labelled
 `qa-escape` for this area, and the `## QA escape guards` lines in AGENTS.md.
 Map every criterion to a test, to `agentic-qa (<surface>)` when only a running
 app can prove it, or to a deferral with its reason. Never report UI behavior
-as verified from unit tests.
+as verified from unit tests. Keep the map per path: one row per criterion for
+each of happy, edge, failure and alternative, or a row saying that path does
+not apply and why, plus the span check. Write the full map to `ac-map.md`
+in REPORT_DIR. It holds only the rows and the span check: scenario, proof,
+and a one-line deferral or not-applicable reason, never implementation
+reasoning. QA, shipping and review read that file.
 
 A criterion a user would see is done only when a user can reach it: name the
 route, menu item, button, or form that opens it in its AC map row. Before
@@ -69,7 +77,7 @@ Report back when completed, errored, or blocked.
 Completion requires test evidence: the test command and its passing output.
 End the report with four fields, one line each:
 Status: <completed | blocked — decision needed | errored — cause>
-AC map: <AC-n → test name | agentic-qa (surface) | deferred — why; every criterion listed>
+AC map: <ac-map.md path> — <AC-n path → test name | agentic-qa (surface) | deferred — why; every criterion listed>
 Decisions: <choices made that the issue didn't dictate, or "none">
 Open items: <what a next session must resolve, or "none">
 ```
