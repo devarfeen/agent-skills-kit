@@ -3,7 +3,7 @@ name: orchestrate-herdr
 disable-model-invocation: true
 description: "Fan a spec (PRD) out to per-issue herdr tabs, each running a coding CLI (claude, codex, opencode), and monitor to done. No tab, CLI or runtime named: /ask-kit. Tab action, no spec: herdr companion."
 metadata:
-  version: "0.3.1"
+  version: "0.4.0"
 ---
 
 # Orchestrate herdr
@@ -20,6 +20,8 @@ Fan work out to one herdr-managed worker tab per unit (tracker sub-issue or harn
 - **CODING_CLI** — `CLI_NAME` plus the permission-mode flags from the user's established preference or intake choice. The prompt is never a launch argument (see Rules).
 - **ISOLATION** — `worktree`, `branch`, or `shared`; it decides whether workers can run in parallel.
 - **TRACKER** / **TRACKER_TAG** — workspace tracker of record (`G` / `L`). Derived per **Resolve** in [`references/tracker-map.md`](references/tracker-map.md), which holds the per-tracker commands cited by bold section name below.
+
+**Factory stage.** Under a user-started `/factory run` on herdr, follow [`references/factory-stage.md`](references/factory-stage.md) instead of Intake.
 
 ## Rules
 

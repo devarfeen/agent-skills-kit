@@ -11,6 +11,21 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- `/factory` 5.6.0 adds a herdr execution backend. **Select once** now picks
+  herdr (when the user or a controller turn contract names it), then T3, then
+  native local agents. T3-only execution text moves unchanged to
+  `references/backend-t3.md`. The new `references/backend-herdr.md` maps
+  dispatch, waits, review independence, the QA worker, recovery, parent
+  continuity and cleanup to the herdr CLI. States, gates, caps and records are
+  unchanged.
+- `/orchestrate-herdr` 0.4.0 adds a factory-stage reference that answers Intake
+  from the factory's **Start**. It also adds resume, long-command and
+  notification commands, warns that bare `herdr server` starts a server, and
+  corrects the worktree example: `--workspace` and `--cwd` are alternatives,
+  and `--path` sets placement.
+- `tools/validate.sh` runs under macOS's default bash 3.2. A heredoc with an
+  apostrophe inside `$(...)` is now defined in a function.
+
 - `/factory` 5.5.0 and `/agentic-qa` 0.8.0 require worker identity in
   workspace-permitted review and QA comment fields, including carried-forward
   and delivery QA. Identity distinguishes host harness, coding agent and model;

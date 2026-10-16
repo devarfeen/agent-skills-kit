@@ -3,7 +3,7 @@ name: factory
 disable-model-invocation: true
 description: "Shows where a spec (PRD), ticket, or PR stands in the factory workflow and names the one skill that moves it on. Read-only unless the user starts /factory run. Never closes issues or passes staging."
 metadata:
-  version: "5.5.0"
+  version: "5.6.0"
 ---
 
 # factory
@@ -68,7 +68,7 @@ The user's `/factory run <reference>` approves the whole chain. Read [`reference
 1. **Intake.** Resolve units as in step 1 and apply **Triage** before builder/runtime work. A fully specified ticket may receive its narrow eligibility transition under run authority; ambiguous work parks. Label intake retains its reporter-follow-up path. Post missing criteria only to restate existing outcomes. Apply **Start** to inherit the builder. Ask only "Which agent and model reviews?", unless already answered.
 
    Reviewer unanswered → stop with the setup and continuation prompt. Preserve the choices on resume. After this intake the run asks nothing more.
-2. **Loop.** Wait for active children and continue automatically; a worker turn ending is not a factory stop. Follow **Dependency-aware scheduling**: isolated independent units may overlap within capacity; the parent serializes integration. For each ready unit: place it (steps 2–4), carry out its `Next` per **Stage map**, and place it again; log it and apply **Lessons**. Per unit: status In Progress, its own worktree and **Task stack**, a builder thread, agentic QA in a QA worker, a PR, CI, the **Review loop** between the reviewer and the builder, risk review, **Merge**, **Handover** with status In Review, **Cleanup**, **Promotion**, **Staging**. For setup or local-runtime blockers, read [`references/readiness-and-recovery.md`](references/readiness-and-recovery.md); **Loading a stage skill** governs recovery and stops.
+2. **Loop.** Wait for active children and continue automatically; a worker turn ending is not a factory stop. Follow **Dependency-aware scheduling**: isolated independent units may overlap within capacity; the parent serializes integration. For each ready unit: place it (steps 2–4), carry out its `Next` per **Stage map**, and place it again; log it and apply **Lessons**. Per unit: status In Progress, its own worktree and **Task stack**, a builder worker on the selected backend (herdr, T3 or native), agentic QA in a QA worker, a PR, CI, the **Review loop** between the reviewer and the builder, risk review, **Merge**, **Handover** with status In Review, **Cleanup**, **Promotion**, **Staging**. For setup or local-runtime blockers, read [`references/readiness-and-recovery.md`](references/readiness-and-recovery.md); **Loading a stage skill** governs recovery and stops.
 3. **Parks.** Park units awaiting a person — high risk review, a spent cap, reporter-only facts — with evidence; continue the run. No tracked compose file or issue body is edited; no issue is closed.
 4. **Run report.** When no automatic work remains, print the output table, parked units' [standard handoffs](references/session-handoff.md), drafted criteria, **Production readiness**, and **Lessons**.
 

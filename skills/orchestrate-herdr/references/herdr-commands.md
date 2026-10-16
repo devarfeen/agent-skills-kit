@@ -2,7 +2,21 @@
 
 Zero attribution: omit co-author, AI, and tool attribution from all output.
 
-The installed binary is the authority for syntax: print a command group's help by running the group with no subcommand — `herdr agent`, `herdr tab`. Never run bare `herdr`, which launches or attaches the TUI, and never probe a *mutating* nested command by omitting its arguments — `herdr workspace create` is valid with defaults and will execute. Control commands return JSON; read IDs and states from the response, never predict them. Server errors are JSON on stderr with exit 1; syntax errors exit 2.
+The installed binary is the authority for syntax: print a command group's help by running the group with no subcommand — `herdr agent`, `herdr tab`. Never run bare `herdr`, which launches or attaches the TUI, and never probe a *mutating* nested command by omitting its arguments — `herdr workspace create` is valid with defaults and will execute. `herdr server` with no subcommand starts a headless server; read its help with `herdr server --help`. Control commands return JSON; read IDs and states from the response, never predict them. Server errors are JSON on stderr with exit 1; syntax errors exit 2.
+
+## Contents
+
+- Companion
+- Context
+- Names
+- Create tab
+- Start agent
+- Submit
+- Watch
+- Read
+- Resume
+- Long commands
+- Notify
 
 ## Companion
 
@@ -98,3 +112,36 @@ herdr agent read <agent-name> --source recent-unwrapped --lines 200
 Use `recent-unwrapped` for transcripts and logs — it joins soft wraps. Other sources: `visible` (viewport), `recent` (wrapped), `detection` (agent-detection snapshot). Use `--format ansi` only when color is the evidence.
 
 **Alternate-screen caveat.** If raising `--lines` reveals no more of a finished response, the CLI is drawing on the terminal's alternate screen and those rows never entered herdr's scrollback — a larger count cannot recover them. This is the one case where test evidence can be unquotable. Only then, ask that worker to write its full report as Markdown to a temp file and reply with the path, and read the file. Never request file output in the initial worker prompt.
+
+## Resume
+
+Resume needs the exact native session ID from `agent get` → `.result.agent.agent_session.value` (`kind` `id`). Confirm the pane is back at its shell (`herdr pane process-info --pane <id>` lists only the shell), then start the same name with the harness's resume arguments before its flags:
+
+```bash
+herdr agent start <agent-name> --kind claude --pane <pane-id> -- --resume <session-id> <flags...>
+herdr agent start <agent-name> --kind codex --pane <pane-id> -- resume <session-id> <flags...>
+```
+
+No reported session ID → do not resume; never use a "latest" or picker form. After a server restart herdr restores agents by session ID but without their launch flags: compare `terminal_id` with the saved one and the `process-info` argv with the saved flags before prompting. A restart gives each pane a new `terminal_id`; a relaunch in the same pane keeps it. Codex reports its session only when herdr's Codex `SessionStart` hook is trusted in Codex.
+
+Restore is asynchronous. herdr may list the agent before its process starts and refuse keys with `agent_not_ready`, and a fresh pane first shows its login wrapper or shell. `process-info` nests its data under `.result.process_info`. A process `name` can be a version string, so match the harness executable in `argv`. Wait until that executable appears before judging flags. Treat the agent as exited only after the pane stays a bare shell for several seconds. To exit a restored agent, send an idle one Ctrl-C twice in separate calls. Close a `blocked` one's pane with `herdr pane close <pane>`: any key on a dialog is an answer the CLI may save (Esc on Claude's MCP-server dialog disabled that server for the project).
+
+## Long commands
+
+Run tests, servers and other long commands in a plain pane, not inside an agent turn you must wait on:
+
+```bash
+herdr pane run <pane-id> "<command>"
+herdr pane wait-output <pane-id> --regex '<end marker>' --timeout 60000
+herdr pane read <pane-id> --source recent-unwrapped --lines 120
+```
+
+`wait-output` matches output already on screen, so print a unique end marker with the exit status. A timeout means still running; repeat the bounded wait.
+
+## Notify
+
+```bash
+herdr notification show "<title>" --body "<one line>" --sound request
+```
+
+Use it only at a human boundary, such as a `blocked` agent or a parked run, so an away user sees it. The body names the unit and reason, never pane text or secrets.
