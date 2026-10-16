@@ -11,6 +11,14 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- `/factory` 5.13.0 starts user-only stage skills the way the user would: the
+  slash command is the first token of a worker turn on the selected backend,
+  with a private brief the arguments name. Claude Code 2.1 refuses a Skill-tool
+  call for a `disable-model-invocation` skill and forbids repeating its steps,
+  so the parent no longer reads a stage skill to follow it. A herdr submission
+  stays one line under 700 characters or a typed prefix plus pasted body; a
+  longer paste loads no skill (verified on herdr 0.9.5). The T3 send path is
+  documented but unverified. `reviewer=` answers intake for unattended starts.
 - `/factory` 5.12.0 and `/orchestrate-herdr` 0.5.0 merge the herdr execution
   backend branch (factory 5.6.0/5.6.1, orchestrate-herdr 0.4.0/0.4.1 below)
   into the 5.7.0 to 5.11.0 line. Builder briefs, fixture rehearsal, compact

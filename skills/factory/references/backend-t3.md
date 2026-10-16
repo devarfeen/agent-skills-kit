@@ -18,6 +18,8 @@ Resolve thread binding from workspace instructions separately from the assigned 
 
 A root-bound thread may report `worktreePath: null`; reconcile it against its registered workspace root.
 
+Stage skills: send `/<skill> <args>` as the first token of a `t3_thread_send` message to the unit's idle builder thread or a stage thread. Read the thread's first new items back; no skill load means no skill ran: resubmit once, then park the stage as `stage_skill_not_invoked`. No T3 run has recorded a positive readback for this path yet.
+
 ## Compaction
 
 For a binary-installed T3 host, first check **Queued native compaction** in `orchestrate-t3/references/t3-tools.md` and workspace overrides. A supported queued maintenance command plus queued continuation can compact at a turn boundary without a dedicated compact MCP tool. This is not a guarantee that automatic child delivery waits for compaction.
