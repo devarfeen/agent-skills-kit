@@ -286,10 +286,109 @@ merged and verified, request cleanup as described in the guide.
 
 Workspace-root level.
 
+A bug fix is a change like any other and goes through the same loop: a failing test that reproduces the bug, a fix that removes the root cause, a review against the bug report, then CI and review on a PR until nothing is left open. Choose who drives the loop: the factory (**automated**) or you (**manual**).
+
+| Pick | When |
+| :--- | :--- |
+| **Automated** — `/factory run <issue>` | An issue exists (or `/report-issue` can file one) with a reproduction and expected-versus-actual behavior, and you want it carried to staging without driving each step |
+| **Manual** — you invoke each skill | The cause is unknown and needs hands-on probing, the fix is a small ad hoc one, or you want to approve each step |
+
+A hard bug can use both lanes: diagnose manually (steps 1–2 below), put the root cause and the reproduction on the issue, then hand the issue to `/factory run`.
+
+### Automated lane
+
+1. **Have an issue.** A tracker issue labeled `ready-for-agent` is the input. No issue yet → `/report-issue` drafts one with acceptance criteria and code leads, then creates it after you approve the draft. `needs-triage` → `/triage` first.
+2. **`/factory run <issue>`** — after one question (which agent reviews) it asks nothing more and runs the loop:
+   - **Build.** A builder fixes the bug through `/tdd-loop`: a failing test that reproduces the bug comes first. An issue without quoted passing test output is not built.
+   - **QA.** `/agentic-qa` runs the reproduction on the base commit (`before`) and the fixed head (`after`).
+   - **PR and CI.** `/commit-push-pr` opens the PR; `/ci-loop` gets up to three attempts on a red check.
+   - **Review loop.** A fresh, read-only reviewer, on a different provider when one is available, runs `/code-review` against the base and the issue's criteria and posts numbered findings on the issue. The builder fixes each one through `/tdd-loop` or declines it with a reason. The new head passes CI and QA again, and the next round reviews only the new commits and the declined findings. The loop ends at zero findings; findings still open after three rounds park the unit with them quoted. A fix that deletes a test or removes an assertion parks the unit: a round that passes by weakening its checks proves nothing.
+   - **Risk and merge.** `/risk-review` tiers the PR. Low → the run merges into `staging` or `local`; high → an engineer approves and merges.
+   - **Staging.** `/deploy-watch` checks the deploy, then the unit is ready for the owner. Production is never touched.
+3. **Read the run report.** A unit that hit a cap or lacked a fact is parked, with the question written out for whoever can answer it. Re-running `/factory run` with the same reference resumes from what the tracker and PR show.
+
+### Manual lane
+
 1. **`/feature-discovery`** — point it at the module, sub-module, UI, or behavior the bug lives in. It traces current code first, reads related ADRs, and returns the report in chat. This is your evidence base. If the bug's *when* or *why* lives in history, accept its offer to scan git history.
-2. **`/diagnosing-bugs`** — run it on that area. It finds the root cause and fixes it. If it can only *confirm the bug exists* without fully resolving it, escalate to **`/tdd-loop`**: write a failing test that reproduces the bug, watch it fail for the right reason, then make it pass to close it for good.
-3. **Ship** — `/commit-push-close` or `/commit-push-pr`. The commit carries a `Root cause:` line naming the cause removed, not the symptom; if the cause was never proven, it says so. Temporary instrumentation is tagged (`[DEBUG-a4f2]`) while debugging so one grep removes it; the ship skills stop on any that remains.
-4. **Look back** *(optional)* — after a bug that took too long to find, `/retro` in the same session proposes the check or standard that would have caught it.
+2. **`/diagnosing-bugs`** — run it on that area to find the root cause. Temporary instrumentation is tagged (`[DEBUG-a4f2]`) while debugging so one grep removes it; the ship skills stop on any that remains.
+3. **`/tdd-loop`** — write a failing test that reproduces the bug, watch it fail for the right reason, then make it pass. This step is not optional: the test is what keeps the bug fixed. Where a test is impractical, use `/tdd-loop`'s exception protocol and name the substitute verification.
+4. **`/code-review`** — review the fix on two axes: the repo's coding standards, and the spec, which is the issue or, for ad hoc work, the original request. Fix each finding through `/tdd-loop` and run `/code-review` again on the new diff. Repeat until it reports no findings; this is the manual review loop. If you skip it, the ship skills ask before shipping, and a review with findings to fix stops the ship.
+5. **Ship** — `/commit-push-pr` by default. The commit carries a `Root cause:` line naming the cause removed, not the symptom; if the cause was never proven, it says so. Ad hoc work needs no issue written before coding; the ship skill creates it from the request, diff and validation. Use `/commit-push-close` only for a small fix that has passed `/code-review` and needs no PR.
+6. **After the PR opens** — Workflow F. Run `/factory <pr>` after each step to see the next gate: `/ci-loop` for red CI, `/agentic-qa` when the fix reaches a screen, `/pr-feedback` for a human reviewer's threads, then `/risk-review`. A push resets the gates, so every fix you push is checked again.
+7. **Look back** *(optional)* — after a bug that took too long to find, `/retro` in the same session proposes the check or standard that would have caught it.
+
+#### Manual lane state machine
+
+Each state names the skill you call there; each arrow names what must be true to move on. Every fix, wherever it comes from, re-enters at `TEST` and passes `REVIEW` again before it is pushed, and every push starts the PR at `CI` again. Unsure which state you are in once a PR exists → `/factory <pr>`.
+
+```mermaid
+stateDiagram-v2
+    DISCOVER : /feature-discovery
+    DIAGNOSE : /diagnosing-bugs
+    TEST : /tdd-loop
+    REVIEW : /code-review
+    CLOSED : /commit-push-close
+    SHIP : /commit-push-pr
+    CI : /ci-loop
+    QA : /agentic-qa
+    FEEDBACK : /pr-feedback
+    RISK : /risk-review
+    HUMAN_REVIEW : engineer review
+    MERGE : you merge to staging
+    STAGING : /deploy-watch
+    DEPLOY_FAILED : /staging-fix or a revert PR
+    READY_FOR_OWNER : owner promotes
+    ESCAPE : /qa-escape
+
+    [*] --> DISCOVER: bug reported
+    DISCOVER --> DIAGNOSE: journey traced
+    DIAGNOSE --> TEST: root cause found
+    TEST --> REVIEW: test failed for the right reason, now passes
+    REVIEW --> TEST: findings to fix
+    REVIEW --> CLOSED: no findings, small fix, no PR needed
+    REVIEW --> SHIP: no findings
+    CLOSED --> [*]
+    SHIP --> CI: PR opened or fix pushed
+    CI --> CI: red, next attempt
+    CI --> DIAGNOSE: three attempts spent
+    CI --> QA: green, fix reaches a screen
+    CI --> RISK: green, no screen reach
+    QA --> TEST: QA finding
+    QA --> RISK: verified
+    RISK --> FEEDBACK: unresolved review threads
+    RISK --> TEST: blocking finding
+    RISK --> MERGE: tier low, blocking 0
+    RISK --> HUMAN_REVIEW: tier high
+    HUMAN_REVIEW --> FEEDBACK: changes requested
+    HUMAN_REVIEW --> MERGE: approved on head
+    FEEDBACK --> TEST: accepted fixes
+    FEEDBACK --> RISK: every thread answered, nothing to fix
+    MERGE --> STAGING: merged
+    STAGING --> READY_FOR_OWNER: deploy and smoke check pass
+    STAGING --> DEPLOY_FAILED: deploy failed
+    DEPLOY_FAILED --> CI: fix PR opened
+    READY_FOR_OWNER --> ESCAPE: human QA reopens
+    ESCAPE --> TEST: regression test named
+    READY_FOR_OWNER --> [*]
+```
+
+| State | Call | Next when |
+| :--- | :--- | :--- |
+| `DISCOVER` | `/feature-discovery` | Journey traced → `DIAGNOSE` |
+| `DIAGNOSE` | `/diagnosing-bugs` | Root cause found → `TEST` |
+| `TEST` | `/tdd-loop` | Test failed for the right reason, now passes → `REVIEW` |
+| `REVIEW` | `/code-review` | Findings → `TEST`; none → `SHIP` (or `CLOSED` for a small fix with no PR) |
+| `SHIP` | `/commit-push-pr` | PR opened or fix pushed → `CI` |
+| `CI` | `/ci-loop` | Green → `QA` if the fix reaches a screen, else `RISK`; three attempts spent → `DIAGNOSE` |
+| `QA` | `/agentic-qa` | Finding → `TEST`; verified → `RISK` |
+| `RISK` | `/risk-review` | Open threads → `FEEDBACK`; blocking finding → `TEST`; low → `MERGE`; high → `HUMAN_REVIEW` |
+| `FEEDBACK` | `/pr-feedback` | Accepted fixes → `TEST`; all answered with nothing to fix → `RISK` |
+| `HUMAN_REVIEW` | Engineer review | Approved on head → `MERGE`; changes requested → `FEEDBACK` |
+| `MERGE` | You merge into `staging` | Merged → `STAGING` |
+| `STAGING` | `/deploy-watch` | Pass → `READY_FOR_OWNER`; deploy failed → `/staging-fix` or a revert PR, which re-enters at `CI` |
+| `READY_FOR_OWNER` | Owner promotes to production | Human QA reopens → `/qa-escape`, then `TEST` |
+
+### Entry points
 
 Where the bug came from changes the entry point:
 
@@ -299,6 +398,8 @@ Where the bug came from changes the entry point:
 - **Something is down** → `/incident-triage`. Read-only: timeline, ranked causes with evidence for and against, mitigations for the owner to run, one incident note.
 
 > **Why discovery first:** diagnosing without a traced journey is guess-and-check. The discovery output gives `/diagnosing-bugs` (and `/tdd-loop`) the context to target the root cause instead of patching a symptom.
+
+> **Why review a bug fix:** a fix written under pressure is the change most likely to patch a symptom or break a neighbor. Reviewing it against the bug report catches a fix that makes the test pass without removing the cause.
 
 ---
 
@@ -495,7 +596,8 @@ What separates intentional use from vibe coding:
 | :--- | :--- |
 | **A · Project start** | `/agents-md` → `/setup-matt-pocock-skills` → fill `AGENTS.md` placeholders → `/design-system` (per UI project) |
 | **B · New feature** *(no fog)* | `/feature-prompt` → `/grill-with-docs` → `/to-spec` → `/to-tickets` → `/implement` *(or `/tdd-loop`)* → `/code-review` → `/pixel-audit` → manual QA → `/polish-batch` → `/integration-contract` (multi-project) → `/commit-push-*` → F when it's a PR |
-| **C · Debug** | `/feature-discovery` → `/diagnosing-bugs` → (`/tdd-loop` if needed) → `/commit-push-*` (with `Root cause:`) → `/retro` if it was hard to find |
+| **C · Debug, automated** | `/report-issue` (no issue yet) → `/factory run <issue>`: `/tdd-loop` → `/agentic-qa` → PR → `/ci-loop` → `/code-review` by a second agent, up to 3 rounds → `/risk-review` → merge to `staging` → `/deploy-watch` |
+| **C · Debug, manual** | `/feature-discovery` → `/diagnosing-bugs` → `/tdd-loop` (failing test first) → `/code-review`, repeated until clean → `/commit-push-pr` (with `Root cause:`) → F → `/retro` if it was hard to find |
 | **D · Port a feature** | `/port-feature` → `/grill-with-docs` → `/to-spec` → `/to-tickets` → `/implement` *(or `/tdd-loop`)* → `/pixel-audit` → `/commit-push-*` |
 | **E · Large effort** *(fog)* | `/wayfinder` (chart) → `/wayfinder` (work, one ticket per session) → map exhausted → `/to-spec` → rejoins B |
 | **F · After the PR opens** | [`/factory`](#factory-state-machine) to locate the gate → `/ci-loop` → `/agentic-qa` → `/pr-feedback` → `/risk-review` → merge to `staging` → `/deploy-watch` → ready for owner |
@@ -503,7 +605,7 @@ What separates intentional use from vibe coding:
 | **Unsure which skill** | `/ask-kit` (no spec or PR yet) · `/factory <reference>` (one exists) |
 | **After a rough session** | `/retro` → apply only what you approve |
 | **New problem from QA or a reporter** | `/report-issue` → `/factory run <issue>` (`ready-for-agent`) · `/triage` (`needs-triage`) |
-| **Bug found by human QA** | `/qa-escape` → `/tdd-loop` (failing test first) → `/commit-push-*` |
+| **Bug found by human QA** | `/qa-escape` → `/tdd-loop` (failing test first) → `/code-review` → `/commit-push-*` · or `/factory run <issue>` after `/qa-escape` |
 | **Staging bug / outage** | `/staging-fix` (PR to `staging`) · `/incident-triage` (read-only) |
 | **Many tickets in parallel** | `/orchestrate-herdr <spec>` |
 | **UI / design system** | `/design-system` bootstrap, then `extend` as it grows or after a page ships |
