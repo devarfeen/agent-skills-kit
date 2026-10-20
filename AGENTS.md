@@ -40,3 +40,11 @@ so precision beats volume.
 7. **Preserve refusal boundaries.** When editing a skill, keep its "stops and
    refuses" lines (never auto-chain, scope gates, cosmetic-only, etc.) — they
    are the safety property, not filler.
+8. **Write human-facing docs in plain English.** `README.md`, `GUIDE.md`,
+   `BEST-PRACTICES.md`, `CONTRIBUTING.md` and `CHANGELOG.md` are read by
+   people, not models. Lead with what the reader should do and a real command
+   (`/factory 87`), use short sentences and "you", and explain any term a
+   newcomer would not know (head, marker, unit, gate) or drop it. When there is
+   a choice, add a small "which one to use" table. Keep every fact, command and
+   refusal boundary; plain does not mean vaguer. Model-facing files keep their
+   terse style.

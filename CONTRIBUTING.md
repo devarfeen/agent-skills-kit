@@ -47,6 +47,24 @@ Never load `GUIDE.md`, `BEST-PRACTICES.md`, `README.md`, or this file into a
 generated `AGENTS.md`, shim, or model context — they are written for people and
 would waste tokens.
 
+### Writing for people
+
+Every human-facing doc in the table above, plus `CHANGELOG.md`, must be easy to
+understand in plain English:
+
+- **Lead with the answer.** Say what the reader should do, then show the
+  command they type: `/factory 87`, not "invoke the factory with a reference".
+- **Short sentences, "you" voice.** One idea per sentence.
+- **Explain or drop jargon.** Terms like head, marker, unit, gate or seam get a
+  short plain explanation the first time, or a plain word instead.
+- **Give choices a table.** When the reader has options, add a small "which one
+  to use" table.
+- **Plain is not vague.** Keep every fact, command, cap and refusal boundary.
+  Rewording must not change what a skill does or refuses to do.
+
+Model-facing files (`SKILL.md`, `references/`, `assets/`) keep their own terse
+house style from `skills/writing-kit-skills/SKILL.md`.
+
 ## Writing a skill
 
 ### Description first
