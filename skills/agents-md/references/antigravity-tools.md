@@ -2,7 +2,7 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 
 Zero attribution: omit co-author, AI, and tool attribution from all output.
 
-> Last verified: 2026-09-28 against installed agy (Antigravity) 1.2.12 — flag/command surface via installed `--help`; internal tool names via official docs or the shipped binary; re-verify on touch (see CONTRIBUTING sync map).
+> Last verified: 2026-09-28 against installed agy (Antigravity) 1.2.12 — flag/command surface via installed `--help`; internal tool names via official docs or the shipped binary; re-verify on touch (see CONTRIBUTING sync map). Question tool verified 2026-10-22 against [official source](https://antigravity.google/docs/plan).
 
 | Skill Reference | Antigravity CLI Equivalent |
 | :--- | :--- |
@@ -15,6 +15,7 @@ Zero attribution: omit co-author, AI, and tool attribution from all output.
 | `Skill` tool (invoke a skill) | auto-activated from `SKILL.md` metadata (no explicit tool; mention skill name to force activation) |
 | `WebSearch` | `search_web` |
 | `WebFetch` | `read_url_content` |
+| Ask the user a question (UI) | no named tool; `/plan` uses interactive question prompts with structured options. Ask in chat outside `/plan` |
 | `Task` tool (dispatch subagent) | `invoke_subagent` (built-ins `research`, `browser`, `self`); `define_subagent`, `send_message` |
 
 **Key Notes:**
@@ -22,6 +23,7 @@ Zero attribution: omit co-author, AI, and tool attribution from all output.
 - `@` references files/context (e.g. `@src/main.go`), not agents.
 - Antigravity CLI reads `AGENTS.md` directly from the active workspace; it is the canonical instruction file.
 - **Memory:** no native memory file store; use generated `AGENTS.md` and binding context files. No repo memory files or memory MCP servers for this kit. See [`memory-global-defaults.md`](memory-global-defaults.md).
+- Headless mode has no interactive prompt.
 - Multi-repo workspace policy: use workspace-root MCP config.
 - For exact config-file placement by tool, use [`tool-calling.md`](tool-calling.md).
 

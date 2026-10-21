@@ -2,7 +2,7 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 
 Zero attribution: omit co-author, AI, and tool attribution from all output.
 
-> Last verified: 2026-09-28 against installed opencode 1.18.33 — flag/command surface via installed `--help`; internal tool names via official docs or the shipped binary; re-verify on touch (see CONTRIBUTING sync map).
+> Last verified: 2026-09-28 against installed opencode 1.18.33 — flag/command surface via installed `--help`; internal tool names via official docs or the shipped binary; re-verify on touch (see CONTRIBUTING sync map). Question tool verified 2026-10-22 against [official source](https://opencode.ai/docs/tools/).
 
 | Skill Reference | Opencode Equivalent |
 | :--- | :--- |
@@ -13,7 +13,7 @@ Zero attribution: omit co-author, AI, and tool attribution from all output.
 | `Grep` (search content) | `grep` |
 | `Glob` (search by name) | `glob` |
 | `Task` tool (dispatch subagent) | `task` (`subagent_type`, optional `background`; background completion is pushed back, no status tool) |
-| Ask the user mid-run | `question` |
+| Ask the user a question (UI) | `question` (`header` ≤30 chars; option labels 1–5 words plus description; `multiple` for multi-select; "Type your own answer" added automatically) |
 | LSP integration (experimental) | `lsp` (gated by `OPENCODE_EXPERIMENTAL_LSP_TOOL=true`) |
 | `WebFetch` / `WebSearch` | `webfetch` / `websearch` |
 | `TodoWrite` (task tracking) | `todowrite` |
@@ -25,6 +25,7 @@ Zero attribution: omit co-author, AI, and tool attribution from all output.
 - **Memory:** no native memory store; use `opencode.json` `instructions` for generated `AGENTS.md` and binding context files only — no repo memory paths. See [`memory-global-defaults.md`](memory-global-defaults.md).
 - `websearch` requires the opencode provider or `OPENCODE_ENABLE_EXA`.
 - Skills resolve from `.opencode/skills/`, `~/.config/opencode/skills/`, plus compat dirs `.claude/skills/`, `.agents/skills/`, `~/.claude/skills/`, `~/.agents/skills/`.
+- Permission key `question` (`allow` / `ask` / `deny`); the `general` subagent defaults to `deny` ([permissions](https://opencode.ai/docs/permissions/)). Otherwise ask in chat.
 - Multi-repo workspace policy: use workspace-root MCP config.
 - Elevated launch: `opencode --auto` keeps an interactive session; `opencode run --auto "prompt"` is a non-interactive run. They auto-approve permissions that are not explicitly denied. For persistent agents, configure the required `permission` keys per the [permission docs](https://opencode.ai/docs/permissions/); do not assume launch flags accepted by `run` also work on the interactive command without checking help.
 - For exact config-file placement by tool, use [`tool-calling.md`](tool-calling.md).

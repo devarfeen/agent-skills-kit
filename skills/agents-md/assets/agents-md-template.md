@@ -1,4 +1,4 @@
-<!-- agents-md marker · v57 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v58 · re-run /agents-md to regenerate -->
 # Agent instructions
 
 [one concise, factual workspace intro inferred from the .code-workspace name and folder scan — no promotional adjectives]
@@ -53,7 +53,8 @@ Assigned local workers may start in the checkout or worktree their assignment na
 Chat only; written artifacts keep their own templates.
 
 - `plain-language` holds the style rules: lead with the conclusion, ASD-STE100 Simplified Technical English, `GLOSSARY.md` terms, identifiers verbatim, no unexplained shorthand. Follow them even before it loads.
-- **Understanding checks:** when the user asks you to repeat or confirm their understanding, restate only what you understand, ask them to approve or correct it, and stop — no planning, edits, or tools until they answer.
+- **Questions:** ask every question for the user (clarification, decision, approval, grilling round) through the runtime's question tool (`Ask the user` in `rules/skills.md`), within its limits, recommended option first; split a larger round across calls. No such tool, a non-interactive run, or a sub-agent: ask in chat and stop. Keep the `Needs user:` line.
+- **Understanding checks:** when the user asks you to repeat or confirm their understanding, restate only what you understand, ask them to approve or correct it through the question tool, and stop — no planning, edits, or other tools until they answer.
 
 ### 5. Zero attribution
 

@@ -193,10 +193,13 @@ for how these skills appear in the installer.
 file. The root file holds shared rules and tells the agent what to read for
 each task. Seven files under `rules/` cover the Project Matrix, orchestration,
 verification, browser use, shipping, issues, and skills. Each generated file records
-generator version `v57`. It does not write `CLAUDE.md` or `GEMINI.md`; all supported
+generator version `v58`. It does not write `CLAUDE.md` or `GEMINI.md`; all supported
 runtimes read `AGENTS.md`. It reports competing instruction files without
 editing them. When production or staging hosts are named, it suggests an
-optional environment-guard hook template.
+optional environment-guard hook template. The generated rules also tell
+agents to ask you every question through the coding tool's own question
+pop-up, with the recommended option first. Where there is no such tool, the
+run is non-interactive, or a sub-agent is asking, the agent asks in chat and stops.
 
 **`design-system`.** Creates shared design values, called tokens, a UI
 component library, a preview you can check, and a binding `AGENTS.md` rule.

@@ -3,7 +3,7 @@ name: writing-kit-skills
 disable-model-invocation: true
 description: "Author/edit a skill only when the request names agent-skills-kit or a kit skill, or explain its one-liners and word budget. Other skill work: skill-creator. Routing evals alone: maintainer task."
 metadata:
-  version: "0.6.1"
+  version: "0.6.2"
 ---
 
 # writing-kit-skills
@@ -33,6 +33,10 @@ Target **500–900 body words**, excluding frontmatter; shorter is fine when com
 Use imperative present tense and sentence-case headings. State each fact once;
 the opener adds a boundary instead of repeating the router. Pair a binding
 constraint with its permitted action and at most one clause of rationale.
+
+### Asking the user
+
+A skill step that asks the user says to ask through the runtime's question tool, recommended option first, with chat as the fallback; never mandate a chat-only question format.
 
 ### Calling another skill
 

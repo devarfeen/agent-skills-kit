@@ -120,6 +120,8 @@ authorizes that run.
 
 A step your request depends on can lead back into the task you asked for. "Implement ticket 42 in a worktree" allows the agent to set up the worktree and then implement the ticket. It does not allow shipping, merging, or cleanup.
 
+When the agent stops to ask you something, it uses your coding tool's question pop-up where one exists. The pop-up keeps the question apart from status text, so you do not miss it. The recommended answer comes first, so you can accept it with one keypress.
+
 ### Separate setup, shipping, and cleanup
 
 A worktree is a second checkout of the same repository, usually on a task branch. Ask for one when you want the task's edits kept apart from your current checkout. The kit puts it at `<project-repo>/.worktrees/<task-name>` and gitignores that folder in the repository. It keeps any existing work. Setup may add that one ignore line in the source checkout and on the task branch.

@@ -11,6 +11,19 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- Questions go through each coding tool's own question pop-up. `/agents-md`
+  0.11.0 (marker `v58`) adds a **Questions** rule to the generated
+  `AGENTS.md`: every clarification, decision, approval, or grilling round is
+  asked through the runtime's question tool, recommended option first, within
+  its limits, with chat as the fallback for runtimes without one,
+  non-interactive runs, and sub-agents; an understanding check asks its
+  approve-or-correct question there too. The emitted runtime table gains an
+  `Ask the user` column (`AskUserQuestion`, `request_user_input`, `ask_user`,
+  `question`, Cursor `AskQuestion` when offered, Antigravity `/plan`), verified
+  2026-10-22 against official sources. The template budget rises from 12,500
+  to 12,900 bytes for this rule. `/grill-with-field` 0.1.1 puts grilling
+  rounds into the pop-up, and `/writing-kit-skills` 0.6.2 tells authors to
+  ask through it. Re-run `/agents-md` to refresh workspace rules.
 - New `/grill-with-field` 0.1.0, user-invoked. It loads `grilling` and
   `domain-modeling`, then after round 1 runs a background field sweep: the
   standards, provider and legal rules, and proven tools for the plan's field,

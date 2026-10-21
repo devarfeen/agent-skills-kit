@@ -2,7 +2,7 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 
 Zero attribution: omit co-author, AI, and tool attribution from all output. The live tool schema wins over cached names below; tool names and availability vary by host.
 
-> Last verified: 2026-09-28 against installed codex-cli 0.158.0 — flag/command surface via installed `--help`; internal tool names via official docs or the shipped binary; re-verify on touch (see CONTRIBUTING sync map).
+> Last verified: 2026-09-28 against installed codex-cli 0.158.0 — flag/command surface via installed `--help`; internal tool names via official docs or the shipped binary; re-verify on touch (see CONTRIBUTING sync map). Question tool verified 2026-10-22 against [official source](https://github.com/openai/codex/blob/main/codex-rs/core/src/tools/handlers/request_user_input_spec.rs).
 
 | Skill Reference | Codex Equivalent |
 | :--- | :--- |
@@ -12,12 +12,14 @@ Zero attribution: omit co-author, AI, and tool attribution from all output. The 
 | Task returns result | `wait_agent` |
 | Task completes automatically | `close_agent` to free slot |
 | `TodoWrite` (task tracking) | `update_plan` |
+| Ask the user a question (UI) | `request_user_input` (1–3 questions, prefer 1; 2–3 options each, `header` ≤12 chars; client adds free-form "Other") |
 | `Skill` tool (invoke a skill) | `/skills` slash command or `$skill-name` inline mention; auto-loaded from `.agents/skills/`, `~/.agents/skills/`, `/etc/codex/skills/` |
 
 **Key Notes:**
 - Subagent workflows are on by default. Config lives in `~/.codex/config.toml` (global) or `<workspace-root>/.codex/config.toml` (project).
 - Codex CLI reads `AGENTS.md` (and `AGENTS.override.md`, which wins) hierarchically from `~/.codex` and from repo root down to CWD, capped at `project_doc_max_bytes` (32 KiB default). The `child_agents_md` feature flag layers additional per-directory guidance.
 - **Memory:** off by default; enable with `[features] memories = true` and `[memories] use_memories` / `generate_memories` in `~/.codex/config.toml`. Native store: `~/.codex/memories/`. Do not create or sync repo memory files. See [`memory-global-defaults.md`](memory-global-defaults.md).
+- `request_user_input` works in Plan mode only by default (Default mode needs feature `default_mode_request_user_input`, off by default), on the root thread only, and is rejected in `codex exec`. Otherwise ask in chat.
 - Multi-repo workspace policy: use workspace-root MCP config.
 - Highest elevated permission launch: `codex --dangerously-bypass-approvals-and-sandbox` (or explicit `codex --sandbox danger-full-access --ask-for-approval never`). This removes sandboxing and approval prompts.
 - For exact config-file placement by tool, use [`tool-calling.md`](tool-calling.md).

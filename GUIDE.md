@@ -119,9 +119,11 @@ honest. The full mental model is in [BEST-PRACTICES.md](BEST-PRACTICES.md).
 Some behaviors you see in chat come from rules in the generated `AGENTS.md`, so
 this guide does not repeat them: PROJECT-CODEs in chat, `Stage / Found / Next /
 Needs user` phase updates, the `🧩 Skill: /<name> (user|auto)` line that
-announces every skill load, and understanding checks that wait for your
-approval. Phase updates are also written into each skill, so they still work
-when a skill is installed on its own.
+announces every skill load, understanding checks that wait for your
+approval, and questions that pop up in your coding tool (see
+[Questions in your coding tool](#questions-in-your-coding-tool)). Phase
+updates are also written into each skill, so they still work when a skill is
+installed on its own.
 
 Two habits are worth repeating, because nothing else enforces them:
 
@@ -203,6 +205,41 @@ Where each CLI reads workspace MCP configuration:
 | GitHub Copilot CLI | `<workspace-root>/.mcp.json` or `<workspace-root>/.github/mcp.json` | User fallback: `~/.copilot/mcp-config.json`. Also reads `AGENTS.md` / `CLAUDE.md` / `GEMINI.md`. Custom agents live in `.github/agents/*.agent.md`. |
 
 To keep generated files local only, add them to the local git exclude (`.git/info/exclude`) instead of committing them.
+
+### Questions in your coding tool
+
+When the agent needs something from you, it asks through your coding tool's
+own question tool. This covers clarifications, decisions, approvals, and
+grilling rounds. The question pops up in the tool's window with answer options
+to pick from. The recommended option comes first. Each pop-up stays within the
+tool's limits, so a large grilling round arrives as several pop-ups in a row.
+
+The agent asks in chat instead, and then stops and waits, when:
+
+- your tool has no question tool,
+- the run is non-interactive (it runs without a person at the keyboard), or
+- the question comes from a sub-agent (a helper agent the main agent started).
+
+The `Needs user:` line in phase updates stays either way.
+
+**Which tool does what**
+
+| Tool | How questions appear | Limits | Falls back to chat when |
+| :--- | :--- | :--- | :--- |
+| Claude Code | `AskUserQuestion` pop-up | 1 to 4 questions per pop-up, 2 to 4 options each, plus an automatic "Other" choice | A sub-agent asks; it cannot use the tool. |
+| Codex CLI | `request_user_input` pop-up | 1 to 3 questions, 2 to 3 options, plus an automatic "Other" choice | You are not in Plan mode (the default), or you run `codex exec`. |
+| GitHub Copilot CLI | `ask_user` pop-up | One question at a time | You start it with `--no-ask-user`. In autopilot, it answers the question for you. |
+| Cursor CLI | `AskQuestion` pop-up, when the tool offers it (Plan mode). Cursor's docs do not name it yet. | Set by Cursor | You run it with `-p`. |
+| OpenCode | `question` pop-up, with an added "Type your own answer" choice | Needs the `question` permission set to `allow` | The permission is not set to `allow`. |
+| Antigravity CLI | No named tool. `/plan` shows question prompts. | Set by Antigravity | You are not in `/plan`. |
+
+Tips:
+
+- **Codex CLI:** switch to Plan mode if you want questions as pop-ups.
+- **OpenCode:** set the `question` permission to `allow` in your OpenCode
+  configuration.
+- **GitHub Copilot CLI:** do not pass `--no-ask-user` if you want the agent to
+  ask you questions.
 
 ## Companion Skills And MCPs
 
@@ -557,7 +594,9 @@ requires before you settle the details.
    unverified and never used.
 3. **Each finding comes back as a question.** For example: "Gmail requires
    one-click unsubscribe above 5,000 emails a day. Add it?" with a recommended
-   answer. You make every decision.
+   answer. You make every decision. In tools that support it, these questions
+   arrive as pop-ups (see
+   [Questions in your coding tool](#questions-in-your-coding-tool)).
 4. **New fields get their own sweep.** If an answer brings in something new,
    such as push notifications, the agent sweeps only that field. Grilling
    does not restart.

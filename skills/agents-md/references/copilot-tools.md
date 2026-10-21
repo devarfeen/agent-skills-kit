@@ -2,7 +2,7 @@ Tool-calling index: [`tool-calling.md`](tool-calling.md).
 
 Zero attribution: omit co-author, AI, and tool attribution from all output.
 
-> Last verified: 2026-09-28 against installed GitHub Copilot CLI 1.0.88 — flag/command surface via installed `--help`; internal tool names via official docs or the shipped binary; re-verify on touch (see CONTRIBUTING sync map).
+> Last verified: 2026-09-28 against installed GitHub Copilot CLI 1.0.88 — flag/command surface via installed `--help`; internal tool names via official docs or the shipped binary; re-verify on touch (see CONTRIBUTING sync map). Question tool verified 2026-10-22 against [official source](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference).
 
 | Skill Reference | Copilot CLI Equivalent |
 | :--- | :--- |
@@ -15,7 +15,8 @@ Zero attribution: omit co-author, AI, and tool attribution from all output.
 | `Glob` (search by name) | `glob` |
 | `Task` tool (dispatch subagent) | `task` tool + `/fleet` (orchestrated parallel subagents); built-in agents `explore` / `task` / `general-purpose` / `code-review` / `security-review` / `research` / `rubber-duck` |
 | Long-running shell management | `list_bash` / `read_bash` / `stop_bash` / `write_bash` |
-| Ask user / memory | `ask_user`, `memory` (Copilot Memory tool) |
+| Ask the user a question (UI) | `ask_user` (one question per call; choices always allow a custom answer) |
+| Memory | `memory` (Copilot Memory tool) |
 | `WebFetch` | `web_fetch` |
 | Skill invocation | `skill` |
 
@@ -24,6 +25,7 @@ Zero attribution: omit co-author, AI, and tool attribution from all output.
 - Modes: `Shift+Tab` cycles **interactive → plan → autopilot** (`--mode` choices: `interactive`, `plan`, `autopilot`). Plan is a *mode*, not a subagent.
 - Skills are invoked explicitly (e.g. `/skill-name`); plugins bundle agents, skills, hooks, and MCP server configs.
 - The GitHub MCP server ships built in; custom MCP servers add to it.
+- `--no-ask-user` disables `ask_user`; autopilot auto-answers it. Otherwise ask in chat.
 - Multi-repo workspace policy: use workspace-root MCP config.
 - **Memory:** enable in GitHub Copilot settings (account); CLI: `/memory on`, `/memory off`, `/memory show` (persists). `store_memory` stores recall in GitHub. Do not create or sync repo memory files. See [`memory-global-defaults.md`](memory-global-defaults.md).
 - Highest elevated permission launch: `copilot --allow-all` (alias `--yolo`). This is equivalent to `--allow-all-tools --allow-all-paths --allow-all-urls`; combine with `--autopilot` only when the user wants autonomous multi-step continuation.

@@ -276,7 +276,7 @@ fi
 # gets a byte budget. A rule that applies only to some tasks belongs in an
 # on-demand file under assets/rules/, not here. Never raise
 # TEMPLATE_BUDGET without a CHANGELOG entry saying what grew.
-TEMPLATE_BUDGET=12500
+TEMPLATE_BUDGET=12900
 template_bytes="$(wc -c < skills/agents-md/assets/agents-md-template.md)"
 if (( template_bytes > TEMPLATE_BUDGET )); then
   fail "agents-md template is $template_bytes bytes (> $TEMPLATE_BUDGET) — move task-specific rules into assets/rules/, don't grow the always-loaded file"

@@ -2,7 +2,7 @@
 
 Zero attribution: omit co-author, AI, and tool attribution from all output.
 
-> Last verified: 2026-09-28 against installed cursor-agent 2026.09.26-dd393fe — flag/command surface via installed `--help`; internal tool names via official docs or the shipped binary; re-verify on touch (see CONTRIBUTING sync map).
+> Last verified: 2026-09-28 against installed cursor-agent 2026.09.26-dd393fe — flag/command surface via installed `--help`; internal tool names via official docs or the shipped binary; re-verify on touch (see CONTRIBUTING sync map). Question tool verified 2026-10-22 against [official source](https://cursor.com/docs/cli/acp).
 
 Mechanics and permissions: [`tool-calling.md`](tool-calling.md).
 
@@ -25,6 +25,7 @@ Mechanics and permissions: [`tool-calling.md`](tool-calling.md).
 | `GenerateImage` | `GenerateImage` |
 | MCP tools | Configured MCP servers; hook matcher `MCP:<tool>`; CLI permission pattern `Mcp(server:tool)` |
 | Background shell polling | `Await` (after `Shell` with background execution) |
+| Ask the user a question (UI) | `AskQuestion` (unverified: forum reports only; docs name ACP method `cursor/ask_question` — questions with options, `allowMultiple`, free-form "Other"). Use it only when the live tool schema offers it |
 | Mode switch (plan vs agent) | `SwitchMode` or CLI `--mode=plan` / `--mode=ask` |
 
 **Key Notes:**
@@ -32,6 +33,7 @@ Mechanics and permissions: [`tool-calling.md`](tool-calling.md).
 - Cursor CLI command is `agent` (interactive: `agent`, non-interactive: `agent -p "..."`).
 - `AGENTS.md` is the canonical workspace instruction file for Cursor.
 - **Memory:** no documented memory flag in `~/.cursor/cli-config.json`; IDE “Generate Memories” (Settings → Rules) is IDE-local recall. No repo memory files or memory MCP servers for this kit. See [`memory-global-defaults.md`](memory-global-defaults.md).
+- Plan mode asks clarifying questions; reportedly skipped under `-p`. Without a question tool, ask in chat.
 - Cursor MCP config files: `<workspace-root>/.cursor/mcp.json` (recommended for multi-repo workspaces), `~/.cursor/mcp.json` (global fallback).
 - Skills load from `.cursor/skills/`, `.agents/skills/`, `~/.cursor/skills/`, `~/.agents/skills/`, plus compat dirs `.claude/skills/`, `.codex/skills/`, `~/.claude/skills/`, `~/.codex/skills/`.
 - Subagent dirs: `.cursor/agents/`, `.claude/agents/`, `.codex/agents/` (project) and `~/.cursor/agents/`, `~/.claude/agents/`, `~/.codex/agents/` (user).
