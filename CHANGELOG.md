@@ -21,6 +21,14 @@ re-run `/agents-md` after a marker bump.
   2.1.3 routes to `/ci-loop` only for heads its own rule admits. `/agents-md`
   0.8.1 (marker `v55`) emits the same target rule in `rules/shipping.md`;
   re-run `/agents-md` to refresh workspace rules.
+- `/risk-review` 1.0.1 names its local trigger (the end of a user-started
+  implementation flow after `/code-review`, invoked by the coordinator or
+  reviewer only) and, when a reviewer cannot dispatch nested lanes, hands the
+  bounded axis and judge assignments to its supervisor instead of failing.
+  `/factory` 5.15.1 defines the RISK step (PR mode in a fresh `<issue-id> risk`
+  worker), allows the parent that review-dispatch fallback, defines
+  confirmed-actionable findings, and logs `incomplete` rounds. `/ask-kit`
+  0.2.1 routes the merge question to `/risk-review <pr>`.
 
 ## 2026-10-21
 

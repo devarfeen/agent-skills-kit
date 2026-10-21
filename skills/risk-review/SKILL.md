@@ -2,7 +2,7 @@
 name: risk-review
 description: "Adversarial local review with a judge after implementation; PR merge-risk classification on request. General impact/standards/spec review: /code-review. Comments: /pr-feedback."
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
 ---
 
 # risk-review
@@ -13,8 +13,8 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 
 ## Inputs and mode
 
-- **Local (automatic default).** An implementation review boundary or an explicit adversarial local review selects `local`. Require the criteria and source, verified checkout/branch, base commit, head commit and any in-scope uncommitted changes. Follow [Local adversarial review](references/local-review.md). A PR link in context does not select PR mode.
-- **PR (explicit).** The user asks to risk-review/classify a named PR, including `/risk-review 87`, or an authorized factory RISK stage supplies `pr <number-or-url>`. Follow [PR risk review](references/pr-review.md), including its green-check prerequisite, fixed rubric, approval and Run authorization rules.
+- **Local (automatic default).** The end of a user-started implementation flow after `/code-review` — `/implement`, `/implement-spec`, a `/tdd-loop` batch, or a factory REVIEW round — or an explicit adversarial local review selects `local`. Only that flow's coordinator or reviewer invokes it; implementers and builders never launch it on their own work. Require the criteria and source, verified checkout/branch, base commit, head commit and any in-scope uncommitted changes. Follow [Local adversarial review](references/local-review.md). A PR link in context does not select PR mode.
+- **PR (explicit).** The user asks to risk-review/classify a named PR, including `/risk-review 87`, or an authorized factory RISK step supplies `pr <number-or-url>`. Follow [PR risk review](references/pr-review.md), including its green-check prerequisite, fixed rubric, approval and Run authorization rules.
 - Missing scope or revision identity → report the missing input; never guess a base or review another checkout. General coding-standards/spec review belongs to `/code-review`; replies to existing PR comments belong to `/pr-feedback`.
 
 ## Rules
@@ -34,6 +34,6 @@ Local mode returns its report path, reviewed identity, coverage, judged findings
 ## Completion criteria
 
 - [ ] The selected mode and verified revision identity appear in the result; a changed snapshot invalidated the old verdict
-- [ ] Findings have cited evidence and a recorded judgment; failed lanes and missing evidence are visible
+- [ ] Findings have cited evidence and a recorded judgment; failed axes and missing evidence are visible
 - [ ] Local mode completed its required independent review and judge, or reports incomplete without a pass
 - [ ] PR mode satisfied its own completion checks; no local result was used as a PR or merge gate

@@ -36,6 +36,7 @@ A fresh reviewer inspects what the builder produced; both settle findings on the
    ROUND: [N]
    SINCE: [SHA_REVIEWED_LAST_ROUND | none]
    PROVENANCE: [allowed — verified worker identity per records.md | not allowed]
+   DELEGATION: child review axes and one judge, read-only, within the run's capacity and depth
 
    Preserve THREAD_BINDING and run commands with explicit CHECKOUT working
    directories. Verify checkout, branch and HEAD before reviewing. Review its diff against BASE
@@ -56,14 +57,21 @@ A fresh reviewer inspects what the builder produced; both settle findings on the
    rounds preserve SINCE, affected callers and unresolved findings. The local
    helper runs one round only; this is the same factory ROUND, not a new
    three-round budget. Allow read-only child axes and a separate judge within
-   the existing capacity/depth grant; without that grant the parent dispatches
-   those bounded assignments. No independent review/judge capacity, missing
-   helper or changed revision → return incomplete and park; emit no clean
-   review marker. The helper writes only its local report. The enclosing
+   the existing capacity/depth grant. When you cannot dispatch nested lanes,
+   return `incomplete` with the bounded axis and judge assignments; the parent
+   then dispatches those exact assignments as its own fresh read-only lanes
+   and a separate judge and hands their results back to you for this round.
+   That is review dispatch, not stage execution. No independent review/judge
+   capacity at either level, missing helper or changed revision → return
+   `incomplete` and park; emit no clean review marker and log the round's
+   result as `incomplete`. The helper writes only its local report. The enclosing
    reviewer alone publishes the existing issue comment under run authorization.
 
    Use the judge's confirmed actionable findings and unresolved material
-   claims as the numbered findings. Include each unresolved item's missing
+   claims as the numbered findings. Confirmed actionable means judge
+   disposition Confirmed and inside the issue's scope; a confirmed defect
+   outside scope is listed under Needs user with its evidence, is not a
+   numbered finding, and does not count against Fix-only close. Include each unresolved item's missing
    evidence. Keep rejected/advisory items and their reasons in the linked
    local report, with counts in the comment; they do not inflate findings.
    Zero findings requires all selected axes and the judge to complete on the
@@ -91,7 +99,7 @@ A fresh reviewer inspects what the builder produced; both settle findings on the
 3. **Answer.** Send the comment to the unit's builder through **Execution**; a stopped worker resumes on the same verified checkout. For each finding the builder either fixes it through `tdd-loop` and commits, or declines it with a reason; a finding outside the issue's scope is declined as such and listed under Needs user. Post each answer as `fixed <sha>` or `declined — <reason>`. Linear uses `## Code review reply` with Round, Fixed, Declined; GitHub retains `<!-- code-review-reply: round=<n> fixed=<n> declined=<n> -->`. Add the builder's verified `Builder` field per **Reviewer provenance** when permitted.
 4. **Again.** Commits were made → **After a fix**: the new head passes CI and QA again before the next review round. Then apply **Fix-only close**; when it does not hold, step 1 with the next round number.
 
-Three rounds. Findings still open after the third park the unit, quoting them. Each round is a `code-review` row in the **Round log**, with `<n> findings` or `pass` as its result.
+Three rounds. Findings still open after the third park the unit, quoting them. Each round is a `code-review` row in the **Round log**, with `<n> findings`, `pass` or `incomplete` as its result.
 
 ### Fix-only close
 

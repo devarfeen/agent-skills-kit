@@ -10,7 +10,9 @@ Require the complete acceptance criteria and source, applicable instructions,
 verified checkout/branch, base/head commits, scope and report destination.
 Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`GLOSSARY-MAP.md` at repo root; legacy `CONTEXT-MAP.md`), else the repo root.
 Default to a task-specific report under `<artifacts-root>/reviews/`, outside
-the reviewed source paths. Record the path before dispatch.
+the reviewed source paths. When that root is inside the reviewed repository,
+write under a gitignored path or `/tmp/<task-id>/reviews/` instead, so the
+reviewer leaves the checkout clean. Record the path before dispatch.
 
 For uncommitted work, record the tracked diff from base plus staged/unstaged
 state and a digest of every in-scope untracked file. Exclude unrelated work
@@ -44,9 +46,13 @@ inheritance disabled (`fork_turns: "none"` when supported). Each gets its axis,
 the pinned scope and neutral inputs above, not builder reasoning, prior
 success verdicts or other reviewers' conclusions. Confirm isolation from the
 actual launch. Queue axes within the runtime's shared capacity and delegation
-depth; reviewers do not delegate again. If nested dispatch is unavailable,
-the caller dispatches the same bounded assignments. Without independent
-review capacity, return `incomplete`; a sequential self-review is not a pass.
+depth; reviewers do not delegate again. When the caller cannot dispatch nested
+lanes, it returns `incomplete` together with the bounded axis and judge
+assignments, and its own supervisor (the factory parent, or the main
+session of a Matt flow) runs them as fresh read-only lanes and a separate
+judge, then returns the results for this same round. Without independent
+review capacity at any level, return `incomplete`; a sequential self-review
+is not a pass.
 
 Each candidate needs an ID, current `file:line`, violated requirement or
 invariant, concrete input/state, consequence and decisive code or check
@@ -77,8 +83,8 @@ The caller fixes confirmed in-scope defects through `/tdd-loop` (call the Skill
 tool with "tdd-loop" where available), observing a failing regression test
 before the fix when applicable and using its exception procedure otherwise.
 Run relevant checks on the changed snapshot. The caller owns scheduling:
-Matt flows request another review; factory may use its existing Fix-only close
-proof for eligible nonbehavioral fixes.
+Matt flows request another review; factory may use its existing **Fix-only close**
+record for eligible nonbehavioral fixes.
 Matt implementation flows allow at most three rounds total; factory retains
 its existing shared three-round budget, never three additional rounds here.
 Unresolved scope/requirements or exhausted rounds return findings to the user.
