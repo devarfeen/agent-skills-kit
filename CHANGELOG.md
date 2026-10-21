@@ -7,6 +7,21 @@ their new versions, so a workspace on an older copy can see what an update
 brings. Generated `AGENTS.md` files carry the `agents-md` marker version;
 re-run `/agents-md` after a marker bump.
 
+## 2026-10-22
+
+### Changed
+
+- Change 28 applied: ship targets are defined once in both `ship-policy.md`
+  copies (**Targets**). `/factory run` may merge into the delivery branch
+  `local` even when it is the repository's default branch; production
+  branches and production deploy-trigger branches are never targets.
+  `/commit-push-pr` 0.11.2 and `/commit-push-close` 0.8.2 use the detected
+  default branch (never an assumed `main`) and the shared issue-reference
+  rule; the QA handoff records the tested baseline SHA. `/local-to-staging`
+  2.1.3 routes to `/ci-loop` only for heads its own rule admits. `/agents-md`
+  0.8.1 (marker `v55`) emits the same target rule in `rules/shipping.md`;
+  re-run `/agents-md` to refresh workspace rules.
+
 ## 2026-10-21
 
 ### Changed

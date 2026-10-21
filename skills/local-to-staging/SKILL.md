@@ -3,7 +3,7 @@ name: local-to-staging
 disable-model-invocation: true
 description: "Promote every project from origin/local to origin/staging: open each PR, merge on green, watch the Actions runs. Never pushes or goes past staging. Production is /staging-to-production."
 metadata:
-  version: "2.1.2"
+  version: "2.1.3"
 ---
 
 # local-to-staging
@@ -75,7 +75,7 @@ gh pr view <pr> --repo <owner/repo> --json headRefOid,mergeable,baseRefName
 gh pr checks <pr> --repo <owner/repo> --watch --fail-fast
 ```
 
-Read back `baseRefName`; anything but the target stops that repo. `mergeable` = `CONFLICTING` → report and stop that repo; resolving conflicts is the owner's. `gh pr checks` printing `no checks reported` counts as no checks only when `gh pr view <pr> --json statusCheckRollup` returns an empty list. A failing check → report its name/URL; do not merge. Suggest `/ci-loop` only for an eligible feature head; default/deployment heads require repair through a permitted task branch.
+Read back `baseRefName`; anything but the target stops that repo. `mergeable` = `CONFLICTING` → report and stop that repo; resolving conflicts is the owner's. `gh pr checks` printing `no checks reported` counts as no checks only when `gh pr view <pr> --json statusCheckRollup` returns an empty list. A failing check → report its name/URL; do not merge. Suggest `/ci-loop` only when its **Feature branches only** rule admits the PR head; `local`, staging, default, and deploy-trigger heads need repair through a permitted task branch.
 
 ### 4. Merge
 

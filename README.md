@@ -190,7 +190,7 @@ for how these skills appear in the installer.
 file. The root file holds shared rules and tells the agent what to read for
 each task. Seven files under `rules/` cover the Project Matrix, orchestration,
 verification, browser use, shipping, issues, and skills. Each generated file records
-generator version `v54`. It does not write `CLAUDE.md` or `GEMINI.md`; all supported
+generator version `v55`. It does not write `CLAUDE.md` or `GEMINI.md`; all supported
 runtimes read `AGENTS.md`. It reports competing instruction files without
 editing them. When production or staging hosts are named, it suggests an
 optional environment-guard hook template.

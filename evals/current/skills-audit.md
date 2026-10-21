@@ -36,8 +36,7 @@ See [repair results](repair-results.md) for the evidence behind changes 11–25.
 | D6 | 21 | Shipping forbade implementation edits while ordering parity/hook repairs | [skills/commit-push-pr/references/ship-policy.md](../../skills/commit-push-pr/references/ship-policy.md) | Fixed; scoped modeled decisions satisfied criteria in 2/2 repetitions |
 | D7 | 22 | Unconditional Closes wording conflicted with resolved-target policy | [skills/commit-push-pr/SKILL.md](../../skills/commit-push-pr/SKILL.md) | Fixed; scoped modeled decisions satisfied criteria in 2/2 repetitions |
 | T1 | 26 | Broad change-impact query selected local adversarial review | [skills/risk-review/SKILL.md](../../skills/risk-review/SKILL.md) | Fixed; final fresh routing sweep 573/573 |
-
-| D8 | 28 | Generated blanket default-branch ban contradicts factory delivery-local exception | [shipping rules](../../skills/agents-md/assets/rules/shipping.md) | Open; approval pending; no edit applied |
+| D8 | 28 | Generated blanket default-branch ban contradicts factory delivery-local exception | [shipping rules](../../skills/agents-md/assets/rules/shipping.md) | Applied 2026-10-22: shared **Targets** definition; delivery `local` permitted even when default |
 
 ## Coverage and size
 

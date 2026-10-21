@@ -16,6 +16,14 @@ Clean only prose written or edited for this task. Preserve meaning, evidence, qu
 
 The workspace's `AGENTS.md` (or its rules files) names the issue tracker of record. Default: GitHub Issues — the `gh issue` commands, `#N` identifiers, and label names throughout are that default. When the workspace names a different tracker (for example Linear via its MCP), keep every step of this policy but perform issue reads and writes through that tracker, using its identifier format, closing keywords, and label vocabulary as the workspace docs map them. If a step has no workspace mapping, stop and ask — never fall back to `gh issue` against a tracker the workspace does not use.
 
+## Targets
+
+- **Target** — the branch a ship step pushes to or opens a PR against.
+- **Default branch** — the branch **Read state** detects; never assume `main`.
+- **Delivery branch `local`** — the workspace's integration branch that `/local-to-staging` promotes. It may also be the repository's default branch; the `local` rules below still apply.
+- **Permitted base** — the PR base resolved from explicit user or workspace instructions, then an existing PR, then the default branch, within the active skill's own branch limits.
+- **Issue reference** — a `Closes #N` closing keyword only on a PR whose permitted base is a default branch other than the delivery branch `local`, outside a factory run; an ordinary `Ref #N` everywhere else, with one line saying when the workspace completes the issue. The reference is always present and always first.
+- No ship skill targets a production branch or a branch a production workflow deploys from.
 ## Worktree handoff
 
 Resolve the task checkout before running **Read state**. When task work lives in a worktree, run state reads, checks, staging, commits, and pushes from that verified checkout; confirm its path with `git worktree list --porcelain` and its branch before shipping. Do not switch to the primary checkout or create another worktree for shipping. Resolve detached HEAD to an authorized named branch before a branch push; never reset an occupied branch.
@@ -212,6 +220,7 @@ For every issue-close comment and PR QA comment, include this handoff. Keep the 
 ```markdown
 ## QA handoff
 Change: <actual commit SHA and branch; PR link when available>
+Baseline: <base commit SHA the change was tested against>
 
 ### What changed
 <observable behavior and reason>

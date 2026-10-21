@@ -671,7 +671,7 @@ Use `/risk-review local` to challenge a local implementation before opening a
 PR. Supply its requirements, checkout, base commit and changes to review.
 Generated workspace rules call this mode automatically after `/code-review`
 in `/implement` and `/implement-spec`; update the kit and rerun `/agents-md`
-to install the v54 routing rules. Matt’s installed skills stay unchanged.
+to install the v55 routing rules. Matt’s installed skills stay unchanged.
 
 | Use | What happens |
 | :--- | :--- |
