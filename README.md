@@ -153,6 +153,7 @@ for how these skills appear in the installer.
 | :--- | :--- | :--- | :--- |
 | [`agents-md`](skills/agents-md/SKILL.md) | startup | Set up workspace instructions from a `.code-workspace` file. | `Generate AGENTS.md for this workspace` |
 | [`design-system`](skills/design-system/SKILL.md) | startup | Turn your design source into shared UI rules and components. | `Set up the design system for ADMIN-WEB from this Figma file` |
+| [`plain-language`](skills/plain-language/SKILL.md) | startup | Keep chat and written prose plain; loads at every session start. Never touches code, ADRs, or specs. | `Clean up this PR description` |
 | [`feature-discovery`](skills/feature-discovery/SKILL.md) | discover | Understand how existing code works. Read-only. | `Trace the invite-user workflow across ADMIN-WEB and API-SERVICE` |
 | [`port-feature`](skills/port-feature/SKILL.md) | discover | Compare an existing feature with the project that will receive it. | `Port stock-transfer approvals from LEGACY-PORTAL to ADMIN-WEB` |
 | [`feature-prompt`](skills/feature-prompt/SKILL.md) | sharpen | Turn a rough idea into a small prompt for planning. | `Help me create a feature prompt for stock transfer approvals` |
@@ -190,7 +191,7 @@ for how these skills appear in the installer.
 file. The root file holds shared rules and tells the agent what to read for
 each task. Seven files under `rules/` cover the Project Matrix, orchestration,
 verification, browser use, shipping, issues, and skills. Each generated file records
-generator version `v55`. It does not write `CLAUDE.md` or `GEMINI.md`; all supported
+generator version `v56`. It does not write `CLAUDE.md` or `GEMINI.md`; all supported
 runtimes read `AGENTS.md`. It reports competing instruction files without
 editing them. When production or staging hosts are named, it suggests an
 optional environment-guard hook template.
@@ -441,7 +442,7 @@ skill; you can still install it on its own with `--skill <name>`.
 | `ship` | Ship | `commit-push-close`, `commit-push-pr`, `pr-feedback`, `release-notes` |
 | `staging-promotion` | Staging Promotion | `local-to-staging`, `staging-fix`, `staging-to-production` |
 | `visual-design` | Visual Design | `design-system`, `pixel-audit`, `polish-batch` |
-| `workspace-setup` | Workspace Setup | `agents-md`, `ask-kit`, `writing-kit-skills` |
+| `workspace-setup` | Workspace Setup | `agents-md`, `ask-kit`, `plain-language`, `writing-kit-skills` |
 
 ### Companion install commands (global)
 
@@ -470,16 +471,6 @@ npx skills add vercel-labs/agent-browser -g --skill agent-browser
 npx skills add vercel-labs/skills -g --skill find-skills
 ```
 
-#### [cursor/plugins](https://github.com/cursor/plugins)
-
-```bash
-npx skills add cursor/plugins -g --skill unslop
-```
-
-Keep Cursor’s installed `unslop` file unchanged. The kit reads and applies its
-writing rules before sending prose or finishing written content. It keeps the
-original settings that control when a skill can run. Required templates and
-technical text stay exact. Re-run `/agents-md` to update an existing workspace.
 
 The kit uses Ponytail-inspired ideas in two local skills: `/tdd-loop` checks
 what can be reused before adding code, and `/risk-review` offers optional
@@ -666,8 +657,7 @@ below. Companion skills are separate installs unless stated otherwise.
   (<https://github.com/pbakaus/impeccable>), notebooklm-py
   (<https://github.com/teng-lin/notebooklm-py>), herdr
   (<https://github.com/herdrdev/herdr>),
-  Laravel Boost (<https://github.com/laravel/boost>), unslop from Cursor's plugins repo
-  (<https://github.com/cursor/plugins>), and Figma MCP
+  Laravel Boost (<https://github.com/laravel/boost>), and Figma MCP
   (<https://developers.figma.com/docs/figma-mcp-server/>).
 - The missed-bug workflow uses `agentic-qa` and `qa-escape`, maps acceptance
   criteria to tests, records evidence, and reviews risks in existing skills.
@@ -742,7 +732,7 @@ are listed:
   `writing-fragments`, `writing-shape`.
 - Vercel Labs: `agent-browser` (<https://github.com/vercel-labs/agent-browser>)
   and `find-skills` (<https://github.com/vercel-labs/skills>).
-- Cursor (<https://github.com/cursor/plugins>): `unslop`.
+- Cursor pstack (<https://github.com/cursor/plugins>, MIT License, Copyright (c) 2026 Lauren Tan): the `unslop` pattern list, adapted into the kit's `plain-language` skill. The MIT notice applies to that adapted text.
 - herdr (<https://github.com/herdrdev/herdr>): `herdr`.
 - Impeccable (<https://github.com/pbakaus/impeccable>): `impeccable`.
 

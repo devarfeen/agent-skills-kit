@@ -13,6 +13,7 @@
       "skills": [
         "./skills/agents-md",
         "./skills/ask-kit",
+        "./skills/plain-language",
         "./skills/writing-kit-skills"
       ]
     },

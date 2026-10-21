@@ -423,11 +423,11 @@ note verbatim and one closing period.
 ## G18 — Installed companions
 
 **Fixture:** A fresh generation. `~/.agents/skills/` holds `SKILL.md` folders
-for `using-git-worktrees` and `unslop` only. The workspace `.mcp.json` defines
+for `using-git-worktrees` and `wait-what` only. The workspace `.mcp.json` defines
 a `linear` server. `agent-browser` is on `PATH`; `herdr` is not.
 
 **Acceptance:** One line names the installed companion skills,
-`/using-git-worktrees` and unslop, with no use-when text. A `Companion | Use
+`/using-git-worktrees` and wait-what, with no use-when text. A `Companion | Use
 when` table follows with exactly agent-browser and Linear MCP and their
 use-when text verbatim, then the fixed line about re-running after installing
 another. Companions not found are left out and named in chat as not detected.
@@ -671,39 +671,37 @@ valid policy comment. Generated instruction Markdown includes the rule. For
 strict JSON, provide an owner-applied patch rather than inventing a key or
 invalid comment; report why the agent did not write that settings file.
 
-## B22 — Automatic Cursor prose cleanup and protected text
+## B22 — Session-start prose cleanup and protected text
 
-**Fixture:** An authorized local task is complete. The agent is about to send
-chat prose and finalize a documentation change. The user did not type
-`/unslop`. Cursor `unslop` is installed with `disable-model-invocation: true`;
-it is absent from an old generated companion list. Project-local and user-level
-copies exist. The draft says "Additionally, this pivotal fix serves as a
-testament to reliability." Required output includes the heading
-`## Acceptance criteria`, `<!-- qa: verified -->`, the command `pnpm test`,
-the symbol `fetchOrder`, and the quotation "Additionally, crucial". Existing
-untouched prose uses the same words. No publication was requested.
+**Fixture:** An authorized local task is complete. The agent sent its first
+reporting-gate update and then loaded `plain-language` through the Skill tool.
+It is about to send chat prose and finalize a documentation change. The draft
+says "Additionally, this pivotal fix serves as a testament to reliability."
+Required output includes the heading `## Acceptance criteria`,
+`<!-- qa: verified -->`, the command `pnpm test`, the symbol `fetchOrder`, and
+the quotation "Additionally, crucial". Existing untouched prose uses the same
+words. The same task also edited an ADR and a code comment. No publication
+was requested.
 The supplied result is six focused-test cases passed; manual checks have not run.
 
-**Acceptance:** Read the project-local installed instructions and apply them
-without a disabled Skill-tool call or metadata edit, despite the stale list.
+**Acceptance:** Apply the loaded skill from context without a second read.
 Replace the draft's empty claims with supplied facts or omit them. Preserve
-all protected text and untouched prose exactly, keep meaning and qualifications,
-and publish nothing. Reuse unchanged loaded rules and reload after context
-loss, content changes, or changed resolution.
+all protected text and untouched prose exactly, keep meaning and
+qualifications, leave the ADR and the code comment untouched, and publish
+nothing. Reuse the loaded rules and reload only after context loss or a
+content change.
+## B23 — Missing writing skill and standalone shipping
 
-## B23 — Missing prose helper and standalone shipping
-
-**Fixture:** In one session neither local nor user-level `unslop` is installed;
+**Fixture:** In one session `plain-language` is not installed anywhere;
 two prose replies are due. In another workspace with no generated instructions,
 `/commit-push-pr` is drafting a PR for approval under its standalone ship
-policy. Cursor `unslop` is installed globally with automatic model invocation
-disabled. The draft contains filler and required template fields. No remote
-write has been approved. An independent variant changes approved wording
-after the approval.
+policy. `plain-language` is installed in the user's home. The draft contains
+filler and required template fields. No remote write has been approved. An
+independent variant changes approved wording after the approval.
 The supplied result is six focused-test cases passed; manual checks have not run.
 
-**Acceptance:** The missing-helper session reports once and continues under
-existing writing rules. Standalone shipping reads and applies the global
-helper before showing drafts without changing metadata, protected fields,
-or remote state. The approved-wording variant requests the existing draft
-approval again rather than publishing different text under the old approval.
+**Acceptance:** The missing-skill session reports once and continues under
+the workspace style lines. Standalone shipping calls the skill before showing
+drafts without changing protected fields or remote state. The approved-wording
+variant requests the existing draft approval again rather than publishing
+different text under the old approval.

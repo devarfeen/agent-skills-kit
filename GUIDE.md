@@ -27,17 +27,19 @@ Choose the instructions for your task:
 - **Local Skills:** Authored by Arfeen Arif. Combines original logic with ecosystem companion skills.
 - **Matt Pocock:** Source for `/ask-matt`, `/grill-with-docs`, `/grilling`, `/to-spec`, `/to-tickets`, `/implement`, `/implement-spec`, `/code-review`, `/pr`, `/retro`, `/wayfinder`, `/research`, `/tdd`, `/diagnosing-bugs`, `/triage`, `/domain-modeling`, `/codebase-design`, `/improve-codebase-architecture`, `/prototype`, `/handoff`, `/wait-what`, `/wizard`, and `/to-questionnaire`.
 - **Forrest Chang:** Seeding logic for `/agents-md` non-negotiable principles.
+- **Cursor pstack (MIT, Lauren Tan):** The AI-tell pattern list adapted into `/plain-language`.
 - **Anthropic:** Source for `/skill-creator`.
 - **Vercel Labs:** Source for `/agent-browser`, `skills` CLI, and React/React Native best practices.
 - **[Ponytail](https://github.com/DietrichGebert/ponytail), by Dietrich Gebert:** Source of the reuse-first decision order adapted into `/tdd-loop` and advisory simplification ideas adapted into `/risk-review`. No companion installation is required.
-- **Optional companions:** Codex plugin for Claude Code, Impeccable, notebooklm-py, herdr, Laravel Boost, Figma MCP, MySQL/Postgres MCP, Cursor’s `unslop` plugin. These are separate installs. The kit uses them only when they are installed and fit the task.
+- **Optional companions:** Codex plugin for Claude Code, Impeccable, notebooklm-py, herdr, Laravel Boost, Figma MCP, MySQL/Postgres MCP, These are separate installs. The kit uses them only when they are installed and fit the task.
 - **Pattern references (not vendored):** [github/awesome-copilot](https://github.com/github/awesome-copilot), [obra/superpowers](https://github.com/obra/superpowers), [ChrisTitusTech/titus-ai](https://github.com/ChrisTitusTech/titus-ai), [alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills), and [garrytan/gstack](https://github.com/garrytan/gstack). The 2026-10 hardening pass compared every kit skill against these and adapted individual rules in the kit's own style. No files were copied.
 - **Cursor:** Cursor CLI (`agent` command, `/skill-name`, `AGENTS.md` as canonical context, `Task` for subagents). Tool names and permissions: [`skills/agents-md/references/tool-calling.md`](skills/agents-md/references/tool-calling.md). https://cursor.com/docs/cli/overview
 
 ## Usage Principles
 
-Cursor’s `unslop` runs as automatic prose cleanup through your workspace
-instructions or a standalone ship policy. It changes freely written text,
+`/plain-language` is the kit's own writing skill. Your workspace instructions
+load it at the start of every session, and the ship policies apply it to the
+free prose of commits, PRs, and issues. It never edits code, ADRs, or specs,
 preserves required text, and adds no permission to publish. Re-run `/agents-md`
 to refresh an existing workspace’s instructions. `/tdd-loop` checks existing
 project code, standard-library or platform features, and installed dependencies
@@ -116,7 +118,8 @@ honest. The full mental model is in [BEST-PRACTICES.md](BEST-PRACTICES.md).
 
 Some behaviors you see in chat come from rules in the generated `AGENTS.md`, so
 this guide does not repeat them: PROJECT-CODEs in chat, `Stage / Found / Next /
-Needs user` phase updates, and understanding checks that wait for your
+Needs user` phase updates, the `🧩 Skill: /<name> (user|auto)` line that
+announces every skill load, and understanding checks that wait for your
 approval. Phase updates are also written into each skill, so they still work
 when a skill is installed on its own.
 
@@ -213,7 +216,6 @@ These are optional helpers. The kit ships `using-git-worktrees`. The others are 
 | pr | A PR body is being written. It adds the smallest visual that shows the change, before/after evidence, and a one-way or two-way door call plus blast radius. Inside `/commit-push-pr` or a repo PR template, it shapes only the summary visual and the wording. Required sections, their order, and the target-required issue reference stay. |
 | retro | A session is over, especially one that went badly, and the agent's environment should improve: navigation pointers, automated checks, coding standards, steering files. It proposes and never edits. You start it yourself (`/retro`); an agent never starts it on its own. |
 | wait-what | The agent's last chat message didn't make sense to you. It explains again with brief context, in ASD-STE100 Simplified Technical English, using the terms from `GLOSSARY.md`. |
-| unslop | Cursor’s writing rules apply automatically before the agent sends prose or finalizes written content. The workspace rule or ship policy tells it to read the installed skill, even though upstream disables automatic skill selection. It preserves meaning, technical text, quotations, and required templates and markers. |
 | wizard | Some steps only a human can do (credentials, CI secrets, third-party dashboards, one-off migrations or cutovers). It generates an interactive bash walkthrough for those steps, never for steps the agent can do itself. |
 | to-questionnaire | A decision needs knowledge you don't have. It turns the decision into a Markdown questionnaire for the one person who can answer, to fill in on their own time or in a meeting. |
 | domain-modeling | Project terms, aliases, or ADR-backed domain language need sharpening. |
@@ -671,7 +673,7 @@ Use `/risk-review local` to challenge a local implementation before opening a
 PR. Supply its requirements, checkout, base commit and changes to review.
 Generated workspace rules call this mode automatically after `/code-review`
 in `/implement` and `/implement-spec`; update the kit and rerun `/agents-md`
-to install the v55 routing rules. Matt’s installed skills stay unchanged.
+to install the v56 routing rules. Matt’s installed skills stay unchanged.
 
 | Use | What happens |
 | :--- | :--- |

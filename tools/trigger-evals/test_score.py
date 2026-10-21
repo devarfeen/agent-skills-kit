@@ -73,6 +73,14 @@ class ScoreTests(unittest.TestCase):
             self.write_judge(path, [(1, "/alpha"), (2, pick)])
         self.assert_rejected(self.run_score("--write-snapshot"))
 
+    def test_split_negative_without_target_vote_passes(self):
+        self.catalog.write_text(self.catalog.read_text() + "- **/gamma** — Third task.\n")
+        for path, pick in zip(self.judges, ["/gamma", "/beta", "none"]):
+            self.write_judge(path, [(1, "/alpha"), (2, pick)])
+        result = self.run_score()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("TOTAL 2/2", result.stdout)
+
     def test_duplicate_query_is_rejected(self):
         self.write_judge(self.judges[0], [(1, "/alpha"), (2, "none"), (2, "none")])
         self.assert_rejected(self.run_score("--write-snapshot"))

@@ -86,11 +86,10 @@ installs. `/using-git-worktrees` is user-invoked only. An explicitly started
 `/orchestrate-t3` or `/factory run` may read and follow it for checkout setup;
 other workflows do not invoke it automatically.
 
-Cursor’s `unslop` has a separate prose-only exception: workspace instructions
-and standalone ship policies authorize reading and applying its installed rules
-automatically. Preserve upstream metadata and mandated text; do not use a
-disabled Skill-tool invocation or turn cleanup into permission to publish.
-Keep this integration in the kit rather than editing the upstream companion.
+`/plain-language` is model-invoked on purpose: workspace instructions load it
+at session start and standalone ship policies apply it to free prose. Keep its
+scope exclusions (code, comments, ADRs, specs, prompts, glossary entries) and
+never turn cleanup into permission to publish.
 
 Keep handoffs narrow. Worktree setup returns its verified checkout to the
 already-requested task; it never authorizes a new implementation or shipping
@@ -303,8 +302,8 @@ in `catalog-externals.md`), `build-queryset.py` (deterministic mixed query
 list), `judge-prompt.md`, and `score.py`. Procedure: build the catalog and
 queryset, run 3 independent judge agents that route each query using ONLY the
 catalog — no repo exploration — then score by majority vote. Pass = trigger
-queries route to the skill; no-trigger queries route anywhere else (the
-`route` field is diagnostic, not pass/fail). Record date, method, result,
+queries route to the skill; no-trigger queries route anywhere else, or get
+no vote for the skill at all (the `route` field is diagnostic, not pass/fail). Record date, method, result,
 judge model, and catalog provenance in the file's `last_run`.
 
 Act on failures, not scores: a missed should-trigger means the description
@@ -334,7 +333,7 @@ eval pass.
 | A skill's frontmatter `description` (at most 200 characters — `validate.sh` check 19; what it does in one clause, the main trigger, and the nearest sibling) | Re-run the trigger evals, restamp that skill's `last_run`, and refresh `tools/trigger-evals/last-run-descriptions.json` (`score.py … --write-snapshot --record-run --judge-model <actual-model>`). Check 10 validates descriptions, query content, the complete catalog and invocation policies; any changed input requires a new sweep |
 | Any file in a skill folder outside `evals/` | That skill's `metadata.version` — patch, minor, or major per the one-minute version; `validate.sh` check 16 |
 | A stage `/factory run` loads, or a stage skill's approval gate | `skills/factory/references/run.md` (stage map), the late-stage file it names (`review-and-delivery.md`, `returned-by-qa.md`) and that skill's **Run authorization** line stay in agreement; a ship-policy change moves both copies |
-| A step that tells the agent to run another skill | The house rule in `skills/writing-kit-skills/SKILL.md` ("Calling another skill"): name the Skill-tool call for a model-invoked target; for a user-invoked target, tell the user to run it, except the documented user-started factory stage chain, T3/factory checkout-helper loading, and prose-only reading of Cursor’s `unslop` |
+| A step that tells the agent to run another skill | The house rule in `skills/writing-kit-skills/SKILL.md` ("Calling another skill"): name the Skill-tool call for a model-invoked target; for a user-invoked target, tell the user to run it, except the documented user-started factory stage chain, T3/factory checkout-helper loading, and the model-invoked `plain-language` call |
 | Added/removed/renamed a skill, or changed where it sits in the workflow | The map in `skills/ask-kit/SKILL.md` — a router that omits a skill, or still names a removed one, misroutes |
 | Any skill behavior change | A dated `CHANGELOG.md` entry with the skill's new version |
 | A skill's `disable-model-invocation` flag | Its `agents/openai.yaml` mirror (`allow_implicit_invocation: false`) — parity enforced by `validate.sh` check 11 |

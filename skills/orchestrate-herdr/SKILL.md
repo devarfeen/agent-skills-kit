@@ -1,9 +1,9 @@
 ---
 name: orchestrate-herdr
 disable-model-invocation: true
-description: "Dispatch spec (PRD) sub-issues to worker tabs; monitor to done. Tab, CLI, or runtime context selects herdr; without any of these: /ask-kit. Tab actions without spec/sub-issues: herdr companion."
+description: "Dispatch spec (PRD) sub-issues to worker tabs; monitor to done. Tab, CLI, or runtime context selects herdr; without any of these: /ask-kit. Tab status or actions with no dispatch: herdr companion."
 metadata:
-  version: "0.7.1"
+  version: "0.7.2"
 ---
 
 # Orchestrate herdr

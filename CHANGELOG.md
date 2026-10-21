@@ -11,6 +11,29 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- New `/plain-language` 0.1.0, the kit's own model-invoked writing skill. It
+  owns chat style (plain English, ASD-STE100, glossary terms) and prose
+  cleanup, with the AI-tell pattern list adapted from Cursor pstack's `unslop`
+  (MIT; see README credits). It is loaded at every session start and applied
+  to free prose in chat, commits, PRs, issues, and release notes, and it never
+  edits code, comments, ADRs, specs, prompts, or glossary entries. The Cursor
+  helper is no longer referenced anywhere but the credits: `/agents-md` 0.9.0
+  (marker `v56`) calls `plain-language` at the top of `AGENTS.md`, moves the
+  chat-style bullets into the skill, and emits its startup line instead of a
+  cleanup section; `/commit-push-pr` 0.11.3 and `/commit-push-close` 0.8.3 ship
+  policies call it; `/ask-kit` 0.2.2 routes to it; `/writing-kit-skills` 0.6.0
+  names the call; `rules/skills.md` and the manifest drop the companion row.
+  The generated root also gains one reporting-gate line: every skill load,
+  user- or model-invoked, is announced as `🧩 Skill: /<name> (user|auto)`.
+  Rules 10, 13 and 14 carry the three Karpathy details the kit had dropped:
+  a check per plan step, no error handling for impossible cases, and
+  mention-never-delete for unrelated dead code.
+- Routing harness: a no-trigger query now also passes when no judge picks the
+  skill under test, since three different non-target picks still prove the
+  description did not fire; a split that includes the target still fails.
+  `/orchestrate-herdr` 0.7.2 sends status checks on existing tabs to the herdr
+  companion after a unanimous mis-route in a sweep.
+  Re-run `/agents-md` to refresh workspace rules.
 - Change 28 applied: ship targets are defined once in both `ship-policy.md`
   copies (**Targets**). `/factory run` may merge into the delivery branch
   `local` even when it is the repository's default branch; production

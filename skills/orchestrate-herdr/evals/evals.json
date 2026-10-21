@@ -138,8 +138,8 @@
   "last_run": {
     "date": "2026-10-21",
     "method": "3 independent fresh catalog-only judges; majority vote; no workflow execution",
-    "result": "573/573 pass",
-    "judge_model": "Actual model identities not exposed; three independent fresh catalog-only sessions",
-    "catalog": "live kit descriptions and invocation policies + catalog-externals.md; 457a25430f64799475610bff9490fb5dce082f16 + uncommitted changes"
+    "result": "591/591 pass",
+    "judge_model": "claude-fable-5-1 (three fresh sub-agent sessions inheriting the maintainer session model; catalog-only, no repo access)",
+    "catalog": "live kit descriptions and invocation policies + catalog-externals.md; f69a73b72e8a0d9a6f5ae0bf58e2d4fcada2b943 + uncommitted changes"
   }
 }

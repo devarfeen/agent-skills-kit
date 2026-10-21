@@ -190,7 +190,14 @@ def main():
         votes = [judge[item["n"]] for judge in judges]
         majority, count = Counter(votes).most_common(1)[0]
         hit = majority == item["skill"]
-        passed = count >= 2 and (hit if item["expect"] == "trigger" else not hit)
+        if item["expect"] == "trigger":
+            passed = count >= 2 and hit
+        else:
+            # A no-trigger query passes when another skill wins the majority, or when
+            # no judge picked this skill at all: three different non-target picks
+            # still prove the description did not fire. Any vote for the target
+            # without a majority elsewhere stays a failure.
+            passed = (count >= 2 and not hit) or item["skill"] not in votes
         bucket = per_skill[item["skill"]]
         bucket["pass" if passed else "fail"] += 1
         if not passed:

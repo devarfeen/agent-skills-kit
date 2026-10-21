@@ -35,8 +35,10 @@ maintainer can re-run the baseline comparably.
 4. `python3 tools/trigger-evals/score.py /tmp/query-manifest.json j1.jsonl j2.jsonl j3.jsonl`
 5. **Pass rule** (majority vote per query): an `expect: trigger` query passes
    when the majority picks that skill; an `expect: no-trigger` query passes
-   when the majority picks anything else — its `route` field is diagnostic,
-   not pass/fail. Three different picks fail for either query kind. Missing,
+   when the majority picks anything else, or when no judge picked that skill
+   at all — its `route` field is diagnostic, not pass/fail. Three different
+   picks fail a trigger query, and fail a no-trigger query only when one of
+   them is the skill under test. Missing,
    duplicate, extra, or unknown picks invalidate the run; so does reusing one
    judge file in multiple argument positions.
 6. Record `date`, `method`, `result`, `model`, and the catalog provenance in

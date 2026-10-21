@@ -38,6 +38,7 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | ----- | ---- | ----- | ---- | -------- |
 | `/agents-md` | kit | startup | once per workspace; re-run to refresh the Project Matrix | |
 | `/design-system` | kit | startup | once per UI project; re-run `extend` as the design grows | |
+| `/plain-language` | kit | startup | at every session start, after the first reporting-gate update; owns chat style and prose cleanup, never code, ADRs, or specs | |
 | `/writing-kit-skills` | kit | startup | kit-internal — house style for authoring this repo's skills; not workspace routing | |
 | `/feature-discovery` | kit | discover | | |
 | `/port-feature` | kit | discover | reference → target gap map | |
@@ -87,7 +88,6 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | pr | companion | | | A PR body is being written — smallest visual that shows the change, before/after evidence, one-way or two-way door plus blast radius. Inside `/commit-push-pr` or a repo PR template it shapes the summary visual and wording only; mandated sections, order, and the target-required issue reference stay. |
 | retro | companion | | | A session is finished — especially one that went sideways — and the agent's environment should improve: navigation pointers, automated checks, coding standards, steering files. Proposes, never edits. User-invoked (`/retro`); do not auto-fire. |
 | wait-what | companion | | | The agent's last chat message did not land — re-pitch it with brief context, ASD-STE100 Simplified Technical English, and the ubiquitous language from `GLOSSARY.md`. |
-| unslop | companion | | | Cursor prose cleanup before sending agent-written text or finalizing written content. Read and apply automatically under the workspace or ship-policy exception; preserve upstream metadata, technical literals, and mandated text. |
 | wizard | companion | | | A procedure hits steps only a human can perform (credentials, CI secrets, third-party dashboards, one-off migrations/cutovers) — generate an interactive bash walkthrough for them; never for steps the agent can do itself. |
 | to-questionnaire | companion | | | A decision needs knowledge the user lacks — turn it into a Markdown questionnaire the one person who can answer fills in async or in a meeting. |
 | domain-modeling | companion | | | Project terminology, aliases, or ADR-backed domain language need sharpening. |

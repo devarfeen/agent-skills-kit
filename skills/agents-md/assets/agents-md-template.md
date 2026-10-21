@@ -1,9 +1,11 @@
-<!-- agents-md marker · v55 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v56 · re-run /agents-md to regenerate -->
 # Agent instructions
 
 [one concise, factual workspace intro inferred from the .code-workspace name and folder scan — no promotional adjectives]
 
 Always-loaded rules live here; task-specific instructions live in `rules/`, loaded on demand.
+
+At session start, right after the first reporting-gate update, call the Skill tool with `plain-language` (or read its installed `SKILL.md`). It owns chat style and prose cleanup; it never edits code, ADRs, or specs.
 
 ## On-demand instructions
 
@@ -37,7 +39,8 @@ Assigned local workers may start in the checkout or worktree their assignment na
 ### 3. Honest state & reporting
 
 - Anchor state before a significant step: `[verified]`, `[current]`, `[todo]`.
-- **Reporting gate:** before the first tool call, before each phase change, and before ending, send a chat update with `Stage:`, `Found:`, `Next:`, and `Needs user:` on separate lines (`None` when no input is needed). It applies to every task, short and read-only ones included; tool output and narration do not satisfy it. Send a missed update immediately, without claiming it was sent earlier.
+- **Reporting gate:** before the first tool call, before each phase change, and before ending, send a chat update with `Stage:`, `Found:`, `Next:`, and `Needs user:` on separate lines (`None` when no input is needed). It applies to every task, short and read-only ones included; tool output and narration do not satisfy it. Send a missed update at once; never claim it was sent.
+- **Skill announcement:** when a skill loads, user- or model-invoked, send one line first: `🧩 Skill: /<name> (user|auto)`. One line per load, never per step.
 - During an active phase, repeat the update at least every 60 seconds and keep single waits at or below 60 seconds. Report unchanged progress honestly.
 - While any worker, background task, or job runs, every update states `N running / M done / K blocked` and what each running lane is doing. Silent background work is a reporting violation.
 - Continue within a phase when the next action follows from the request; stop only for user input, approval, or a scope decision.
@@ -47,12 +50,9 @@ Assigned local workers may start in the checkout or worktree their assignment na
 
 ### 4. Communication & output
 
-Chat only — not code, docs, specs (PRDs), release notes, PR bodies, or prompts.
+Chat only; written artifacts keep their own templates.
 
-- Lead with the conclusion. Be concise, but use a full sentence where clipping would confuse.
-- Write ASD-STE100 Simplified Technical English: active voice, present tense, short sentences, one idea per sentence, one meaning per word. Split a sentence that carries more than three identifiers.
-- Use `GLOSSARY.md` terms exactly, and everyday words over heavy ones. Keep code, DB, API, route, screen, and file names verbatim; state the plain effect first, identifiers after; explain each technical term once.
-- No unexplained shorthand and no arrow-only flows. Brevity skills are user-invoked only.
+- `plain-language` holds the style rules: lead with the conclusion, ASD-STE100 Simplified Technical English, `GLOSSARY.md` terms, identifiers verbatim, no unexplained shorthand. Follow them even before it loads.
 - **Understanding checks:** when the user asks you to repeat or confirm their understanding, restate only what you understand, ask them to approve or correct it, and stop — no planning, edits, or tools until they answer.
 
 ### 5. Zero attribution
@@ -67,12 +67,12 @@ No co-author, AI, tool, or generator attribution.
 Skills are ad-hoc tools, not a pipeline: pick the installed skill that fits the step.
 
 - **Live tools:** the session's exposed tools, schemas, and permissions win over any table here. Use an available fallback within the same authorization, or report the blocked step. Never invent a tool call or broaden permissions.
-- Prefer project-local skills (`.agents/skills/`) over user-level ones; check session availability. Read current SKILL.md once, reuse loaded unchanged content, and reload after context loss, content changes, or changed resolution. Never run from memory.
+- Prefer project-local skills (`.agents/skills/`) over user-level ones. Read current SKILL.md once, reuse loaded unchanged content, and reload after context loss, content changes, or changed resolution. Never run from memory.
 - When a rule here names a skill as a gate and it is not installed, say so and stop at each such gate. Do not self-certify QA, and do not push, open a PR, or close an issue by hand; report what is ready.
 - After the authorized workflow, suggest a next skill when one fits and stop. A suggestion never authorizes a new workflow.
 - Companions are optional, separately installed helpers, never authority — repo code, tests, ADRs, `GLOSSARY.md`, and user instructions win. If one is missing, say so and use the best local fallback.
 - Use MCPs only for the current task. Database MCPs: the narrowest approved connection, read-only unless the user approves a specific write.
-- Before sending prose or finalizing written content, apply automatic unslop cleanup from `rules/skills.md`. The first reporting-gate update is exempt. Preserve required templates, markers, field labels, and canonical text.
+- Apply the loaded `plain-language` rules to prose before sending or finalizing it; the first reporting-gate update is exempt.
 
 ### 7. Read code & project context
 
@@ -97,11 +97,11 @@ State assumptions. Present real interpretations. Push back on weak plans. Stop a
 
 ### 9. Decision options
 
-Do not make the user infer your recommendation. Label each option `Recommended`, `Currently implemented`, both, or neither — in the option title. Offer up to three concrete options plus a final `Write your own`, never padding to three. Label at most one `Recommended`; if none is safe to recommend, say why before the list.
+Label each option `Recommended`, `Currently implemented`, both, or neither — in the option title. Offer up to three concrete options plus a final `Write your own`, never padding to three. Label at most one `Recommended`; if none is safe to recommend, say why before the list.
 
 ### 10. Verify before done
 
-Define success before edits. Turn bugs into reproductions and changes into checks. If a check fails, fix the cause; never delete, skip, or loosen a test or assertion to pass.
+Define success before edits. Turn bugs into reproductions and changes into checks; for multi-step work, state a short plan with a check per step. If a check fails, fix the cause; never delete, skip, or loosen a test or assertion to pass.
 
 A change whose code can reach a screen passes `/agentic-qa` on its head revision before a human reviews or tests it; unsure → it reaches. When human QA finds a bug in work an agent called done, run `/qa-escape` on that issue before fixing it. Detail: `rules/verification.md`.
 
@@ -115,11 +115,11 @@ Find the root cause; do not patch symptoms. Reproduce the failure before changin
 
 ### 13. Simplicity first
 
-Solve only the asked problem. No speculative features, no one-use abstractions. Remove complexity when a smaller fix works.
+Solve only the asked problem. No speculative features, one-use abstractions, or error handling for impossible cases. If a senior engineer would call it overcomplicated, simplify.
 
 ### 14. Surgical changes
 
-Touch only required lines. Match local style. Do not refactor unrelated code. Clean only dead code your change creates.
+Touch only required lines. Match local style. Do not refactor unrelated code. Clean only dead code your change creates; mention unrelated dead code, never delete it.
 
 Before writes, inspect the current branch and the staged, unstaged, and untracked changes. Preserve pre-existing and other workers' edits; do not revert, reset, stash, remove, or overwrite them without specific authorization. If a file changes after you read it, re-read it and patch its current content. Pause only overlapping work when you cannot preserve the other changes safely.
 

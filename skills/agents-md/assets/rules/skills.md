@@ -1,4 +1,4 @@
-<!-- agents-md marker · v55 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v56 · re-run /agents-md to regenerate -->
 # Skills and companions
 
 Zero attribution: never add co-author, AI, or tool attribution to any output.
@@ -20,14 +20,6 @@ Each skill's own description says when to use it.
 [COMPANIONS — apply the manifest's note exclusions and install check first, then emit the manifest's companion format: one line naming the installed companion skills, and a `Companion | Use when` table for installed MCPs, CLIs, and plugins only.]
 
 Only companions installed when this file was generated are listed; re-run `/agents-md` after installing another.
-
-## Automatic prose cleanup
-
-Before sending agent-written chat prose or finalizing commit messages, PR/issue prose, documentation, release notes, or newly written comments, read and apply the installed Cursor `unslop` rules. This workspace authorizes reading and following that explicit-only helper for prose cleanup; keep its upstream metadata unchanged and do not invoke it through the Skill tool when model invocation is disabled. This exception grants no implementation, publishing, or shipping authority.
-
-Resolve its `SKILL.md` from session-provided paths or runtime skill directories, preferring project-local over user-level installs. Read once while unchanged; reload after context loss, content changes, or changed resolution. Apply it even if a stale generated companion list omits it. If unavailable, report once per session and continue under existing writing rules.
-
-The reporting-gate update sent before the first tool call is exempt; cleanup applies from the first substantive reply. Rewrite only prose written or edited for the current task. Preserve meaning, evidence, qualifications, exact technical names, code, commands, quotations, and mandated text: templates, markers, headings, field labels, issue-title formats, and canonical lines. Leave unrelated existing prose alone. Cleanup never removes required content or rewrites a generated instruction skeleton.
 
 ## Matt skill routing
 

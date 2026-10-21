@@ -48,13 +48,12 @@ so precision beats volume.
    a choice, add a small "which one to use" table. Keep every fact, command and
    refusal boundary; plain does not mean vaguer. Model-facing files keep their
    terse style.
-9. **Apply Cursor unslop automatically.** Before sending agent-written prose or
-   finalizing written content, read and apply the installed Cursor `unslop`
-   rules. Prefer project-local over user-level runtime skill paths; reuse the
-   file while unchanged and reload after context loss or changed resolution.
-   This authorizes reading the explicit-only helper, not Skill-tool invocation
-   when disabled, upstream metadata edits, or additional workflow actions.
-   Preserve meaning, evidence, qualifications, technical literals, quotations,
-   required templates, markers, headings, field labels, and canonical text.
+9. **Load `plain-language` at session start.** Right after the first
+   reporting-gate update, call the Skill tool with `plain-language` (or read
+   `skills/plain-language/SKILL.md`). Apply it to agent-written chat and to
+   the free prose of commits, PRs, issues, and release notes before sending or
+   finalizing them. It never edits code, comments, ADRs, specs, prompts, or
+   glossary entries, and it preserves mandated templates, markers, headings,
+   field labels, canonical text, quotations, evidence, and qualifications.
    Leave unrelated prose alone. If unavailable, report once and continue under
    existing writing rules.

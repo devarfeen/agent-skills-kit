@@ -1,0 +1,94 @@
+{
+  "skill": "plain-language",
+  "kind": "trigger-eval",
+  "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
+  "queries": [
+    {
+      "q": "Clean up this reply, it reads like an AI wrote it",
+      "expect": "trigger"
+    },
+    {
+      "q": "Remove the AI tells from this PR description before I post it",
+      "expect": "trigger"
+    },
+    {
+      "q": "Rewrite this paragraph in plain English",
+      "expect": "trigger"
+    },
+    {
+      "q": "Make this commit message plain and direct",
+      "expect": "trigger"
+    },
+    {
+      "q": "Load the chat style and writing rules for this session",
+      "expect": "trigger"
+    },
+    {
+      "q": "This doc is full of filler, hedging and em dashes; fix the prose",
+      "expect": "trigger"
+    },
+    {
+      "q": "Cut the buzzwords from this issue comment and keep the facts",
+      "expect": "trigger"
+    },
+    {
+      "q": "Rewrite this in Simplified Technical English, one idea per sentence",
+      "expect": "trigger"
+    },
+    {
+      "q": "/plain-language",
+      "expect": "trigger"
+    },
+    {
+      "q": "Apply the prose cleanup rules to these release notes without changing the headings",
+      "expect": "trigger"
+    },
+    {
+      "q": "Write the PR body for this change",
+      "expect": "no-trigger",
+      "route": "/pr"
+    },
+    {
+      "q": "Your last message did not land, explain it again",
+      "expect": "no-trigger",
+      "route": "/wait-what"
+    },
+    {
+      "q": "Draft the release notes for this week's merges",
+      "expect": "no-trigger",
+      "route": "/release-notes"
+    },
+    {
+      "q": "Write a new skill for this repository",
+      "expect": "no-trigger",
+      "route": "/writing-for-agents"
+    },
+    {
+      "q": "Translate this README into Spanish",
+      "expect": "no-trigger",
+      "route": "none"
+    },
+    {
+      "q": "Fix the typo on line 12 of the README",
+      "expect": "no-trigger",
+      "route": "none"
+    },
+    {
+      "q": "Clean up the wording in this ADR",
+      "expect": "no-trigger",
+      "route": "none"
+    },
+    {
+      "q": "Tidy the comments and docstrings in this module",
+      "expect": "no-trigger",
+      "route": "none"
+    }
+  ],
+  "last_run": {
+    "date": "2026-10-21",
+    "method": "3 independent fresh catalog-only judges; majority vote; no workflow execution",
+    "result": "591/591 pass",
+    "judge_model": "claude-fable-5-1 (three fresh sub-agent sessions inheriting the maintainer session model; catalog-only, no repo access)",
+    "catalog": "live kit descriptions and invocation policies + catalog-externals.md; f69a73b72e8a0d9a6f5ae0bf58e2d4fcada2b943 + uncommitted changes"
+  }
+}

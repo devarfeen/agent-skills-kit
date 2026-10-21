@@ -4,13 +4,11 @@ Shared rules for `commit-push-close` and `commit-push-pr`. Both ship one issue i
 
 > Duplicated so each skill installs standalone; keep both copies byte-identical. Load this policy once per unchanged session, then consult the named sections for the active step. An earlier read of the sibling skill's copy counts only when neither file changed since that read and a hash (`sha256sum`, or `shasum -a 256`) shows them identical; otherwise read this copy in full. Templates and examples are needed only while drafting.
 
-## Automatic prose cleanup
+## Prose cleanup
 
-Before showing drafts or finalizing ship output, read and apply the installed Cursor `unslop`. This policy authorizes reading and following that explicit-only helper for prose cleanup, without changing upstream metadata or invoking it through the Skill tool when model invocation is disabled. No additional workflow or remote write is authorized.
+Before showing drafts or finalizing ship output, apply the kit's `plain-language` skill to the free prose of the commit message, PR body, comments, and handoff: call the Skill tool with `plain-language` where the runtime has one, or reuse it when the session already loaded it; otherwise read its installed `SKILL.md`. It edits prose only, inside its own scope, and authorizes no workflow or remote write.
 
-Resolve `SKILL.md` from session-provided paths or runtime skill directories, project-local before user-level. Reuse it while unchanged; reload after context loss, content changes, or changed resolution. If unavailable, report once per session and continue under existing writing rules.
-
-Clean only prose written or edited for this task. Preserve meaning, evidence, qualifications, technical names, code, commands, quotations, and required templates, markers, headings, field labels, issue-title formats, and canonical wording. Leave unrelated prose alone. Clean drafts before approval; a later change to approved text requires the workflow's existing draft approval again.
+Preserve meaning, evidence, qualifications, technical names, code, commands, quotations, and required templates, markers, headings, field labels, issue-title formats, and canonical wording. Leave unrelated prose alone. Clean drafts before approval; a later change to approved text requires the workflow's existing draft approval again. If the skill is unavailable, report once per session and continue under existing writing rules.
 
 ## Tracker
 
