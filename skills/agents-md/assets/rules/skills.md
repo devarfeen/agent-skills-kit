@@ -27,7 +27,7 @@ Before sending agent-written chat prose or finalizing commit messages, PR/issue 
 
 Resolve its `SKILL.md` from session-provided paths or runtime skill directories, preferring project-local over user-level installs. Read once while unchanged; reload after context loss, content changes, or changed resolution. Apply it even if a stale generated companion list omits it. If unavailable, report once per session and continue under existing writing rules.
 
-Rewrite only prose written or edited for the current task. Preserve meaning, evidence, qualifications, exact technical names, code, commands, quotations, and mandated text: templates, markers, headings, field labels, issue-title formats, and canonical lines. Leave unrelated existing prose alone. Cleanup never removes required content or rewrites a generated instruction skeleton.
+The reporting-gate update sent before the first tool call is exempt; cleanup applies from the first substantive reply. Rewrite only prose written or edited for the current task. Preserve meaning, evidence, qualifications, exact technical names, code, commands, quotations, and mandated text: templates, markers, headings, field labels, issue-title formats, and canonical lines. Leave unrelated existing prose alone. Cleanup never removes required content or rewrites a generated instruction skeleton.
 
 ## Matt skill routing
 

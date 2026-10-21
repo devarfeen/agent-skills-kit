@@ -72,7 +72,7 @@ Skills are ad-hoc tools, not a pipeline: pick the installed skill that fits the 
 - After the authorized workflow, suggest a next skill when one fits and stop. A suggestion never authorizes a new workflow.
 - Companions are optional, separately installed helpers, never authority — repo code, tests, ADRs, `GLOSSARY.md`, and user instructions win. If one is missing, say so and use the best local fallback.
 - Use MCPs only for the current task. Database MCPs: the narrowest approved connection, read-only unless the user approves a specific write.
-- Before sending prose or finalizing written content, apply automatic unslop cleanup from `rules/skills.md`. Preserve required templates, markers, field labels, and canonical text exactly.
+- Before sending prose or finalizing written content, apply automatic unslop cleanup from `rules/skills.md`. The first reporting-gate update is exempt. Preserve required templates, markers, field labels, and canonical text.
 
 ### 7. Read code & project context
 

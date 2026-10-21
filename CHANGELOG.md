@@ -19,7 +19,9 @@ re-run `/agents-md` after a marker bump.
   default branch (never an assumed `main`) and the shared issue-reference
   rule; the QA handoff records the tested baseline SHA. `/local-to-staging`
   2.1.3 routes to `/ci-loop` only for heads its own rule admits. `/agents-md`
-  0.8.1 (marker `v55`) emits the same target rule in `rules/shipping.md`;
+  0.8.1 (marker `v55`) emits the same target rule in `rules/shipping.md` and
+  exempts the first reporting-gate update from automatic prose cleanup, so the
+  reporting gate and the cleanup rule no longer contradict each other;
   re-run `/agents-md` to refresh workspace rules.
 - `/risk-review` 1.0.1 names its local trigger (the end of a user-started
   implementation flow after `/code-review`, invoked by the coordinator or
