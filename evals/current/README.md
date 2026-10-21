@@ -2,17 +2,19 @@
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
-Date: 2026-10-21. Approved changes 1–27 are implemented and checked. One
-additional conflict fix, change 28, awaits approval and remains open. Static
+Date: 2026-10-21. Approved changes 1–27 are implemented and checked. Change
+28 was applied on 2026-10-22 (see the audit table and `CHANGELOG.md`). Static
 review covered all 29 kit skills and relevant references. Historical results
-were removed; reusable cases, fixtures and tools remain.
+were removed; reusable cases, fixtures and tools remain. The removal
+manifest separates files deleted from git from working files that git never
+tracked.
 
 ## Evidence
 
 - [All-skill audit, decisions, remaining conflict and body sizes](skills-audit.md)
 - [Local review behavior: 12 cases, two repetitions](behavioral-results.md)
 - [Approved repair behavior: 15 cases, two repetitions and focused rechecks](repair-results.md)
-- [Final routing score: 573/573](routing-score.log)
+- [Final routing score: 573/573 by three-judge majority on the unchanged attempt-2 catalog; query 105 stays borderline across the nine ballots](routing-score.log)
 - [Harness regression tests: 20 passed](harness-tests.log)
 - [Repository validation: all 19 checks passed](validate.log)
 - [Removed history and preserved fixtures](removed-history.json)

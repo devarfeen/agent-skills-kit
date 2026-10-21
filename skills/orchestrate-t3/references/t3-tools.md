@@ -27,7 +27,7 @@ Call `orchestrator_capabilities` once; retain its result reference and bounded u
 
 ## Project
 
-Read workspace thread policy before selecting a project. When threads must stay bound to the workspace, resolve its registered project/root through live session metadata or paginated `t3_project_list`. In LUCETT-WORKSPACE this applies to every supervisor, builder, reviewer, QA and standalone task. A product worktree is an execution assignment, not a T3 project selection. Reuse that workspace project; no product registration or separate product thread is needed.
+Read workspace thread policy before selecting a project. When threads must stay bound to the workspace, resolve its registered project/root through live session metadata or paginated `t3_project_list`. Under that policy this applies to every supervisor, builder, reviewer, QA and standalone task. A product worktree is an execution assignment, not a T3 project selection. Reuse that workspace project; no product registration or separate product thread is needed.
 
 Without a workspace-bound policy, match the repository's primary checkout to its registered project. No match → report the unregistered repository under Needs user; registration changes the user's T3 setup and needs authorization. `/factory run` may register it through the live project-create schema, titled with its PROJECT-CODE, and report the registration.
 

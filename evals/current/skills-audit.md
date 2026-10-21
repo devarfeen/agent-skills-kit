@@ -6,7 +6,8 @@ Date: 2026-10-21. Approved changes 1–27 are implemented and checked.
 One additional conflict (change 28) awaits approval; it remains open. Three independent read-only review assignments covered all 29
 skills and relevant references, with overlapping agents-md coverage for its
 routing and general generation rules. Reviewers received current instructions
-and no intended findings. This is a static audit, not execution of the
+and no intended findings; their reports were not retained, so the decisions
+table below is the only record of that static pass. This is a static audit, not execution of the
 shipping, staging, deployment or browser workflows.
 
 ## Findings and decisions
@@ -96,7 +97,10 @@ counts, issue references and completion rules.
 - Routing attempt 2: 572/573. An integration-contract negative query about
   writing end-to-end tests split across `/tdd-loop`, `/implement`, and `none`;
   no majority met the scorer's strict rule. No further catalog edits followed.
-- Routing attempt 3: 573/573 by majority of three new catalog-only judges.
+- Routing attempt 3: 573/573 by majority of three new catalog-only judges on
+  the unchanged attempt-2 catalog. Query 105 (end-to-end checkout tests)
+  splits 5/2/2 across the nine ballots of the three attempts and remains a
+  borderline routing case rather than a fixed one.
   The scorer then refreshed all 29 skills' run records and the provenance
   snapshot. Actual model identities were not exposed. Both earlier attempts
   remain as evidence from this audit; no failed sweep refreshed provenance.

@@ -3,7 +3,7 @@ name: orchestrate-t3
 disable-model-invocation: true
 description: "Fan a spec (PRD) or issue list out to T3 Code worker threads, one worktree per group, and monitor them to done. Needs the T3 Code MCP. Inside herdr use /orchestrate-herdr; one issue is /tdd-loop."
 metadata:
-  version: "0.12.1"
+  version: "0.12.2"
 ---
 
 # Orchestrate T3
@@ -26,7 +26,7 @@ T3 Code tool calls are cited by bold section name from [`references/t3-tools.md`
 - **Zero attribution.** Omit co-author, AI, and tool attribution from prompts, commits, tracker comments, and reports.
 - **Never implement.** The orchestrator's only writes are worktree setup and tracker block labels. A fix a thread got wrong goes back to that thread per **Send**.
 - **T3 Code workers only, local only.** Use the supported child or authorized top-level launcher per **Launch** in the user's T3 Code environment. Launch no worker through a shell, and use no cloud agent product.
-- **Separate thread binding from execution checkout.** Create each checkout at `<project-repo>/.worktrees/<task-name>`. Apply the workspace thread policy in **Project/Launch** of `references/t3-tools.md`; LUCETT-WORKSPACE keeps every thread at its workspace root while commands and edits use the assigned product worktree. Use supported shared child delegation when required. Otherwise bind the thread to the prepared existing worktree. Never let a launcher create a checkout outside the workspace placement rule.
+- **Separate thread binding from execution checkout.** Create each checkout at `<project-repo>/.worktrees/<task-name>`. Apply the workspace thread policy in **Project/Launch** of `references/t3-tools.md`; a workspace whose instructions bind threads to its root keeps every thread there while commands and edits use the assigned product worktree. Use supported shared child delegation when required. Otherwise bind the thread to the prepared existing worktree. Never let a launcher create a checkout outside the workspace placement rule.
 - **Every thread has a checkout record.** No launch until the group's worktree path, branch, and starting commit are verified and saved. A failed setup blocks that group; the project root is never the fallback.
 - **Saved IDs only.** Every wait, read, and send uses the worker/thread and run IDs saved at launch — never the newest thread, a title guess, or recollection.
 - **Unattended threads need an unattended mode.** The orchestrator can answer a thread's question but cannot approve a permission prompt, so a thread launched in a stricter mode stalls where only the user can release it.

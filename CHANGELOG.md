@@ -41,6 +41,13 @@ re-run `/agents-md` after a marker bump.
   `/tdd-loop` 0.3.2 finishes a declared hotfix only after the regression red;
   `/feature-prompt` 0.3.2 records settled seams inside the contract sections;
   `/agentic-qa` 0.9.2 keeps restore and cleanup commands with the fixture owner.
+- `/orchestrate-t3` 0.12.2 and the factory T3 backend describe the
+  workspace-bound thread policy generically instead of naming one consumer
+  workspace. Tracked Python bytecode is untracked and ignored. The audit
+  record under `evals/current/` now separates git deletions from untracked
+  working files, states that the static-review reports were not retained,
+  and describes the final routing score as a three-judge majority with one
+  borderline query.
 
 ## 2026-10-21
 

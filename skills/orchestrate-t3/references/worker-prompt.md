@@ -6,7 +6,7 @@ One prompt per thread, filled from that thread's group. Never send the full spec
 
 Fill `TRACKER` with the workspace tracker per **Resolve** in [`tracker-map.md`](tracker-map.md), `ISSUE` with the issue's native identifier (`42` on GitHub, `PRWL-101` on Linear), and `ISSUE_URL` with its link.
 
-`BRANCH` is the group's branch and `CHECKOUT` its verified execution worktree path, both from the checkout record made in **Create worktrees**. `THREAD_BINDING` records the required T3 project/root independently; in LUCETT-WORKSPACE it stays at the workspace root for every role.
+`BRANCH` is the group's branch and `CHECKOUT` its verified execution worktree path, both from the checkout record made in **Create worktrees**. `THREAD_BINDING` records the required T3 project/root independently; under a workspace-bound thread policy it stays at the workspace root for every role.
 
 Fill the repository/common-directory identity, starting commit, baseline evidence, and applicable instruction pointers from that record. `AC_SCOPE` lists this repository assignment's criteria; for a split issue, other repository assignments remain outside the thread's write scope.
 

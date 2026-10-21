@@ -14,7 +14,7 @@ T3 reviewer options require live cross-provider launch support when different fr
 
 T3 dispatch loads `orchestrate-t3` with the unit and **Start** as intake.
 
-Resolve thread binding from workspace instructions separately from the assigned execution checkout. In LUCETT-WORKSPACE, every T3 thread stays bound to that workspace project/root: supervisor, builder, reviewer, QA and standalone tasks. Execute product commands and edits in the verified assigned product worktree through explicit working directories and edit paths. Use supported shared child delegation that inherits the workspace binding; an explicitly authorized top-level launch selects the workspace project and root strategy through its live schema. A product assignment alone never requires a product-bound or top-level thread.
+Resolve thread binding from workspace instructions separately from the assigned execution checkout. Under a workspace-bound thread policy, every T3 thread stays bound to that workspace project/root: supervisor, builder, reviewer, QA and standalone tasks. Execute product commands and edits in the verified assigned product worktree through explicit working directories and edit paths. Use supported shared child delegation that inherits the workspace binding; an explicitly authorized top-level launch selects the workspace project and root strategy through its live schema. A product assignment alone never requires a product-bound or top-level thread.
 
 A root-bound thread may report `worktreePath: null`; reconcile it against its registered workspace root.
 

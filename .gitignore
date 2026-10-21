@@ -6,3 +6,7 @@ Thumbs.db
 .auto-claude/
 .worktrees/
 .venv/
+
+# Python bytecode
+__pycache__/
+*.pyc
