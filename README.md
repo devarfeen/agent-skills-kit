@@ -158,6 +158,7 @@ for how these skills appear in the installer.
 | [`feature-discovery`](skills/feature-discovery/SKILL.md) | discover | Understand how existing code works. Read-only. | `Trace the invite-user workflow across ADMIN-WEB and API-SERVICE` |
 | [`port-feature`](skills/port-feature/SKILL.md) | discover | Compare an existing feature with the project that will receive it. | `Port stock-transfer approvals from LEGACY-PORTAL to ADMIN-WEB` |
 | [`feature-prompt`](skills/feature-prompt/SKILL.md) | sharpen | Turn a rough idea into a small prompt for planning. | `Help me create a feature prompt for stock transfer approvals` |
+| [`grill-with-field`](skills/grill-with-field/SKILL.md) | plan | Grill a plan with the standards, provider rules and proven tools of its field, each from a fetched source. `check` audits the plan before the spec. | `/grill-with-field on the partner digest email prompt` |
 | [`tdd-loop`](skills/tdd-loop/SKILL.md) | implement | Build or fix behavior with reuse-first choices and test-first proof. | `Fix this bug test-first` |
 | [`orchestrate-herdr`](skills/orchestrate-herdr/SKILL.md) | implement | Run several tickets in local herdr worker tabs. | `orchestrate-herdr for <spec URL> using codex` |
 | [`orchestrate-t3`](skills/orchestrate-t3/SKILL.md) | implement | Run related tickets in local T3 Code threads. | `orchestrate-t3 for issues 41, 44 and 52 using codex` |
@@ -192,7 +193,7 @@ for how these skills appear in the installer.
 file. The root file holds shared rules and tells the agent what to read for
 each task. Seven files under `rules/` cover the Project Matrix, orchestration,
 verification, browser use, shipping, issues, and skills. Each generated file records
-generator version `v56`. It does not write `CLAUDE.md` or `GEMINI.md`; all supported
+generator version `v57`. It does not write `CLAUDE.md` or `GEMINI.md`; all supported
 runtimes read `AGENTS.md`. It reports competing instruction files without
 editing them. When production or staging hosts are named, it suggests an
 optional environment-guard hook template.
@@ -215,8 +216,19 @@ or different, including validation, bulk actions, role restrictions, and
 reference behavior with no test coverage. It hands the result to planning.
 
 **`feature-prompt`.** Turns a rough idea into a small prompt file for
-`grill-with-docs`. The request is sized for one PR. It separates what you said
+`grill-with-field`. The request is sized for one PR. It separates what you said
 from what the agent inferred.
+
+**`grill-with-field`.** Runs Matt's grilling interview and adds field research.
+After the first round, a background agent looks up the standards, provider
+rules and proven tools for your plan's field. Each finding cites a source the
+agent fetched, with a trust level, and comes back to you as a question with a
+recommended answer. You make every decision. Before `/to-spec`, run
+`/grill-with-field check`. It lists each must-have rule and six areas
+(security, accessibility, privacy, reliability, compliance, run cost) as
+covered, missing, or not applicable. It replaces `/grill-with-docs` and still
+records ADRs and glossary terms. It never installs packages, edits code, or
+writes the spec.
 
 </details>
 
@@ -438,7 +450,7 @@ skill; you can still install it on its own with `--skill <name>`.
 | Group | Heading in `npx skills` | Skills |
 | :--- | :--- | :--- |
 | `build` | Build | `orchestrate-herdr`, `orchestrate-t3`, `tdd-loop`, `using-git-worktrees` |
-| `discover-plan` | Discover Plan | `feature-discovery`, `feature-prompt`, `integration-contract`, `port-feature` |
+| `discover-plan` | Discover Plan | `feature-discovery`, `feature-prompt`, `grill-with-field`, `integration-contract`, `port-feature` |
 | `factory-workflow` | Factory Workflow | `agentic-qa`, `ci-loop`, `deploy-watch`, `factory`, `incident-triage`, `qa-escape`, `report-issue`, `risk-review` |
 | `ship` | Ship | `commit-push-close`, `commit-push-pr`, `pr-feedback`, `release-notes` |
 | `staging-promotion` | Staging Promotion | `local-to-staging`, `staging-fix`, `staging-to-production` |
@@ -505,7 +517,7 @@ npx skills add pbakaus/impeccable -g --skill impeccable
 `/release-notes`, inside the agent. Start interactive sessions with `agent`,
 or use `agent -p "..."` for scripts and CI.
 
-The planning and implementation skills `/grill-with-docs`, `/wayfinder`,
+The planning and implementation skills `/grilling`, `/domain-modeling`, `/wayfinder`,
 `/to-spec`, `/to-tickets`, `/implement`, `/implement-spec`, `/tdd`,
 `/code-review`, `/diagnosing-bugs`, and `/triage` come from
 [Matt Pocock’s skills](https://github.com/mattpocock/skills). They are separate
@@ -534,7 +546,10 @@ The kit adds these rules when you use those skills together:
   integration branch. It stops after `/code-review` and local adversarial `/risk-review`. Pushing, opening a PR,
   and closing tickets stay with the shipping skills.
 - **Planning.** If you can state the goal and every open decision clearly,
-  use `/feature-prompt`, then `/grill-with-docs`. If unresolved decisions
+  use `/feature-prompt`, then `/grill-with-field`, and run
+  `/grill-with-field check` before the spec. `/grill-with-field` loads Matt's
+  `/grilling` and `/domain-modeling` and replaces `/grill-with-docs`; where a
+  Matt skill names `/grill-with-docs`, use `/grill-with-field`. If unresolved decisions
   prevent you from defining the work, use `/wayfinder` to track them as
   tickets and resolve one per session. Both paths lead to `/to-spec`.
 - **PR descriptions.** `/commit-push-pr` requires its own headings and order,

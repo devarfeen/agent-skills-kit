@@ -1,4 +1,4 @@
-<!-- agents-md marker · v56 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v57 · re-run /agents-md to regenerate -->
 # Skills and companions
 
 Zero attribution: never add co-author, AI, or tool attribution to any output.
@@ -25,7 +25,8 @@ Only companions installed when this file was generated are listed; re-run `/agen
 
 Use `/ask-matt` to choose a Matt skill flow — it routes, never executes; do not auto-run its suggestion.
 
-- `/grill-with-docs`: ask once, up front, whether archived context exists; quote pastes in the ADR as a blockquote with `Source: "<doc title>" · pasted <date>`; offer revealed names as `GLOSSARY.md` aliases; flag ADR contradictions, never drop them.
+- `/grill-with-field` replaces `/grill-with-docs`: where a Matt skill (`/ask-matt`, `/wayfinder`) names `/grill-with-docs`, run `/grill-with-field`. It loads `grilling` and `domain-modeling` and adds field sweeps; `check` runs before `/to-spec`.
+- `/grill-with-field`: ask once, up front, whether archived context exists; quote pastes in the ADR as a blockquote with `Source: "<doc title>" · pasted <date>`; offer revealed names as `GLOSSARY.md` aliases; flag ADR contradictions, never drop them.
 - A requested worktree is set up per `orchestration.md` before any Matt skill does task work; pass it the verified checkout. Do not rewrite installed third-party skills.
 - One fresh agent session per ticket. `/implement` says to use `/tdd` and to commit after `/code-review`; this workspace overrides both: drive `/tdd-loop` at each seam, with `/tdd` as reference only, and run the local adversarial review below after `/code-review`, then stop (`shipping.md`).
 - `/implement-spec` (user-invoked): implementers are local sub-agents under `orchestration.md`, each in its own worktree and driving `/tdd-loop`; commits and merges stay local; it opens no PR and resolves no ticket — after `/code-review`, the coordinator runs the local adversarial review below on the combined integration branch, reports it and stops. Implementers do not each launch that review.

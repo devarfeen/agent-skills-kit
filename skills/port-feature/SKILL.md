@@ -1,9 +1,9 @@
 ---
 name: port-feature
 disable-model-invocation: true
-description: "Use only to port, migrate, or rebuild a complete feature from a reference implementation into a target stack. Writes one gap map, suggests /grill-with-docs, stops. Never implements or auto-chains."
+description: "Use only to port, migrate, or rebuild a complete feature from a reference implementation into a target stack. Writes one gap map, suggests /grill-with-field, stops. Never implements or auto-chains."
 metadata:
-  version: "0.2.1"
+  version: "0.2.2"
 ---
 
 # Port feature
@@ -24,14 +24,14 @@ Do not start discovery until all three are known; if the user is away and one ca
 
 Carry this through every gap-map section:
 
-- **The REFERENCE is truth for behaviour** — workflow, navigation (menu placement, entry points, routes), permissions, data effects, and states. When the target's current behaviour disagrees with the reference, the reference wins (unless the user has explicitly decided to change the behaviour — a `/grill-with-docs` decision, not one this skill makes).
+- **The REFERENCE is truth for behaviour** — workflow, navigation (menu placement, entry points, routes), permissions, data effects, and states. When the target's current behaviour disagrees with the reference, the reference wins (unless the user has explicitly decided to change the behaviour — a `/grill-with-field` decision, not one this skill makes).
 - **The TARGET's design system is truth for UI.** When reference UI conflicts with the target design system, choose the design system and **record the deviation** (reference did X; target DS does Y; chose DS) in the UI/design gaps section.
 - **Never hardcode stack rules.** Read the target's rules from its binding context — `GLOSSARY.md`, `specs/adr/`, `AGENTS.md` — and its UI-coding skill. If a rule the port depends on (stack version, DS convention, component discipline, ADR location) is not recorded there, do not invent it — surface it under Open questions / Needs-user rather than guessing.
 
 ## Rules
 
 - **Zero attribution.** Never add or leave co-author, AI, or tool attribution in any output; include this rule in the gap map.
-- **Suggest, never auto-chain.** End by suggesting `/grill-with-docs` on the gap map, then stop. Planning and issue creation wait for a separate request.
+- **Suggest, never auto-chain.** End by suggesting `/grill-with-field` on the gap map, then stop. Planning and issue creation wait for a separate request.
 - **Never implement here.** No product code, config, or migration edits; the only write is the gap map file.
 - Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
 - **Narrow retrieval only.** Trace the reference and survey the target with targeted, evidence-backed search (`rg`/`git grep` for the exact route/path/symbol/state), `/feature-discovery`-style. **Never** bulk-read a repo or its `specs/` tree to "find everything".
@@ -104,7 +104,7 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 - One thin vertical slice that cuts through all layers and is testable on its own — not a layer, not a big-bang.
 
 ## 9. Open questions
-- <evidence-derived question for /grill-with-docs>. List them; do not block on them.
+- <evidence-derived question for /grill-with-field>. List them; do not block on them.
 ```
 
 Section rules (filled example bullets live in [`references/gapmap-example.md`](references/gapmap-example.md)):
@@ -120,11 +120,11 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
 ```markdown
 Stage: port-feature — wrote specs/port/<feature-slug>-gapmap.md (<REFERENCE-CODE> → <TARGET-CODE>).
 Found: <N> reference behaviours traced; target is <absent/partial/diverging>; <M> reusable target/DS pieces; <K> forced DS deviations; <R> risks.
-Next: run /grill-with-docs on the gap map to challenge it and produce the ADR (next number in specs/adr/).
+Next: run /grill-with-field on the gap map to challenge it and produce the ADR (next number in specs/adr/).
 Needs user: <open questions to steer, or ambiguous reference/target mapping, or "none">.
 
 Suggested next skills (optional):
-- /grill-with-docs: challenge the gap map and record the porting decisions as an ADR.
+- /grill-with-field: challenge the gap map and record the porting decisions as an ADR.
 - /prototype: if a UI/interaction open question needs to be seen or felt before planning.
 ```
 

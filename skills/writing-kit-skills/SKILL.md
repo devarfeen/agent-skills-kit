@@ -1,9 +1,9 @@
 ---
 name: writing-kit-skills
 disable-model-invocation: true
-description: "Author/edit agent-skills-kit skills or explain its canonical one-liners and word budget. Generic skills: skill-creator. Running routing evals alone is a maintainer task."
+description: "Author/edit a skill only when the request names agent-skills-kit or a kit skill, or explain its one-liners and word budget. Other skill work: skill-creator. Routing evals alone: maintainer task."
 metadata:
-  version: "0.6.0"
+  version: "0.6.1"
 ---
 
 # writing-kit-skills

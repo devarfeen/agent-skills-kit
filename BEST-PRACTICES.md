@@ -30,7 +30,7 @@ discover → sharpen → plan → slice → implement → verify → ship
 | :--- | :--- | :--- |
 | **discover** | Understand how things work today before you change them | `/feature-discovery`, `/port-feature` (when porting from a reference) |
 | **sharpen** | Turn a rough idea into a precise prompt | `/feature-prompt` (no fog), `/wayfinder` (fog: open decisions block the scope) |
-| **plan** | Challenge the plan and record the decision | `/grill-with-docs` (→ ADR), `/to-spec` (→ spec/PRD) |
+| **plan** | Challenge the plan and record the decision | `/grill-with-field` (field rules as questions → ADR; `check` before the spec), `/to-spec` (→ spec/PRD) |
 | **slice** | Break the plan into thin tickets someone can pick up | `/to-tickets` |
 | **implement** | Build it test-first | `/implement` (optional, drives one ticket), `/implement-spec` (optional, drives a whole spec), `/tdd-loop` (the actual procedure, with its checks and exception protocol), `/tdd` (reference on test quality) |
 | **verify** | Prove it works | `/code-review`, `/agentic-qa` (the agent tests a PR in the running app), `/pixel-audit` (checks one page against its design, pixel by pixel), manual QA, `/polish-batch` (cosmetic nits), `/integration-contract` (the seam between repos), `/diagnosing-bugs` |
@@ -40,7 +40,7 @@ discover → sharpen → plan → slice → implement → verify → ship
 
 The path splits once, right after discover. Ask yourself: **can you state the destination in one line, and write every open decision as a sharp question, right now?**
 
-- **Yes:** there is no fog. `/feature-prompt` writes a PR-sized prompt and `/grill-with-docs` challenges it.
+- **Yes:** there is no fog. `/feature-prompt` writes a PR-sized prompt and `/grill-with-field` challenges it.
 - **No:** that's fog. `/wayfinder` turns the open decisions into tickets on the tracker and resolves them one per session (see Workflow E).
 
 The test is fog, not size. A forty-file mechanical rename has nothing left to decide. It isn't fog, and it belongs in `/to-tickets` as an expand–contract change. A two-file change that waits on one unresolved architecture decision *is* fog, however small the diff. Both paths meet again at `/to-spec`.
@@ -73,7 +73,7 @@ report does not replace PR risk classification or authorize shipping. See
 Some skills sit outside the discover→ship line:
 
 - **Project start-off:** run `/design-system` once per project (see Workflow A). It turns a design system into a real UI library, a preview you check, and a binding `AGENTS.md` rule. It also creates a project-local `<project-slug>-ui-coding` skill. Run it again to extend the library, or after a page ships to fold that page's new UI back in.
-- **Porting:** `/port-feature` is a discover→plan variant. Use it to bring a feature that already exists in a reference implementation into a target stack (see Workflow D). It writes a gap map and hands off to `/grill-with-docs`.
+- **Porting:** `/port-feature` is a discover→plan variant. Use it to bring a feature that already exists in a reference implementation into a target stack (see Workflow D). It writes a gap map and hands off to `/grill-with-field`.
 - **Router:** `/ask-kit` tells you the one kit skill that fits a situation you describe. It never runs it. Use it before there is a spec, ticket, or PR to point `/factory` at.
 - **Factory conductor:** `/factory 87` tells you where a spec, ticket, or PR stands. It reads the tracker, the PR, CI, reviews, and deploys. It names the one check the work is waiting on and suggests the single skill that moves it forward. It keeps no state file, so you can re-run it any time (see Workflow F). `/factory run <issue or label>` does the steps for you instead. After one question, it carries the work through a code review by a second agent, a merge into `local` or staging, and a handover to manual QA.
 - **Parallel workers:** `/orchestrate-herdr` sends a spec's open sub-issues out to herdr worker tabs and monitors them. A sub-issue blocked by another open sub-issue is not parallel work; it asks before dispatching it once its blocker is done. A worktree isolates files, not ports, databases, or `.env*` files. Workers that share those run one after another, or get separate ports.
@@ -190,6 +190,22 @@ A few rules are pasted word for word into every skill that needs them, because t
 - **Read the skill, not your memory of it.** Skills change, so the agent reads the current `SKILL.md` every time it uses one.
 - **Never force-push.** A rejected push is reported to you, and never retried with `--force`. Before committing, the ship skills also scan the staged diff and the PR or issue text for anything that looks like a credential.
 
+### Field methods, not personas
+
+Telling an agent to "act as a senior accountant" or "act as a security
+expert" changes its vocabulary, not its accuracy. Studies of role prompts
+found no reliable gain on factual questions (Zheng et al., 2024; Wharton
+Generative AI Labs, 2025), and a security persona produced the most flawed
+code of the prompts tested (Tony et al., 2024). What does help is naming the
+field's real standard, method, or tool, giving the agent the official
+documents for your installed version, and checking the work against a list.
+
+The kit follows that. `/grill-with-field` never uses a persona. It names the
+standard or tool with its version, cites a page it fetched, and asks you
+before anything becomes a decision. Simple explanations are for you to read,
+never a way for the agent to work: ask for "explain like I'm new" and
+`plain-language` adds everyday comparisons without dropping facts.
+
 ### Elevated permission is explicit
 
 Highest, elevated, full, or YOLO permission is never the default. Use it only when the user explicitly asks for it, and prefer an isolated container, VM, dev container, or throwaway worktree. Rules written in prose are only advice. When a workspace names production or staging hosts, `/agents-md` suggests an optional hook template that blocks production commands and asks before staging ones. It never installs the hook for you. The launch presets for each runtime live in [GUIDE.md](GUIDE.md#local-parallel--background-agents-no-cloud) (the copy for people) and [`skills/agents-md/references/tool-calling.md`](skills/agents-md/references/tool-calling.md) (the model-facing source).
@@ -215,7 +231,7 @@ The expensive mistake is treating the archive like working memory: loading the w
 **Never bulk-read `specs/`.** What you want is *retrieval*: pull in the few relevant passages when you need them.
 
 - `/feature-discovery` traces a feature's real path through the code.
-- `/grill-with-docs` challenges a plan against the existing domain model and points out what's missing.
+- `/grill-with-field` challenges a plan against the existing domain model and the field's own rules, and points out what's missing.
 
 That is how you get "tell me where I'm wrong about this feature" without making the agent read everything.
 
@@ -268,7 +284,7 @@ open decisions. If you cannot, use Workflow E to resolve them, then return at
 step 3. Run `/feature-discovery` first when you need to understand existing code.
 
 1. **`/feature-prompt`**: describe what you want for a given project. It works out what it can from quick looks at the repo, asks only for what's missing, and saves a **refined prompt file** to disk. This gives planning a specific request to work from.
-2. **`/grill-with-docs`**: give it the prompt file. It asks its questions in rounds. Each round asks every question whose prerequisites are already settled, numbered, each with a recommended answer. Your answers change which questions come next and unlock the next round. It sends facts it can look up itself to sub-agents, never to you. It challenges the plan against your domain model and writes an **ADR** to disk. It is done when no open questions are left, so implementation does not have to guess at those decisions.
+2. **`/grill-with-field`**: give it the prompt file. It asks its questions in rounds. Each round asks every question whose prerequisites are already settled, numbered, each with a recommended answer. Your answers change which questions come next and unlock the next round. It sends facts it can look up itself to sub-agents, never to you. After round 1, a sub-agent also looks up the standards, provider rules and proven tools for your plan's field, each from a page it fetched, and every finding comes back as a question. It challenges the plan against your domain model and writes an **ADR** to disk. When no open questions are left, run **`/grill-with-field check`**: it lists each must-have rule and six areas (security, accessibility, privacy, reliability, compliance, run cost) as covered, missing, or not applicable, so implementation does not have to guess at those decisions.
 3. **`/to-spec`**: run it on the ADR. It publishes a **spec** (you may know it as a PRD) to your configured tracker. The spec records the acceptance criteria that implementation and review will check.
 4. **`/to-tickets`**: run it on the spec issue number. It creates **sub-issues**, one vertical-slice ticket each. Each ticket says which tickets block it, using the tracker's native sub-issue and blocking links where it has them. It applies the ready labels automatically, so you don't need a separate `/triage` step here. A small, testable ticket is easier to verify and recover if it fails.
 5. **`/implement`** *(optional)*: build the tickets that are ready to start, one at a time, in a fresh session each. It runs `/tdd-loop` at each seam agreed in advance (reuse-first, Red → Green, widen, refactor while green). It typechecks as it goes, runs the full test suite once at the end, and runs `/code-review` followed by local adversarial `/risk-review`. It stops there and does not commit. If `/implement` isn't installed, run **`/tdd-loop`** yourself for each ticket and you get the same result.
@@ -429,8 +445,8 @@ Where the bug came from decides where you start:
 
 Use this to bring a feature that already works in a **reference** implementation (often a legacy repo) into a **target** stack.
 
-1. **`/port-feature`**: give it the feature, the REFERENCE PROJECT-CODE (where the behaviour is correct), and the TARGET PROJECT-CODE (where it should land). It reads the target's binding context, traces the reference the way `/feature-discovery` would, checks what the target already has, and writes **one gap map** to `specs/port/`. The reference is the truth for behaviour, workflow, navigation, permissions, and states. The target's design system is the truth for UI. It suggests `/grill-with-docs` and stops.
-2. **Run `/grill-with-docs` on the gap map.** Resolve what to keep and what must change for the target before anyone copies code. It saves those decisions as the next numbered ADR in `specs/adr/`.
+1. **`/port-feature`**: give it the feature, the REFERENCE PROJECT-CODE (where the behaviour is correct), and the TARGET PROJECT-CODE (where it should land). It reads the target's binding context, traces the reference the way `/feature-discovery` would, checks what the target already has, and writes **one gap map** to `specs/port/`. The reference is the truth for behaviour, workflow, navigation, permissions, and states. The target's design system is the truth for UI. It suggests `/grill-with-field` and stops.
+2. **Run `/grill-with-field` on the gap map, then `/grill-with-field check`.** Resolve what to keep and what must change for the target before anyone copies code. It saves those decisions as the next numbered ADR in `specs/adr/`.
 3. **`/to-spec` → `/to-tickets` → `/implement`** (or `/tdd-loop` directly): from here it rejoins Workflow B with a spec, thin ticket slices, and a test-first build. Each UI slice uses the target's UI library. A missing component goes through `/design-system` (extend), never a one-off built inside the page.
 4. **Verify and ship.** Review and test the changes, then run `/pixel-audit` on the ported screens against the reference. Publish with `/commit-push-pr` (or deliberately choose direct closure with `/commit-push-close`). For a PR, follow Workflow F. Complete required agent QA before manual QA; collect cosmetic fixes with `/polish-batch`. This checks the port's behavior and its fit with the target UI.
 
@@ -520,7 +536,7 @@ stateDiagram-v2
 
 | State | What moves it out | Suggested next |
 | :--- | :--- | :--- |
-| `OUTCOME` | A spec issue with acceptance criteria exists | `/feature-prompt` → `/grill-with-docs` → `/to-spec` |
+| `OUTCOME` | A spec issue with acceptance criteria exists | `/feature-prompt` → `/grill-with-field` (then `check`) → `/to-spec` |
 | `TICKETS` | The spec has at least one sub-issue | `/to-tickets` (plus `/integration-contract` when the spec spans projects) |
 | `QA_RETURNED` | A `qa-escape` marker newer than the reopen or bug report | `/qa-escape <issue>` |
 | `BUILDING` | A PR that is not a draft, with an `Acceptance criteria` verdict in its body or in its `## QA handoff` comment | `/tdd-loop` for one ticket; `/orchestrate-herdr <spec>` for several |
@@ -561,7 +577,7 @@ You have an idea and nothing written down yet. Every `/factory` call below only 
 
 | You run | `/factory` places it at | It suggests, and you run | Why this step is needed |
 | :--- | :--- | :--- | :--- |
-| `/factory start` | `OUTCOME`: no spec yet | `/feature-prompt` → `/grill-with-docs` → `/to-spec`, which files spec issue `PRWL-142` with acceptance criteria | Agree on what to build and how success will be checked. |
+| `/factory start` | `OUTCOME`: no spec yet | `/feature-prompt` → `/grill-with-field` (then `check`) → `/to-spec`, which files spec issue `PRWL-142` with acceptance criteria | Agree on what to build and how success will be checked. |
 | `/factory PRWL-142` | `TICKETS`: spec exists, no sub-issues | `/to-tickets` (add `/integration-contract` if the spec spans projects). Tickets `PRWL-143` and `PRWL-144` are created | Make the work small enough to test and record dependencies. |
 | `/factory PRWL-142` | both tickets `BUILDING` | `/tdd-loop` on `PRWL-143`, `/code-review` and applicable local checks, then `/commit-push-pr`, which opens PR #87 and posts its acceptance-criteria verdict (for several tickets inside herdr: `/orchestrate-herdr PRWL-142`) | Build and review a tested change before publishing it. |
 | `/factory PRWL-142` | PR #87 `CI`: a required check fails | `/ci-loop 87` | The shared checks must pass on the code being reviewed. |
@@ -592,6 +608,7 @@ These habits are what separate intentional use from vibe coding. Avoid them:
 - **Skipping discovery on a bug.** Jumping straight to a fix without tracing the code path.
 - **Mixing conventions across projects.** In a workspace with several tech stacks, never carry one project's patterns into another. Always name the full Project from the matrix.
 - **Big-bang slices.** If a slice can't be tested on its own, it's too big. Send it back to `/to-tickets`.
+- **Asking for an expert persona.** "Act as a top engineer" adds confidence, not method. Ask which standards, rules, and tools apply instead, or run `/grill-with-field`.
 - **Grilling through fog.** Trying to grill a plan whose scope depends on undecided questions. Grilling sharpens a plan you can state. It can't produce one you can't. That's what `/wayfinder` is for.
 - **Charging at the destination.** Using `/wayfinder` to *do* the work rather than decide it, or resolving several tickets in one session. Each ticket is sized to one fresh context window. The map is done when nothing is left to decide.
 - **Letting `/implement-spec` open the PR or close tickets.** Its local integration branch is fine. The draft PR and ticket closing in its text are shipping, and go through `/commit-push-pr` or `/commit-push-close`.
@@ -629,10 +646,10 @@ These habits are what separate intentional use from vibe coding. Avoid them:
 | Workflow | Order |
 | :--- | :--- |
 | **A · Project start** | `/agents-md` → `/setup-matt-pocock-skills` → fill `AGENTS.md` placeholders → `/design-system` (per UI project) |
-| **B · New feature** *(no fog)* | `/feature-prompt` → `/grill-with-docs` → `/to-spec` → `/to-tickets` → `/implement` *(or `/tdd-loop`)* → `/code-review` → local `/risk-review` in Matt flows → `/pixel-audit` → `/integration-contract` (multi-project) → `/commit-push-*` → F when it's a PR → manual QA + `/polish-batch` after required agent QA |
+| **B · New feature** *(no fog)* | `/feature-prompt` → `/grill-with-field` (then `check`) → `/to-spec` → `/to-tickets` → `/implement` *(or `/tdd-loop`)* → `/code-review` → local `/risk-review` in Matt flows → `/pixel-audit` → `/integration-contract` (multi-project) → `/commit-push-*` → F when it's a PR → manual QA + `/polish-batch` after required agent QA |
 | **C · Debug, automated** | `/report-issue` (no issue yet) → `/factory run <issue>`: `/tdd-loop` → `/agentic-qa` → PR → `/ci-loop` → `/code-review` by a second agent, up to 3 rounds → `/risk-review` → merge to `staging` → `/deploy-watch` |
 | **C · Debug, manual** | `/feature-discovery` → `/diagnosing-bugs` → `/tdd-loop` (failing test first) → `/code-review`, repeated until clean → `/commit-push-pr` (with `Root cause:`) → F → `/retro` if it was hard to find |
-| **D · Port a feature** | `/port-feature` → `/grill-with-docs` → `/to-spec` → `/to-tickets` → `/implement` *(or `/tdd-loop`)* → `/pixel-audit` → `/commit-push-*` |
+| **D · Port a feature** | `/port-feature` → `/grill-with-field` (then `check`) → `/to-spec` → `/to-tickets` → `/implement` *(or `/tdd-loop`)* → `/pixel-audit` → `/commit-push-*` |
 | **E · Large effort** *(fog)* | `/wayfinder` (chart) → `/wayfinder` (work, one ticket per session) → map exhausted → `/to-spec` → rejoins B |
 | **F · After the PR opens** | [`/factory`](#factory-state-machine) to find the next check → `/ci-loop` → `/agentic-qa` → `/pr-feedback` → `/risk-review` → merge to `staging` → `/deploy-watch` → ready for owner |
 | **G · New task through the factory** | [`/factory start`](#9-workflow-g--new-task-through-the-factory) → follow each suggestion → `/factory <spec>` again after every step → ready for owner |

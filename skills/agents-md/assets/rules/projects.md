@@ -1,4 +1,4 @@
-<!-- agents-md marker · v56 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v57 · re-run /agents-md to regenerate -->
 # Projects
 
 Zero attribution: never add co-author, AI, or tool attribution to any output.

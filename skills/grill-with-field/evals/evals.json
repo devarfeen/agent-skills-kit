@@ -1,0 +1,86 @@
+{
+  "skill": "grill-with-field",
+  "kind": "trigger-eval",
+  "how_to_run": "Build a catalog of every installed skill's name + description (this kit's skills plus the externals/companions a workspace normally has), mix all eval queries into one numbered list, and have 3 independent judges route each query using ONLY the catalog — no repo access. Majority vote per query. Pass = trigger queries route here; no-trigger queries route anywhere else ('route' names the expected sibling, diagnostic only). In this repo, tools/trigger-evals/ holds the checked-in harness.",
+  "queries": [
+    {
+      "q": "Grill this plan, and bring in the standards and tools the best teams use for it",
+      "expect": "trigger"
+    },
+    {
+      "q": "/grill-with-field on the digest email prompt",
+      "expect": "trigger"
+    },
+    {
+      "q": "Interview me on this feature, but research what the field requires first, like provider rules and RFCs",
+      "expect": "trigger"
+    },
+    {
+      "q": "Before we write the spec, check the plan against the field's must-have rules",
+      "expect": "trigger"
+    },
+    {
+      "q": "grill-with-field check",
+      "expect": "trigger"
+    },
+    {
+      "q": "Stress-test this plan with real industry standards, not role play",
+      "expect": "trigger"
+    },
+    {
+      "q": "I don't know what rules apply to bulk SMS; grill me and look them up as we go",
+      "expect": "trigger"
+    },
+    {
+      "q": "Grill the payments refund plan and tell me which proven tools leading teams use",
+      "expect": "trigger"
+    },
+    {
+      "q": "Research how RFC 8058 one-click unsubscribe works and save a cited doc",
+      "expect": "no-trigger",
+      "route": "/research"
+    },
+    {
+      "q": "Grill me on this plan before we build it",
+      "expect": "no-trigger",
+      "route": "/grill-with-docs"
+    },
+    {
+      "q": "Write the spec from what we just discussed",
+      "expect": "no-trigger",
+      "route": "/to-spec"
+    },
+    {
+      "q": "Turn this rough idea into a prompt I can grill",
+      "expect": "no-trigger",
+      "route": "/feature-prompt"
+    },
+    {
+      "q": "How does the digest email job work today?",
+      "expect": "no-trigger",
+      "route": "/feature-discovery"
+    },
+    {
+      "q": "Review this branch against our coding standards",
+      "expect": "no-trigger",
+      "route": "/code-review"
+    },
+    {
+      "q": "Map out this huge greenfield effort as decision tickets",
+      "expect": "no-trigger",
+      "route": "/wayfinder"
+    },
+    {
+      "q": "Clean up this paragraph so it reads like plain English",
+      "expect": "no-trigger",
+      "route": "/plain-language"
+    }
+  ],
+  "last_run": {
+    "date": "2026-10-21",
+    "method": "3 independent fresh catalog-only judges; majority vote; no workflow execution",
+    "result": "607/607 pass",
+    "judge_model": "claude-opus-5-5 (three fresh sub-agent sessions inheriting the maintainer session model; catalog-only, no repo access)",
+    "catalog": "live kit descriptions and invocation policies + catalog-externals.md; 643f377dd767bb0690949086923f49710a82dd7e + uncommitted changes"
+  }
+}

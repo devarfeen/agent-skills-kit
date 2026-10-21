@@ -44,10 +44,10 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | `/port-feature` | kit | discover | reference → target gap map | |
 | `/research` | external | discover | delegable primary-source reading → cited doc | |
 | `/feature-prompt` | kit | sharpen | → prompt file | |
-| `/grill-with-docs` | external | plan | numbered frontier rounds → ADR | |
+| `/grill-with-field` | kit | plan | grilling + fetched field rules and tools → questions; `check` before /to-spec; replaces /grill-with-docs | |
 | `/to-spec` | external | plan | → spec (PRD) | |
 | `/wayfinder` | external | plan | fog, not size — decisions gate the scope; map them as tracker tickets, resolve one per session, exit to /to-spec | |
-| `/prototype` | external | plan | spike ungrillable "needs to feel/see it" questions, then back to /grill-with-docs | |
+| `/prototype` | external | plan | spike ungrillable "needs to feel/see it" questions, then back to /grill-with-field | |
 | `/handoff` | external | plan | fork context to a new session (pairs with /prototype) | |
 | `/to-tickets` | external | slice | | |
 | `/triage` | external | slice | raw incoming issues and external PRs only — never /to-tickets tickets | |

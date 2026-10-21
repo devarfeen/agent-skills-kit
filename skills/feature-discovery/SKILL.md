@@ -2,7 +2,7 @@
 name: feature-discovery
 description: "Trace how a named feature, module, workflow, API, config, or symbol works and who uses it; read-only. Whole-repo architecture summaries: /teach. Porting: /port-feature."
 metadata:
-  version: "0.3.0"
+  version: "0.3.1"
 ---
 
 # Feature discovery
@@ -22,7 +22,7 @@ Intake may be structured — `Projects Affected:` plus a `What:` block — or fr
 - **Git history is opt-in.** Never read it during discovery; offer a scan in the report (step 7).
 - **Trace behavior, not just symbols.** Connect entry points, relevant conditions, state changes, callers, and downstream effects with cited links or explicit gaps. Flag seam-reuse across similar paths. The tell: a symbol dump with no usage site or user-visible effect.
 - **Keep scope thin.** Split broad intake; name the first slice and deferred slices. Stop when scoped questions are answered or evidence gaps reported after validation; unresolved work beyond available context needs a scope split or handoff. The tell: drifting into product discovery or experiment design without an explicit pivot.
-- **Stop after presenting the report.** Suggest the next skill; never invoke it or start implementation without a fresh request. Grillable unknowns stay as open decisions for `/feature-prompt` or `/grill-with-docs`; ungrillable ones ("needs to feel/see it") route to `/handoff` + `/prototype` (when installed; else state the uncertainty plainly). Destination or open questions still foggy → suggest `/wayfinder`, not `/feature-prompt`; a PR-sized prompt cannot be written through fog.
+- **Stop after presenting the report.** Suggest the next skill; never invoke it or start implementation without a fresh request. Grillable unknowns stay as open decisions for `/feature-prompt` or `/grill-with-field`; ungrillable ones ("needs to feel/see it") route to `/handoff` + `/prototype` (when installed; else state the uncertainty plainly). Destination or open questions still foggy → suggest `/wayfinder`, not `/feature-prompt`; a PR-sized prompt cannot be written through fog.
 - Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field. Phases: parsed, code traced, validated, report.
 - Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes. Summaries back, not transcripts; synthesis stays in the main session.
 

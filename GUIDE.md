@@ -447,6 +447,7 @@ preservation checks.
 | Unsure Which Matt Skill Fits | `/ask-matt` | Points you to an upstream skill flow you start yourself. It doesn't chain skills. |
 | Unclear Behavior | `/feature-discovery` | Read-only, code-first audit before planning. ADR findings get their own section. It offers a git history scan only if a "why" or "when" question is left. |
 | Rough Idea, No Fog | `/feature-prompt` | You already know where you're going and what to decide. It drafts the prompt, inferring what it can first. |
+| Plan Ready To Challenge | `/grill-with-field` | Grills the plan and brings in the field's rules and proven tools as questions. Run `check` before `/to-spec`. |
 | Rough Idea, Decisions Unresolved | `/wayfinder` | Open decisions ("fog") block the scope. It charts them as tracker tickets; you resolve one per session. |
 | Broken Behavior | `/diagnosing-bugs` | Finds the root cause step by step. |
 | Design Spike | `/prototype` | Tries out UI or state ideas before spec and tickets. |
@@ -505,7 +506,7 @@ to find the next unfinished step. You do not need to repeat setup or planning.
 | :--- | :--- | :--- |
 | 1. Set up the workspace once | Follow [First-Time Setup](#first-time-setup): `/agents-md`, `/setup-matt-pocock-skills`, fill the paths, then `/design-system` for UI projects. | Agents need the correct project rules, tracker, and design library before they work. |
 | 2. Understand the existing behavior | `/feature-discovery Trace checkout in SHOP` | Use the code report to decide what must change. Skip discovery for a new project with no code. |
-| 3. Clarify the request | `/feature-prompt Add checkout approvals in SHOP`, then `/grill-with-docs` on the saved prompt. If decisions prevent you from defining the scope, use `/wayfinder` first. | Resolve open questions and save the decisions before implementation starts. |
+| 3. Clarify the request | `/feature-prompt Add checkout approvals in SHOP`, then `/grill-with-field` on the saved prompt and `/grill-with-field check` when grilling ends. If decisions prevent you from defining the scope, use `/wayfinder` first. | Resolve open questions and save the decisions before implementation starts. |
 | 4. Record the agreed requirements | `/to-spec` on the agreed plan or ADR. | A spec issue gives everyone the same acceptance criteria: the conditions the result must meet. |
 | 5. Split the work | `/to-tickets` on the spec issue. | Each ticket should be testable on its own and say which other tickets must finish first. |
 | 6. Build one ready ticket | `/tdd-loop` on the ticket, optionally through `/implement`. | Choose a suitable existing solution, observe a failing behavior test, then make it pass and run wider checks. Use the skill's exception procedure when a test is impractical. |
@@ -530,7 +531,7 @@ Variations on this path:
 - **Whole-spec builds** can use `/implement-spec` instead of one `/implement` per ticket. You start it. It treats the tickets as a task graph, runs implementer subagents in their own worktrees on every ticket that is ready, and merges each onto one local integration branch. It ends with one `/code-review`, then local adversarial `/risk-review` over the combined branch, owned by the coordinator. In a kit workspace its implementers drive `/tdd-loop`, and it stops there. Its own instructions include opening a draft PR and resolving tickets, but in a kit workspace pushing, PRs, and closing issues belong to the ship skills. Inside herdr, `/orchestrate-herdr` does the same fan-out with one visible worker tab per sub-issue.
 - **PR bodies** belong to `/commit-push-pr`, which sets its own body and QA comment. Matt's `/pr` loads automatically whenever a PR body is written. Its three ideas are built into the kit's body: a visual summary (the optional Summary visual), before/after evidence (the **Evidence** section), and a merge-danger call (the **Merge danger** section). When both are installed, the ship skill's headings, order, and the target-required issue reference win. `/pr` only shapes the visual and the wording inside them.
 - **Retro** comes last. After shipping, especially after a session that went badly, `/retro` looks back and proposes changes to the agent's environment. A mechanical mistake becomes an automatic check (lint rule, pre-commit hook, CI job). A judgment call becomes a coding standard that `/code-review` enforces. It proposes; you decide what to apply.
-- **Porting** a feature from a reference implementation starts with `/port-feature` instead of `/feature-discovery` → `/feature-prompt`. It writes a gap map and hands off to `/grill-with-docs`.
+- **Porting** a feature from a reference implementation starts with `/port-feature` instead of `/feature-discovery` → `/feature-prompt`. It writes a gap map and hands off to `/grill-with-field`.
 - **Verify** is a group of skills, not one:
   - `/agentic-qa` for functional QA of any change that can show up on a screen,
   - `/pixel-audit` for per-page visual conformance,
@@ -538,6 +539,50 @@ Variations on this path:
   - `/integration-contract` when the spec spans more than one PROJECT-CODE.
 
   After a UI slice ships, `/design-system` (extend) folds any new reusable UI back into the library.
+
+### Grill with field research
+
+Run `/grill-with-field` on your plan or saved prompt. It is Matt's grilling
+interview, with one addition: it looks up what your plan's field already
+requires before you settle the details.
+
+1. **Round 1 frames the plan.** The agent asks only what your plan does not
+   already say: who uses it, how much volume, which regions, what data, which
+   channels. These answers decide which rules apply.
+2. **A background agent sweeps the field.** While grilling goes on, it looks
+   up standards, provider and legal rules, and the tools leading teams use.
+   Each row cites a page it fetched, with a trust level from 1 (official docs
+   for your installed version) to 5 (a named company's engineering blog). A
+   must-have rule needs level 1 to 3. Anything it cannot fetch is listed as
+   unverified and never used.
+3. **Each finding comes back as a question.** For example: "Gmail requires
+   one-click unsubscribe above 5,000 emails a day. Add it?" with a recommended
+   answer. You make every decision.
+4. **New fields get their own sweep.** If an answer brings in something new,
+   such as push notifications, the agent sweeps only that field. Grilling
+   does not restart.
+5. **Check before the spec.** Run `/grill-with-field check`. It lists each
+   must-have rule and six areas (security, accessibility, privacy,
+   reliability, compliance, run cost) as covered, missing, or not applicable.
+   Each gap becomes one more question. Then run `/to-spec`.
+
+Each row also gets a status: In repo, Adopt, Trial, Assess, or Hold. Trial and
+Assess rows include one link to learn the tool, so a sweep is also a way to
+find technology you have not used yet. The brief ends with a few sentences in
+plain words. For a beginner-level explanation of any reply, ask for
+"explain like I'm new"; `plain-language` then adds one everyday comparison
+per technical term without dropping facts.
+
+| You want to | Use |
+| :--- | :--- |
+| Challenge a plan and learn the field's rules and tools | `/grill-with-field` |
+| Confirm nothing required was missed before the spec | `/grill-with-field check` |
+| Read up on one topic and save a cited document | `/research` |
+
+`/grill-with-field` replaces `/grill-with-docs` in kit flows. It still writes
+ADRs and glossary terms through Matt's `domain-modeling`. It needs Matt's
+`grilling` and `domain-modeling` installed and stops if either is missing. It
+never installs packages, edits code, or writes the spec.
 
 ### Choose the smallest complete implementation
 
@@ -673,7 +718,7 @@ Use `/risk-review local` to challenge a local implementation before opening a
 PR. Supply its requirements, checkout, base commit and changes to review.
 Generated workspace rules call this mode automatically after `/code-review`
 in `/implement` and `/implement-spec`; update the kit and rerun `/agents-md`
-to install the v56 routing rules. Matt’s installed skills stay unchanged.
+to install the routing rules (marker `v56` or later). Matt’s installed skills stay unchanged.
 
 | Use | What happens |
 | :--- | :--- |
@@ -881,7 +926,8 @@ Guidelines:
 - Suggest the step that usually comes next first.
 - Before risky edits, put suggestions that gather more evidence first:
   - after discovery of unclear behavior: `/feature-prompt`, `/wayfinder` (if decisions gate the scope), or `/diagnosing-bugs`
-  - after prompt drafting: `/grill-with-docs`
+  - after prompt drafting: `/grill-with-field`
+  - after grilling ends: `/grill-with-field check`, then `/to-spec`
   - after a wayfinder ticket resolves: the next frontier ticket, or `/to-spec` when the map is exhausted
   - after ticket slicing: `/implement` (or `/tdd-loop`) for the first ready ticket
   - after implementation completion: `/code-review`, then `/commit-push-pr` or `/commit-push-close`, then `/release-notes`
@@ -896,7 +942,7 @@ The generated `AGENTS.md` tells agents how to find context. This part loads on e
 - **North star:** If the workspace or a project keeps a `VISION.md`, the generated `AGENTS.md` makes it the project's north star. Agents read it before planning work. When a plan conflicts with the vision, they point it out; they never quietly resolve it. With no vision file, no north-star section is written or made up.
 - **Never bulk-read `specs/`.** Treat it as an archive you pull from when needed. Fetch only what the task names, by search or with a discovery skill. Loading the whole tree clutters the context and wastes tokens.
 - **Native memory only.** Do not create memory files, wiki files, or discovery files in the repo. Do not sync memory between CLIs.
-- **Archived context when grilling.** When you start `/grill-with-docs`, the agent first asks whether you have archived context for the feature, such as past discussions or the original intent. Paste it, and it is copied word for word into the ADR with a note of where it came from. Or carry on without it. Old or current names it reveals are offered as `GLOSSARY.md` aliases.
+- **Archived context when grilling.** When you start `/grill-with-field`, the agent first asks whether you have archived context for the feature, such as past discussions or the original intent. Paste it, and it is copied word for word into the ADR with a note of where it came from. Or carry on without it. Old or current names it reveals are offered as `GLOSSARY.md` aliases.
 
 You use skills one at a time, as needed. They are not a pipeline. Work moves along a gradient: discover → sharpen → plan → slice → implement → verify → ship. After the workflow you asked for, the agent **suggests** a next skill but never starts a new workflow on its own. Worktree setup may go back to the task already in your request; that handoff does not ask for permission a second time.
 
@@ -941,7 +987,7 @@ The kit has no filed issues yet, so this guide has no "common questions" list. O
 
 Pick the path that fits your work:
 
-- **Planned work:** `/feature-discovery` -> `/feature-prompt` -> `/grill-with-docs` -> `/to-spec` -> `/to-tickets` -> `/implement` (or `/tdd-loop` directly; `/implement-spec` for the whole spec in one run) -> `/code-review` -> local `/risk-review` in Matt flows -> `/commit-push-*`. The spec and ticket issues exist before coding. `/to-spec` and `/to-tickets` add the ready labels in the normal path, so you don't need a separate `/triage` step.
+- **Planned work:** `/feature-discovery` -> `/feature-prompt` -> `/grill-with-field` (then `check`) -> `/to-spec` -> `/to-tickets` -> `/implement` (or `/tdd-loop` directly; `/implement-spec` for the whole spec in one run) -> `/code-review` -> local `/risk-review` in Matt flows -> `/commit-push-*`. The spec and ticket issues exist before coding. `/to-spec` and `/to-tickets` add the ready labels in the normal path, so you don't need a separate `/triage` step.
 - **Foggy work:** `/wayfinder` -> chart the map -> resolve one ticket per session -> map exhausted -> rejoin planned work at `/to-spec`. The map's `Way:` issues are closed before the spec exists.
 - **Existing or incoming issues:** Use `/triage` when an issue needs a state change, follow-up with the reporter, `ready-for-human`, `wontfix`, or an agent brief before implementation.
 - **Problems a reporter found:** `/report-issue <problem> [screenshots]` -> one draft -> approved issue -> `/factory run <issue>` when it is `ready-for-agent`, otherwise `/triage`. See [Reporting a problem](#reporting-a-problem).
@@ -995,7 +1041,7 @@ A gate is a check that must pass before you move to the next step. This table li
 | Port | `/port-feature` | Gap map written to `specs/port/`. Reference behavior and target state are mapped. A thin first slice is named. |
 | Prompt | `/feature-prompt` | You have reviewed the implementation-ready prompt. It passes the fog test: the destination and open decisions are sharp. |
 | Wayfinding | `/wayfinder` | The map is charted with a named destination. Or, when working it, exactly one ticket is resolved, closed, and indexed on the map. Map exhausted → nothing left to decide → `/to-spec`. |
-| Grill | `/grill-with-docs` | Questions come in numbered rounds, each with a recommended answer. Unclear points are resolved against ADRs and domain language. Done only when no open questions are left. |
+| Grill | `/grill-with-field` | Questions come in numbered rounds, each with a recommended answer. Unclear points are resolved against ADRs and domain language. After round 1, a background check fetches the rules and tools of the plan's field, and each one comes back as a question with a recommended answer. `/grill-with-field check` lists every must-have rule and six areas (security, accessibility, privacy, reliability, compliance, run cost) as covered, gap, or not applicable. Done when the check is clean. |
 | Spec | `/to-spec` | The spec is clear, and the dependency order is known. |
 | Tickets | `/to-tickets` | Tickets are testable. Prerequisites, blocking links, and unblocked work are in order. |
 | Existing issue triage | `/triage` | The issue's state is clear, or an Agent Brief / needs-info / wontfix outcome is recorded. |
@@ -1019,9 +1065,9 @@ When you get stuck, find your situation below.
 - **Don't Know Which Skill:** `/ask-kit` names one kit skill for the situation. Once a spec, ticket, or PR exists, `/factory` reads its real state.
 - **Vague Prompt:** Back to `/feature-prompt`.
 - **Scope Waits On Unresolved Decisions:** That is fog. Use `/wayfinder`, not a longer grilling session.
-- **Domain Ambiguity:** Stay in `/grill-with-docs`. It updates `GLOSSARY.md` as you go.
-- **Too Many Questions / Drift:** Narrow to one thin slice with `/feature-prompt`, then go back to `/grill-with-docs`.
-- **High-Fidelity Uncertainty (feel/UI/interaction):** `/handoff` -> `/prototype` -> back to `/grill-with-docs`.
+- **Domain Ambiguity:** Stay in `/grill-with-field`. It updates `GLOSSARY.md` as you go.
+- **Too Many Questions / Drift:** Narrow to one thin slice with `/feature-prompt`, then go back to `/grill-with-field`.
+- **High-Fidelity Uncertainty (feel/UI/interaction):** `/handoff` -> `/prototype` -> back to `/grill-with-field`.
 - **Context Budget Pressure:** For factory runs, go by how full the model's context actually is. Save a checkpoint at 60% and keep the 25% reserve free, counting results still on their way back. Other planning sessions follow the [phase-boundary guidance](BEST-PRACTICES.md#phase-boundaries). If the run refuses a request to protect the reserve, that does not prove the model hit a hard limit. Sending the same request again does not free any context.
 - **Broken Tests:** Stay in `/tdd-loop`, or switch to `/diagnosing-bugs`.
 - **Worktree Setup Blocked:** Keep the source checkout as it is and pause task edits that depend on the worktree. Fix the failed setup; do not quietly work in place instead.
@@ -1052,6 +1098,6 @@ When you get stuck, find your situation below.
 When unsure, run this sequence by hand:
 1. `/feature-discovery`
 2. `/feature-prompt` (Plan)
-3. `/grill-with-docs` (Challenge)
+3. `/grill-with-field` (Challenge), then `/grill-with-field check`
 
 No auto-chains. Start each step once the previous one's gate has passed. For anything off this path, `/ask-kit` names the skill to start with.

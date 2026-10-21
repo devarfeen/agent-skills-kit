@@ -3,7 +3,7 @@ name: design-system
 disable-model-invocation: true
 description: "Once per UI project: turn a design system (Figma, spec, reference screens, or a guided definition when no designs exist) into tokens, a UI library, a preview page, and an AGENTS.md rule; extend later."
 metadata:
-  version: "0.2.2"
+  version: "0.2.3"
 ---
 
 # design-system
@@ -58,7 +58,7 @@ Triggers: the design system grew (a new Figma component); a UI change needs a mi
 - **Feedback loop:** review the shipped page's diff and promote each reusable piece into the library, built from the shipped UI plus the source; leave page-local one-offs only when documented with a reason.
 - **Pending eyeball:** when bootstrap left the human half pending, show the preview location and ask for the eyeball before the sync.
 - **Sync:** update library, preview, doc, AGENTS.md reference, and project UI skill together in one pass.
-- **Boundary — design system only.** `extend` updates the design system and nothing else. It does not commit, push, write ADRs, or produce handovers; those stay `/grill-with-docs` and `/commit-push-*`, invoked separately per suggest-never-auto-chain.
+- **Boundary — design system only.** `extend` updates the design system and nothing else. It does not commit, push, write ADRs, or produce handovers; those stay `/grill-with-field` and `/commit-push-*`, invoked separately per suggest-never-auto-chain.
 
 ## Registration
 

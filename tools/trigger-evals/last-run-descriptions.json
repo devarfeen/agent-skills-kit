@@ -1,16 +1,16 @@
 {
  "_comment": "Hashes of the actual complete scored sweep; validate.sh checks descriptions, queries, catalog and invocation policies.",
- "recorded_at_commit": "f69a73b72e8a0d9a6f5ae0bf58e2d4fcada2b943 + uncommitted changes",
- "catalog_sha256": "21337ba3983530f5c9d70d0f900ab1c3b8e4c18596f2bf31cf2f0ab06cb84419",
- "manifest_sha256": "fc136ee4d4f776692bf385f62d70087c0b2c651f8af5546d4f136ef986aeaf7b",
+ "recorded_at_commit": "643f377dd767bb0690949086923f49710a82dd7e + uncommitted changes",
+ "catalog_sha256": "dd2538ffabcfcdaa2ec141aa5ce69d297a093d1a88d0bd8298176326b2f0f11e",
+ "manifest_sha256": "22ebf21d1c247cbe690a12335db6fb0ec34d51695ad86b36a5724fd720951a76",
  "judge_sha256": [
-  "0e376fc64164a43033f7301ddb3a3e53ee0230ae4a2fde26a463c8918dabbb3c",
-  "b8776b3032c58b6a7612ed3886a863777256e55acf8df65b145ac452070c4519",
-  "4f6643119abadc43bbbb50280fced7a94b78f006d76ba2cedf3adc592a5977d7"
+  "d4b7948dc08433f791665161f3b7126e2bf54701511ac0c9488ff8b69178d8e6",
+  "d28d9fad44445d234b134db475d8e73c40583a251df7b18f22027f42330691bf",
+  "7c65282ade10059593480e48dcf147db524d6fd93122fbdf368bc48bab235885"
  ],
- "queries_sha256": "af3c170e598ea89bc8159626f511dbde736dcf95c8d6a4280e9e4aa543bbb42f",
- "catalog_content_sha256": "988240d7cb211ad514ea49ff4b67c887bd3920921a28fbcc01a05173b5375540",
- "invocation_sha256": "4d79ab592e218df638cf57d8bd978dfa1c41ad90124016880e5f1e827df5d10d",
+ "queries_sha256": "4e3debbaec6f14c03281682611fa93dabfc0826d69ea4cca54a689b902a36c2b",
+ "catalog_content_sha256": "51eb8c040e1215e3884e33a651babf47df33b9fe315add31d9734b884c15d0bc",
+ "invocation_sha256": "e3982223d5d71cfdf02c79c536bf6296698501c52ddaed624b00505b1cf8279b",
  "descriptions_sha256": {
   "agentic-qa": "16a802defce32df5a404c6fa665bd52b9296138b0e45c08445f2d57018339d7a",
   "agents-md": "d6a6c9d3f94435ac22ec3a278581648b8a64733cd35f03f599fc75bf4bdd8768",
@@ -18,12 +18,13 @@
   "ci-loop": "d83825e1dd655858391a0c2225bf236eaf222868eaad3e0013c810211d533df9",
   "commit-push-close": "b805d1b8002f467b658c05bb749a979515592d6bfc85fadbbdbe9d648e6f9a07",
   "commit-push-pr": "b3ce215f63e7e326b8fd7a485b210cd5ee81bbbcea6e2d5666cb52ab8f9e4304",
-  "deploy-watch": "d6f7da0604ba38854ae1505ef8765d84a0907c0d59145d9104aebc8ddecaa93f",
+  "deploy-watch": "a87d274b33df4fbad05db67edc298b0fbe20f930a5d080e4f59c4963de4a0763",
   "design-system": "f948aeee175bd1a38e2ebabc9f3f988d56a7142736a93c97eba732a546f20f49",
   "factory": "97b4b1bbf93c8ccd850bd71aae47949fb7226f4c3a08a750bd80dcf1728de61d",
   "feature-discovery": "3274c012202bdc4c004757555ea33ac53e57c3576aa01ec14fc05d37e0e3ea8a",
-  "feature-prompt": "58a7a052c597256e5989d02f33469d8b0165b1639daab2b3151a0cf4a6c5bc14",
-  "incident-triage": "404bdc8a513c8341603620d81adcd5caee1c94d3c99206906f0a51e6988358c7",
+  "feature-prompt": "d8df16434ed565ccbae35b96e19b67a66e01d0dca4a2911929c718fdd7919b97",
+  "grill-with-field": "893c2cceff30df570bb702763a313509cbed454def265c9b180f6ba23eb85b61",
+  "incident-triage": "13584e96eab366fe52374fba753739b0aace664a92f2a8c76280ba46db0f52a2",
   "integration-contract": "6114820506e076f63d705c8145d27ce58811e3141ece21aeed66a430755bc25b",
   "local-to-staging": "7b3e6db59d532533f379322287afd35e6f200a6b748a153c6bca26b96e68bb1c",
   "orchestrate-herdr": "562d2d2e18465a0598e319f50f9252b18acab39b1cbf046444c9b7c67a7a2956",
@@ -31,7 +32,7 @@
   "pixel-audit": "264d03e968ae9dfd46343272d4485f856eb494eb4da28fdd63f9c5d80cc33809",
   "plain-language": "46f252c88dbbb0b10cfdc8b37a10a04192c0bf3620deb44677e13bd9dfd5fbf7",
   "polish-batch": "0f735f8d64048023e550ea9ab8f03a4a3f09efe9b713dc30e7bc84195104529b",
-  "port-feature": "56a44c27e4d6e6fe15e5cf49984eb96f1856668078cd3173900829e3cd44cd9f",
+  "port-feature": "1fccbfb9f05a51a1c60d7c05775d9bb5e4d74ec58f2d261f6716c9d06a39d336",
   "pr-feedback": "8638f418d4abf95c6119a7447a01519d9b8d54558aeef304035898aa632cb55c",
   "qa-escape": "2ea69388cc6138aa4cd734fab869656a7a4f6a6393a9058cd3c1249e9456d4ab",
   "release-notes": "d9747b871bb43077a11157c20502120e6e52f32c185fad8a582bbb5d6f8f9336",
@@ -41,6 +42,6 @@
   "staging-to-production": "d5aff035790f24ceba562fed665ee488f15b54c5635cc2ad35a075d282120dfa",
   "tdd-loop": "f4340f5d412eebb1fbb6ad53196a71ade730d572fe4bdf01c708a82d85f62869",
   "using-git-worktrees": "47e3888c7e54b98bdd56b7cd46b6356c79ccdb38b455ec7e30d92728d8a95d5b",
-  "writing-kit-skills": "c2c82a22beed08e84b7647a810b976f23d0c87862c4882270e1469f4faced327"
+  "writing-kit-skills": "f9620c043480f0339083e6644465c1ddb5cabb1ae5e21d398ea126617376db95"
  }
 }

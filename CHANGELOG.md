@@ -11,6 +11,30 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- New `/grill-with-field` 0.1.0, user-invoked. It loads `grilling` and
+  `domain-modeling`, then after round 1 runs a background field sweep: the
+  standards, provider and legal rules, and proven tools for the plan's field,
+  each from a fetched source with a trust tier. Each finding comes back as a
+  grilling question with a recommended answer; it never decides for you.
+  `/grill-with-field check` lists every must-have rule and six areas before
+  `/to-spec`. It never installs, edits code, or writes the spec.
+- `/grill-with-field` replaces `/grill-with-docs` in every kit flow:
+  `/feature-prompt` 0.3.3, `/port-feature` 0.2.2, `/feature-discovery` 0.3.1,
+  `/design-system` 0.2.3, `/factory` 5.15.2 (OUTCOME stage), and `/ask-kit`
+  0.3.0 now name it. `/agents-md` 0.10.0 (marker `v57`) adds its manifest row,
+  drops `/grill-with-docs` from the generated gradient, and tells Matt flows
+  that name `/grill-with-docs` to run `/grill-with-field`; the archived-context
+  rule moves to it. Re-run `/agents-md` to refresh workspace rules.
+- `/plain-language` 0.2.0 adds an opt-in learner depth: ask for "explain like
+  I'm new" and each technical term gets one everyday comparison, with no fact
+  dropped and no change to the work itself.
+- Routing descriptions sharpened after a 604/607 sweep with Opus 5.5 judges:
+  `/deploy-watch` 2.0.3 now answers "did it reach staging?", `/incident-triage`
+  0.2.1 excludes plain log reads, and `/writing-kit-skills` 0.6.1 fires only
+  when the request names the kit or one of its skills.
+- README, GUIDE, BEST-PRACTICES and CONTRIBUTING describe the new flow. GUIDE
+  gains "Grill with field research", and BEST-PRACTICES gains "Field methods,
+  not personas" and an anti-pattern for expert-persona prompts.
 - New `/plain-language` 0.1.0, the kit's own model-invoked writing skill. It
   owns chat style (plain English, ASD-STE100, glossary terms) and prose
   cleanup, with the AI-tell pattern list adapted from Cursor pstack's `unslop`

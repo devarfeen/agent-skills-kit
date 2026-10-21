@@ -3,7 +3,7 @@ name: ask-kit
 disable-model-invocation: true
 description: "Route kit skill-map and workflow questions or pick the next agent-skills-kit skill; names one recommendation, never runs it. Existing work: /factory. Matt-only routing: ask-matt."
 metadata:
-  version: "0.2.2"
+  version: "0.3.0"
 ---
 
 # ask-kit
@@ -28,7 +28,8 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 | A UI project has no tokens or component library | `/design-system` |
 | How does this existing feature work, or what uses it | `/feature-discovery` |
 | Rebuild a feature from one stack in another | `/port-feature` |
-| Rough idea, destination and open decisions already sharp | `/feature-prompt`, then `/grill-with-docs` |
+| Rough idea, destination and open decisions already sharp | `/feature-prompt`, then `/grill-with-field` |
+| Grill a plan with the field's standards, rules and proven tools, or check it before the spec | `/grill-with-field` (`check` before `/to-spec`); it replaces `/grill-with-docs` in kit flows |
 | Rough idea, decisions still gate the scope | `/wayfinder` (Matt) |
 | Build one ticket or fix a bug test-first | `/tdd-loop` |
 | Fan a spec's sub-issues out to worker tabs, inside herdr | `/orchestrate-herdr` |

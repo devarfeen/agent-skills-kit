@@ -2,7 +2,7 @@
 name: plain-language
 description: "Chat style and prose cleanup for every session: plain English, ASD-STE100, no AI tells, mandated text kept. Load at session start; cleans supplied prose. Not code, comments, ADRs, or specs."
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
 # plain-language
@@ -32,6 +32,7 @@ Chat only; written artifacts keep their own templates and the Scope above.
 - Write ASD-STE100 Simplified Technical English: active voice, present tense, short sentences, one idea per sentence, one meaning per word. Split a sentence that carries more than three identifiers.
 - Use `GLOSSARY.md` terms exactly, and everyday words over heavy ones. Keep code, DB, API, route, screen, and file names verbatim; state the plain effect first, identifiers after; explain each technical term once.
 - No unexplained shorthand and no arrow-only flows. Brevity skills are user-invoked only.
+- Learner depth ("explain like I'm new"), on request only: [`references/learner-depth.md`](references/learner-depth.md).
 
 ## Protected text
 

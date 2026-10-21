@@ -17,7 +17,7 @@ Issue record names below cover both readable Linear fields in [`records.md`](rec
 
 | State | Condition (all must hold) | Gate out of this state | Next |
 | ----- | ------------------------- | ---------------------- | ---- |
-| `OUTCOME` | Reference is `start`, or no spec (PRD) issue exists | A spec issue exists with acceptance criteria | `/feature-prompt` → `/grill-with-docs` → `/to-spec` |
+| `OUTCOME` | Reference is `start`, or no spec (PRD) issue exists | A spec issue exists with acceptance criteria | `/feature-prompt` → `/grill-with-field` (then `check`) → `/to-spec` |
 | `TICKETS` | Spec exists; zero sub-issues | At least one sub-issue | `/to-tickets`; add `/integration-contract` when the spec touches more than one PROJECT-CODE |
 | `QA_RETURNED` | The issue was reopened after its PR merged, or the user reports a QA finding, or a person commented a finding on it after its delivery record, and no QA escape record on the issue is newer than that reopen or report | A complete QA escape record newer than the reopen or report | `/qa-escape <issue>` |
 | `BUILDING` | Ticket open; no PR for it or its PR is a draft; or an open non-draft PR with checks green lacks an acceptance verdict for head | A non-draft PR whose body, or a `## QA handoff` comment on it, carries an `Acceptance criteria` verdict | Existing non-draft PR lacking only verdict → `/commit-push-pr` to refresh its handoff, preserving branch/head; otherwise `/tdd-loop` for one ticket or `/orchestrate-herdr <spec>` for several inside herdr |

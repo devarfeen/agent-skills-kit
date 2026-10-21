@@ -24,6 +24,7 @@
       "skills": [
         "./skills/feature-discovery",
         "./skills/feature-prompt",
+        "./skills/grill-with-field",
         "./skills/port-feature",
         "./skills/integration-contract"
       ]

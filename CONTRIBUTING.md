@@ -339,6 +339,7 @@ eval pass.
 | A skill's `disable-model-invocation` flag | Its `agents/openai.yaml` mirror (`allow_implicit_invocation: false`) — parity enforced by `validate.sh` check 11 |
 | A canonical one-liner (shared kit protocol wording) | `skills/writing-kit-skills/SKILL.md` (source of truth) · every SKILL.md and shared `references/` policy carrying it · the `CANON` block in `validate.sh` check 13 — all byte-identical. A file exempt from one marker needs user approval and a `CANON_EXEMPT` entry with its reason |
 | API-change vocabulary — match labels (`generated` / `normalized-route` / `name-only`) or rollout classes (`compatible` / `rollout-dependent — <order>` / `breaking`) | `skills/integration-contract/references/consumer-sweep.md` and `skills/risk-review/references/risk-rubric.md` use the same terms and definitions — skills install standalone, so neither may point at the other |
+| A `grill-with-field` source tier, status label, or `check` area | `skills/grill-with-field/SKILL.md` and `references/sweep.md` together · the README skill section and the GUIDE "Grill with field research" section |
 | The house style's word ceiling or skeleton | `tools/validate.sh` check 12 (ceiling) and `skills/writing-kit-skills/SKILL.md` stay in agreement |
 
 ### Versioning and provenance

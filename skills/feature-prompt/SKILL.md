@@ -1,15 +1,15 @@
 ---
 name: feature-prompt
 disable-model-invocation: true
-description: "Turn a feature idea, change request, or rough requirement into a small prompt for grill-with-docs. An ADR to a spec is /to-spec; how existing behaviour works is /feature-discovery."
+description: "Turn a feature idea, change request, or rough requirement into a small prompt for grill-with-field. An ADR to a spec is /to-spec; how existing behaviour works is /feature-discovery."
 metadata:
-  version: "0.3.2"
+  version: "0.3.3"
 ---
 
 # feature-prompt
 
 Produces the smallest useful handoff for the next step — not an implementation
-spec. `grill-with-docs` will challenge the plan, sharpen domain terms, update
+spec. `grill-with-field` will challenge the plan, sharpen domain terms, update
 `GLOSSARY.md`, and offer ADRs only for hard decisions.
 
 ## Output contract
@@ -24,7 +24,7 @@ What is needed:
 [The change to make. One short paragraph or 2-4 bullets.]
 
 Why it is needed:
-[The problem, user pain, business reason, or workflow gap — so grill-with-docs
+[The problem, user pain, business reason, or workflow gap — so grill-with-field
 can challenge tradeoffs, not just wording — and what happens if nothing is
 built.]
 
@@ -40,7 +40,7 @@ already known. When intake was split, list the deferred slices as explicit
 non-goals. Always include the zero-attribution rule.]
 
 Open questions:
-[Conditional. Real unresolved questions for grill-with-docs to attack.]
+[Conditional. Real unresolved questions for grill-with-field to attack.]
 ```
 
 The first five sections are always present; omit `Open questions` when none remain.
@@ -87,7 +87,7 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 - Dependency internals central and unclear → suggest fetching targeted source
   (e.g. `opensrc`) as a follow-up context step before deep grilling.
 - Keep domain words intact. Ground candidate definitions in evidence and use
-  the approval flow below; unresolved definitions belong to `grill-with-docs`.
+  the approval flow below; unresolved definitions belong to `grill-with-field`.
 
 ### Questions and output discipline
 
@@ -140,10 +140,10 @@ Sub-agents: dispatch local lanes automatically for independent work — never cl
 ```markdown
 Context updated: <relative GLOSSARY.md path> [only if edited]
 Saved to: <relative path written>
-Next: pass this final prompt to the `grill-with-docs` skill.
+Next: pass this final prompt to the `grill-with-field` skill.
 Suggested next skills (optional):
 
-- /grill-with-docs: challenge assumptions, sharpen domain terms, and confirm decisions.
+- /grill-with-field: challenge assumptions, sharpen domain terms, and confirm decisions.
 - /handoff + /prototype: when open questions are ungrillable and need a higher-fidelity spike.
 - /to-spec: if this needs a formal spec (PRD) after grilling.
 ```
@@ -179,7 +179,7 @@ Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else
 ### File body
 
 Write exactly the final prompt body — no preface, no generated-by header —
-drop-in usable as input to `grill-with-docs`.
+drop-in usable as input to `grill-with-field`.
 
 ### Pre-save checklist
 

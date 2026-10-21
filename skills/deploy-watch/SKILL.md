@@ -1,9 +1,9 @@
 ---
 name: deploy-watch
 disable-model-invocation: true
-description: "Watch a merged PR's staging deploy run, run an approved smoke check on staging, and record pass or fail on the PR. Never touches a server or triggers a deploy. A broken deploy is /staging-fix."
+description: "Watch a merged PR's staging deploy, smoke-check staging when approved, and record pass or fail on the PR; answers \"did it reach staging?\". Never touches a server or deploys. Broken: /staging-fix."
 metadata:
-  version: "2.0.2"
+  version: "2.0.3"
 ---
 
 # deploy-watch
