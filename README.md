@@ -103,8 +103,9 @@ npx skills update <skill-name>
 
 Most kit skills wait for you to type `/skill-name`. Their instructions set
 `disable-model-invocation: true`, which asks the agent not to choose them
-automatically. `feature-discovery` and `tdd-loop` also load when a request
-matches their description. Opencode and Antigravity ignore that setting and
+automatically. `feature-discovery`, `tdd-loop`, and `risk-review` (local mode) also load
+when a request matches their description, and `plain-language` is loaded at
+the start of every session by the generated workspace rules. Opencode and Antigravity ignore that setting and
 use `name` and `description`, so any matching kit skill can load there.
 Descriptions stay under 200 characters and name the closest alternative skill
 to help the agent choose correctly. If you are unsure, run `/ask-kit`.

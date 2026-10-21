@@ -135,7 +135,7 @@ Two habits are worth repeating, because nothing else enforces them:
 Do steps 1 to 3 once per workspace. Do step 4 once for each project that has a UI.
 
 1. **Run `/agents-md`.** It creates `AGENTS.md` at the workspace root. That file is the source of truth. It writes no `CLAUDE.md` or `GEMINI.md`, because every supported runtime reads `AGENTS.md`. The new `AGENTS.md` holds:
-   - the rules every task needs,
+   - the rules every task needs, starting with a session-start call to `plain-language`, the kit's writing skill,
    - a "Context & native memory" section with placeholders you fill after setup,
    - a table saying which `rules/` file to read before which action.
 
@@ -361,7 +361,7 @@ After the fix passes its checks, pick the result you want:
 
 | Skill | What it does | What is left for you |
 | :--- | :--- | :--- |
-| `/commit-push-pr` | Commits and pushes `fix-checkout`, then opens or updates its PR against an allowed base branch | Review and merge. A PR into the default branch with `Closes #42` closes the issue when merged. If you ask for the merge in the same request, a PR into `local` is merged for you. PRs into any other allowed base stay open. |
+| `/commit-push-pr` | Commits and pushes `fix-checkout`, then opens or updates its PR against an allowed base branch | Review and merge. A PR into a default branch other than `local` carries `Closes #42` and closes the issue when merged; a PR into the delivery branch `local`, default or not, uses a plain reference and the issue stays open for QA. If you ask for the merge in the same request, a PR into `local` is merged for you. PRs into any other allowed base stay open. |
 | `/commit-push-close` | Commits and pushes `fix-checkout`, posts QA instructions, and closes issue 42 directly | The branch may still be unmerged. When it isn't the default branch, the skill confirms whether you want direct closure or a PR. |
 
 For a task branch like this one, prefer `/commit-push-pr`. Both skills keep
@@ -679,7 +679,11 @@ to install the v56 routing rules. Matt’s installed skills stay unchanged.
 | :--- | :--- |
 | Local implementation | Five independent reviewers challenge requirements, correctness, tests, integration, and security/data. Small nonbehavioral changes use only relevant reviewers. A separate judge checks the evidence. |
 | Whole spec | The coordinator reviews the combined integration branch; individual implementers do not each launch five reviewers. |
-| Open PR | `/risk-review 87` retains its green-check prerequisite, fixed risk rubric and approval before remote writes. Factory explicitly selects PR mode at its RISK stage. |
+| Open PR | `/risk-review 87` retains its green-check prerequisite, fixed risk rubric and approval before remote writes. Factory explicitly selects PR mode at its RISK step, in a fresh `<issue-id> risk` worker. |
+
+If the reviewer cannot start nested lanes (a sub-agent on Claude Code, for
+example), it returns the bounded axis and judge assignments and the factory
+parent, or the main session in a Matt flow, runs them as its own lanes.
 
 Reviewers can report no supported findings. The judge records confirmed,
 rejected, unresolved and advisory claims with reasons. Missing evidence or a
