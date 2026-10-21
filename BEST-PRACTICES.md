@@ -14,7 +14,7 @@ The guiding idea: **Agentic Coding is not Vibe Coding.** You make the strategic 
 
 ### Skills are ad-hoc tools, not a pipeline
 
-Every skill is installed globally and is always available. When the agent uses them, it treats them all the same: **there is no "local skill" vs "third-party skill" distinction at use time.** The difference only matters for maintenance. To update a skill, update it from the repo it came from.
+Install the skills you need globally or in your project before using them. When the agent uses them, it treats them all the same: **there is no "local skill" vs "third-party skill" distinction at use time.** The difference only matters for maintenance. To update a skill, update it from the repo it came from.
 
 Skills have no required order. Pick the skill that fits the step in front of you. `/factory` looks at where a ticket or PR stands and suggests the next skill. It never runs that skill for you, unless you start it as `/factory run`.
 
@@ -51,14 +51,22 @@ There are four layers. Only `/tdd-loop` is required:
 
 | Layer | Skill | What it does |
 | :--- | :--- | :--- |
-| Spec | `/implement-spec` *(optional)* | Builds every ticket in a spec in one run. Parallel implementers work in separate worktrees, and their work is merged onto one local integration branch. One `/code-review` at the end |
-| Ticket | `/implement` *(optional)* | Builds one ticket. Typechecks as it goes, runs the full test suite once at the end, then hands to `/code-review` |
-| Behavior | `/tdd-loop` *(kit)* | Red → green → widen → refactor. Owns the proof that the work is done, and the exception protocol |
+| Spec | `/implement-spec` *(optional)* | Builds every ticket in a spec in one run. Parallel implementers work in separate worktrees, and their work is merged onto one local integration branch. One `/code-review`, then coordinator-owned local adversarial `/risk-review` at the end |
+| Ticket | `/implement` *(optional)* | Builds one ticket. Typechecks as it goes, runs the full test suite once at the end, then runs `/code-review` and local adversarial `/risk-review` |
+| Behavior | `/tdd-loop` *(kit)* | Choose a suitable existing solution before adding code, then red → green → widen → refactor on green. Owns completion proof and the exception protocol |
 | Test quality | `/tdd` *(optional)* | Explains what a good test is, where seams go, and the anti-patterns |
 
 Without `/implement`, run `/tdd-loop` yourself for each ticket. You get the same result with one less wrapper. `/tdd` is a reference document, not a loop. Used alone, it never makes you watch a test fail first.
 
-`/implement` **stops after `/code-review`**. Its own text says to commit, but shipping belongs to the ship skills. They handle branching off main, linking the issue, and test evidence. `/implement-spec` stops at the same line, one step later. Its local commits and merges onto the integration branch are engineering work. The draft PR and ticket closing that its text describes are shipping.
+`/implement` **stops after `/code-review` and local adversarial `/risk-review`**. Its own text says to commit, but shipping belongs to the ship skills. They handle branching off main, linking the issue, and test evidence. `/implement-spec` stops at the same line, one step later. Its local commits and merges onto the integration branch are engineering work. The draft PR and ticket closing that its text describes are shipping.
+
+The local adversarial review gives independent reviewers different failure
+questions, then uses a separate judge to check their claims. Five agreeing
+reviewers do not prove correctness; concrete evidence decides. Small
+nonbehavioral changes use fewer relevant reviewers. Missing evidence stays
+unresolved, and fixes stay within the caller’s three-round limit. The local
+report does not replace PR risk classification or authorize shipping. See
+[local-review usage](GUIDE.md#review-local-implementations-adversarially).
 
 ### Helpers alongside the gradient
 
@@ -100,9 +108,15 @@ Every move except continuing replaces the session with a summary of it, so rule 
 
 ### Suggest, never auto-chain
 
-This is the most important habit. When a step finishes, the agent **suggests** a sensible next skill, then stops. It never moves on to the next phase by itself.
+In the manual workflow, a finished step **suggests** a next skill and stops.
+You decide whether to run it. An explicit `/factory run` is the exception: it
+continues through its documented stages under the authorization you gave at
+the start. It still stops at required human decisions and recovery limits.
 
-Why: auto-chaining takes you out of the loop exactly where judgment matters most, such as scope, tradeoffs, and "is this even the right direction?" Suggestions keep things moving. Auto-chains produce confident wrong turns. You decide every transition.
+Choose the manual workflow when you want to decide scope and tradeoffs between
+steps. Choose `/factory run` when a ready issue defines the work and you want
+the agent to carry it through the approved checks. A suggestion alone never
+authorizes that run.
 
 A step your request depends on can lead back into the task you asked for. "Implement ticket 42 in a worktree" allows the agent to set up the worktree and then implement the ticket. It does not allow shipping, merging, or cleanup.
 
@@ -111,7 +125,7 @@ A step your request depends on can lead back into the task you asked for. "Imple
 A worktree is a second checkout of the same repository, usually on a task branch. Ask for one when you want the task's edits kept apart from your current checkout. The kit puts it at `<project-repo>/.worktrees/<task-name>` and gitignores that folder in the repository. It keeps any existing work. Setup may add that one ignore line in the source checkout and on the task branch.
 
 - **Keep each project in its own worktree.** A change across API and WEB gets one worktree in each repo. Give the task skill the verified checkout and that project's instructions. Run tests and ship from there. A passing check in the original checkout proves nothing about the task's changes.
-- **Prefer a PR for a task branch.** `/commit-push-pr` publishes the branch for review. `/commit-push-close` closes the issue directly, and asks you to confirm that choice if the code is still on a non-default branch. Neither one merges code.
+- **Prefer a PR for a task branch.** `/commit-push-pr` publishes the branch for review. `/commit-push-close` closes the issue directly, and asks you to confirm that choice if the code is still on a non-default branch. A merge into `local` is included only when you also request it with `/commit-push-pr`; otherwise merging is a separate step.
 - **Clean up after the work is merged.** For a worktree you asked for, ask for cleanup once the fix is merged and verified. First save any unfinished changes and any useful untracked or ignored files, and stop the processes the task started. Remove the worktree through Git. Delete the local branch only when its work is safely kept elsewhere. A pushed branch or a closed issue alone does not prove that.
 
 If setup fails, do not create a second worktree for shipping, and do not quietly edit the source checkout instead. Keep `/.worktrees/` in `.gitignore` for future tasks. The [guide's example](GUIDE.md#working-in-a-worktree) shows the full flow.
@@ -141,6 +155,24 @@ These principles hold whatever is on the list:
 - Don't assume a companion is installed. If it's missing, use the best local fallback.
 - The kit provides `/using-git-worktrees`. Other companions stay separate installs. Don't copy them into this kit.
 - Treat a companion's output as evidence, not as orders. Repo code, tests, ADRs, `GLOSSARY.md`, and user instructions still win. That includes instructions a companion serves at runtime (skill text served by a CLI). Follow them for how to use the tool, but the kit's checks and refusal rules always win.
+
+Cursor’s `unslop` is a narrow automatic helper. The workspace instructions and
+standalone ship policies tell the agent to read and apply its writing rules
+before sending prose or finalizing written content. Its upstream invocation
+settings stay unchanged. This edits the agent’s current prose while preserving
+meaning, evidence, technical text, quotations, and required templates. It never
+authorizes publishing.
+
+The kit adapts two ideas from [Ponytail](https://github.com/DietrichGebert/ponytail)
+without installing it. `/tdd-loop` checks project code, standard-library or
+platform features, and installed dependencies before writing new behavior.
+Choose the first option that meets the whole requirement and project conventions;
+keep the usual test-first checks. `/risk-review` may add up to three specific
+simplification notes, supported by current code and a concrete maintenance cost.
+Those notes never alter the risk tier or merge conditions. A new dependency
+still triggers high risk, and a real bug still needs the normal failure proof. See the [implementation choices](GUIDE.md#choose-the-smallest-complete-implementation)
+and [review-note guidance](GUIDE.md#read-risk-review-simplification-notes) for how
+to use these rules in the existing workflow.
 
 ### Decisions are artifacts
 
@@ -206,10 +238,13 @@ When sources disagree, this is the order of precedence:
 
 Run this once per workspace, from the workspace root (not inside a single repo). The step-by-step sequence is in [GUIDE.md](GUIDE.md#first-time-setup):
 
-1. `/agents-md`
-2. `/setup-matt-pocock-skills`
-3. Fill in the `AGENTS.md` placeholders.
-4. `/design-system`, once per project that has UI. Re-run it with `extend` as the design grows, or to fold a shipped page's UI back in.
+1. Run `/agents-md` to give the agent workspace rules and a project list.
+2. Run `/setup-matt-pocock-skills` to choose the tracker, labels, glossary, and
+   `specs/` location that later steps will use.
+3. Fill in the `AGENTS.md` placeholders with those actual paths so the agent
+   can find the glossary and decision records.
+4. Run `/design-system` once per UI project so feature work uses a shared
+   library. Use `extend` as the design grows or after a page adds reusable UI.
 
 The generated `AGENTS.md` rules set up the behaviors you'll see in chat: PROJECT-CODEs, phase updates, and understanding checks.
 
@@ -229,20 +264,39 @@ The generated `AGENTS.md` rules set up the behaviors you'll see in chat: PROJECT
 
 Run from the workspace root. Each step produces a file or issue that the next step uses.
 
-0. **Apply the fog test.** If the destination and its open decisions aren't sharp yet, this isn't Workflow B. Go to Workflow E, and come back at step 3.
-1. **`/feature-prompt`**: describe what you want for a given project. It works out what it can from quick looks at the repo, asks only for what's missing, and saves a **refined prompt file** to disk.
-2. **`/grill-with-docs`**: give it the prompt file. It asks its questions in rounds. Each round asks every question whose prerequisites are already settled, numbered, each with a recommended answer. Your answers change which questions come next and unlock the next round. It sends facts it can look up itself to sub-agents, never to you. It challenges the plan against your domain model and writes an **ADR** to disk. It is done when no open questions are left.
-3. **`/to-spec`**: run it on the ADR. It publishes a **spec** (you may know it as a PRD) to your configured tracker. A GitHub issue is convenient, because the CLI can fetch it back cheaply.
-4. **`/to-tickets`**: run it on the spec issue number. It creates **sub-issues**, one vertical-slice ticket each. Each ticket says which tickets block it, using the tracker's native sub-issue and blocking links where it has them. It applies the ready labels automatically, so you don't need a separate `/triage` step here.
-5. **`/implement`** *(optional)*: build the tickets that are ready to start, one at a time, in a fresh session each. It runs `/tdd-loop` at each seam agreed in advance (Red → Green; refactoring happens at the review stage). It typechecks as it goes, runs the full test suite once at the end, and hands to `/code-review`. It stops there and does not commit. If `/implement` isn't installed, run **`/tdd-loop`** yourself for each ticket and you get the same result.
-   To build the whole spec in one run instead, use **`/implement-spec`**. It builds the tickets with parallel implementers in worktrees and merges them onto one local integration branch. It stops after `/code-review`. The ship step below still opens the PR and closes the tickets.
-6. **After each slice, the agent suggests a next step.** Usually that's `/code-review`, then `/commit-push-close` or `/commit-push-pr`, and sometimes `/release-notes`. You choose. Running `/code-review` after each slice is a strong default.
-7. **Verify.** Prove the slice does what the ADR or spec asked. Use whichever of these apply:
-   - **`/agentic-qa`**: once the PR's CI is green and the change can reach a screen, the agent tests every acceptance criterion in the running app, across states, screen sizes, and roles. It records VERIFIED, PARTIAL, or BLOCKED on the PR. It replays a failure once before reporting it, checks that saved data survives a reload, and never edits code.
+Before starting, check that you can state the desired outcome and list the
+open decisions. If you cannot, use Workflow E to resolve them, then return at
+step 3. Run `/feature-discovery` first when you need to understand existing code.
+
+1. **`/feature-prompt`**: describe what you want for a given project. It works out what it can from quick looks at the repo, asks only for what's missing, and saves a **refined prompt file** to disk. This gives planning a specific request to work from.
+2. **`/grill-with-docs`**: give it the prompt file. It asks its questions in rounds. Each round asks every question whose prerequisites are already settled, numbered, each with a recommended answer. Your answers change which questions come next and unlock the next round. It sends facts it can look up itself to sub-agents, never to you. It challenges the plan against your domain model and writes an **ADR** to disk. It is done when no open questions are left, so implementation does not have to guess at those decisions.
+3. **`/to-spec`**: run it on the ADR. It publishes a **spec** (you may know it as a PRD) to your configured tracker. The spec records the acceptance criteria that implementation and review will check.
+4. **`/to-tickets`**: run it on the spec issue number. It creates **sub-issues**, one vertical-slice ticket each. Each ticket says which tickets block it, using the tracker's native sub-issue and blocking links where it has them. It applies the ready labels automatically, so you don't need a separate `/triage` step here. A small, testable ticket is easier to verify and recover if it fails.
+5. **`/implement`** *(optional)*: build the tickets that are ready to start, one at a time, in a fresh session each. It runs `/tdd-loop` at each seam agreed in advance (reuse-first, Red → Green, widen, refactor while green). It typechecks as it goes, runs the full test suite once at the end, and runs `/code-review` followed by local adversarial `/risk-review`. It stops there and does not commit. If `/implement` isn't installed, run **`/tdd-loop`** yourself for each ticket and you get the same result.
+   To build the whole spec in one run instead, use **`/implement-spec`**. It builds the tickets with parallel implementers in worktrees and merges them onto one local integration branch. It stops after `/code-review` and local adversarial `/risk-review`. The ship step below still opens the PR and closes the tickets.
+6. **Review each slice with `/code-review`.** It compares the changes with the
+   project standards and the request. Fix findings through `/tdd-loop`, then
+   review the changed code again. This catches a passing implementation that
+   still misses a requirement. The agent may suggest shipping or release
+   notes next; you choose when to run them after the required checks.
+7. **Verify locally before shipping.** Check each acceptance criterion with tests and local browser checks where needed. Use whichever of these apply:
+
    - **`/pixel-audit`**: for a page that must match a design, check it against its source of truth (Figma or reference screens). It must pass the element-by-element check before you call it done.
-   - **Manual QA + `/polish-batch`**: check against the QA doc. Write down the cosmetic nits (copy, spacing, alignment, wrong strings) without fixing them, then send the fixes out per PROJECT-CODE in one pass. Anything that touches behaviour, data, or an interface is not a nit. Send it back to `/to-tickets`.
    - **`/integration-contract`**: when the spec touches more than one PROJECT-CODE, build the contract for the seam between repos and run its smoke check before shipping. Single-project specs skip this automatically.
-8. **Ship.** At the end of a slice, a single issue, or the whole spec, run `/commit-push-close` or `/commit-push-pr`. A PR then continues in Workflow F.
+8. **Ship, then complete PR checks.** Use `/commit-push-pr` to publish the
+   tested change for review. Use `/commit-push-close` only when you deliberately
+   want direct issue closure without a PR. A PR continues in Workflow F:
+   CI first, app QA when needed, reviewer feedback, risk review, and staging.
+   Run `/factory 87` if you do not know which check is next.
+
+   - **`/agentic-qa`**: once the PR's CI is green and the change can reach a screen, the agent tests every acceptance criterion in the running app, across states, screen sizes, and roles. It records VERIFIED, PARTIAL, or BLOCKED on the PR. It replays a failure once before reporting it, checks that saved data survives a reload, and never edits code.
+   - **Manual QA + `/polish-batch`**: after required agent QA passes, check against the QA doc. Write down the cosmetic nits (copy, spacing, alignment, wrong strings) without fixing them, then send the fixes out per PROJECT-CODE in one pass. Anything that touches behaviour, data, or an interface is not a nit. Send it back to `/to-tickets`.
+
+   App QA checks the running result; passing unit tests alone cannot establish
+   that a screen, permissions, and saved data behave correctly. In a manual
+   workflow this PR check follows PR creation. An explicit `/factory run`
+   also performs QA before publishing, under its own sequence.
+
 9. **Feed new UI back** *(if the slice grew the design system)*. Run `/design-system` (extend) to move new reusable UI into the library, the preview, `specs/design-system/`, the `AGENTS.md` reference, and the `<project-slug>-ui-coding` skill, so the next feature gets it. This only updates the design system. It does not commit or write ADRs.
 
 > **The thread to notice:** prompt file → ADR → spec issue → ticket issues → tested code → QA doc. You can pick up each link on its own, and you can audit the whole chain.
@@ -267,9 +321,9 @@ A hard bug can use both lanes: diagnose manually (steps 1–2 below), put the ro
 ### Automated lane
 
 1. **Have an issue.** The input is a tracker issue labeled `ready-for-agent`. No issue yet → `/report-issue` drafts one with acceptance criteria and code leads, then creates it after you approve the draft. Labeled `needs-triage` → run `/triage` first.
-2. **`/factory run <issue>`**: after one question (which agent reviews), it asks nothing more and runs the loop:
+2. **Start `/factory run <issue>`.** Choose the reviewing agent at the opening question. The run continues through the approved steps without repeated permission requests. Missing access, high risk, unresolved facts, and exhausted retries can still stop it:
    - **Build.** A builder fixes the bug through `/tdd-loop`, starting with a failing test that reproduces the bug. The build doesn't count until the builder quotes passing test output.
-   - **QA.** `/agentic-qa` runs the reproduction on the base commit (`before`) and on the PR's latest commit with the fix (`after`).
+   - **QA.** `/agentic-qa` runs the reproduction on the base commit (`before`) and on the candidate commit with the fix (`after`), before the PR opens. This proves the fix changes the reported behavior.
    - **PR and CI.** `/commit-push-pr` opens the PR. `/ci-loop` gets up to three attempts on a red check.
    - **Review loop.** A fresh, read-only reviewer, on a different provider when one is available, runs `/code-review` against the base and the issue's criteria, and posts numbered findings on the issue. The builder fixes each one through `/tdd-loop`, or declines it with a reason. The new latest commit passes CI and QA again, and the next round reviews only the new commits and the declined findings. The loop ends at zero findings. If findings are still open after three rounds, the run parks the issue (stops working on it and says why) with the findings quoted. A fix that deletes a test or removes an assertion also parks the issue: a round that passes by weakening its checks proves nothing.
    - **Risk and merge.** `/risk-review` gives the PR a risk tier. Low → the run merges into `staging` or `local`. High → an engineer approves and merges.
@@ -377,9 +431,9 @@ Where the bug came from decides where you start:
 Use this to bring a feature that already works in a **reference** implementation (often a legacy repo) into a **target** stack.
 
 1. **`/port-feature`**: give it the feature, the REFERENCE PROJECT-CODE (where the behaviour is correct), and the TARGET PROJECT-CODE (where it should land). It reads the target's binding context, traces the reference the way `/feature-discovery` would, checks what the target already has, and writes **one gap map** to `specs/port/`. The reference is the truth for behaviour, workflow, navigation, permissions, and states. The target's design system is the truth for UI. It suggests `/grill-with-docs` and stops.
-2. **`/grill-with-docs`**: challenge the gap map. It writes the ADR using the next number in your `specs/adr/`.
+2. **Run `/grill-with-docs` on the gap map.** Resolve what to keep and what must change for the target before anyone copies code. It saves those decisions as the next numbered ADR in `specs/adr/`.
 3. **`/to-spec` → `/to-tickets` → `/implement`** (or `/tdd-loop` directly): from here it rejoins Workflow B with a spec, thin ticket slices, and a test-first build. Each UI slice uses the target's UI library. A missing component goes through `/design-system` (extend), never a one-off built inside the page.
-4. **Verify and ship.** Run `/pixel-audit` on the ported screens against the reference, do manual QA + `/polish-batch`, then run `/commit-push-close` or `/commit-push-pr`.
+4. **Verify and ship.** Review and test the changes, then run `/pixel-audit` on the ported screens against the reference. Publish with `/commit-push-pr` (or deliberately choose direct closure with `/commit-push-close`). For a PR, follow Workflow F. Complete required agent QA before manual QA; collect cosmetic fixes with `/polish-batch`. This checks the port's behavior and its fit with the target UI.
 
 > **Why a gap map first:** porting blind drags the reference's accidents across along with its behaviour. The gap map separates what to keep (behaviour, workflow, permissions) from what to rewrite in the target's style (UI), and names the risks before any code moves.
 
@@ -401,7 +455,7 @@ Wayfinder is **planning, not doing.** It produces decisions, not deliverables. W
 
    It posts a resolution comment, closes the ticket, and records the answer on the map. Each resolution clears fog ahead, and anything that is now sharp becomes a new ticket.
 3. **Repeat** until nothing is left to decide. The map is exhausted, and the way to the destination is clear.
-4. **`/to-spec`**: rejoin Workflow B at step 3. The map's decisions are the spec's input. The `Way:` issues are already closed.
+4. **Run `/to-spec` on the resolved map.** Rejoin Workflow B at step 3. The spec turns the recorded decisions into build requirements. The `Way:` planning issues are already closed; `/to-tickets` will create the implementation tickets.
 
 > **Issue hygiene:** `Way:` issues are planning records. They carry only `wayfinder:*` labels: no `bug`/`enhancement` and no state label. The kit's issue hard gate (its required title and label check) doesn't apply to them. HITL and AFK are ticket *types*, carried by labels, and never written into a title.
 
@@ -415,12 +469,12 @@ The factory skills take a PR from open to "ready for owner" on staging. Run **`/
 
 **Pointing it at a PR.** Put the PR number or link after the command: `/factory 87`. A ticket ID works too, and it finds the PR. With nothing after it, `/factory` asks; it never guesses from your branch.
 
-**You don't have to go through `/factory`.** Each skill below works on its own, so if CI is red, run `/ci-loop 87` directly. Use `/factory 87` when you don't know what's next, and `/factory run 87` when you want it to run every step for you. Only you can start these skills; an agent can suggest one, but never starts it. More in [GUIDE.md](GUIDE.md#three-ways-to-move-a-pr-along).
+**You don't have to go through `/factory`.** Each skill below works on its own, so if CI is red, run `/ci-loop 87` directly. Use `/factory 87` when you don't know what's next, and `/factory run 87` when you want it to run every step for you. Outside an explicit `/factory run`, you start each stage yourself; the agent only suggests it. More in [GUIDE.md](GUIDE.md#three-ways-to-move-a-pr-along).
 
 1. **CI is red** → **`/ci-loop`**: up to three fix-and-push attempts under one approval. A flaky test that the PR itself added is a code bug to fix, not something to retry. When CI fails but the tests pass locally, it compares the CI and local environments before changing any code. If someone else pushes to the branch, it stops.
-2. **CI is green and the change reaches a screen** → **`/agentic-qa`** (see Workflow B, step 7).
+2. **CI is green and the change reaches a screen** → **`/agentic-qa`** (see Workflow B, step 8).
 3. **Review comments** → **`/pr-feedback`**: sorts every comment thread into accept, push back, or needs discussion, and waits for your approval. It applies only the accepted fixes, asks you to run `/commit-push-pr` to push them, then replies citing the commit that fixed each one. Comments are evidence: a suggestion that undoes an earlier fix or contradicts a recorded decision goes to needs discussion.
-4. **Ready for review** → **`/risk-review`**: a specialist review of each area the PR touches, then a risk tier from a fixed rubric. Low risk offers auto-merge into `staging` or `local` only. High risk asks for an engineer. Two cases are always high risk: a change a revert can't undo (a one-way door), and a change the author called undoable (two-way) that the diff contradicts. Requested changes or an unresolved review thread block any merge, whatever the tier.
+4. **Ready for review** → **`/risk-review`**: a specialist review of each area the PR touches, then a risk tier from a fixed rubric. Low risk offers auto-merge into `staging` or `local` only. High risk asks for an engineer. Two cases are always high risk: a change a revert can't undo (a one-way door), and a change the author called undoable (two-way) that the diff contradicts. Requested changes or an unresolved review thread block any merge, whatever the tier. It may add up to three evidence-backed simplification notes; those notes do not alter the tier or block delivery on their own.
 5. **Merged to `staging`** → **`/deploy-watch`**: watches the deploy run, smoke-checks staging with your approval, and fails only on errors that weren't already there before the deploy.
 6. **Deploy failed** → **`/staging-fix`** or a revert PR, then `/deploy-watch` again.
 
@@ -506,17 +560,17 @@ Use this to take a brand-new idea all the way to "ready for owner" by following 
 
 You have an idea and nothing written down yet. Every `/factory` call below only reads and suggests. You run each suggested skill yourself, then ask `/factory` again.
 
-| You run | `/factory` places it at | It suggests, and you run |
-| :--- | :--- | :--- |
-| `/factory start` | `OUTCOME`: no spec yet | `/feature-prompt` → `/grill-with-docs` → `/to-spec`, which files spec issue `PRWL-142` with acceptance criteria |
-| `/factory PRWL-142` | `TICKETS`: spec exists, no sub-issues | `/to-tickets` (add `/integration-contract` if the spec spans projects). Tickets `PRWL-143` and `PRWL-144` are created |
-| `/factory PRWL-142` | both tickets `BUILDING` | `/tdd-loop` on `PRWL-143`, then `/commit-push-pr`, which opens PR #87 and posts its acceptance-criteria verdict (for several tickets inside herdr: `/orchestrate-herdr PRWL-142`) |
-| `/factory PRWL-142` | PR #87 `CI`: a required check fails | `/ci-loop 87` |
-| `/factory 87` | `QA`: green on the latest commit, and the diff reaches a screen | `/agentic-qa 87` |
-| `/factory 87` | `REVIEW`: QA marker verified on the latest commit | `/risk-review 87`; human review threads go through `/pr-feedback 87` |
-| `/factory 87` | `MERGE`: low risk on the latest commit | merge into `staging` or `local` yourself, or accept the auto-merge `/risk-review` offers |
-| `/factory 87` | `STAGING`: merged, deploy running | `/deploy-watch 87` |
-| `/factory 87` | `READY_FOR_OWNER` | nothing; the owner promotes to production |
+| You run | `/factory` places it at | It suggests, and you run | Why this step is needed |
+| :--- | :--- | :--- | :--- |
+| `/factory start` | `OUTCOME`: no spec yet | `/feature-prompt` → `/grill-with-docs` → `/to-spec`, which files spec issue `PRWL-142` with acceptance criteria | Agree on what to build and how success will be checked. |
+| `/factory PRWL-142` | `TICKETS`: spec exists, no sub-issues | `/to-tickets` (add `/integration-contract` if the spec spans projects). Tickets `PRWL-143` and `PRWL-144` are created | Make the work small enough to test and record dependencies. |
+| `/factory PRWL-142` | both tickets `BUILDING` | `/tdd-loop` on `PRWL-143`, `/code-review` and applicable local checks, then `/commit-push-pr`, which opens PR #87 and posts its acceptance-criteria verdict (for several tickets inside herdr: `/orchestrate-herdr PRWL-142`) | Build and review a tested change before publishing it. |
+| `/factory PRWL-142` | PR #87 `CI`: a required check fails | `/ci-loop 87` | The shared checks must pass on the code being reviewed. |
+| `/factory 87` | `QA`: green on the latest commit, and the diff reaches a screen | `/agentic-qa 87` | Check the behavior users will actually see. |
+| `/factory 87` | `REVIEW`: QA marker verified on the latest commit | `/risk-review 87`; human review threads go through `/pr-feedback 87` | Resolve reviewer concerns and assess the remaining merge risk. |
+| `/factory 87` | `MERGE`: low risk on the latest commit | merge into `staging` or `local` yourself, or accept the auto-merge `/risk-review` offers | Integrate only after the required checks and reviews pass. |
+| `/factory 87` | `STAGING`: merged, deploy running | `/deploy-watch 87` | Confirm the expected build is deployed and works on staging. |
+| `/factory 87` | `READY_FOR_OWNER` | nothing; the owner promotes to production | Production decisions and commands belong to the owner. |
 
 Pass the spec (`/factory PRWL-142`) to see every ticket at once, with blocked ones first. Pass a ticket or PR to see just that one. If a step sends the PR back (a new push, QA findings, or a blocking risk finding), the next `/factory` call says so (`CI` or `CHANGES`), and you follow its new suggestion. Already have a spec, ticket, or PR? Skip `start` and pass that reference directly.
 
@@ -533,7 +587,7 @@ Pass the spec (`/factory PRWL-142`) to see every ticket at once, with blocked on
 
 These habits are what separate intentional use from vibe coding. Avoid them:
 
-- **Auto-chaining skills.** Letting the agent run `discover → … → ship` unattended. Suggest and stop. You steer every transition.
+- **Starting an unrequested workflow.** In manual work, the agent suggests the next skill and stops. Only an explicit `/factory run` authorizes its documented stage chain; a setup helper may return to the task you already requested.
 - **Bulk-reading `specs/`.** Loading the whole archive "for context." Retrieve only what you need instead.
 - **Making up an issue before coding** for truly ad-hoc work. Let the ship skill create the issue at the end, from the real diff and decisions.
 - **Skipping discovery on a bug.** Jumping straight to a fix without tracing the code path.
@@ -542,7 +596,7 @@ These habits are what separate intentional use from vibe coding. Avoid them:
 - **Grilling through fog.** Trying to grill a plan whose scope depends on undecided questions. Grilling sharpens a plan you can state. It can't produce one you can't. That's what `/wayfinder` is for.
 - **Charging at the destination.** Using `/wayfinder` to *do* the work rather than decide it, or resolving several tickets in one session. Each ticket is sized to one fresh context window. The map is done when nothing is left to decide.
 - **Letting `/implement-spec` open the PR or close tickets.** Its local integration branch is fine. The draft PR and ticket closing in its text are shipping, and go through `/commit-push-pr` or `/commit-push-close`.
-- **Letting `/pr` rewrite a ship skill's PR body.** `/pr` is model-invoked and fires on any PR body. `/commit-push-pr`'s sections (`Closes #N`, how to test) feed the QA handoff and the factory's checks. Keep them.
+- **Letting `/pr` rewrite a ship skill's PR body.** `/pr` is model-invoked and fires on any PR body. `/commit-push-pr`'s sections (target-required issue reference, how to test) feed the QA handoff and the factory's checks. Keep them.
 - **Skipping the retro after a bad session.** The same mistake comes back until the environment changes. `/retro` turns it into a check or a standard.
 - **Letting `/implement` commit.** Its own text ends "commit your work to the current branch." The ship skills own commits: branching off main, a structured message, the issue link, test evidence, and zero attribution. A bare commit skips all of it.
 - **Compacting mid-phase.** The agent loses the thread. Decide at the boundary between phases, and rule out continuing first.
@@ -550,6 +604,8 @@ These habits are what separate intentional use from vibe coding. Avoid them:
 - **Assuming a user-invoked skill can't be started by the model.** That's true in Claude CLI, Codex CLI, and Cursor CLI. Opencode and Antigravity ignore the flag. There, the skill's description, which names its nearest sibling skill, is what keeps it from loading.
 - **Switching checkouts to ship.** Commit and push from the verified task worktree. Don't move its edits back to the original checkout.
 - **Deleting a worktree after a push or after the issue closes.** Confirm the work is merged and save local files first. Shipping is not merging, and ignored files may still be valuable.
+- **Skipping the failing test because a helper exists.** Reusing tested code does not prove a new caller is wired correctly. Keep `/tdd-loop`'s behavior test and wider checks, or its declared exception with real verification evidence.
+- **Treating simplification advice as a merge gate.** `/risk-review` keeps these notes separate from risk findings. A new dependency still fires the normal high-risk trigger, and a proven bug still blocks; advice does not override either decision.
 - **Using `/tdd` as a loop.** Since upstream v1.1.0 it is a reference document: what a good test is and where seams go. Used alone, it never makes you watch a test fail first. The procedure is `/tdd-loop`.
 - **Treating native memory as authority.** Native memory is user-local recall. `GLOSSARY.md` and ADRs are binding.
 - **Growing the always-loaded `AGENTS.md`.** A rule that applies only to some tasks belongs in the matching `rules/` file, which is read when that work starts. Everything in `AGENTS.md` costs tokens on every task.
@@ -574,7 +630,7 @@ These habits are what separate intentional use from vibe coding. Avoid them:
 | Workflow | Order |
 | :--- | :--- |
 | **A · Project start** | `/agents-md` → `/setup-matt-pocock-skills` → fill `AGENTS.md` placeholders → `/design-system` (per UI project) |
-| **B · New feature** *(no fog)* | `/feature-prompt` → `/grill-with-docs` → `/to-spec` → `/to-tickets` → `/implement` *(or `/tdd-loop`)* → `/code-review` → `/pixel-audit` → manual QA → `/polish-batch` → `/integration-contract` (multi-project) → `/commit-push-*` → F when it's a PR |
+| **B · New feature** *(no fog)* | `/feature-prompt` → `/grill-with-docs` → `/to-spec` → `/to-tickets` → `/implement` *(or `/tdd-loop`)* → `/code-review` → local `/risk-review` in Matt flows → `/pixel-audit` → `/integration-contract` (multi-project) → `/commit-push-*` → F when it's a PR → manual QA + `/polish-batch` after required agent QA |
 | **C · Debug, automated** | `/report-issue` (no issue yet) → `/factory run <issue>`: `/tdd-loop` → `/agentic-qa` → PR → `/ci-loop` → `/code-review` by a second agent, up to 3 rounds → `/risk-review` → merge to `staging` → `/deploy-watch` |
 | **C · Debug, manual** | `/feature-discovery` → `/diagnosing-bugs` → `/tdd-loop` (failing test first) → `/code-review`, repeated until clean → `/commit-push-pr` (with `Root cause:`) → F → `/retro` if it was hard to find |
 | **D · Port a feature** | `/port-feature` → `/grill-with-docs` → `/to-spec` → `/to-tickets` → `/implement` *(or `/tdd-loop`)* → `/pixel-audit` → `/commit-push-*` |
@@ -594,4 +650,7 @@ These habits are what separate intentional use from vibe coding. Avoid them:
 
 The fork between **B** and **E** is the fog test: can you state the destination *and* every open decision, sharply, right now?
 
-These are the paths you *usually* take, not rails the agent follows on its own. Pick the skill that fits the step. Ship thin slices. Keep every decision traceable. Let the agent suggest the next move, but never auto-advance to it.
+Use these paths to choose your next step. In manual work, run the suggested
+skill yourself. To automate the documented sequence for a ready issue, start
+`/factory run` explicitly. Keep each ticket small enough to test and each
+decision recorded where the next step can find it.

@@ -3,7 +3,7 @@ name: agents-md
 disable-model-invocation: true
 description: "Generate workspace-root AGENTS.md and rules from .code-workspace, or sync project runtime blocks. Never writes CLAUDE.md/GEMINI.md; a request to make a shim, even with AGENTS.md: writing-for-agents."
 metadata:
-  version: "0.6.3"
+  version: "0.8.0"
 ---
 
 # AGENTS.md generator
@@ -74,7 +74,7 @@ Fill the `[RUNTIME TOOL-CALLING …]` slot from `references/tool-calling.md`, fo
 
 ## Versioning and regeneration
 
-The skill version is `v52`. Every generated file carries the marker `<!-- agents-md marker · v52 · re-run /agents-md to regenerate -->` as its first line. Bump it here and in every asset together whenever these rules change. Legacy pre-`v6` markers: [regeneration](references/regeneration.md#legacy-markers).
+The skill version is `v54`. Every generated file carries the marker `<!-- agents-md marker · v54 · re-run /agents-md to regenerate -->` as its first line. Bump it here and in every asset together whenever these rules change. Legacy pre-`v6` markers: [regeneration](references/regeneration.md#legacy-markers).
 
 On run, check each target — the root `AGENTS.md` and every [on-demand file](references/on-demand-files.md#existing-files):
 

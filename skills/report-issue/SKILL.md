@@ -1,9 +1,9 @@
 ---
 name: report-issue
 disable-model-invocation: true
-description: "File a problem statement and screenshots as a complete tracker issue. Code-traced, routed, labelled, prioritised, scheduled. Delivered-work bug: /qa-escape. Fix now: /diagnosing-bugs."
+description: "File single or batch problem reports and screenshots as tracker issues. Code-traced, routed, labelled, prioritised, scheduled. Delivered-work bug: /qa-escape. Fix now: /diagnosing-bugs."
 metadata:
-  version: "0.1.0"
+  version: "0.1.2"
 ---
 
 # report-issue
@@ -57,11 +57,11 @@ Search the tracker in every candidate team for the key error text, route and scr
 
 ### 4. Route and triage
 
-Load [`references/triage-rules.md`](references/triage-rules.md). Pick the **primary project**: where the fix must land first. One project shows the symptom and another owns the cause → the owner is primary, and every other PROJECT-CODE goes in the body. Then set template, title, labels, priority, cycle and due date by that reference, each with a one-line reason.
+For an open duplicate, retain existing fields and draft only the new evidence comment. For a new issue, load [`references/triage-rules.md`](references/triage-rules.md). Pick the **primary project**: where the fix must land first. One project shows the symptom and another owns the cause → the owner is primary, and every other PROJECT-CODE goes in the body. Then set template, title, labels, priority, cycle and due date by that reference, each with a one-line reason.
 
 ### 5. Draft
 
-Load [`references/issue-body.md`](references/issue-body.md). Fill the live template for the classification, add acceptance criteria, edge cases to check, code context and the projects involved. Show:
+For a new issue, load [`references/issue-body.md`](references/issue-body.md). Fill the live template for the classification, add acceptance criteria, edge cases to check, code context and the projects involved. Show:
 
 ```
 Draft — PARTNERS-WEB: Show empty-state message on an empty invoice list
@@ -73,9 +73,11 @@ Attachments: 2 screenshots   Duplicates: none (searched PRWL, PRA)
 Reply yes to create, or name the fields to change.
 ```
 
-### 6. Create and read back
+For an open duplicate, show the existing issue and full comment; ask approval to post it.
 
-After `yes`: upload each screenshot through the tracker's attachment upload and embed it in the body, create the issue with every field, then fetch it and compare title, team, project, labels, priority, cycle, due date, body and attachments with the draft. Repair a mismatch once through a supported update; still wrong → report the field. An upload that fails leaves the issue created with a note naming the missing file.
+### 6. Apply the approved operation and read back
+
+After approval, upload screenshots and embed them in the approved issue body or duplicate comment; an upload failure is named in that output. New issue → create, fetch and compare every approved field and attachment; repair a mismatch once, then report any remaining gap. Open duplicate → post only the approved additional-evidence comment and read back its text/attachments; create no issue and change no issue fields. An uncertain write outcome requires read-back before retrying.
 
 ### Batch mode
 
@@ -89,14 +91,14 @@ https://linear.app/<workspace>/issue/PRWL-212
 bug · ready-for-agent · High · Cycle 5 · due 2026-10-30 · also PARTNERS-API
 ```
 
-At most 3 bullets after it: unverified fields, related issues, what kept the workflow label at `needs-triage`. Close with the `Suggested next skills (optional)` footer, 1–3 items: `/factory run <issue>` when it is `ready-for-agent`; `/diagnosing-bugs` for a reproduced bug the reporter wants fixed now.
+For a duplicate, report `Commented <issue> — <comment URL>`; never say created. At most 3 bullets after it: unverified fields, related issues, what kept the workflow label at `needs-triage`. Close with the `Suggested next skills (optional)` footer, 1–3 items: `/factory run <issue>` when it is `ready-for-agent`; `/diagnosing-bugs` for a reproduced bug the reporter wants fixed now.
 
 ## Completion criteria
 
 - [ ] Every edge case in the body has a `path:line` source, and none appears as an acceptance criterion
-- [ ] Batch: every input problem is created, merged into another item, dropped by the reporter, or reported as failed
-- [ ] The draft named the template, primary project, every involved PROJECT-CODE, labels, priority, cycle and due date with a reason each, and the duplicate search scope
+- [ ] Batch: every problem is created, commented on a duplicate, merged into another item, dropped, or reported as failed
+- [ ] The draft named the operation and duplicate search scope; new issues include all triage fields/reasons, duplicate comments name the existing issue and evidence
 - [ ] Approval preceded every tracker write, or the draft was printed and the run stopped
-- [ ] The created issue was fetched and every field matched the approved draft, or each mismatch is reported
+- [ ] The approved issue or duplicate comment was read back and matched its draft, or each mismatch is reported
 - [ ] The reply carries the issue identifier and its tracker URL
 - [ ] No source file changed: `git status --short` in each searched project shows nothing new from this run

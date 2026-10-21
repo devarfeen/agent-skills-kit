@@ -1,0 +1,4013 @@
+[
+ {
+  "skill": "/report-issue",
+  "q": "Here are ten small spacing and copy nits from QA, batch them up",
+  "expect": "no-trigger",
+  "route": "/polish-batch",
+  "n": 1
+ },
+ {
+  "skill": "/writing-kit-skills",
+  "q": "Refactor this module to be more readable",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 2
+ },
+ {
+  "skill": "/port-feature",
+  "q": "Upgrade this app from Laravel 9 to Laravel 11",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 3
+ },
+ {
+  "skill": "/tdd-loop",
+  "q": "This legacy CodeIgniter controller has no tests and I need to change its permission check safely",
+  "expect": "trigger",
+  "route": null,
+  "n": 4
+ },
+ {
+  "skill": "/feature-discovery",
+  "q": "What uses OrdersService, and why does it exist?",
+  "expect": "trigger",
+  "route": null,
+  "n": 5
+ },
+ {
+  "skill": "/pixel-audit",
+  "q": "Review this PR's CSS changes",
+  "expect": "no-trigger",
+  "route": "/code-review",
+  "n": 6
+ },
+ {
+  "skill": "/agents-md",
+  "q": "Generate release notes for the workspace",
+  "expect": "no-trigger",
+  "route": "/release-notes",
+  "n": 7
+ },
+ {
+  "skill": "/feature-discovery",
+  "q": "Explain how this config flag changes behavior",
+  "expect": "trigger",
+  "route": null,
+  "n": 8
+ },
+ {
+  "skill": "/pixel-audit",
+  "q": "Our rebuilt reports screen should be indistinguishable from the old app's \u2014 check it element by element and fix the gaps",
+  "expect": "trigger",
+  "route": null,
+  "n": 9
+ },
+ {
+  "skill": "/staging-to-production",
+  "q": "Commit, push, and open a PR for this issue",
+  "expect": "no-trigger",
+  "route": "/commit-push-pr",
+  "n": 10
+ },
+ {
+  "skill": "/risk-review",
+  "q": "Risk-review PR 87",
+  "expect": "trigger",
+  "route": null,
+  "n": 11
+ },
+ {
+  "skill": "/release-notes",
+  "q": "Summarize today's session for the PM",
+  "expect": "trigger",
+  "route": null,
+  "n": 12
+ },
+ {
+  "skill": "/deploy-watch",
+  "q": "Confirm the staging deploy ran for the merge commit of PR 55",
+  "expect": "trigger",
+  "route": null,
+  "n": 13
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Spin up one worker tab per open sub-issue of PRD-142 using claude",
+  "expect": "trigger",
+  "route": null,
+  "n": 14
+ },
+ {
+  "skill": "/factory",
+  "q": "What's next for PR 87 \u2014 which gate is it at?",
+  "expect": "trigger",
+  "route": null,
+  "n": 15
+ },
+ {
+  "skill": "/pr-feedback",
+  "q": "Merge my PR",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 16
+ },
+ {
+  "skill": "/orchestrate-t3",
+  "q": "Run the spec fan-out through the T3 Code MCP server",
+  "expect": "trigger",
+  "route": null,
+  "n": 17
+ },
+ {
+  "skill": "/feature-discovery",
+  "q": "Write an ADR for this decision",
+  "expect": "no-trigger",
+  "route": "/grill-with-docs",
+  "n": 18
+ },
+ {
+  "skill": "/factory",
+  "q": "Show every ticket in this spec and where it stands across CI, review, and staging",
+  "expect": "trigger",
+  "route": null,
+  "n": 19
+ },
+ {
+  "skill": "/tdd-loop",
+  "q": "Refactor the scanner module without changing behavior \u2014 make sure the tests keep us honest",
+  "expect": "trigger",
+  "route": null,
+  "n": 20
+ },
+ {
+  "skill": "/incident-triage",
+  "q": "Fix CI on PR 87",
+  "expect": "no-trigger",
+  "route": "/ci-loop",
+  "n": 21
+ },
+ {
+  "skill": "/commit-push-pr",
+  "q": "Close the ticket with how-to-test steps",
+  "expect": "no-trigger",
+  "route": "/commit-push-close",
+  "n": 22
+ },
+ {
+  "skill": "/feature-prompt",
+  "q": "Slice this PRD into issues",
+  "expect": "no-trigger",
+  "route": "/to-tickets",
+  "n": 23
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Implement this whole spec in one run with parallel implementer subagents",
+  "expect": "no-trigger",
+  "route": "/implement-spec",
+  "n": 24
+ },
+ {
+  "skill": "/pixel-audit",
+  "q": "Trace how the preview route renders components",
+  "expect": "no-trigger",
+  "route": "/feature-discovery",
+  "n": 25
+ },
+ {
+  "skill": "/deploy-watch",
+  "q": "Is the staging deploy of #87 green and actually working?",
+  "expect": "trigger",
+  "route": null,
+  "n": 26
+ },
+ {
+  "skill": "/ci-loop",
+  "q": "This function returns the wrong total, debug it",
+  "expect": "no-trigger",
+  "route": "/diagnosing-bugs",
+  "n": 27
+ },
+ {
+  "skill": "/port-feature",
+  "q": "Pixel-audit the ported screen against the legacy screens",
+  "expect": "no-trigger",
+  "route": "/pixel-audit",
+  "n": 28
+ },
+ {
+  "skill": "/integration-contract",
+  "q": "Smoke test the login page visuals against the design",
+  "expect": "no-trigger",
+  "route": "/pixel-audit",
+  "n": 29
+ },
+ {
+  "skill": "/qa-escape",
+  "q": "This was marked fixed but QA says it's still broken on staging",
+  "expect": "trigger",
+  "route": null,
+  "n": 30
+ },
+ {
+  "skill": "/factory",
+  "q": "Write release notes for what shipped this week",
+  "expect": "no-trigger",
+  "route": "/release-notes",
+  "n": 31
+ },
+ {
+  "skill": "/ask-kit",
+  "q": "Which of the kit's skills handles cosmetic QA nits versus a page that must match Figma?",
+  "expect": "trigger",
+  "route": null,
+  "n": 32
+ },
+ {
+  "skill": "/deploy-watch",
+  "q": "PR 12 merged to staging \u2014 babysit the deploy and smoke-test it",
+  "expect": "trigger",
+  "route": null,
+  "n": 33
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Work this single issue test-first",
+  "expect": "no-trigger",
+  "route": "/tdd-loop",
+  "n": 34
+ },
+ {
+  "skill": "/release-notes",
+  "q": "File issues for these three bugs I found during QA",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 35
+ },
+ {
+  "skill": "/staging-fix",
+  "q": "Check the staging logs",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 36
+ },
+ {
+  "skill": "/risk-review",
+  "q": "Is this PR safe to auto-merge?",
+  "expect": "trigger",
+  "route": null,
+  "n": 37
+ },
+ {
+  "skill": "/port-feature",
+  "q": "Implement the ported screen test-first",
+  "expect": "no-trigger",
+  "route": "/tdd-loop",
+  "n": 38
+ },
+ {
+  "skill": "/pr-feedback",
+  "q": "Respond to the reviewer on #214",
+  "expect": "trigger",
+  "route": null,
+  "n": 39
+ },
+ {
+  "skill": "/orchestrate-t3",
+  "q": "Start one T3 Code thread per open child issue of ABC-123 using Cursor",
+  "expect": "trigger",
+  "route": null,
+  "n": 40
+ },
+ {
+  "skill": "/pr-feedback",
+  "q": "Someone reviewed my PR overnight, handle their feedback",
+  "expect": "trigger",
+  "route": null,
+  "n": 41
+ },
+ {
+  "skill": "/factory",
+  "q": "Pick up all issues tagged automate, build them, open PRs and pause for my review",
+  "expect": "trigger",
+  "route": null,
+  "n": 42
+ },
+ {
+  "skill": "/deploy-watch",
+  "q": "Set up a GitHub Actions deploy workflow for staging",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 43
+ },
+ {
+  "skill": "/commit-push-close",
+  "q": "Ship this issue",
+  "expect": "trigger",
+  "route": null,
+  "n": 44
+ },
+ {
+  "skill": "/orchestrate-t3",
+  "q": "Implement this whole spec in one run with parallel implementer subagents",
+  "expect": "no-trigger",
+  "route": "/implement-spec",
+  "n": 45
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Fan this PRD out to per-issue workers",
+  "expect": "no-trigger",
+  "route": "/ask-kit",
+  "n": 46
+ },
+ {
+  "skill": "/pixel-audit",
+  "q": "Make sure the new settings screen matches Figma, including below the fold",
+  "expect": "trigger",
+  "route": null,
+  "n": 47
+ },
+ {
+  "skill": "/ci-loop",
+  "q": "Get this PR green",
+  "expect": "trigger",
+  "route": null,
+  "n": 48
+ },
+ {
+  "skill": "/feature-prompt",
+  "q": "How does stock transfer approval work today?",
+  "expect": "no-trigger",
+  "route": "/feature-discovery",
+  "n": 49
+ },
+ {
+  "skill": "/commit-push-close",
+  "q": "Fix this issue's labels",
+  "expect": "no-trigger",
+  "route": "/triage",
+  "n": 50
+ },
+ {
+  "skill": "/agents-md",
+  "q": "Set up the workspace agent instructions from my code-workspace file",
+  "expect": "trigger",
+  "route": null,
+  "n": 51
+ },
+ {
+  "skill": "/orchestrate-t3",
+  "q": "Work this single issue test-first",
+  "expect": "no-trigger",
+  "route": "/tdd-loop",
+  "n": 52
+ },
+ {
+  "skill": "/polish-batch",
+  "q": "I'm doing manual QA \u2014 log these small fixes without fixing them yet",
+  "expect": "trigger",
+  "route": null,
+  "n": 53
+ },
+ {
+  "skill": "/report-issue",
+  "q": "Batch report: wrong date on the driver app, export missing tenant name, and the save button does nothing",
+  "expect": "trigger",
+  "route": null,
+  "n": 54
+ },
+ {
+  "skill": "/factory",
+  "q": "Walk this spec from outcome to staging and tell me what to run next",
+  "expect": "trigger",
+  "route": null,
+  "n": 55
+ },
+ {
+  "skill": "/commit-push-close",
+  "q": "Done with the fix \u2014 push and close",
+  "expect": "trigger",
+  "route": null,
+  "n": 56
+ },
+ {
+  "skill": "/release-notes",
+  "q": "Write up the QR scanning improvements for stakeholders",
+  "expect": "trigger",
+  "route": null,
+  "n": 57
+ },
+ {
+  "skill": "/orchestrate-t3",
+  "q": "Re-run the T3 orchestrator for PRWL-100 \u2014 some threads from the last run are still there",
+  "expect": "trigger",
+  "route": null,
+  "n": 58
+ },
+ {
+  "skill": "/pr-feedback",
+  "q": "Handle the PR feedback from Sarah",
+  "expect": "trigger",
+  "route": null,
+  "n": 59
+ },
+ {
+  "skill": "/deploy-watch",
+  "q": "Did my change make it to staging?",
+  "expect": "trigger",
+  "route": null,
+  "n": 60
+ },
+ {
+  "skill": "/ask-kit",
+  "q": "Give me the map of this kit's skills from setup to shipping",
+  "expect": "trigger",
+  "route": null,
+  "n": 61
+ },
+ {
+  "skill": "/design-system",
+  "q": "Our buttons are inlined everywhere \u2014 set up a proper component library and make agents use it",
+  "expect": "trigger",
+  "route": null,
+  "n": 62
+ },
+ {
+  "skill": "/tdd-loop",
+  "q": "Fix this bug test-first",
+  "expect": "trigger",
+  "route": null,
+  "n": 63
+ },
+ {
+  "skill": "/using-git-worktrees",
+  "q": "Implement #418 in a worktree.",
+  "expect": "trigger",
+  "route": null,
+  "n": 64
+ },
+ {
+  "skill": "/ask-kit",
+  "q": "Which gate is PR 87 at?",
+  "expect": "no-trigger",
+  "route": "/factory",
+  "n": 65
+ },
+ {
+  "skill": "/agentic-qa",
+  "q": "/factory says PR 40 is in QA \u2014 run it",
+  "expect": "trigger",
+  "route": null,
+  "n": 66
+ },
+ {
+  "skill": "/orchestrate-t3",
+  "q": "HERDR_ENV=1 \u2014 one worker tab per open sub-issue of PRWL-100",
+  "expect": "no-trigger",
+  "route": "/orchestrate-herdr",
+  "n": 67
+ },
+ {
+  "skill": "/risk-review",
+  "q": "implement-spec integrated the tickets. Challenge the combined branch with five reviewers and judge their findings.",
+  "expect": "trigger",
+  "route": null,
+  "n": 68
+ },
+ {
+  "skill": "/release-notes",
+  "q": "Explain what changed in the billing module and why it exists",
+  "expect": "no-trigger",
+  "route": "/feature-discovery",
+  "n": 69
+ },
+ {
+  "skill": "/commit-push-close",
+  "q": "Summarize what shipped this week for the PM",
+  "expect": "no-trigger",
+  "route": "/release-notes",
+  "n": 70
+ },
+ {
+  "skill": "/agents-md",
+  "q": "Configure the issue tracker and GLOSSARY.md location",
+  "expect": "no-trigger",
+  "route": "/setup-matt-pocock-skills",
+  "n": 71
+ },
+ {
+  "skill": "/ask-kit",
+  "q": "How do the agent-skills-kit skills fit together?",
+  "expect": "trigger",
+  "route": null,
+  "n": 72
+ },
+ {
+  "skill": "/commit-push-close",
+  "q": "Wrap up this issue in one step",
+  "expect": "trigger",
+  "route": null,
+  "n": 73
+ },
+ {
+  "skill": "/tdd-loop",
+  "q": "The billing suite already has two failing tests on main \u2014 add the proration rounding feature test-first anyway",
+  "expect": "trigger",
+  "route": null,
+  "n": 74
+ },
+ {
+  "skill": "/feature-discovery",
+  "q": "Map out how the RFID scanning module is wired",
+  "expect": "trigger",
+  "route": null,
+  "n": 75
+ },
+ {
+  "skill": "/commit-push-pr",
+  "q": "Raise a pull request for this fix",
+  "expect": "trigger",
+  "route": null,
+  "n": 76
+ },
+ {
+  "skill": "/port-feature",
+  "q": "Bring the RFID scan flow from LEGACY-PORTAL over to MOBILE-APP",
+  "expect": "trigger",
+  "route": null,
+  "n": 77
+ },
+ {
+  "skill": "/port-feature",
+  "q": "How does the legacy quotation workflow work?",
+  "expect": "no-trigger",
+  "route": "/feature-discovery",
+  "n": 78
+ },
+ {
+  "skill": "/feature-discovery",
+  "q": "Turn this rough idea into a feature prompt",
+  "expect": "no-trigger",
+  "route": "/feature-prompt",
+  "n": 79
+ },
+ {
+  "skill": "/orchestrate-t3",
+  "q": "Dispatch issues 12, 13 and 19 to T3 Code workers, each in its own worktree",
+  "expect": "trigger",
+  "route": null,
+  "n": 80
+ },
+ {
+  "skill": "/staging-fix",
+  "q": "Diagnose why the API is slow in local dev",
+  "expect": "no-trigger",
+  "route": "/diagnosing-bugs",
+  "n": 81
+ },
+ {
+  "skill": "/agentic-qa",
+  "q": "QA found a bug in #418 after it was marked done",
+  "expect": "no-trigger",
+  "route": "/qa-escape",
+  "n": 82
+ },
+ {
+  "skill": "/pixel-audit",
+  "q": "Build the integration contract for PRD-142",
+  "expect": "no-trigger",
+  "route": "/integration-contract",
+  "n": 83
+ },
+ {
+  "skill": "/local-to-staging",
+  "q": "Is PR 87 safe to auto-merge into staging?",
+  "expect": "no-trigger",
+  "route": "/risk-review",
+  "n": 84
+ },
+ {
+  "skill": "/staging-to-production",
+  "q": "How many commits is staging ahead of production in each project, and did staging's Actions pass?",
+  "expect": "trigger",
+  "route": null,
+  "n": 85
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "orchestrate-herdr for PRWL-100 using codex",
+  "expect": "trigger",
+  "route": null,
+  "n": 86
+ },
+ {
+  "skill": "/release-notes",
+  "q": "Generate release notes for 3 July 2026",
+  "expect": "trigger",
+  "route": null,
+  "n": 87
+ },
+ {
+  "skill": "/qa-escape",
+  "q": "Staging is broken: checkout 500s since this morning",
+  "expect": "no-trigger",
+  "route": "/staging-fix",
+  "n": 88
+ },
+ {
+  "skill": "/release-notes",
+  "q": "Write the PR body for this change",
+  "expect": "no-trigger",
+  "route": "/commit-push-pr",
+  "n": 89
+ },
+ {
+  "skill": "/polish-batch",
+  "q": "Add to the punch list: the toast says 'succes'",
+  "expect": "trigger",
+  "route": null,
+  "n": 90
+ },
+ {
+  "skill": "/design-system",
+  "q": "Audit our color contrast for accessibility",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 91
+ },
+ {
+  "skill": "/tdd-loop",
+  "q": "Why is the RFID scan failing intermittently in WAREHOUSE-APP?",
+  "expect": "no-trigger",
+  "route": "/diagnosing-bugs",
+  "n": 92
+ },
+ {
+  "skill": "/port-feature",
+  "q": "Rebuild the legacy exports feature over here \u2014 start with the gap map",
+  "expect": "trigger",
+  "route": null,
+  "n": 93
+ },
+ {
+  "skill": "/integration-contract",
+  "q": "Build the integration contract for PRD-142",
+  "expect": "trigger",
+  "route": null,
+  "n": 94
+ },
+ {
+  "skill": "/ci-loop",
+  "q": "GitHub Actions checks failed on my PR; fix and push until green",
+  "expect": "trigger",
+  "route": null,
+  "n": 95
+ },
+ {
+  "skill": "/design-system",
+  "q": "Add the new date-picker component to the ADMIN-WEB design system",
+  "expect": "trigger",
+  "route": null,
+  "n": 96
+ },
+ {
+  "skill": "/feature-discovery",
+  "q": "Which services read the FEATURE_FLAGS env var and what happens when it's off?",
+  "expect": "trigger",
+  "route": null,
+  "n": 97
+ },
+ {
+  "skill": "/commit-push-close",
+  "q": "Review my changes before I ship",
+  "expect": "no-trigger",
+  "route": "/code-review",
+  "n": 98
+ },
+ {
+  "skill": "/commit-push-pr",
+  "q": "Grill me about this plan before I build it",
+  "expect": "no-trigger",
+  "route": "/grill-with-docs",
+  "n": 99
+ },
+ {
+  "skill": "/factory",
+  "q": "Which gate is PRWL-100 stuck at?",
+  "expect": "trigger",
+  "route": null,
+  "n": 100
+ },
+ {
+  "skill": "/commit-push-pr",
+  "q": "Make a PR for the work on issue 204",
+  "expect": "trigger",
+  "route": null,
+  "n": 101
+ },
+ {
+  "skill": "/local-to-staging",
+  "q": "Staging is broken after the last merge, fix it",
+  "expect": "no-trigger",
+  "route": "/staging-fix",
+  "n": 102
+ },
+ {
+  "skill": "/using-git-worktrees",
+  "q": "Explain how git worktrees differ from branches.",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 103
+ },
+ {
+  "skill": "/writing-kit-skills",
+  "q": "Improve this prompt for grill-with-docs",
+  "expect": "no-trigger",
+  "route": "/feature-prompt",
+  "n": 104
+ },
+ {
+  "skill": "/integration-contract",
+  "q": "Write end-to-end integration tests for the checkout flow",
+  "expect": "no-trigger",
+  "route": "/tdd",
+  "n": 105
+ },
+ {
+  "skill": "/orchestrate-t3",
+  "q": "Slice the PRD into sub-issues first",
+  "expect": "no-trigger",
+  "route": "/to-tickets",
+  "n": 106
+ },
+ {
+  "skill": "/report-issue",
+  "q": "Turn what we discussed into a spec issue",
+  "expect": "no-trigger",
+  "route": "/to-spec",
+  "n": 107
+ },
+ {
+  "skill": "/writing-kit-skills",
+  "q": "Add a new skill to the agent-skills-kit repo",
+  "expect": "trigger",
+  "route": null,
+  "n": 108
+ },
+ {
+  "skill": "/commit-push-close",
+  "q": "Commit this and close #204 with a how-to-test comment",
+  "expect": "trigger",
+  "route": null,
+  "n": 109
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Watch this one worker tab and tell me when it finishes",
+  "expect": "no-trigger",
+  "route": "herdr",
+  "n": 110
+ },
+ {
+  "skill": "/feature-discovery",
+  "q": "Investigate how the invite-user workflow works across ADMIN-WEB and API-SERVICE",
+  "expect": "trigger",
+  "route": null,
+  "n": 111
+ },
+ {
+  "skill": "/commit-push-close",
+  "q": "I'm done with #418, ship it",
+  "expect": "trigger",
+  "route": null,
+  "n": 112
+ },
+ {
+  "skill": "/agents-md",
+  "q": "Synchronize existing project-runtime blocks from this code-workspace and local Compose file; leave workspace-root instructions unchanged",
+  "expect": "trigger",
+  "route": null,
+  "n": 113
+ },
+ {
+  "skill": "/port-feature",
+  "q": "What would it take to bring the old barcode screen into MOBILE-APP? Trace it and map the gaps",
+  "expect": "trigger",
+  "route": null,
+  "n": 114
+ },
+ {
+  "skill": "/pixel-audit",
+  "q": "Check the dashboard's empty and error states match the design exactly",
+  "expect": "trigger",
+  "route": null,
+  "n": 115
+ },
+ {
+  "skill": "/agentic-qa",
+  "q": "QA PR 87 like a tester would before I hand it to the engineer",
+  "expect": "trigger",
+  "route": null,
+  "n": 116
+ },
+ {
+  "skill": "/port-feature",
+  "q": "Port stock-transfer approvals from LEGACY-PORTAL to ADMIN-WEB",
+  "expect": "trigger",
+  "route": null,
+  "n": 117
+ },
+ {
+  "skill": "/ask-kit",
+  "q": "ask-kit: I have a rough idea and no spec yet, where do I start?",
+  "expect": "trigger",
+  "route": null,
+  "n": 118
+ },
+ {
+  "skill": "/feature-prompt",
+  "q": "Shape this brain dump into a thin slice we can plan against",
+  "expect": "trigger",
+  "route": null,
+  "n": 119
+ },
+ {
+  "skill": "/incident-triage",
+  "q": "Help me run this incident: timeline, likely causes, mitigations",
+  "expect": "trigger",
+  "route": null,
+  "n": 120
+ },
+ {
+  "skill": "/release-notes",
+  "q": "What did we ship this week? PM-friendly please",
+  "expect": "trigger",
+  "route": null,
+  "n": 121
+ },
+ {
+  "skill": "/polish-batch",
+  "q": "The API returns the wrong total on checkout",
+  "expect": "no-trigger",
+  "route": "/diagnosing-bugs",
+  "n": 122
+ },
+ {
+  "skill": "/writing-kit-skills",
+  "q": "Tighten the description of the polish-batch skill",
+  "expect": "trigger",
+  "route": null,
+  "n": 123
+ },
+ {
+  "skill": "/integration-contract",
+  "q": "Trace how the invoice API is consumed",
+  "expect": "no-trigger",
+  "route": "/feature-discovery",
+  "n": 124
+ },
+ {
+  "skill": "/port-feature",
+  "q": "Set up the design system for the target app first",
+  "expect": "no-trigger",
+  "route": "/design-system",
+  "n": 125
+ },
+ {
+  "skill": "/agentic-qa",
+  "q": "Fix this failing test test-first",
+  "expect": "no-trigger",
+  "route": "/tdd-loop",
+  "n": 126
+ },
+ {
+  "skill": "/agents-md",
+  "q": "New workspace \u2014 establish the PROJECT-CODEs",
+  "expect": "trigger",
+  "route": null,
+  "n": 127
+ },
+ {
+  "skill": "/writing-kit-skills",
+  "q": "Generate the workspace AGENTS.md",
+  "expect": "no-trigger",
+  "route": "/agents-md",
+  "n": 128
+ },
+ {
+  "skill": "/tdd-loop",
+  "q": "Implement slice 0003 test-first",
+  "expect": "trigger",
+  "route": null,
+  "n": 129
+ },
+ {
+  "skill": "/polish-batch",
+  "q": "Polish pass when QA is done \u2014 collect the small stuff first",
+  "expect": "trigger",
+  "route": null,
+  "n": 130
+ },
+ {
+  "skill": "/polish-batch",
+  "q": "Dispatch the open punch-list items",
+  "expect": "trigger",
+  "route": null,
+  "n": 131
+ },
+ {
+  "skill": "/local-to-staging",
+  "q": "Move this week's local branch work onto staging everywhere",
+  "expect": "trigger",
+  "route": null,
+  "n": 132
+ },
+ {
+  "skill": "/agents-md",
+  "q": "Write an AGENTS.md for this repo",
+  "expect": "no-trigger",
+  "route": "/writing-for-agents",
+  "n": 133
+ },
+ {
+  "skill": "/integration-contract",
+  "q": "PRD-77 spans three repos \u2014 what breaks downstream when the API changes?",
+  "expect": "trigger",
+  "route": null,
+  "n": 134
+ },
+ {
+  "skill": "/incident-triage",
+  "q": "The site is down, help me figure out why",
+  "expect": "trigger",
+  "route": null,
+  "n": 135
+ },
+ {
+  "skill": "/local-to-staging",
+  "q": "Commit, push, and open a PR for this issue",
+  "expect": "no-trigger",
+  "route": "/commit-push-pr",
+  "n": 136
+ },
+ {
+  "skill": "/ask-kit",
+  "q": "What do I run next? There's no issue or PR for this yet",
+  "expect": "trigger",
+  "route": null,
+  "n": 137
+ },
+ {
+  "skill": "/risk-review",
+  "q": "Check PR 64 for migration and auth risk and gate the merge",
+  "expect": "trigger",
+  "route": null,
+  "n": 138
+ },
+ {
+  "skill": "/design-system",
+  "q": "Build a preview page showing every component in all its states for ADMIN-WEB",
+  "expect": "trigger",
+  "route": null,
+  "n": 139
+ },
+ {
+  "skill": "/tdd-loop",
+  "q": "Punch-list this for PRD-142: the Save button sits 8px too low",
+  "expect": "no-trigger",
+  "route": "/polish-batch",
+  "n": 140
+ },
+ {
+  "skill": "/pr-feedback",
+  "q": "Review the diff before shipping",
+  "expect": "no-trigger",
+  "route": "/code-review",
+  "n": 141
+ },
+ {
+  "skill": "/staging-fix",
+  "q": "Commit, push, and open a PR for this feature",
+  "expect": "no-trigger",
+  "route": "/commit-push-pr",
+  "n": 142
+ },
+ {
+  "skill": "/pr-feedback",
+  "q": "Fix the review nits on my pull request and reply to each thread",
+  "expect": "trigger",
+  "route": null,
+  "n": 143
+ },
+ {
+  "skill": "/feature-discovery",
+  "q": "Walk through the API surface the mobile app consumes",
+  "expect": "trigger",
+  "route": null,
+  "n": 144
+ },
+ {
+  "skill": "/pr-feedback",
+  "q": "Triage the reviewer's comments \u2014 some I agree with, some I don't",
+  "expect": "trigger",
+  "route": null,
+  "n": 145
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Break PRWL-100 into ticket issues",
+  "expect": "no-trigger",
+  "route": "/to-tickets",
+  "n": 146
+ },
+ {
+  "skill": "/factory",
+  "q": "Run the factory on issue #412",
+  "expect": "trigger",
+  "route": null,
+  "n": 147
+ },
+ {
+  "skill": "/incident-triage",
+  "q": "Triage this alert: p95 latency on /api/orders jumped to 8s",
+  "expect": "trigger",
+  "route": null,
+  "n": 148
+ },
+ {
+  "skill": "/tdd-loop",
+  "q": "Audit the assets page against the Figma design",
+  "expect": "no-trigger",
+  "route": "/pixel-audit",
+  "n": 149
+ },
+ {
+  "skill": "/integration-contract",
+  "q": "Punch-list these QA nits",
+  "expect": "no-trigger",
+  "route": "/polish-batch",
+  "n": 150
+ },
+ {
+  "skill": "/pixel-audit",
+  "q": "Verify the transfers page against the reference implementation, element by element",
+  "expect": "trigger",
+  "route": null,
+  "n": 151
+ },
+ {
+  "skill": "/feature-prompt",
+  "q": "Write up a small prompt for MOBILE-APP: remember the last-used warehouse",
+  "expect": "trigger",
+  "route": null,
+  "n": 152
+ },
+ {
+  "skill": "/commit-push-pr",
+  "q": "Push my branch and create the PR with a test plan",
+  "expect": "trigger",
+  "route": null,
+  "n": 153
+ },
+ {
+  "skill": "/tdd-loop",
+  "q": "Sketch a quick throwaway prototype to see if drag-to-reorder feels right",
+  "expect": "no-trigger",
+  "route": "/prototype",
+  "n": 154
+ },
+ {
+  "skill": "/factory",
+  "q": "factory run PRWL-142 \u2014 carry it through to the merge pause",
+  "expect": "trigger",
+  "route": null,
+  "n": 155
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Run the PRD fan-out \u2014 one coding CLI tab per issue",
+  "expect": "trigger",
+  "route": null,
+  "n": 156
+ },
+ {
+  "skill": "/commit-push-pr",
+  "q": "Review this PR",
+  "expect": "no-trigger",
+  "route": "/code-review",
+  "n": 157
+ },
+ {
+  "skill": "/local-to-staging",
+  "q": "Push everything on local up to staging across the workspace and tell me if the Actions pass",
+  "expect": "trigger",
+  "route": null,
+  "n": 158
+ },
+ {
+  "skill": "/tdd-loop",
+  "q": "CI is red on main and I don't know why \u2014 figure out what broke",
+  "expect": "no-trigger",
+  "route": "/diagnosing-bugs",
+  "n": 159
+ },
+ {
+  "skill": "/staging-fix",
+  "q": "Fix this on staging \u2014 users can't log in on the staging server",
+  "expect": "trigger",
+  "route": null,
+  "n": 160
+ },
+ {
+  "skill": "/agents-md",
+  "q": "Bootstrap agent rules for my multi-repo VS Code workspace",
+  "expect": "trigger",
+  "route": null,
+  "n": 161
+ },
+ {
+  "skill": "/using-git-worktrees",
+  "q": "Commit, push, and open a PR for issue 418.",
+  "expect": "no-trigger",
+  "route": "/commit-push-pr",
+  "n": 162
+ },
+ {
+  "skill": "/commit-push-pr",
+  "q": "Diagnose why the build broke after my last commit",
+  "expect": "no-trigger",
+  "route": "/diagnosing-bugs",
+  "n": 163
+ },
+ {
+  "skill": "/report-issue",
+  "q": "Fix this bug test-first: totals are off by one cent",
+  "expect": "no-trigger",
+  "route": "/tdd-loop",
+  "n": 164
+ },
+ {
+  "skill": "/using-git-worktrees",
+  "q": "Run /implement for ticket 42 in a worktree based on release/2.x.",
+  "expect": "trigger",
+  "route": null,
+  "n": 165
+ },
+ {
+  "skill": "/agentic-qa",
+  "q": "Agent-test the change on PR 52 and record verified, partial, or blocked",
+  "expect": "trigger",
+  "route": null,
+  "n": 166
+ },
+ {
+  "skill": "/port-feature",
+  "q": "The legacy system has bulk import; we need the same in the new stack \u2014 plan the port",
+  "expect": "trigger",
+  "route": null,
+  "n": 167
+ },
+ {
+  "skill": "/risk-review",
+  "q": "Prove what this change could break beyond the diff",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 168
+ },
+ {
+  "skill": "/staging-fix",
+  "q": "Patch the staging bug via a PR to the staging branch",
+  "expect": "trigger",
+  "route": null,
+  "n": 169
+ },
+ {
+  "skill": "/risk-review",
+  "q": "Merge PR 87 now",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 170
+ },
+ {
+  "skill": "/ci-loop",
+  "q": "Commit, push, and open a PR for this issue",
+  "expect": "no-trigger",
+  "route": "/commit-push-pr",
+  "n": 171
+ },
+ {
+  "skill": "/risk-review",
+  "q": "Run the specialist reviewers \u2014 security, data, infra \u2014 on PR 52 and classify its risk",
+  "expect": "trigger",
+  "route": null,
+  "n": 172
+ },
+ {
+  "skill": "/deploy-watch",
+  "q": "Staging is broken, fix it",
+  "expect": "no-trigger",
+  "route": "/staging-fix",
+  "n": 173
+ },
+ {
+  "skill": "/ask-kit",
+  "q": "Not sure whether I want commit-push-close or commit-push-pr \u2014 which kit skill fits?",
+  "expect": "trigger",
+  "route": null,
+  "n": 174
+ },
+ {
+  "skill": "/staging-to-production",
+  "q": "Can we promote staging to prod today? Check each project",
+  "expect": "trigger",
+  "route": null,
+  "n": 175
+ },
+ {
+  "skill": "/pixel-audit",
+  "q": "Set up the design system for ADMIN-WEB from Figma",
+  "expect": "no-trigger",
+  "route": "/design-system",
+  "n": 176
+ },
+ {
+  "skill": "/feature-prompt",
+  "q": "Grill me on this plan before we build it",
+  "expect": "no-trigger",
+  "route": "/grill-with-docs",
+  "n": 177
+ },
+ {
+  "skill": "/risk-review",
+  "q": "Please review this PR for our coding standards, without classifying merge risk.",
+  "expect": "no-trigger",
+  "route": "/code-review",
+  "n": 178
+ },
+ {
+  "skill": "/design-system",
+  "q": "Restyle the settings page to use our existing Button component instead of inline markup",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 179
+ },
+ {
+  "skill": "/commit-push-pr",
+  "q": "I'm done \u2014 put this up for review as a pull request",
+  "expect": "trigger",
+  "route": null,
+  "n": 180
+ },
+ {
+  "skill": "/feature-discovery",
+  "q": "Debug why checkout is throwing 500s",
+  "expect": "no-trigger",
+  "route": "/diagnosing-bugs",
+  "n": 181
+ },
+ {
+  "skill": "/release-notes",
+  "q": "Show me the raw git log for last week",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 182
+ },
+ {
+  "skill": "/pr-feedback",
+  "q": "Fix this login bug",
+  "expect": "no-trigger",
+  "route": "/diagnosing-bugs",
+  "n": 183
+ },
+ {
+  "skill": "/feature-discovery",
+  "q": "How does the legacy quotation workflow work?",
+  "expect": "trigger",
+  "route": null,
+  "n": 184
+ },
+ {
+  "skill": "/design-system",
+  "q": "Make this landing page look less generic",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 185
+ },
+ {
+  "skill": "/feature-prompt",
+  "q": "Sharpen the domain terms in GLOSSARY.md for the billing module",
+  "expect": "no-trigger",
+  "route": "/grill-with-docs",
+  "n": 186
+ },
+ {
+  "skill": "/risk-review",
+  "q": "Review this branch against our coding standards and the spec",
+  "expect": "no-trigger",
+  "route": "/code-review",
+  "n": 187
+ },
+ {
+  "skill": "/polish-batch",
+  "q": "Capture this for later: the save button is misaligned on Settings",
+  "expect": "trigger",
+  "route": null,
+  "n": 188
+ },
+ {
+  "skill": "/feature-prompt",
+  "q": "Just add the CSV export button now, it's tiny",
+  "expect": "no-trigger",
+  "route": "/tdd-loop",
+  "n": 189
+ },
+ {
+  "skill": "/feature-discovery",
+  "q": "Migrate the invoices module into the React app",
+  "expect": "no-trigger",
+  "route": "/port-feature",
+  "n": 190
+ },
+ {
+  "skill": "/pixel-audit",
+  "q": "Audit the design consistency of every page in the app",
+  "expect": "no-trigger",
+  "route": "impeccable",
+  "n": 191
+ },
+ {
+  "skill": "/integration-contract",
+  "q": "Gate the multi-project release on the integration checklist",
+  "expect": "trigger",
+  "route": null,
+  "n": 192
+ },
+ {
+  "skill": "/commit-push-close",
+  "q": "Open a pull request for this issue",
+  "expect": "no-trigger",
+  "route": "/commit-push-pr",
+  "n": 193
+ },
+ {
+  "skill": "/tdd-loop",
+  "q": "I need to hotfix prod NOW \u2014 the invoice total is wrong. We'll add tests right after.",
+  "expect": "trigger",
+  "route": null,
+  "n": 194
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Debug why one worker's tests keep failing",
+  "expect": "no-trigger",
+  "route": "/diagnosing-bugs",
+  "n": 195
+ },
+ {
+  "skill": "/orchestrate-t3",
+  "q": "Where does PRWL-100 stand and what is its next gate",
+  "expect": "no-trigger",
+  "route": "/factory",
+  "n": 196
+ },
+ {
+  "skill": "/factory",
+  "q": "Fix CI on PR 87",
+  "expect": "no-trigger",
+  "route": "/ci-loop",
+  "n": 197
+ },
+ {
+  "skill": "/pixel-audit",
+  "q": "This page must match the design pixel-for-pixel before we ship",
+  "expect": "trigger",
+  "route": null,
+  "n": 198
+ },
+ {
+  "skill": "/staging-to-production",
+  "q": "Give me the commands to promote staging to production in every repo",
+  "expect": "trigger",
+  "route": null,
+  "n": 199
+ },
+ {
+  "skill": "/release-notes",
+  "q": "Make a non-technical summary of what changed in the billing work",
+  "expect": "trigger",
+  "route": null,
+  "n": 200
+ },
+ {
+  "skill": "/factory",
+  "q": "Remove the worktree for ticket 42",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 201
+ },
+ {
+  "skill": "/release-notes",
+  "q": "Draft the weekly stakeholder update from our commits",
+  "expect": "trigger",
+  "route": null,
+  "n": 202
+ },
+ {
+  "skill": "/ci-loop",
+  "q": "The build is failing on my PR, fix it",
+  "expect": "trigger",
+  "route": null,
+  "n": 203
+ },
+ {
+  "skill": "/port-feature",
+  "q": "How is the transfers feature different between LEGACY-PORTAL and ADMIN-WEB?",
+  "expect": "no-trigger",
+  "route": "/feature-discovery",
+  "n": 204
+ },
+ {
+  "skill": "/report-issue",
+  "q": "Work PRWL-212 end to end",
+  "expect": "no-trigger",
+  "route": "/factory",
+  "n": 205
+ },
+ {
+  "skill": "/agentic-qa",
+  "q": "Punch-list this: the header says Recieve invoices",
+  "expect": "no-trigger",
+  "route": "/polish-batch",
+  "n": 206
+ },
+ {
+  "skill": "/feature-discovery",
+  "q": "Which issues are ready for an agent to pick up?",
+  "expect": "no-trigger",
+  "route": "/triage",
+  "n": 207
+ },
+ {
+  "skill": "/pr-feedback",
+  "q": "Reply to this GitHub issue comment",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 208
+ },
+ {
+  "skill": "/staging-fix",
+  "q": "Fix the search bug on staging and auto-merge so Actions redeploys",
+  "expect": "trigger",
+  "route": null,
+  "n": 209
+ },
+ {
+  "skill": "/commit-push-close",
+  "q": "This issue needs more info from the reporter",
+  "expect": "no-trigger",
+  "route": "/triage",
+  "n": 210
+ },
+ {
+  "skill": "/qa-escape",
+  "q": "Our QA keeps finding missing empty states after AI says done \u2014 process this one, #431",
+  "expect": "trigger",
+  "route": null,
+  "n": 211
+ },
+ {
+  "skill": "/staging-fix",
+  "q": "Staging is broken, checkout 500s there since yesterday",
+  "expect": "trigger",
+  "route": null,
+  "n": 212
+ },
+ {
+  "skill": "/local-to-staging",
+  "q": "Every repo with origin/staging: PR local into it, merge, wait for CI, report",
+  "expect": "trigger",
+  "route": null,
+  "n": 213
+ },
+ {
+  "skill": "/feature-discovery",
+  "q": "Audit the session-timeout behavior before we plan changes",
+  "expect": "trigger",
+  "route": null,
+  "n": 214
+ },
+ {
+  "skill": "/feature-prompt",
+  "q": "Rough requirement from sales: customers want saved carts. Get it ready for planning.",
+  "expect": "trigger",
+  "route": null,
+  "n": 215
+ },
+ {
+  "skill": "/local-to-staging",
+  "q": "Watch the staging deploy for PR 87 and smoke-test it",
+  "expect": "no-trigger",
+  "route": "/deploy-watch",
+  "n": 216
+ },
+ {
+  "skill": "/polish-batch",
+  "q": "The save button doesn't actually save \u2014 log it",
+  "expect": "no-trigger",
+  "route": "/to-tickets",
+  "n": 217
+ },
+ {
+  "skill": "/writing-kit-skills",
+  "q": "Move this skill's long examples out of SKILL.md properly",
+  "expect": "no-trigger",
+  "route": "skill-creator",
+  "n": 218
+ },
+ {
+  "skill": "/release-notes",
+  "q": "Turn these commits into something the operations team can read",
+  "expect": "trigger",
+  "route": null,
+  "n": 219
+ },
+ {
+  "skill": "/writing-kit-skills",
+  "q": "Draft the SKILL.md for a new dep-upgrade kit skill",
+  "expect": "trigger",
+  "route": null,
+  "n": 220
+ },
+ {
+  "skill": "/staging-to-production",
+  "q": "Which projects have staging ahead of main and green CI?",
+  "expect": "trigger",
+  "route": null,
+  "n": 221
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "What's the status of the worker tabs?",
+  "expect": "no-trigger",
+  "route": "herdr",
+  "n": 222
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Re-run the PRD orchestrator \u2014 some worker tabs from the last run are still open",
+  "expect": "trigger",
+  "route": null,
+  "n": 223
+ },
+ {
+  "skill": "/writing-kit-skills",
+  "q": "Document our coding style in CONTRIBUTING",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 224
+ },
+ {
+  "skill": "/commit-push-pr",
+  "q": "Land this via pull request",
+  "expect": "trigger",
+  "route": null,
+  "n": 225
+ },
+ {
+  "skill": "/port-feature",
+  "q": "Map what it takes to move the legacy audit-log viewer into MOBILE-APP",
+  "expect": "trigger",
+  "route": null,
+  "n": 226
+ },
+ {
+  "skill": "/agents-md",
+  "q": "Create the Project Matrix and non-negotiable rules for this workspace",
+  "expect": "trigger",
+  "route": null,
+  "n": 227
+ },
+ {
+  "skill": "/using-git-worktrees",
+  "q": "Review the changes since main.",
+  "expect": "no-trigger",
+  "route": "/code-review",
+  "n": 228
+ },
+ {
+  "skill": "/qa-escape",
+  "q": "QA reports the save button double-submits on a ticket the agent closed; work it so it doesn't come back",
+  "expect": "trigger",
+  "route": null,
+  "n": 229
+ },
+ {
+  "skill": "/local-to-staging",
+  "q": "Is staging ready to go to production?",
+  "expect": "no-trigger",
+  "route": "/staging-to-production",
+  "n": 230
+ },
+ {
+  "skill": "/integration-contract",
+  "q": "Write contract tests for the orders endpoint, test-first",
+  "expect": "no-trigger",
+  "route": "/tdd",
+  "n": 231
+ },
+ {
+  "skill": "/orchestrate-t3",
+  "q": "How do I connect Claude Code to the T3 Code MCP server?",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 232
+ },
+ {
+  "skill": "/pixel-audit",
+  "q": "Screenshot the login page for the release notes",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 233
+ },
+ {
+  "skill": "/report-issue",
+  "q": "Debug this: the invoice page throws a 500 when the list is empty",
+  "expect": "no-trigger",
+  "route": "/diagnosing-bugs",
+  "n": 234
+ },
+ {
+  "skill": "/integration-contract",
+  "q": "Open the checkout in a browser, click through it, and screenshot each step",
+  "expect": "no-trigger",
+  "route": "agent-browser",
+  "n": 235
+ },
+ {
+  "skill": "/local-to-staging",
+  "q": "Generate release notes for what went to staging this week",
+  "expect": "no-trigger",
+  "route": "/release-notes",
+  "n": 236
+ },
+ {
+  "skill": "/local-to-staging",
+  "q": "Open PRs from origin/local to origin/staging in every repo that has a staging branch and merge them",
+  "expect": "trigger",
+  "route": null,
+  "n": 237
+ },
+ {
+  "skill": "/staging-fix",
+  "q": "QA found a crash on staging, here are the logs \u2014 get a fix out",
+  "expect": "trigger",
+  "route": null,
+  "n": 238
+ },
+ {
+  "skill": "/tdd-loop",
+  "q": "I'm done with #418, ship it",
+  "expect": "no-trigger",
+  "route": "/commit-push-close",
+  "n": 239
+ },
+ {
+  "skill": "/ci-loop",
+  "q": "Keep fixing my PR until the checks pass",
+  "expect": "trigger",
+  "route": null,
+  "n": 240
+ },
+ {
+  "skill": "/integration-contract",
+  "q": "The PRD says it's API-only, but confirm nothing else in the workspace calls the changed endpoint before we skip the contract",
+  "expect": "trigger",
+  "route": null,
+  "n": 241
+ },
+ {
+  "skill": "/feature-discovery",
+  "q": "Rebuild this legacy feature in the new stack",
+  "expect": "no-trigger",
+  "route": "/port-feature",
+  "n": 242
+ },
+ {
+  "skill": "/orchestrate-t3",
+  "q": "Set up a worktree for ticket 42 and implement it there",
+  "expect": "no-trigger",
+  "route": "/using-git-worktrees",
+  "n": 243
+ },
+ {
+  "skill": "/pr-feedback",
+  "q": "Open a PR for this",
+  "expect": "no-trigger",
+  "route": "/commit-push-pr",
+  "n": 244
+ },
+ {
+  "skill": "/tdd-loop",
+  "q": "Write release notes for the checkout fixes",
+  "expect": "no-trigger",
+  "route": "/release-notes",
+  "n": 245
+ },
+ {
+  "skill": "/qa-escape",
+  "q": "Fix this bug",
+  "expect": "no-trigger",
+  "route": "/diagnosing-bugs",
+  "n": 246
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Fan PRWL-100's sub-issues out to one worker tab each",
+  "expect": "trigger",
+  "route": null,
+  "n": 247
+ },
+ {
+  "skill": "/polish-batch",
+  "q": "Cosmetic cleanup: wrong copy on the login page, extra padding on the cards",
+  "expect": "trigger",
+  "route": null,
+  "n": 248
+ },
+ {
+  "skill": "/port-feature",
+  "q": "Write the gap map for porting notifications from LEGACY-PORTAL",
+  "expect": "trigger",
+  "route": null,
+  "n": 249
+ },
+ {
+  "skill": "/pr-feedback",
+  "q": "Address the review comments on my PR",
+  "expect": "trigger",
+  "route": null,
+  "n": 250
+ },
+ {
+  "skill": "/deploy-watch",
+  "q": "The site is down \u2014 what's going on?",
+  "expect": "no-trigger",
+  "route": "/incident-triage",
+  "n": 251
+ },
+ {
+  "skill": "/deploy-watch",
+  "q": "Watch the staging deploy for PR 87",
+  "expect": "trigger",
+  "route": null,
+  "n": 252
+ },
+ {
+  "skill": "/feature-prompt",
+  "q": "Draft the feature prompt for adding webhooks to PAYMENTS-API",
+  "expect": "trigger",
+  "route": null,
+  "n": 253
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Split this pane in herdr",
+  "expect": "no-trigger",
+  "route": "herdr",
+  "n": 254
+ },
+ {
+  "skill": "/risk-review",
+  "q": "Fix CI on PR 87",
+  "expect": "no-trigger",
+  "route": "/ci-loop",
+  "n": 255
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Mark PRWL-101 ready-for-human with a comment",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 256
+ },
+ {
+  "skill": "/agents-md",
+  "q": "Generate workspace-root AGENTS.md from .code-workspace and report any existing competing CLAUDE.md shim",
+  "expect": "trigger",
+  "route": null,
+  "n": 257
+ },
+ {
+  "skill": "/risk-review",
+  "q": "Does PR 19 need an engineer to look at it, or can it merge on its own?",
+  "expect": "trigger",
+  "route": null,
+  "n": 258
+ },
+ {
+  "skill": "/commit-push-close",
+  "q": "Close out issue 87 with testing steps",
+  "expect": "trigger",
+  "route": null,
+  "n": 259
+ },
+ {
+  "skill": "/staging-to-production",
+  "q": "Check the production server logs for errors",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 260
+ },
+ {
+  "skill": "/feature-prompt",
+  "q": "Help me create a feature prompt for stock transfer approvals",
+  "expect": "trigger",
+  "route": null,
+  "n": 261
+ },
+ {
+  "skill": "/commit-push-pr",
+  "q": "Wrap this up as a reviewable PR",
+  "expect": "trigger",
+  "route": null,
+  "n": 262
+ },
+ {
+  "skill": "/incident-triage",
+  "q": "Investigate how the invite-user workflow works",
+  "expect": "no-trigger",
+  "route": "/feature-discovery",
+  "n": 263
+ },
+ {
+  "skill": "/tdd-loop",
+  "q": "Write a characterization test before we touch this untested export job",
+  "expect": "trigger",
+  "route": null,
+  "n": 264
+ },
+ {
+  "skill": "/staging-fix",
+  "q": "The staging env is throwing 502s after the last merge \u2014 fix it the safe way",
+  "expect": "trigger",
+  "route": null,
+  "n": 265
+ },
+ {
+  "skill": "/agents-md",
+  "q": "Seed the project ui-coding skill for ADMIN-WEB",
+  "expect": "no-trigger",
+  "route": "/design-system",
+  "n": 266
+ },
+ {
+  "skill": "/factory",
+  "q": "Where is SPEC-142 in the factory?",
+  "expect": "trigger",
+  "route": null,
+  "n": 267
+ },
+ {
+  "skill": "/factory",
+  "q": "Triage this incoming bug report and label it",
+  "expect": "no-trigger",
+  "route": "/triage",
+  "n": 268
+ },
+ {
+  "skill": "/factory",
+  "q": "Break this spec into tickets",
+  "expect": "no-trigger",
+  "route": "/to-tickets",
+  "n": 269
+ },
+ {
+  "skill": "/polish-batch",
+  "q": "Verify the dispatched punch-list rows against the running app",
+  "expect": "trigger",
+  "route": null,
+  "n": 270
+ },
+ {
+  "skill": "/design-system",
+  "q": "Extract design tokens from our Figma and wire up a component library for PORTAL-WEB",
+  "expect": "trigger",
+  "route": null,
+  "n": 271
+ },
+ {
+  "skill": "/local-to-staging",
+  "q": "Fix the failing CI on PR 87",
+  "expect": "no-trigger",
+  "route": "/ci-loop",
+  "n": 272
+ },
+ {
+  "skill": "/qa-escape",
+  "q": "Run a retro on this coding session",
+  "expect": "no-trigger",
+  "route": "/retro",
+  "n": 273
+ },
+ {
+  "skill": "/design-system",
+  "q": "Generate AGENTS.md for this workspace",
+  "expect": "no-trigger",
+  "route": "/agents-md",
+  "n": 274
+ },
+ {
+  "skill": "/port-feature",
+  "q": "Recreate the old admin's user-management feature in ADMIN-WEB, matching its behaviour",
+  "expect": "trigger",
+  "route": null,
+  "n": 275
+ },
+ {
+  "skill": "/polish-batch",
+  "q": "No ticket for this \u2014 start a punch list for today's QA findings",
+  "expect": "trigger",
+  "route": null,
+  "n": 276
+ },
+ {
+  "skill": "/feature-discovery",
+  "q": "Port the quotation screen from LEGACY-PORTAL to ADMIN-WEB",
+  "expect": "no-trigger",
+  "route": "/port-feature",
+  "n": 277
+ },
+ {
+  "skill": "/pixel-audit",
+  "q": "Billing header says 'Recieve invoices' \u2014 punch-list it",
+  "expect": "no-trigger",
+  "route": "/polish-batch",
+  "n": 278
+ },
+ {
+  "skill": "/using-git-worktrees",
+  "q": "Do this task in a git work tree and leave my current checkout alone.",
+  "expect": "trigger",
+  "route": null,
+  "n": 279
+ },
+ {
+  "skill": "/tdd-loop",
+  "q": "Write a failing test for the 429 retry behavior first, then implement it",
+  "expect": "trigger",
+  "route": null,
+  "n": 280
+ },
+ {
+  "skill": "/using-git-worktrees",
+  "q": "Use the existing worktree for feature/invoices to do this change.",
+  "expect": "trigger",
+  "route": null,
+  "n": 281
+ },
+ {
+  "skill": "/ask-kit",
+  "q": "Which of Matt's skills should I use to plan this?",
+  "expect": "no-trigger",
+  "route": "/ask-matt",
+  "n": 282
+ },
+ {
+  "skill": "/factory",
+  "q": "Deploy to production",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 283
+ },
+ {
+  "skill": "/agents-md",
+  "q": "Refresh the Project Matrix \u2014 I added a folder to the workspace",
+  "expect": "trigger",
+  "route": null,
+  "n": 284
+ },
+ {
+  "skill": "/writing-kit-skills",
+  "q": "Rewrite this SKILL.md to match the kit's house style",
+  "expect": "trigger",
+  "route": null,
+  "n": 285
+ },
+ {
+  "skill": "/ask-kit",
+  "q": "Which kit skill do I reach for when staging breaks versus when CI breaks?",
+  "expect": "trigger",
+  "route": null,
+  "n": 286
+ },
+ {
+  "skill": "/using-git-worktrees",
+  "q": "Implement ticket 42 in the current checkout.",
+  "expect": "no-trigger",
+  "route": "/implement",
+  "n": 287
+ },
+ {
+  "skill": "/design-system",
+  "q": "Port the invoice screen from LEGACY-PORTAL to ADMIN-WEB",
+  "expect": "no-trigger",
+  "route": "/port-feature",
+  "n": 288
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "HERDR_ENV=1 \u2014 give every open sub-issue of this parent issue its own codex tab",
+  "expect": "trigger",
+  "route": null,
+  "n": 289
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Fan this PRD out to per-issue workers in herdr; HERDR_ENV=1",
+  "expect": "trigger",
+  "route": null,
+  "n": 290
+ },
+ {
+  "skill": "/using-git-worktrees",
+  "q": "Use /using-git-worktrees to prepare a checkout for this task.",
+  "expect": "trigger",
+  "route": null,
+  "n": 291
+ },
+ {
+  "skill": "/design-system",
+  "q": "We're starting UI on the new app with no designs \u2014 walk me through picking colors, type, and spacing, then build the base components",
+  "expect": "trigger",
+  "route": null,
+  "n": 292
+ },
+ {
+  "skill": "/pixel-audit",
+  "q": "Before we ship, walk the invoice page against Figma node 12:340 and fix anything that's off",
+  "expect": "trigger",
+  "route": null,
+  "n": 293
+ },
+ {
+  "skill": "/orchestrate-t3",
+  "q": "Use T3 Code to work all open sub-issues of PRWL-100 in parallel",
+  "expect": "trigger",
+  "route": null,
+  "n": 294
+ },
+ {
+  "skill": "/agents-md",
+  "q": "Add a binding AGENTS.md rule so UI changes reuse the component library",
+  "expect": "no-trigger",
+  "route": "/design-system",
+  "n": 295
+ },
+ {
+  "skill": "/pr-feedback",
+  "q": "Go through the open review threads on this branch's PR and fix what's fair",
+  "expect": "trigger",
+  "route": null,
+  "n": 296
+ },
+ {
+  "skill": "/commit-push-close",
+  "q": "Create GitHub issues from this PRD",
+  "expect": "no-trigger",
+  "route": "/to-tickets",
+  "n": 297
+ },
+ {
+  "skill": "/report-issue",
+  "q": "Log a bug in Linear for me \u2014 the save button on the stock transfer form does nothing. Here's a screenshot",
+  "expect": "trigger",
+  "route": null,
+  "n": 298
+ },
+ {
+  "skill": "/commit-push-close",
+  "q": "Write release notes for today",
+  "expect": "no-trigger",
+  "route": "/release-notes",
+  "n": 299
+ },
+ {
+  "skill": "/feature-prompt",
+  "q": "Pixel-audit the transfers page against the Figma",
+  "expect": "no-trigger",
+  "route": "/pixel-audit",
+  "n": 300
+ },
+ {
+  "skill": "/design-system",
+  "q": "The Save button is misaligned \u2014 punch-list it for PRD-142",
+  "expect": "no-trigger",
+  "route": "/polish-batch",
+  "n": 301
+ },
+ {
+  "skill": "/pixel-audit",
+  "q": "The save button on settings is misaligned \u2014 fix that one nit",
+  "expect": "no-trigger",
+  "route": "/polish-batch",
+  "n": 302
+ },
+ {
+  "skill": "/orchestrate-t3",
+  "q": "orchestrate-t3 for https://github.com/org/repo/issues/42 using codex",
+  "expect": "trigger",
+  "route": null,
+  "n": 303
+ },
+ {
+  "skill": "/design-system",
+  "q": "We have no Figma for MOBILE-APP \u2014 help me define a design system and build the components",
+  "expect": "trigger",
+  "route": null,
+  "n": 304
+ },
+ {
+  "skill": "/local-to-staging",
+  "q": "Merge local into staging for all projects via PRs, then check the GitHub Actions runs",
+  "expect": "trigger",
+  "route": null,
+  "n": 305
+ },
+ {
+  "skill": "/orchestrate-t3",
+  "q": "Open a PR for the branch the worker finished",
+  "expect": "no-trigger",
+  "route": "/commit-push-pr",
+  "n": 306
+ },
+ {
+  "skill": "/polish-batch",
+  "q": "Do a QA session and file issues as I report bugs",
+  "expect": "no-trigger",
+  "route": "qa",
+  "n": 307
+ },
+ {
+  "skill": "/orchestrate-t3",
+  "q": "Fan this PRD's sub-issues out to T3 Code threads",
+  "expect": "trigger",
+  "route": null,
+  "n": 308
+ },
+ {
+  "skill": "/incident-triage",
+  "q": "We have an incident \u2014 checkout is failing for everyone",
+  "expect": "trigger",
+  "route": null,
+  "n": 309
+ },
+ {
+  "skill": "/ask-kit",
+  "q": "I'm lost in this kit \u2014 route me to the right skill",
+  "expect": "trigger",
+  "route": null,
+  "n": 310
+ },
+ {
+  "skill": "/incident-triage",
+  "q": "Users report 502s since this morning, here's the Datadog screenshot",
+  "expect": "trigger",
+  "route": null,
+  "n": 311
+ },
+ {
+  "skill": "/incident-triage",
+  "q": "Outage on staging since the last deploy \u2014 investigate and propose mitigations",
+  "expect": "trigger",
+  "route": null,
+  "n": 312
+ },
+ {
+  "skill": "/report-issue",
+  "q": "Go through the needs-triage issues and make them agent-ready",
+  "expect": "no-trigger",
+  "route": "/triage",
+  "n": 313
+ },
+ {
+  "skill": "/pr-feedback",
+  "q": "The reviewer left six comments on my pull request \u2014 work through them",
+  "expect": "trigger",
+  "route": null,
+  "n": 314
+ },
+ {
+  "skill": "/port-feature",
+  "q": "Migrate the database from MySQL 5.7 to MySQL 8",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 315
+ },
+ {
+  "skill": "/orchestrate-t3",
+  "q": "Orchestrate the PRD's sub-issues in herdr with codex workers",
+  "expect": "no-trigger",
+  "route": "/orchestrate-herdr",
+  "n": 316
+ },
+ {
+  "skill": "/agentic-qa",
+  "q": "Before human QA sees it, drive every acceptance criterion through the app and check the console and network",
+  "expect": "trigger",
+  "route": null,
+  "n": 317
+ },
+ {
+  "skill": "/port-feature",
+  "q": "Grill me on the porting plan",
+  "expect": "no-trigger",
+  "route": "/grill-with-docs",
+  "n": 318
+ },
+ {
+  "skill": "/agents-md",
+  "q": "Trace how the workspace build pipeline works",
+  "expect": "no-trigger",
+  "route": "/feature-discovery",
+  "n": 319
+ },
+ {
+  "skill": "/qa-escape",
+  "q": "QA found a bug in #418 after the agent said it was fixed",
+  "expect": "trigger",
+  "route": null,
+  "n": 320
+ },
+ {
+  "skill": "/incident-triage",
+  "q": "Check the production logs for errors",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 321
+ },
+ {
+  "skill": "/local-to-staging",
+  "q": "Promote local to staging on all projects",
+  "expect": "trigger",
+  "route": null,
+  "n": 322
+ },
+ {
+  "skill": "/integration-contract",
+  "q": "Verify the seam holds between LEGACY-PORTAL and API-SVC for this PRD",
+  "expect": "trigger",
+  "route": null,
+  "n": 323
+ },
+ {
+  "skill": "/commit-push-pr",
+  "q": "Ship this as a PR",
+  "expect": "trigger",
+  "route": null,
+  "n": 324
+ },
+ {
+  "skill": "/report-issue",
+  "q": "Open a ticket for this improvement: the CSV export should include the tenant name",
+  "expect": "trigger",
+  "route": null,
+  "n": 325
+ },
+ {
+  "skill": "/feature-prompt",
+  "q": "The client wants dark mode. Make it a proper request for planning.",
+  "expect": "trigger",
+  "route": null,
+  "n": 326
+ },
+ {
+  "skill": "/commit-push-pr",
+  "q": "Write the PR body for this branch",
+  "expect": "no-trigger",
+  "route": "/pr",
+  "n": 327
+ },
+ {
+  "skill": "/agentic-qa",
+  "q": "Pixel-audit the invoices page against this Figma node",
+  "expect": "no-trigger",
+  "route": "/pixel-audit",
+  "n": 328
+ },
+ {
+  "skill": "/commit-push-pr",
+  "q": "Generate release notes for this feature",
+  "expect": "no-trigger",
+  "route": "/release-notes",
+  "n": 329
+ },
+ {
+  "skill": "/polish-batch",
+  "q": "Ship the polish fixes as a PR",
+  "expect": "no-trigger",
+  "route": "/commit-push-pr",
+  "n": 330
+ },
+ {
+  "skill": "/integration-contract",
+  "q": "Make sure the API change won't break the web and mobile consumers of this PRD",
+  "expect": "trigger",
+  "route": null,
+  "n": 331
+ },
+ {
+  "skill": "/feature-discovery",
+  "q": "Update GLOSSARY.md with these domain terms",
+  "expect": "no-trigger",
+  "route": "/grill-with-docs",
+  "n": 332
+ },
+ {
+  "skill": "/commit-push-close",
+  "q": "Run the tests, then close out the issue with proof they pass",
+  "expect": "trigger",
+  "route": null,
+  "n": 333
+ },
+ {
+  "skill": "/orchestrate-t3",
+  "q": "Launch a T3 Code thread for each of issues 41, 44 and 52 with Claude",
+  "expect": "trigger",
+  "route": null,
+  "n": 334
+ },
+ {
+  "skill": "/release-notes",
+  "q": "Turn the last two weeks of git history into notes the ops team can scan",
+  "expect": "trigger",
+  "route": null,
+  "n": 335
+ },
+ {
+  "skill": "/agentic-qa",
+  "q": "Do a full functional QA pass on my invoice PR at mobile and desktop widths",
+  "expect": "trigger",
+  "route": null,
+  "n": 336
+ },
+ {
+  "skill": "/agentic-qa",
+  "q": "Check this PR in the browser the way our QA team would \u2014 states, roles, neighbouring screens",
+  "expect": "trigger",
+  "route": null,
+  "n": 337
+ },
+ {
+  "skill": "/ask-kit",
+  "q": "Fix CI on PR 87",
+  "expect": "no-trigger",
+  "route": "/ci-loop",
+  "n": 338
+ },
+ {
+  "skill": "/risk-review",
+  "q": "Use risk-review local to challenge the tests and implementation assumptions; do not publish anything.",
+  "expect": "trigger",
+  "route": null,
+  "n": 339
+ },
+ {
+  "skill": "/using-git-worktrees",
+  "q": "The checkout handler throws a 500; diagnose the root cause.",
+  "expect": "no-trigger",
+  "route": "/diagnosing-bugs",
+  "n": 340
+ },
+ {
+  "skill": "/staging-to-production",
+  "q": "Before I release, check every repo's staging branch is green and show what I'd need to run to merge it into main",
+  "expect": "trigger",
+  "route": null,
+  "n": 341
+ },
+ {
+  "skill": "/commit-push-pr",
+  "q": "Why is CI failing on my pull request?",
+  "expect": "no-trigger",
+  "route": "/diagnosing-bugs",
+  "n": 342
+ },
+ {
+  "skill": "/integration-contract",
+  "q": "Slice this PRD into issues",
+  "expect": "no-trigger",
+  "route": "/to-tickets",
+  "n": 343
+ },
+ {
+  "skill": "/incident-triage",
+  "q": "The pager went off for a queue backlog; triage it",
+  "expect": "trigger",
+  "route": null,
+  "n": 344
+ },
+ {
+  "skill": "/integration-contract",
+  "q": "This PRD touches ADMIN-WEB and API-SVC \u2014 map the seam before we ship",
+  "expect": "trigger",
+  "route": null,
+  "n": 345
+ },
+ {
+  "skill": "/port-feature",
+  "q": "Copy this helper function from repo A into repo B",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 346
+ },
+ {
+  "skill": "/release-notes",
+  "q": "Create a changelog for yesterday",
+  "expect": "trigger",
+  "route": null,
+  "n": 347
+ },
+ {
+  "skill": "/commit-push-pr",
+  "q": "Summarize this PR for the changelog",
+  "expect": "no-trigger",
+  "route": "/release-notes",
+  "n": 348
+ },
+ {
+  "skill": "/release-notes",
+  "q": "Explain how the invite workflow works",
+  "expect": "no-trigger",
+  "route": "/feature-discovery",
+  "n": 349
+ },
+ {
+  "skill": "/factory",
+  "q": "/factory SPEC-142",
+  "expect": "trigger",
+  "route": null,
+  "n": 350
+ },
+ {
+  "skill": "/report-issue",
+  "q": "Here's what I saw on the dashboard and a screenshot \u2014 file it so a dev can pick it up",
+  "expect": "trigger",
+  "route": null,
+  "n": 351
+ },
+ {
+  "skill": "/ci-loop",
+  "q": "Address the review comments on PR 87",
+  "expect": "no-trigger",
+  "route": "/pr-feedback",
+  "n": 352
+ },
+ {
+  "skill": "/tdd-loop",
+  "q": "red-green this: carts with zero items should not be able to check out",
+  "expect": "trigger",
+  "route": null,
+  "n": 353
+ },
+ {
+  "skill": "/report-issue",
+  "q": "I'm QA. Turn this problem and screenshot into a proper ticket with labels, priority and cycle",
+  "expect": "trigger",
+  "route": null,
+  "n": 354
+ },
+ {
+  "skill": "/pr-feedback",
+  "q": "Commit, push, and close the issue \u2014 I'm done",
+  "expect": "no-trigger",
+  "route": "/commit-push-close",
+  "n": 355
+ },
+ {
+  "skill": "/release-notes",
+  "q": "PM update for this sprint's commits",
+  "expect": "trigger",
+  "route": null,
+  "n": 356
+ },
+ {
+  "skill": "/ci-loop",
+  "q": "Set up GitHub Actions CI for this repo",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 357
+ },
+ {
+  "skill": "/port-feature",
+  "q": "Migrate the quotation workflow from the CodeIgniter app to the Laravel app",
+  "expect": "trigger",
+  "route": null,
+  "n": 358
+ },
+ {
+  "skill": "/feature-prompt",
+  "q": "I want to propose read-only auditor accounts \u2014 shape the request",
+  "expect": "trigger",
+  "route": null,
+  "n": 359
+ },
+ {
+  "skill": "/integration-contract",
+  "q": "Port the orders feature to the mobile app",
+  "expect": "no-trigger",
+  "route": "/port-feature",
+  "n": 360
+ },
+ {
+  "skill": "/factory",
+  "q": "/factory run automate",
+  "expect": "trigger",
+  "route": null,
+  "n": 361
+ },
+ {
+  "skill": "/pixel-audit",
+  "q": "Compare the rendered billing page to its Figma frame and fix every mismatch",
+  "expect": "trigger",
+  "route": null,
+  "n": 362
+ },
+ {
+  "skill": "/commit-push-pr",
+  "q": "Open a pull request that closes #418",
+  "expect": "trigger",
+  "route": null,
+  "n": 363
+ },
+ {
+  "skill": "/agentic-qa",
+  "q": "Run agentic QA on #87",
+  "expect": "trigger",
+  "route": null,
+  "n": 364
+ },
+ {
+  "skill": "/local-to-staging",
+  "q": "Deploy this to production",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 365
+ },
+ {
+  "skill": "/polish-batch",
+  "q": "Fix this typo on the login page right now, don't batch it",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 366
+ },
+ {
+  "skill": "/ask-kit",
+  "q": "Trace how the invite-user workflow works",
+  "expect": "no-trigger",
+  "route": "/feature-discovery",
+  "n": 367
+ },
+ {
+  "skill": "/report-issue",
+  "q": "Break this spec into sub-issues with dependencies",
+  "expect": "no-trigger",
+  "route": "/to-tickets",
+  "n": 368
+ },
+ {
+  "skill": "/design-system",
+  "q": "Set up the design system for ADMIN-WEB from this Figma file",
+  "expect": "trigger",
+  "route": null,
+  "n": 369
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Dispatch these sub-issues to worker tabs and monitor for test-backed completion",
+  "expect": "trigger",
+  "route": null,
+  "n": 370
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "orchestrate-herdr for https://github.com/org/repo/issues/42 using codex",
+  "expect": "trigger",
+  "route": null,
+  "n": 371
+ },
+ {
+  "skill": "/using-git-worktrees",
+  "q": "Prototype drag-to-reorder in a worktree.",
+  "expect": "trigger",
+  "route": null,
+  "n": 372
+ },
+ {
+  "skill": "/ci-loop",
+  "q": "Fix CI on PR 87",
+  "expect": "trigger",
+  "route": null,
+  "n": 373
+ },
+ {
+  "skill": "/feature-discovery",
+  "q": "Trace where the stock-transfer approval logic lives",
+  "expect": "trigger",
+  "route": null,
+  "n": 374
+ },
+ {
+  "skill": "/using-git-worktrees",
+  "q": "Trace how the worktree setup feature works in this codebase.",
+  "expect": "no-trigger",
+  "route": "/feature-discovery",
+  "n": 375
+ },
+ {
+  "skill": "/pixel-audit",
+  "q": "Add a failing test for the badge component's disabled state",
+  "expect": "no-trigger",
+  "route": "/tdd-loop",
+  "n": 376
+ },
+ {
+  "skill": "/staging-fix",
+  "q": "Ship this issue",
+  "expect": "no-trigger",
+  "route": "/commit-push-close",
+  "n": 377
+ },
+ {
+  "skill": "/commit-push-close",
+  "q": "Commit my changes, push, and mark the issue done",
+  "expect": "trigger",
+  "route": null,
+  "n": 378
+ },
+ {
+  "skill": "/integration-contract",
+  "q": "Draft the PRD for this feature",
+  "expect": "no-trigger",
+  "route": "/to-spec",
+  "n": 379
+ },
+ {
+  "skill": "/tdd-loop",
+  "q": "Run the test suite and tell me what's failing",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 380
+ },
+ {
+  "skill": "/staging-to-production",
+  "q": "Where is PR 87 in the factory?",
+  "expect": "no-trigger",
+  "route": "/factory",
+  "n": 381
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Review the worker's diff",
+  "expect": "no-trigger",
+  "route": "/code-review",
+  "n": 382
+ },
+ {
+  "skill": "/ask-kit",
+  "q": "Which kit skill should I use for adversarial local review with a judge? Explain the workflow, do not run it.",
+  "expect": "trigger",
+  "route": null,
+  "n": 383
+ },
+ {
+  "skill": "/deploy-watch",
+  "q": "Follow my merged change until it's live on staging",
+  "expect": "trigger",
+  "route": null,
+  "n": 384
+ },
+ {
+  "skill": "/agentic-qa",
+  "q": "Smoke-test staging after PR 40's deploy finishes",
+  "expect": "no-trigger",
+  "route": "/deploy-watch",
+  "n": 385
+ },
+ {
+  "skill": "/tdd-loop",
+  "q": "Add lowercase-username normalization to the signup flow \u2014 TDD please",
+  "expect": "trigger",
+  "route": null,
+  "n": 386
+ },
+ {
+  "skill": "/commit-push-pr",
+  "q": "Commit, push, and open a PR",
+  "expect": "trigger",
+  "route": null,
+  "n": 387
+ },
+ {
+  "skill": "/qa-escape",
+  "q": "The tester found a role bug the agent's QA run passed \u2014 log the escape",
+  "expect": "trigger",
+  "route": null,
+  "n": 388
+ },
+ {
+  "skill": "/writing-kit-skills",
+  "q": "Run the trigger evals for the kit",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 389
+ },
+ {
+  "skill": "/local-to-staging",
+  "q": "Create a branch called local in the current checkout",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 390
+ },
+ {
+  "skill": "/commit-push-close",
+  "q": "Ship this as a PR",
+  "expect": "no-trigger",
+  "route": "/commit-push-pr",
+  "n": 391
+ },
+ {
+  "skill": "/staging-fix",
+  "q": "Deploy to production",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 392
+ },
+ {
+  "skill": "/writing-kit-skills",
+  "q": "Write a skill for my other project's deploy flow",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 393
+ },
+ {
+  "skill": "/using-git-worktrees",
+  "q": "Fix the duplicate-order bug test-first.",
+  "expect": "no-trigger",
+  "route": "/tdd-loop",
+  "n": 394
+ },
+ {
+  "skill": "/release-notes",
+  "q": "Close #212 with a how-to-test comment",
+  "expect": "no-trigger",
+  "route": "/commit-push-close",
+  "n": 395
+ },
+ {
+  "skill": "/pr-feedback",
+  "q": "My PR got a changes-requested review \u2014 deal with it",
+  "expect": "trigger",
+  "route": null,
+  "n": 396
+ },
+ {
+  "skill": "/writing-kit-skills",
+  "q": "What's the word budget for a kit SKILL.md?",
+  "expect": "trigger",
+  "route": null,
+  "n": 397
+ },
+ {
+  "skill": "/report-issue",
+  "q": "QA reopened PRWL-118 \u2014 the fix we shipped still crashes on an empty list",
+  "expect": "no-trigger",
+  "route": "/qa-escape",
+  "n": 398
+ },
+ {
+  "skill": "/risk-review",
+  "q": "The adversarial local reviewers disagree. Independently judge their code evidence and report unresolved claims.",
+  "expect": "trigger",
+  "route": null,
+  "n": 399
+ },
+ {
+  "skill": "/risk-review",
+  "q": "implement has finished code-review. Run the local adversarial review before reporting completion.",
+  "expect": "trigger",
+  "route": null,
+  "n": 400
+ },
+ {
+  "skill": "/staging-to-production",
+  "q": "Fix CI on PR 87",
+  "expect": "no-trigger",
+  "route": "/ci-loop",
+  "n": 401
+ },
+ {
+  "skill": "/agents-md",
+  "q": "Sharpen the project's domain terminology",
+  "expect": "no-trigger",
+  "route": "domain-modeling",
+  "n": 402
+ },
+ {
+  "skill": "/deploy-watch",
+  "q": "Check the staging logs",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 403
+ },
+ {
+  "skill": "/qa-escape",
+  "q": "We have an incident \u2014 checkout is failing for everyone",
+  "expect": "no-trigger",
+  "route": "/incident-triage",
+  "n": 404
+ },
+ {
+  "skill": "/pr-feedback",
+  "q": "Apply the requested changes from the code review on PR #88",
+  "expect": "trigger",
+  "route": null,
+  "n": 405
+ },
+ {
+  "skill": "/pixel-audit",
+  "q": "Why does the modal flicker when it opens?",
+  "expect": "no-trigger",
+  "route": "/diagnosing-bugs",
+  "n": 406
+ },
+ {
+  "skill": "/commit-push-close",
+  "q": "Commit, push, and close the issue",
+  "expect": "trigger",
+  "route": null,
+  "n": 407
+ },
+ {
+  "skill": "/polish-batch",
+  "q": "Review the diff before shipping",
+  "expect": "no-trigger",
+  "route": "/code-review",
+  "n": 408
+ },
+ {
+  "skill": "/ask-kit",
+  "q": "Commit, push, and open a PR",
+  "expect": "no-trigger",
+  "route": "/commit-push-pr",
+  "n": 409
+ },
+ {
+  "skill": "/tdd-loop",
+  "q": "Can you TDD a fix for the duplicate-order bug?",
+  "expect": "trigger",
+  "route": null,
+  "n": 410
+ },
+ {
+  "skill": "/ask-kit",
+  "q": "Is there a skill I can install for database migrations?",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 411
+ },
+ {
+  "skill": "/report-issue",
+  "q": "QA here, I don't know the code \u2014 can you file this bug properly and send me the link?",
+  "expect": "trigger",
+  "route": null,
+  "n": 412
+ },
+ {
+  "skill": "/feature-prompt",
+  "q": "Write release notes for the transfer feature",
+  "expect": "no-trigger",
+  "route": "/release-notes",
+  "n": 413
+ },
+ {
+  "skill": "/incident-triage",
+  "q": "Error rate spiked at 14:00, here are the logs \u2014 what's going on?",
+  "expect": "trigger",
+  "route": null,
+  "n": 414
+ },
+ {
+  "skill": "/pr-feedback",
+  "q": "Review this PR",
+  "expect": "no-trigger",
+  "route": "/code-review",
+  "n": 415
+ },
+ {
+  "skill": "/deploy-watch",
+  "q": "Smoke-test staging once PR 40's deploy finishes",
+  "expect": "trigger",
+  "route": null,
+  "n": 416
+ },
+ {
+  "skill": "/incident-triage",
+  "q": "Restart the prod containers",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 417
+ },
+ {
+  "skill": "/commit-push-pr",
+  "q": "Split this PRD into issues",
+  "expect": "no-trigger",
+  "route": "/to-tickets",
+  "n": 418
+ },
+ {
+  "skill": "/integration-contract",
+  "q": "The orders API adds a required field \u2014 check the cross-repo impact for the PRD",
+  "expect": "trigger",
+  "route": null,
+  "n": 419
+ },
+ {
+  "skill": "/feature-discovery",
+  "q": "Before we refactor billing, figure out how it works today",
+  "expect": "trigger",
+  "route": null,
+  "n": 420
+ },
+ {
+  "skill": "/factory",
+  "q": "Fan issues 41, 44 and 52 out to T3 Code threads",
+  "expect": "no-trigger",
+  "route": "/orchestrate-t3",
+  "n": 421
+ },
+ {
+  "skill": "/ci-loop",
+  "q": "Review the changes on this branch",
+  "expect": "no-trigger",
+  "route": "/code-review",
+  "n": 422
+ },
+ {
+  "skill": "/staging-to-production",
+  "q": "Run the staging-to-production readiness check",
+  "expect": "trigger",
+  "route": null,
+  "n": 423
+ },
+ {
+  "skill": "/agents-md",
+  "q": "Regenerate the workspace AGENTS.md",
+  "expect": "trigger",
+  "route": null,
+  "n": 424
+ },
+ {
+  "skill": "/qa-escape",
+  "q": "Punch-list these spacing nits from QA",
+  "expect": "no-trigger",
+  "route": "/polish-batch",
+  "n": 425
+ },
+ {
+  "skill": "/report-issue",
+  "q": "Create an issue from this: filters reset after I save a transfer, see attached image",
+  "expect": "trigger",
+  "route": null,
+  "n": 426
+ },
+ {
+  "skill": "/release-notes",
+  "q": "Summarize this session so the next agent can pick up where we left off",
+  "expect": "no-trigger",
+  "route": "/handoff",
+  "n": 427
+ },
+ {
+  "skill": "/report-issue",
+  "q": "I have a rough idea for a new reporting feature, help me shape it",
+  "expect": "no-trigger",
+  "route": "/feature-prompt",
+  "n": 428
+ },
+ {
+  "skill": "/report-issue",
+  "q": "Found something while testing: the driver app shows the wrong delivery date. Please raise a ticket",
+  "expect": "trigger",
+  "route": null,
+  "n": 429
+ },
+ {
+  "skill": "/qa-escape",
+  "q": "File issues for these three bugs I found during QA",
+  "expect": "no-trigger",
+  "route": "/triage",
+  "n": 430
+ },
+ {
+  "skill": "/factory",
+  "q": "Run the factory end to end on every issue labelled automate",
+  "expect": "trigger",
+  "route": null,
+  "n": 431
+ },
+ {
+  "skill": "/feature-prompt",
+  "q": "Write me a grill-ready prompt for INVENTORY-SVC: low-stock email alerts",
+  "expect": "trigger",
+  "route": null,
+  "n": 432
+ },
+ {
+  "skill": "/factory",
+  "q": "Is this PR safe to auto-merge?",
+  "expect": "no-trigger",
+  "route": "/risk-review",
+  "n": 433
+ },
+ {
+  "skill": "/risk-review",
+  "q": "Classify the risk of this pull request before it merges",
+  "expect": "trigger",
+  "route": null,
+  "n": 434
+ },
+ {
+  "skill": "/deploy-watch",
+  "q": "Deploy this to production",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 435
+ },
+ {
+  "skill": "/pixel-audit",
+  "q": "Fold the shipped page's new UI back into the library",
+  "expect": "no-trigger",
+  "route": "/design-system",
+  "n": 436
+ },
+ {
+  "skill": "/design-system",
+  "q": "Fix the button component's disabled state test-first",
+  "expect": "no-trigger",
+  "route": "/tdd-loop",
+  "n": 437
+ },
+ {
+  "skill": "/using-git-worktrees",
+  "q": "We are already in the task worktree; verify it and continue the ticket there.",
+  "expect": "trigger",
+  "route": null,
+  "n": 438
+ },
+ {
+  "skill": "/report-issue",
+  "q": "Production checkout is down for everyone right now",
+  "expect": "no-trigger",
+  "route": "/incident-triage",
+  "n": 439
+ },
+ {
+  "skill": "/port-feature",
+  "q": "Slice the port PRD into issues",
+  "expect": "no-trigger",
+  "route": "/to-tickets",
+  "n": 440
+ },
+ {
+  "skill": "/writing-kit-skills",
+  "q": "In agent-skills-kit, move this skill's long examples out of SKILL.md properly",
+  "expect": "trigger",
+  "route": null,
+  "n": 441
+ },
+ {
+  "skill": "/design-system",
+  "q": "Turn these reference screens into a reusable component library for the new app",
+  "expect": "trigger",
+  "route": null,
+  "n": 442
+ },
+ {
+  "skill": "/agentic-qa",
+  "q": "Test this branch in the running app across empty, error, and loading states for every role",
+  "expect": "trigger",
+  "route": null,
+  "n": 443
+ },
+ {
+  "skill": "/writing-kit-skills",
+  "q": "Where do the canonical one-liners for the kit live?",
+  "expect": "trigger",
+  "route": null,
+  "n": 444
+ },
+ {
+  "skill": "/factory",
+  "q": "What should I run next to move ABC-123 forward?",
+  "expect": "trigger",
+  "route": null,
+  "n": 445
+ },
+ {
+  "skill": "/staging-to-production",
+  "q": "Watch the staging deploy for PR 87",
+  "expect": "no-trigger",
+  "route": "/deploy-watch",
+  "n": 446
+ },
+ {
+  "skill": "/staging-fix",
+  "q": "There's a bug on the staging server: notification emails aren't sending",
+  "expect": "trigger",
+  "route": null,
+  "n": 447
+ },
+ {
+  "skill": "/risk-review",
+  "q": "Respond to the reviewer comments on PR 8",
+  "expect": "no-trigger",
+  "route": "/pr-feedback",
+  "n": 448
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Create a new tab and run npm test in it",
+  "expect": "no-trigger",
+  "route": "herdr",
+  "n": 449
+ },
+ {
+  "skill": "/agents-md",
+  "q": "Add the CLAUDE.md shim that forwards Claude to AGENTS.md in this workspace",
+  "expect": "no-trigger",
+  "route": "/writing-for-agents",
+  "n": 450
+ },
+ {
+  "skill": "/incident-triage",
+  "q": "This test fails intermittently, debug it",
+  "expect": "no-trigger",
+  "route": "/diagnosing-bugs",
+  "n": 451
+ },
+ {
+  "skill": "/port-feature",
+  "q": "Write a feature prompt for CSV export in ADMIN-WEB",
+  "expect": "no-trigger",
+  "route": "/feature-prompt",
+  "n": 452
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Read the output of that herdr tab",
+  "expect": "no-trigger",
+  "route": "herdr",
+  "n": 453
+ },
+ {
+  "skill": "/release-notes",
+  "q": "Summarize this PR so I can review it faster",
+  "expect": "no-trigger",
+  "route": "/code-review",
+  "n": 454
+ },
+ {
+  "skill": "/port-feature",
+  "q": "Help me port the invoice screen into MOBILE-APP",
+  "expect": "trigger",
+  "route": null,
+  "n": 455
+ },
+ {
+  "skill": "/polish-batch",
+  "q": "Batch these nits",
+  "expect": "trigger",
+  "route": null,
+  "n": 456
+ },
+ {
+  "skill": "/orchestrate-t3",
+  "q": "Open new T3 Code threads for these tickets and decide which ones can share a worktree",
+  "expect": "trigger",
+  "route": null,
+  "n": 457
+ },
+ {
+  "skill": "/feature-prompt",
+  "q": "Turn ADR-0017 into a prompt for the implementation agent",
+  "expect": "no-trigger",
+  "route": "/to-spec",
+  "n": 458
+ },
+ {
+  "skill": "/commit-push-pr",
+  "q": "PR this issue",
+  "expect": "trigger",
+  "route": null,
+  "n": 459
+ },
+ {
+  "skill": "/factory",
+  "q": "Fan this spec out to worker tabs in herdr",
+  "expect": "no-trigger",
+  "route": "/orchestrate-herdr",
+  "n": 460
+ },
+ {
+  "skill": "/feature-prompt",
+  "q": "Port the invoice screen from LEGACY-PORTAL to ADMIN-WEB",
+  "expect": "no-trigger",
+  "route": "/port-feature",
+  "n": 461
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Use herdr to work all open slices of this PRD in parallel",
+  "expect": "trigger",
+  "route": null,
+  "n": 462
+ },
+ {
+  "skill": "/staging-to-production",
+  "q": "Is staging ready for production?",
+  "expect": "trigger",
+  "route": null,
+  "n": 463
+ },
+ {
+  "skill": "/feature-discovery",
+  "q": "Before implementing the new pricing rules, explain how discounts are applied today",
+  "expect": "trigger",
+  "route": null,
+  "n": 464
+ },
+ {
+  "skill": "/staging-to-production",
+  "q": "Production promotion checklist across the workspace \u2014 read only",
+  "expect": "trigger",
+  "route": null,
+  "n": 465
+ },
+ {
+  "skill": "/feature-prompt",
+  "q": "File a bug: approvals fail for managers with two roles",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 466
+ },
+ {
+  "skill": "/release-notes",
+  "q": "Release notes for WAREHOUSE-APP, 1 to 4 July",
+  "expect": "trigger",
+  "route": null,
+  "n": 467
+ },
+ {
+  "skill": "/staging-to-production",
+  "q": "Generate release notes for this release",
+  "expect": "no-trigger",
+  "route": "/release-notes",
+  "n": 468
+ },
+ {
+  "skill": "/tdd-loop",
+  "q": "Turn 'add CSV export' into a feature prompt",
+  "expect": "no-trigger",
+  "route": "/feature-prompt",
+  "n": 469
+ },
+ {
+  "skill": "/design-system",
+  "q": "Which components does the ADMIN-WEB UI library have today?",
+  "expect": "no-trigger",
+  "route": "/feature-discovery",
+  "n": 470
+ },
+ {
+  "skill": "/staging-to-production",
+  "q": "Production is down \u2014 what's going on?",
+  "expect": "no-trigger",
+  "route": "/incident-triage",
+  "n": 471
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Kick off the orchestrator for PRD 89 with opencode",
+  "expect": "trigger",
+  "route": null,
+  "n": 472
+ },
+ {
+  "skill": "/qa-escape",
+  "q": "QA bounced this ticket \u2014 the empty invoice list crashes",
+  "expect": "trigger",
+  "route": null,
+  "n": 473
+ },
+ {
+  "skill": "/writing-kit-skills",
+  "q": "Write release notes for last week",
+  "expect": "no-trigger",
+  "route": "/release-notes",
+  "n": 474
+ },
+ {
+  "skill": "/polish-batch",
+  "q": "Make this dashboard bolder and more delightful",
+  "expect": "no-trigger",
+  "route": "impeccable",
+  "n": 475
+ },
+ {
+  "skill": "/ci-loop",
+  "q": "The typecheck job fails on PR 340",
+  "expect": "trigger",
+  "route": null,
+  "n": 476
+ },
+ {
+  "skill": "/feature-prompt",
+  "q": "Turn this request into something I can grill: CSV export on the orders page",
+  "expect": "trigger",
+  "route": null,
+  "n": 477
+ },
+ {
+  "skill": "/agents-md",
+  "q": "Edit this hand-authored repo AGENTS.md; there is no code-workspace file and no workspace generation is requested",
+  "expect": "no-trigger",
+  "route": "/writing-for-agents",
+  "n": 478
+ },
+ {
+  "skill": "/agents-md",
+  "q": "Generate AGENTS.md for this workspace",
+  "expect": "trigger",
+  "route": null,
+  "n": 479
+ },
+ {
+  "skill": "/report-issue",
+  "q": "Write up this problem as a tracker issue using our bug template and put it in the right project",
+  "expect": "trigger",
+  "route": null,
+  "n": 480
+ },
+ {
+  "skill": "/deploy-watch",
+  "q": "Test the checkout page in the browser",
+  "expect": "no-trigger",
+  "route": "agent-browser",
+  "n": 481
+ },
+ {
+  "skill": "/report-issue",
+  "q": "I tested the partners portal today and found these 4 problems, screenshots attached \u2014 file them all",
+  "expect": "trigger",
+  "route": null,
+  "n": 482
+ },
+ {
+  "skill": "/risk-review",
+  "q": "Write a regression test and implement the fix for this failing endpoint.",
+  "expect": "no-trigger",
+  "route": "/tdd-loop",
+  "n": 483
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Create a Linear issue for this bug",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 484
+ },
+ {
+  "skill": "/staging-fix",
+  "q": "Staging shows the wrong invoice totals \u2014 fix it and get it deployed to staging",
+  "expect": "trigger",
+  "route": null,
+  "n": 485
+ },
+ {
+  "skill": "/qa-escape",
+  "q": "QA PR 87 like a tester would",
+  "expect": "no-trigger",
+  "route": "/agentic-qa",
+  "n": 486
+ },
+ {
+  "skill": "/ci-loop",
+  "q": "Lint is failing on the pull request, make CI pass",
+  "expect": "trigger",
+  "route": null,
+  "n": 487
+ },
+ {
+  "skill": "/pixel-audit",
+  "q": "QA says the layout is off vs design on /assets \u2014 run the full audit and prove the fixes",
+  "expect": "trigger",
+  "route": null,
+  "n": 488
+ },
+ {
+  "skill": "/tdd-loop",
+  "q": "Trace how invoice approval works across ADMIN-WEB and API-SVC",
+  "expect": "no-trigger",
+  "route": "/feature-discovery",
+  "n": 489
+ },
+ {
+  "skill": "/commit-push-pr",
+  "q": "Commit, push, and close the issue",
+  "expect": "no-trigger",
+  "route": "/commit-push-close",
+  "n": 490
+ },
+ {
+  "skill": "/staging-fix",
+  "q": "Set up CI for this repo",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 491
+ },
+ {
+  "skill": "/integration-contract",
+  "q": "Run the smoke gate before we hand PRD-89 to the PM",
+  "expect": "trigger",
+  "route": null,
+  "n": 492
+ },
+ {
+  "skill": "/orchestrate-t3",
+  "q": "Review the diff that T3 thread produced",
+  "expect": "no-trigger",
+  "route": "/code-review",
+  "n": 493
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Launch herdr workers for every open issue under this parent issue",
+  "expect": "trigger",
+  "route": null,
+  "n": 494
+ },
+ {
+  "skill": "/staging-to-production",
+  "q": "List the staging\u2192production PRs I need to open and whether each is safe",
+  "expect": "trigger",
+  "route": null,
+  "n": 495
+ },
+ {
+  "skill": "/incident-triage",
+  "q": "Fix this on staging \u2014 login is broken there",
+  "expect": "no-trigger",
+  "route": "/staging-fix",
+  "n": 496
+ },
+ {
+  "skill": "/commit-push-close",
+  "q": "Commit, push, and open a PR",
+  "expect": "no-trigger",
+  "route": "/commit-push-pr",
+  "n": 497
+ },
+ {
+  "skill": "/integration-contract",
+  "q": "The web app breaks when the API deploys \u2014 find the root cause",
+  "expect": "no-trigger",
+  "route": "/diagnosing-bugs",
+  "n": 498
+ },
+ {
+  "skill": "/report-issue",
+  "q": "Raise an issue for this broken page, figure out which repo it belongs to and how urgent it is",
+  "expect": "trigger",
+  "route": null,
+  "n": 499
+ },
+ {
+  "skill": "/integration-contract",
+  "q": "Which consumers hit the endpoints this PRD changes?",
+  "expect": "trigger",
+  "route": null,
+  "n": 500
+ },
+ {
+  "skill": "/staging-to-production",
+  "q": "Is PR 87 safe to auto-merge?",
+  "expect": "no-trigger",
+  "route": "/risk-review",
+  "n": 501
+ },
+ {
+  "skill": "/feature-discovery",
+  "q": "The PRD is sliced across API-SERVICE and ADMIN-WEB \u2014 map the producer surface and each consumer's call-sites into a contract with a smoke checklist",
+  "expect": "no-trigger",
+  "route": "/integration-contract",
+  "n": 502
+ },
+ {
+  "skill": "/polish-batch",
+  "q": "Set up the design system for ADMIN-WEB",
+  "expect": "no-trigger",
+  "route": "/design-system",
+  "n": 503
+ },
+ {
+  "skill": "/polish-batch",
+  "q": "Polish the billing page to match the Figma",
+  "expect": "no-trigger",
+  "route": "/pixel-audit",
+  "n": 504
+ },
+ {
+  "skill": "/pixel-audit",
+  "q": "Make the landing page feel more polished and modern",
+  "expect": "no-trigger",
+  "route": "impeccable",
+  "n": 505
+ },
+ {
+  "skill": "/agentic-qa",
+  "q": "Is PR 87 safe to auto-merge?",
+  "expect": "no-trigger",
+  "route": "/risk-review",
+  "n": 506
+ },
+ {
+  "skill": "/polish-batch",
+  "q": "This page must match the design pixel-for-pixel",
+  "expect": "no-trigger",
+  "route": "/pixel-audit",
+  "n": 507
+ },
+ {
+  "skill": "/local-to-staging",
+  "q": "Promote SHOP-WEB and ADMIN-WEB from local to staging",
+  "expect": "trigger",
+  "route": null,
+  "n": 508
+ },
+ {
+  "skill": "/release-notes",
+  "q": "Update the README's feature list",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 509
+ },
+ {
+  "skill": "/using-git-worktrees",
+  "q": "Fix the checkout bug in a new git worktree before touching any files.",
+  "expect": "trigger",
+  "route": null,
+  "n": 510
+ },
+ {
+  "skill": "/using-git-worktrees",
+  "q": "Prototype drag-to-reorder so we can see how it feels.",
+  "expect": "no-trigger",
+  "route": "/prototype",
+  "n": 511
+ },
+ {
+  "skill": "/deploy-watch",
+  "q": "Check the Actions deploy for my merged PR and verify it on staging",
+  "expect": "trigger",
+  "route": null,
+  "n": 512
+ },
+ {
+  "skill": "/polish-batch",
+  "q": "Punch-list this for PRD-142: the Billing header says \"Recieve invoices\"",
+  "expect": "trigger",
+  "route": null,
+  "n": 513
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Orchestrate the PRD's sub-issues in herdr with codex workers",
+  "expect": "trigger",
+  "route": null,
+  "n": 514
+ },
+ {
+  "skill": "/polish-batch",
+  "q": "Collect these copy tweaks and fix them all in one go later",
+  "expect": "trigger",
+  "route": null,
+  "n": 515
+ },
+ {
+  "skill": "/design-system",
+  "q": "Write a feature prompt for the new settings page",
+  "expect": "no-trigger",
+  "route": "/feature-prompt",
+  "n": 516
+ },
+ {
+  "skill": "/risk-review",
+  "q": "Open a PR for this issue",
+  "expect": "no-trigger",
+  "route": "/commit-push-pr",
+  "n": 517
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Generate release notes for what the workers shipped",
+  "expect": "no-trigger",
+  "route": "/release-notes",
+  "n": 518
+ },
+ {
+  "skill": "/ci-loop",
+  "q": "PR #12's unit tests went red after my last push \u2014 sort it out",
+  "expect": "trigger",
+  "route": null,
+  "n": 519
+ },
+ {
+  "skill": "/port-feature",
+  "q": "We're rebuilding the legacy reports module in the new app \u2014 map what needs to move",
+  "expect": "trigger",
+  "route": null,
+  "n": 520
+ },
+ {
+  "skill": "/staging-to-production",
+  "q": "Promote local to staging on all projects",
+  "expect": "no-trigger",
+  "route": "/local-to-staging",
+  "n": 521
+ },
+ {
+  "skill": "/using-git-worktrees",
+  "q": "Remove the old worktree after the merge.",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 522
+ },
+ {
+  "skill": "/pixel-audit",
+  "q": "Audit MOBILE-APP order detail against the legacy screens \u2014 no Figma exists",
+  "expect": "trigger",
+  "route": null,
+  "n": 523
+ },
+ {
+  "skill": "/agents-md",
+  "q": "Create a new skill for our deploy process",
+  "expect": "no-trigger",
+  "route": "skill-creator",
+  "n": 524
+ },
+ {
+  "skill": "/staging-to-production",
+  "q": "Staging is broken: checkout 500s since this morning",
+  "expect": "no-trigger",
+  "route": "/staging-fix",
+  "n": 525
+ },
+ {
+  "skill": "/using-git-worktrees",
+  "q": "Create a new branch for this fix in the current checkout.",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 526
+ },
+ {
+  "skill": "/local-to-staging",
+  "q": "Where does SPEC-142 stand in the factory?",
+  "expect": "no-trigger",
+  "route": "/factory",
+  "n": 527
+ },
+ {
+  "skill": "/design-system",
+  "q": "Pixel-audit the assets list page against this Figma node",
+  "expect": "no-trigger",
+  "route": "/pixel-audit",
+  "n": 528
+ },
+ {
+  "skill": "/qa-escape",
+  "q": "Human QA reopened #212, record why our checks missed it",
+  "expect": "trigger",
+  "route": null,
+  "n": 529
+ },
+ {
+  "skill": "/risk-review",
+  "q": "Run local adversarial reviewers and an independent judge on my uncommitted implementation; no PR exists.",
+  "expect": "trigger",
+  "route": null,
+  "n": 530
+ },
+ {
+  "skill": "/commit-push-close",
+  "q": "We're finished here \u2014 land it and close out the ticket",
+  "expect": "trigger",
+  "route": null,
+  "n": 531
+ },
+ {
+  "skill": "/using-git-worktrees",
+  "q": "Review the billing branch in a separate worktree.",
+  "expect": "trigger",
+  "route": null,
+  "n": 532
+ },
+ {
+  "skill": "/feature-prompt",
+  "q": "I have a rough idea: let managers bulk-approve timesheets. Turn it into a dev prompt.",
+  "expect": "trigger",
+  "route": null,
+  "n": 533
+ },
+ {
+  "skill": "/pr-feedback",
+  "q": "Ship this as a PR",
+  "expect": "no-trigger",
+  "route": "/commit-push-pr",
+  "n": 534
+ },
+ {
+  "skill": "/commit-push-pr",
+  "q": "I'm done with #418, ship it",
+  "expect": "no-trigger",
+  "route": "/commit-push-close",
+  "n": 535
+ },
+ {
+  "skill": "/risk-review",
+  "q": "Security and data review on my open PR, then tell me low or high risk",
+  "expect": "trigger",
+  "route": null,
+  "n": 536
+ },
+ {
+  "skill": "/report-issue",
+  "q": "Report this issue: the invoice list page crashes when a tenant has no invoices, screenshot attached",
+  "expect": "trigger",
+  "route": null,
+  "n": 537
+ },
+ {
+  "skill": "/local-to-staging",
+  "q": "Sync staging with local on all our projects and confirm the pipelines are green",
+  "expect": "trigger",
+  "route": null,
+  "n": 538
+ },
+ {
+  "skill": "/orchestrate-t3",
+  "q": "Spin up T3 threads for these five GitHub issues and monitor them until they have test evidence",
+  "expect": "trigger",
+  "route": null,
+  "n": 539
+ },
+ {
+  "skill": "/agents-md",
+  "q": "We added another repo to the code-workspace \u2014 refresh the workspace agent rules",
+  "expect": "trigger",
+  "route": null,
+  "n": 540
+ },
+ {
+  "skill": "/pixel-audit",
+  "q": "Pixel-audit the assets list page in ADMIN-WEB against this Figma node",
+  "expect": "trigger",
+  "route": null,
+  "n": 541
+ },
+ {
+  "skill": "/pixel-audit",
+  "q": "The user form drifted from the mock \u2014 do a strict visual conformance pass on it",
+  "expect": "trigger",
+  "route": null,
+  "n": 542
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Slice the PRD into sub-issues first",
+  "expect": "no-trigger",
+  "route": "/to-tickets",
+  "n": 543
+ },
+ {
+  "skill": "/orchestrate-t3",
+  "q": "QA the PR from issue 41 like a tester would",
+  "expect": "no-trigger",
+  "route": "/agentic-qa",
+  "n": 544
+ },
+ {
+  "skill": "/feature-prompt",
+  "q": "Write the PRD for ADR-0042",
+  "expect": "no-trigger",
+  "route": "/to-spec",
+  "n": 545
+ },
+ {
+  "skill": "/feature-prompt",
+  "q": "Prep this for grill-with-docs: offline mode for the scanner app",
+  "expect": "trigger",
+  "route": null,
+  "n": 546
+ },
+ {
+  "skill": "/risk-review",
+  "q": "CI is green on PR 31 \u2014 decide whether it goes to auto-merge",
+  "expect": "trigger",
+  "route": null,
+  "n": 547
+ },
+ {
+  "skill": "/orchestrate-herdr",
+  "q": "Spin up a claude tab for every open child issue of ABC-123",
+  "expect": "trigger",
+  "route": null,
+  "n": 548
+ },
+ {
+  "skill": "/qa-escape",
+  "q": "/factory says #418 is QA_RETURNED",
+  "expect": "trigger",
+  "route": null,
+  "n": 549
+ },
+ {
+  "skill": "/staging-to-production",
+  "q": "Prep the staging to production promotion for all projects",
+  "expect": "trigger",
+  "route": null,
+  "n": 550
+ },
+ {
+  "skill": "/ask-kit",
+  "q": "Where does SPEC-142 stand and what moves it next?",
+  "expect": "no-trigger",
+  "route": "/factory",
+  "n": 551
+ },
+ {
+  "skill": "/local-to-staging",
+  "q": "Run the local\u2192staging promotion",
+  "expect": "trigger",
+  "route": null,
+  "n": 552
+ },
+ {
+  "skill": "/release-notes",
+  "q": "Summarize this long design doc into bullet points",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 553
+ },
+ {
+  "skill": "/local-to-staging",
+  "q": "Open and merge the local-to-staging PRs, then verify the deploy workflows succeeded",
+  "expect": "trigger",
+  "route": null,
+  "n": 554
+ },
+ {
+  "skill": "/using-git-worktrees",
+  "q": "Do the CSV export change in a worktree under the project repo\u2019s .worktrees/export-task.",
+  "expect": "trigger",
+  "route": null,
+  "n": 555
+ },
+ {
+  "skill": "/commit-push-close",
+  "q": "Ship this small fix \u2014 there's no issue for it yet",
+  "expect": "trigger",
+  "route": null,
+  "n": 556
+ },
+ {
+  "skill": "/ci-loop",
+  "q": "Staging is broken: checkout 500s since this morning",
+  "expect": "no-trigger",
+  "route": "/staging-fix",
+  "n": 557
+ },
+ {
+  "skill": "/feature-discovery",
+  "q": "Summarize this repo's overall architecture and how the main folders relate",
+  "expect": "no-trigger",
+  "route": "none",
+  "n": 558
+ },
+ {
+  "skill": "/integration-contract",
+  "q": "Write the producer/consumer contract for this multi-project PRD",
+  "expect": "trigger",
+  "route": null,
+  "n": 559
+ },
+ {
+  "skill": "/ask-kit",
+  "q": "/ask-kit",
+  "expect": "trigger",
+  "route": null,
+  "n": 560
+ },
+ {
+  "skill": "/design-system",
+  "q": "Project start-off for the new repo: design system from this spec doc",
+  "expect": "trigger",
+  "route": null,
+  "n": 561
+ },
+ {
+  "skill": "/staging-fix",
+  "q": "Fix this bug",
+  "expect": "no-trigger",
+  "route": "/diagnosing-bugs",
+  "n": 562
+ },
+ {
+  "skill": "/ask-kit",
+  "q": "Which kit skill should I use for this?",
+  "expect": "trigger",
+  "route": null,
+  "n": 563
+ },
+ {
+  "skill": "/orchestrate-t3",
+  "q": "T3 Code is connected \u2014 give every open sub-issue of this parent issue its own Codex thread",
+  "expect": "trigger",
+  "route": null,
+  "n": 564
+ },
+ {
+  "skill": "/ask-kit",
+  "q": "Help me create a feature prompt for stock transfer approvals",
+  "expect": "no-trigger",
+  "route": "/feature-prompt",
+  "n": 565
+ },
+ {
+  "skill": "/design-system",
+  "q": "How is theming implemented in ADMIN-WEB today?",
+  "expect": "no-trigger",
+  "route": "/feature-discovery",
+  "n": 566
+ },
+ {
+  "skill": "/integration-contract",
+  "q": "Open a PR for the API change",
+  "expect": "no-trigger",
+  "route": "/commit-push-pr",
+  "n": 567
+ },
+ {
+  "skill": "/commit-push-close",
+  "q": "Close this stale issue as wontfix",
+  "expect": "no-trigger",
+  "route": "/triage",
+  "n": 568
+ },
+ {
+  "skill": "/agents-md",
+  "q": "Make the CLAUDE.md shim and AGENTS.md for this workspace root",
+  "expect": "no-trigger",
+  "route": "/writing-for-agents",
+  "n": 569
+ },
+ {
+  "skill": "/design-system",
+  "q": "That page just shipped \u2014 fold its new UI back into the ADMIN-WEB library",
+  "expect": "trigger",
+  "route": null,
+  "n": 570
+ },
+ {
+  "skill": "/design-system",
+  "q": "Bootstrap tokens and a UI library for PORTAL-WEB from our brand guide",
+  "expect": "trigger",
+  "route": null,
+  "n": 571
+ },
+ {
+  "skill": "/release-notes",
+  "q": "Draft an ADR for the queue decision",
+  "expect": "no-trigger",
+  "route": "/grill-with-docs",
+  "n": 572
+ },
+ {
+  "skill": "/agents-md",
+  "q": "Set up the design system for this project",
+  "expect": "no-trigger",
+  "route": "/design-system",
+  "n": 573
+ }
+]

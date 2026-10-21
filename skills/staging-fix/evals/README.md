@@ -1,13 +1,13 @@
 # Evals — `/staging-fix`
 
-This skill owns its evals. Everything needed to judge `/staging-fix` is in this folder.
+This folder keeps reusable tests for `/staging-fix`. Observed results live in the current audit.
 
 | File | What it is |
 | :--- | :--- |
 | [`evals.json`](evals.json) | The routing test set, plus the `last_run` evidence record |
+| [Current audit](../../../evals/current/README.md) | Fresh findings, observed results and validation limits |
 | [`test-cases.md`](test-cases.md) | Readable form of the test set, with the sibling each negative routes to |
 | [`rubric.md`](rubric.md) | How to score: routing pass bar + the eleven quality categories |
-| [`baseline.md`](baseline.md) | First scorecard for this skill (new in the 2026-07 batch) |
 
 ## Running the trigger eval
 

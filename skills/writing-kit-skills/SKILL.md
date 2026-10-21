@@ -3,7 +3,7 @@ name: writing-kit-skills
 disable-model-invocation: true
 description: "Author/edit agent-skills-kit skills or explain its canonical one-liners and word budget. Generic skills: skill-creator. Running routing evals alone is a maintainer task."
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
 ---
 
 # writing-kit-skills
@@ -44,6 +44,12 @@ An explicitly started `/factory run` or `/orchestrate-t3` may read and follow
 `/using-git-worktrees` for checkout setup only, then return to that authorized
 workflow. This grants no implicit discovery or Skill-tool invocation of the
 user-only helper and no authority to implement or ship another workflow.
+
+The workspace's automatic prose-cleanup rule and the ship policies may read
+and apply the installed Cursor `unslop` to agent-written prose. Keep upstream
+metadata unchanged; this exception grants no implicit discovery, Skill-tool
+invocation of an explicit-only helper, or extra workflow authority. Preserve
+mandated text and technical literals. Do not vendor or rewrite the companion.
 
 ## Canonical one-liners
 

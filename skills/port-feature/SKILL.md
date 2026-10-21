@@ -3,7 +3,7 @@ name: port-feature
 disable-model-invocation: true
 description: "Use only to port, migrate, or rebuild a complete feature from a reference implementation into a target stack. Writes one gap map, suggests /grill-with-docs, stops. Never implements or auto-chains."
 metadata:
-  version: "0.2.0"
+  version: "0.2.1"
 ---
 
 # Port feature
@@ -132,4 +132,4 @@ Suggested next skills (optional):
 
 - [ ] The gap map exists at the resolved path, including PROJECT-CODEs when needed to avoid a different pair's file, with all nine section headings present and non-empty
 - [ ] `git status` shows no files created or modified by this run outside the gap map file — nothing implemented
-- [ ] The final `Stage / Found / Next / Needs user` update was emitted, ending at the `/grill-with-docs` suggestion
+- [ ] The final `Stage / Found / Next / Needs user` update was emitted, ending at the advisory suggestions footer

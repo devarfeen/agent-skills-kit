@@ -1,5 +1,7 @@
 # Worker prompt
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
+
 One prompt per worker, filled from that worker's assigned issue. Never send the full spec; each worker owns exactly one issue unless the user asked for the same task on every tab.
 
 Fill `TRACKER` with the workspace tracker per **Resolve** in [`tracker-map.md`](tracker-map.md), `ISSUE` with the issue's native identifier (`42` on GitHub, `PRWL-101` on Linear), and `ISSUE_URL` with its link.
@@ -20,15 +22,16 @@ BRANCH: [BRANCH_NAME]
 LESSONS: [LESSON_LINES]
 REPORT_DIR: [ABSOLUTE_DIRECTORY_OUTSIDE_CHECKOUT]
 
-Work only on this issue, committing only to BRANCH.
+Work only on this issue on BRANCH. Follow workspace local-commit authority.
 
 Use the supplied checkout record and instructions for project/repository context.
 
 Drive each seam with `/tdd-loop` directly when available; use `/tdd` only as
 test-quality reference. Never auto-invoke user-only `/implement`. Without
 `/tdd-loop`, reproduce the failure with a test and make it pass; still report
-the command and passing output. Commit green steps only to the assigned branch;
-never push or open a PR.
+the command and passing output. Commit green steps to the assigned branch only when workspace policy permits
+local engineering commits. Otherwise return verified uncommitted changes for
+the ship skill, including branch/shared modes. Never push or open a PR.
 
 Before coding, read the issue's acceptance criteria, any issues labelled
 `qa-escape` for this area, and the `## QA escape guards` lines in AGENTS.md.

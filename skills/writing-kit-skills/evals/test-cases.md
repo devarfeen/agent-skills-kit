@@ -37,7 +37,7 @@ Fix descriptions, not queries. A missed should-trigger means the description lac
 A captured near-miss means the boundary sentence is missing, or the sibling's description is weaker
 than this one's. Never delete a query to make the eval pass.
 
-## 2026-10-13 catalog scope correction
+## Catalog scope boundary
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 

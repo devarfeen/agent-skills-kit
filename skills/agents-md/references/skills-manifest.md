@@ -50,8 +50,8 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | `/handoff` | external | plan | fork context to a new session (pairs with /prototype) | |
 | `/to-tickets` | external | slice | | |
 | `/triage` | external | slice | raw incoming issues and external PRs only — never /to-tickets tickets | |
-| `/implement` | external | implement | optional ticket driver — /tdd-loop at each seam; stop after /code-review, never commit (Shipping is owned by the ship skills) | |
-| `/implement-spec` | external | implement | user-invoked whole-spec driver — local implementers in worktrees, each on /tdd-loop; stop after /code-review; never push, open a PR, or close tickets (Shipping is owned by the ship skills) | |
+| `/implement` | external | implement | optional ticket driver — /tdd-loop at each seam; /code-review then local adversarial /risk-review; never commit (Shipping is owned by the ship skills) | |
+| `/implement-spec` | external | implement | user-invoked whole-spec driver — local implementers in worktrees, each on /tdd-loop; /code-review then coordinator-owned local adversarial /risk-review; never push, open a PR, or close tickets (Shipping is owned by the ship skills) | |
 | `/tdd` | external | implement | reference only — test quality and seam choice; never use it alone as a loop | |
 | `/tdd-loop` | kit | implement | the test-first procedure — gates, completion evidence, exception protocol; stands alone | |
 | `/orchestrate-herdr` | kit | implement | inside herdr only — fan a spec (PRD) out to worker tabs | |
@@ -65,7 +65,7 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | `/report-issue` | kit | verify | a reporter's problem statement and screenshots → one templated, code-traced, routed, prioritised and scheduled tracker issue after one draft approval; never edits code | |
 | `/qa-escape` | kit | verify | a bug human QA found after an agent said done → reproduction, escape class on the issue, regression test first; durable guard at 3 with approval | |
 | `/ci-loop` | kit | verify | an open PR's failing CI → green — up to 3 fix-and-push attempts under one approval; never edits the gate | |
-| `/risk-review` | kit | verify | specialist lenses + fixed-rubric low/high tier on a green PR; low offers auto-merge, high requests an engineer | |
+| `/risk-review` | kit | verify | model-invoked local adversarial review after implementation; explicit PR mode keeps specialist lenses and fixed-rubric merge risk | |
 | `/commit-push-close` | kit | ship | | |
 | `/commit-push-pr` | kit | ship | | |
 | `/pr-feedback` | kit | ship | address reviewer comments on an open PR — classify, fix, reply with SHAs | |
@@ -84,15 +84,10 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | `/factory` | kit | companion | | You want to know where a spec (PRD), ticket, or PR stands — CI, review, risk gate, staging deploy — and which one skill moves it next. Read-only; suggests, never runs the next skill; stops at staging. Only the user's own `/factory run <label or reference>` makes it carry the chain out through the selected local executor after any missing reviewer choice — build, QA, a second agent's code review, merge into `local` or staging, handover to manual QA; it never closes an issue. |
 | `/incident-triage` | kit | companion | | An incident or outage needs a timeline, ranked causes with evidence, and owner-run mitigations. Read-only; production is never accessed. |
 | ask-matt | companion | | | You want Matt's upstream router for choosing a user-invoked skill flow. |
-| pr | companion | | | A PR body is being written — smallest visual that shows the change, before/after evidence, one-way or two-way door plus blast radius. Inside `/commit-push-pr` or a repo PR template it shapes the summary visual and wording only; mandated sections, order, and `Closes #N` stay. |
+| pr | companion | | | A PR body is being written — smallest visual that shows the change, before/after evidence, one-way or two-way door plus blast radius. Inside `/commit-push-pr` or a repo PR template it shapes the summary visual and wording only; mandated sections, order, and the target-required issue reference stay. |
 | retro | companion | | | A session is finished — especially one that went sideways — and the agent's environment should improve: navigation pointers, automated checks, coding standards, steering files. Proposes, never edits. User-invoked (`/retro`); do not auto-fire. |
 | wait-what | companion | | | The agent's last chat message did not land — re-pitch it with brief context, ASD-STE100 Simplified Technical English, and the ubiquitous language from `GLOSSARY.md`. |
-| unslop | companion | | | Free-prose output needs AI tells removed — chat narration, and PR/issue/doc prose the agent composes freely. Never applies to text a skill mandates verbatim: generated `AGENTS.md`, output templates, section names, field labels, canonical lines. |
-| blast-radius | companion | | | A change's blast radius needs proving — what it could break beyond the diff, with the one safety fact run against real code rather than a writeup. User-invoked (`/blast-radius`); do not auto-fire. |
-| show-me-your-work | companion | | | Long-running or unattended work needs a reviewable decision trail — a TSV log of what, why, evidence, and result that a human can audit after stepping away. User-invoked (`/show-me-your-work`); do not auto-fire. |
-| before-and-after | companion | | | A visible change needs a before and after screenshot pair, from two URLs, saved to a local folder. Images stay local: never pass `--markdown` or run its upload script, whose default host is public. |
-| code-structure | companion | | | The same operational logic is repeated across two or more flows, or a change must decide what belongs in an action and what in a shared service. |
-| evidence-driven-testing | companion | | | A change needs a recorded session as proof — an annotated screen recording of the app being driven, or measured numbers and output pairs for work with no screen. It adds evidence; `/agentic-qa` stays the QA gate. |
+| unslop | companion | | | Cursor prose cleanup before sending agent-written text or finalizing written content. Read and apply automatically under the workspace or ship-policy exception; preserve upstream metadata, technical literals, and mandated text. |
 | wizard | companion | | | A procedure hits steps only a human can perform (credentials, CI secrets, third-party dashboards, one-off migrations/cutovers) — generate an interactive bash walkthrough for them; never for steps the agent can do itself. |
 | to-questionnaire | companion | | | A decision needs knowledge the user lacks — turn it into a Markdown questionnaire the one person who can answer fills in async or in a meeting. |
 | domain-modeling | companion | | | Project terminology, aliases, or ADR-backed domain language need sharpening. |
@@ -102,7 +97,6 @@ Every folder under this repo's `skills/` must have a `kit` row here
 | notebooklm-py | companion | | | The user asks to work with NotebookLM sources or artifacts. |
 | agent-browser | companion | | | Browser automation, app QA, screenshots, scraping, or Electron app control is needed. |
 | herdr | companion | | | Running inside herdr and managing panes, tabs, or worker agents is needed. |
-| docker-expert | companion | | | Dockerfiles, Compose, images, containers, or registry workflows are central. |
 | Laravel Boost | companion | | | A Laravel project has Boost installed and Laravel-specific MCP context helps. |
 | Figma MCP | companion | | | A task references Figma designs, components, frames, tokens, or design-to-code. |
 | MySQL/Postgres MCP | companion | | | Approved local or staging database inspection is needed. Default read-only. |

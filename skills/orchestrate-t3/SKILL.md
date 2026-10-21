@@ -3,7 +3,7 @@ name: orchestrate-t3
 disable-model-invocation: true
 description: "Fan a spec (PRD) or issue list out to T3 Code worker threads, one worktree per group, and monitor them to done. Needs the T3 Code MCP. Inside herdr use /orchestrate-herdr; one issue is /tdd-loop."
 metadata:
-  version: "0.12.0"
+  version: "0.12.1"
 ---
 
 # Orchestrate T3
@@ -45,7 +45,7 @@ Fail fast before creating anything, naming what is missing:
 
 1. The T3 Code MCP server is connected and allows launches, per **Connect**. Not connected → print the setup lines from that section and stop.
 2. Resolve `TRACKER` / `TRACKER_TAG` per **Resolve** and run that tracker's access check.
-3. Each affected repository is a registered T3 Code project, per **Project**.
+3. The project selected by **Project** thread-binding policy is registered; workspace-bound runs reuse the workspace project.
 
 ### 2. Discover
 

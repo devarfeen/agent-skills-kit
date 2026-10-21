@@ -54,6 +54,29 @@ Lanes check these and report only findings with a concrete failure scenario.
 - A count ("3 consumers") appears beside the command that produced it.
 - A dismissed finding needs a passing assertion or a quoted line proving the dismissal, not an argument.
 
+## Simplification notes
+
+Within the changed code and its relevant callers, look for unnecessary new
+dependencies, speculative wrappers or options, and duplicated logic already
+handled by a project helper or platform feature. Follow project conventions;
+an abstraction's single implementation alone does not prove it is unnecessary.
+
+Report at most three verified opportunities, each with current-head `file:line`,
+the code or requirement that makes it unnecessary, a concrete maintenance cost,
+and the smallest alternative with its path or API. Before calling code unused,
+check callers, tests, configuration, and relevant dynamic registrations. Omit
+unsupported preferences and alternatives that weaken required behavior,
+validation, error handling, security, or accessibility.
+
+Put these in an optional `Simplification (advisory)` section of the verdict
+comment before its marker. Notes need maintenance evidence rather than a
+failing test; they are separate from risk findings and never change the tier,
+blocking count, marker, or merge conditions. All twelve high-risk triggers
+still apply: a new dependency remains high risk even when a note recommends
+removing it. A demonstrated failure is a risk finding and must meet the usual
+failure-scenario and proving-test requirements. This review proposes changes
+only; it grants no permission to make them.
+
 ## Examples
 
 - Copy fix in a Blade view, 3 lines, agentic-qa `verified` on head → no trigger → `low`.

@@ -3,7 +3,7 @@ name: local-to-staging
 disable-model-invocation: true
 description: "Promote every project from origin/local to origin/staging: open each PR, merge on green, watch the Actions runs. Never pushes or goes past staging. Production is /staging-to-production."
 metadata:
-  version: "2.1.1"
+  version: "2.1.2"
 ---
 
 # local-to-staging
@@ -75,7 +75,7 @@ gh pr view <pr> --repo <owner/repo> --json headRefOid,mergeable,baseRefName
 gh pr checks <pr> --repo <owner/repo> --watch --fail-fast
 ```
 
-Read back `baseRefName`; anything but the target stops that repo. `mergeable` = `CONFLICTING` → report and stop that repo; resolving conflicts is the owner's. `gh pr checks` printing `no checks reported` counts as no checks only when `gh pr view <pr> --json statusCheckRollup` returns an empty list. A failing check → report its name and URL, do not merge, suggest `/ci-loop`.
+Read back `baseRefName`; anything but the target stops that repo. `mergeable` = `CONFLICTING` → report and stop that repo; resolving conflicts is the owner's. `gh pr checks` printing `no checks reported` counts as no checks only when `gh pr view <pr> --json statusCheckRollup` returns an empty list. A failing check → report its name/URL; do not merge. Suggest `/ci-loop` only for an eligible feature head; default/deployment heads require repair through a permitted task branch.
 
 ### 4. Merge
 
@@ -113,7 +113,7 @@ local-to-staging — 3 merged, 1 nothing to promote, 1 skipped
 | LEGACY-CRM   | —    | —        | —                          | no origin/staging |
 ```
 
-Report deploy-job conclusion from the confirmed run; test-only success leaves deployment unverified. Live build and smoke stay unverified here; handoff completion grants no deployment/acceptance pass. At most 3 bullets, one per failure, each with the run URL and the quoted tail. Close with the `Suggested next skills (optional)` footer, 1–3 items: failed run → `/staging-fix`; failed PR check → `/ci-loop`; all green → `/deploy-watch` for a smoke check, or `/staging-to-production` when ready.
+Report deploy-job conclusion from the confirmed run; test-only success leaves deployment unverified. Live build and smoke stay unverified here; handoff completion grants no deployment/acceptance pass. At most 3 bullets, one per failure, each with the run URL and the quoted tail. Close with the `Suggested next skills (optional)` footer, 1–3 items: failed run → `/staging-fix`; failed PR check → the eligible-head repair route above; all green → `/deploy-watch` for a smoke check, or `/staging-to-production` when ready.
 
 ## Completion criteria
 

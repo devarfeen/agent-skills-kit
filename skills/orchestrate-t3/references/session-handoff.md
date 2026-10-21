@@ -18,7 +18,7 @@ Use Markdown list items so T3 and CLI render separate fields. Semantic emoji pro
 
 ## Human boundary
 
-When a unit truly needs a person, state why, owner, attempted recovery, preserved head and budgets, next automatic action after resolution, and the exact user action. Keep independent work running. Present three distinct, reasoned options in a numbered list, with one **Recommended** choice: each states action, benefit, cost and preserved gate. Offer only feasible, authorized paths; when fewer than three exist, label remaining slots unavailable with the reason. Retaining the parked unit for its owner is a valid option. Options never reset caps, weaken acceptance, grant access or bypass review. Do not ask for a choice while workers or authorized runtime work merely run. A pause/stop needs no unsolicited recovery menu.
+When a unit truly needs a person, state why, owner, attempted recovery, preserved head and budgets, next automatic action after resolution, and the exact user action. Keep independent work running. Offer up to three feasible, authorized options: each states action, benefit, cost and preserved gate. Recommend one when possible; otherwise explain why. State missing capabilities separately, without unavailable filler options. Retaining the parked unit for its owner is a valid option. Options never reset caps, weaken acceptance, grant access or bypass review. Do not ask for a choice while workers or authorized runtime work merely run. A pause/stop needs no unsolicited recovery menu.
 
 ## Durable handoff
 

@@ -3,12 +3,12 @@ name: commit-push-close
 disable-model-invocation: true
 description: "Ship issue work directly: structured commit, push, then close the issue with how-to-test steps. Use for commit, push, and close, or a bare ship it. A reviewable PR is /commit-push-pr."
 metadata:
-  version: "0.7.0"
+  version: "0.8.1"
 ---
 
 # commit-push-close
 
-The boundary against `/commit-push-pr`: same shared ship policy, but this skill closes the linked issue directly instead of ending in a PR with `Closes #N`.
+The boundary against `/commit-push-pr`: same shared ship policy, but this skill closes the linked issue directly instead of opening a PR with target-appropriate issue references.
 
 Issue commands show the GitHub default; a workspace-named tracker overrides them per **Tracker** in `references/ship-policy.md`.
 
@@ -43,7 +43,7 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
 
 5. **Draft the issue-close comment** using **How-to-test rules**. Apply **Check evidence and reuse** before shipping: inspect existing proof and run only missing or invalidated checks; put actual results and provenance in the draft. Verify each issue **Acceptance criteria** item by automated test or, for browser-visible behavior, a browser run in the mode required by the target policy, and put the acceptance report in the draft; an unmet criterion stops shipping unless the user defers it. If the plan isn't clear from the diff and repo, ask for the missing information before continuing.
 
-   Before presenting drafts, run the **Authorship policy** scrub and, if env files/keys changed, the **Env parity policy** sync pass.
+   Before presenting drafts, run the **Authorship policy** scrub and, if env files/keys changed, the **Env parity policy** verification.
 
 6. **Show the user the drafts** and wait for approval before any write action — one combined confirmation, not three:
    - Existing issue: commit message + close comment.

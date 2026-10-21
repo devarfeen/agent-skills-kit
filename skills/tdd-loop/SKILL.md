@@ -2,7 +2,7 @@
 name: tdd-loop
 description: "Kit TDD/red-green loop for changes, safe refactors and untested legacy code. Urgent production bug reports get local test-first fixes even if tests are requested later. Bare builds: /implement."
 metadata:
-  version: "0.2.0"
+  version: "0.3.1"
 ---
 
 # TDD loop
@@ -23,7 +23,7 @@ this procedure.
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output. Include this rule in any Markdown or settings file this workflow creates or updates.
 
-Work locally; never access production or create production-target PRs. Urgency never authorizes skipping the failing test.
+Work locally; never access production or create production-target PRs. Urgency alone grants no exception; an urgent hotfix follows the declared exception protocol, including regression-red proof before issue closure.
 
 1. **Restate the change as observable behavior.** One sentence: "when
    <input/action>, <observable result>." If you can't write that sentence, the
@@ -37,6 +37,14 @@ Work locally; never access production or create production-target PRs. Urgency n
    style, fixtures, and naming. If the
    seam choice is genuinely contestable, ask the user; if the user is away,
    state your choice and proceed.
+   Before choosing an implementation, check existing project helpers and
+   components, then standard-library or platform features, then installed
+   dependencies. Choose the first option that fully meets the acceptance
+   criteria and project conventions; an established project component takes
+   precedence over a native substitute. If none fits, write only the missing
+   behavior. Avoid a new dependency for a few clear lines, and keep validation,
+   error handling, security, and accessibility intact. Reuse follows the same
+   red/green checks and declared exception protocol.
 3. **Map acceptance criteria to tests.** Build the matrix in
    [`references/ac-matrix.md`](references/ac-matrix.md) — one row per criterion per path
    (happy, edge, failure, alternative), plus the span check. A running-app row closes with a suitable project E2E test; when no runner

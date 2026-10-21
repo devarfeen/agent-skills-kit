@@ -50,11 +50,29 @@ A fresh reviewer inspects what the builder produced; both settle findings on the
    proves, and each deferral or not-applicable reason that does not hold.
    Report these as findings; never add acceptance criteria.
 
+   After the code/criteria review, call the Skill tool with "risk-review"
+   where available, selecting `local`. Pass the pinned inputs above and your
+   candidate findings for its judge, not its discovery reviewers. On later
+   rounds preserve SINCE, affected callers and unresolved findings. The local
+   helper runs one round only; this is the same factory ROUND, not a new
+   three-round budget. Allow read-only child axes and a separate judge within
+   the existing capacity/depth grant; without that grant the parent dispatches
+   those bounded assignments. No independent review/judge capacity, missing
+   helper or changed revision → return incomplete and park; emit no clean
+   review marker. The helper writes only its local report. The enclosing
+   reviewer alone publishes the existing issue comment under run authorization.
+
+   Use the judge's confirmed actionable findings and unresolved material
+   claims as the numbered findings. Include each unresolved item's missing
+   evidence. Keep rejected/advisory items and their reasons in the linked
+   local report, with counts in the comment; they do not inflate findings.
+   Zero findings requires all selected axes and the judge to complete on the
+   unchanged revision. A builder's decline alone never closes a finding.
+
    Post one comment on ISSUE through TRACKER, headed
    `## Code review — <short-sha> · round <ROUND>`: numbered findings, each with
-   file and line, what is wrong, and why it matters for this issue. A declined
-   finding you accept is dropped; one you still hold stays, with your answer to
-   the reason given. On Linear use heading `## Code review` and readable fields
+   file and line, what is wrong, and why it matters for this issue. For declined findings, publish the judge's disposition and evidence;
+   confirmed or unresolved material findings remain open. On Linear use heading `## Code review` and readable fields
    Commit (full head SHA), Round, and Findings; emit no HTML marker.
    On GitHub retain `<!-- code-review: sha=<head-sha> round=<ROUND> findings=<n> -->`.
    Cannot post → end your message with the comment text instead.
@@ -69,7 +87,7 @@ A fresh reviewer inspects what the builder produced; both settle findings on the
    ```
 
    Set PROVENANCE to `allowed` with that reviewer's verified launch/execution identity only when the workspace instructions explicitly allow reviewer provenance ([`records.md`](records.md) **Reviewer provenance**); otherwise `not allowed`. Preserve host harness, coding agent, requested model and any exposed resolved model, including distinct axis identities; Auto without a resolved model says unavailable. A reviewer that could not post → the run preserves its findings and applies [`records.md`](records.md) formatting before posting to Linear. Read the comment back from the issue and compare the identity with the worker records; the thread's word is not the record.
-2. **Settled?** `findings=0` for head, from a review or a valid **Fix-only close** record → the loop ends; go to `risk-review`.
+2. **Settled?** `findings=0` for head, from a review or a valid **Fix-only close** record → the loop ends; go to `risk-review` in explicit PR mode; the local verdict does not satisfy RISK.
 3. **Answer.** Send the comment to the unit's builder through **Execution**; a stopped worker resumes on the same verified checkout. For each finding the builder either fixes it through `tdd-loop` and commits, or declines it with a reason; a finding outside the issue's scope is declined as such and listed under Needs user. Post each answer as `fixed <sha>` or `declined — <reason>`. Linear uses `## Code review reply` with Round, Fixed, Declined; GitHub retains `<!-- code-review-reply: round=<n> fixed=<n> declined=<n> -->`. Add the builder's verified `Builder` field per **Reviewer provenance** when permitted.
 4. **Again.** Commits were made → **After a fix**: the new head passes CI and QA again before the next review round. Then apply **Fix-only close**; when it does not hold, step 1 with the next round number.
 

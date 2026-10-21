@@ -1,0 +1,122 @@
+[
+  {
+    "id": "C11",
+    "instructions": [
+      "skills/orchestrate-t3/SKILL.md",
+      "skills/orchestrate-t3/references/t3-tools.md"
+    ],
+    "observations": "A workspace-bound run has one registered workspace project. Product repositories have verified worktrees but are not registered as T3 projects. The user requested this run; no setup change is approved. What does preflight require?"
+  },
+  {
+    "id": "C12",
+    "instructions": [
+      "skills/orchestrate-herdr/SKILL.md",
+      "skills/orchestrate-herdr/references/harness.md"
+    ],
+    "observations": "A harness worker was assigned read-only research with a cited findings report as its completion evidence. Its tab has that report, no code changes and no test run. A second worker changed code but says only tests pass without output. Decide completion for each."
+  },
+  {
+    "id": "C13",
+    "instructions": [
+      "skills/agents-md/assets/agents-md-template.md",
+      "skills/agents-md/assets/rules/shipping.md",
+      "skills/orchestrate-herdr/references/worker-prompt.md"
+    ],
+    "observations": "A herdr worker uses branch mode in a shared checkout. Workspace policy permits local engineering commits only in orchestration worktrees and local integration merges. Its implementation and tests are complete. Separately, a coordinator has an authorized local integration merge. Describe allowed commit/report actions."
+  },
+  {
+    "id": "C14",
+    "instructions": [
+      "skills/design-system/SKILL.md",
+      "skills/agents-md/assets/rules/verification.md"
+    ],
+    "observations": "A design-system preview renders, with screenshots and component evidence. Workspace rules require agentic-qa before human review. That QA has not run; the user asks what to inspect next. No implicit invocation of user-only skills is authorized."
+  },
+  {
+    "id": "C15",
+    "instructions": [
+      "skills/pixel-audit/SKILL.md"
+    ],
+    "observations": "Five audit rows were changed: four verified, one reopened because its geometry failed. Two unrelated rows remain open and unchanged. The final build still contains the failed row changes. Give the next-action and shipping suggestion."
+  },
+  {
+    "id": "C16",
+    "instructions": [
+      "skills/pr-feedback/SKILL.md"
+    ],
+    "observations": "User approved replying to a concern already fixed by commit A on the PR. No new code changed. Refreshed head still contains A and the code fix. Contrast a refreshed head that contains A but a later commit reverted its fix. No new shipping was requested."
+  },
+  {
+    "id": "C17",
+    "instructions": [
+      "skills/qa-escape/SKILL.md",
+      "skills/qa-escape/references/escape-classes.md"
+    ],
+    "observations": "Human QA reports a bug after direct issue closure with no PR. The handoff records delivered commit D and evidenced baseline B; tested revision T contains D. The bug reproduces twice on T and not on B. No remote write is approved. Also consider the same report with no evidenced baseline. Describe identity, class handling and output fields."
+  },
+  {
+    "id": "C18",
+    "instructions": [
+      "skills/agentic-qa/SKILL.md",
+      "skills/agentic-qa/references/qa-grid.md",
+      "skills/agentic-qa/references/qa-records.md"
+    ],
+    "observations": "The browser tester needs long-content data, but no suitable fixture exists. The app is task-local, database access is technically available, and runtime owner can prepare fixtures. No tester fixture-edit authority is provided. Describe the next action and whether to run INSERT statements."
+  },
+  {
+    "id": "C19",
+    "instructions": [
+      "skills/report-issue/SKILL.md",
+      "skills/report-issue/references/issue-body.md",
+      "skills/report-issue/references/batch.md"
+    ],
+    "observations": "An open tracker issue is an exact duplicate. The user approved a complete additional-evidence comment with one screenshot, not issue creation or field edits. The upload and comment succeed. Describe writes, read-back and completion output. The same duplicate is item 2 in a mixed batch."
+  },
+  {
+    "id": "C20",
+    "instructions": [
+      "skills/local-to-staging/SKILL.md",
+      "skills/ci-loop/SKILL.md"
+    ],
+    "observations": "Promotion PR head local is both the default and a deployment source. A CI check fails. No production access is available. Describe repair routing and merge action. Compare an eligible feature-branch head."
+  },
+  {
+    "id": "C21",
+    "instructions": [
+      "skills/commit-push-pr/SKILL.md",
+      "skills/commit-push-pr/references/ship-policy.md"
+    ],
+    "observations": "An authorized PR shipping iteration discovers a missing env example key and outdated setup docs. Later, after a separate authorized repair, a pre-commit hook fails on source formatting. Describe whether shipping edits those files, what stops, how it resumes and whether it bypasses/amends."
+  },
+  {
+    "id": "C22",
+    "instructions": [
+      "skills/commit-push-pr/SKILL.md",
+      "skills/agents-md/assets/rules/skills.md"
+    ],
+    "observations": "A PR targets the delivery branch local, which is the default. Its template and an optional PR-writing companion request Closes #87 at the top. The workspace closes only after manual QA. Describe the reference retained in the PR and why."
+  },
+  {
+    "id": "C23",
+    "instructions": [
+      "skills/agents-md/assets/agents-md-template.md",
+      "skills/orchestrate-t3/references/session-handoff.md",
+      "skills/factory/references/session-handoff.md"
+    ],
+    "observations": "A stopped run has only one feasible authorized recovery action. Two imagined alternatives need unavailable tools or access. The user needs an actionable choice. Describe the options without weakening gates."
+  },
+  {
+    "id": "C24",
+    "instructions": [
+      "skills/feature-prompt/SKILL.md"
+    ],
+    "observations": "A feature request has an agreed reuse decision supported by src/existing.ts and clear requirements. There is no unresolved seam choice. Draft the treatment of this decision and Open questions."
+  },
+  {
+    "id": "C25",
+    "instructions": [
+      "skills/port-feature/SKILL.md"
+    ],
+    "observations": "A gap map is complete. Its next planning step is grill-with-docs, and a remaining interaction uncertainty would benefit from a prototype. No implementation is requested. Describe the allowed footer and stopping point."
+  }
+]

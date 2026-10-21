@@ -1,0 +1,33 @@
+/agentic-qa               14/14 
+/agents-md                22/22 
+/ask-kit                  19/19 
+/ci-loop                  14/14 
+/commit-push-close        21/21 
+/commit-push-pr           21/21 
+/deploy-watch             14/14 
+/design-system            22/22 
+/factory                  21/21 
+/feature-discovery        21/21 
+/feature-prompt           22/22 
+/incident-triage          14/14 
+/integration-contract     22/22 
+/local-to-staging         20/20 
+/orchestrate-herdr        29/29 
+/orchestrate-t3           22/22 
+/pixel-audit              23/23 
+/polish-batch             21/21 
+/port-feature             22/22 
+/pr-feedback              18/18 
+/qa-escape                15/15 
+/release-notes            22/22 
+/report-issue             22/22 
+/risk-review              21/21 
+/staging-fix              15/15 
+/staging-to-production    20/20 
+/tdd-loop                 21/21 
+/using-git-worktrees      20/20 
+/writing-kit-skills       15/15 
+
+TOTAL 573/573
+wrote snapshot for 29 descriptions -> /home/arfeen/personal-projects/agent-skills-kit/tools/trigger-evals/last-run-descriptions.json
+record this real run's date, method, result, judge model, and catalog in each last_run

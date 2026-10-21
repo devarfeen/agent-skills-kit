@@ -4,6 +4,14 @@ Shared rules for `commit-push-close` and `commit-push-pr`. Both ship one issue i
 
 > Duplicated so each skill installs standalone; keep both copies byte-identical. Load this policy once per unchanged session, then consult the named sections for the active step. An earlier read of the sibling skill's copy counts only when neither file changed since that read and a hash (`sha256sum`, or `shasum -a 256`) shows them identical; otherwise read this copy in full. Templates and examples are needed only while drafting.
 
+## Automatic prose cleanup
+
+Before showing drafts or finalizing ship output, read and apply the installed Cursor `unslop`. This policy authorizes reading and following that explicit-only helper for prose cleanup, without changing upstream metadata or invoking it through the Skill tool when model invocation is disabled. No additional workflow or remote write is authorized.
+
+Resolve `SKILL.md` from session-provided paths or runtime skill directories, project-local before user-level. Reuse it while unchanged; reload after context loss, content changes, or changed resolution. If unavailable, report once per session and continue under existing writing rules.
+
+Clean only prose written or edited for this task. Preserve meaning, evidence, qualifications, technical names, code, commands, quotations, and required templates, markers, headings, field labels, issue-title formats, and canonical wording. Leave unrelated prose alone. Clean drafts before approval; a later change to approved text requires the workflow's existing draft approval again.
+
 ## Tracker
 
 The workspace's `AGENTS.md` (or its rules files) names the issue tracker of record. Default: GitHub Issues — the `gh issue` commands, `#N` identifiers, and label names throughout are that default. When the workspace names a different tracker (for example Linear via its MCP), keep every step of this policy but perform issue reads and writes through that tracker, using its identifier format, closing keywords, and label vocabulary as the workspace docs map them. If a step has no workspace mapping, stop and ask — never fall back to `gh issue` against a tracker the workspace does not use.
@@ -143,11 +151,11 @@ Applies to outputs from every supported coding-agent path: Codex CLI, Claude CLI
 
 ## Env parity policy (.env family + sample/example + docs)
 
-When env keys change in any way (add/remove/rename/value-contract), enforce all of the following in the same iteration:
+When env keys change (add/remove/rename/value-contract), verify parity before shipping. Missing permitted implementation changes stop shipping; list repairs for the authorized implementation workflow, then restart from **Read state** after they are made:
 
-- Keep key contracts synchronized in permitted local configuration and tracked sample/example files. Check workspace restrictions before reading any environment file, including local copies named for production or staging.
-- Keep `.sample.env` or `.example.env` updated with the latest keys and safe placeholder values.
-- Update README/docs where env keys, setup steps, or env behavior are referenced.
+- Verify key contracts agree in permitted local configuration and tracked sample/example files. Check workspace restrictions before reading any environment file, including local copies named for production or staging.
+- Verify `.sample.env` or `.example.env` contains the current keys and safe placeholder values.
+- Verify README/docs match the changed env keys, setup steps and behavior.
 - Do not open or modify restricted production/staging files or real secrets to satisfy parity. Record the key names and required owner action without values. If parity cannot be verified within the permitted scope, report that gap; never claim full parity or deployment readiness.
 
 ## Inline issue creation
@@ -330,7 +338,7 @@ Notes:
 - Scan the staged diff and every ship-output draft for credential-shaped values: private-key blocks, `ghp_`/`github_pat_`/`sk-`/`AKIA` tokens, URLs with embedded passwords. A hit stops before commit or post; report path and line, never the value.
 - Never force-push or rewrite pushed history. A rejected push goes under `Needs user:`; never retry it with `--force` or `--force-with-lease`.
 - For env-key changes, report permitted updates and restricted owner actions under **Env parity policy**.
-- Honor hooks. Never `--no-verify`. If a hook fails, fix the underlying issue and create a NEW commit (do not amend).
+- Honor hooks. Never `--no-verify`. A failed hook stops shipping: report the required repair, then restart from **Read state** after authorized implementation fixes. Use a new commit; never amend or bypass the hook.
 
 ## Ship completion criteria
 

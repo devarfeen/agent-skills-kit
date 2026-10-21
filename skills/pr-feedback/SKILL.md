@@ -3,7 +3,7 @@ name: pr-feedback
 disable-model-invocation: true
 description: "Address reviewer comments on an open GitHub PR: triage them for approval, apply accepted fixes, ship via /commit-push-pr, reply with commit SHAs. Reviewing a PR yourself is /code-review."
 metadata:
-  version: "0.2.2"
+  version: "0.2.3"
 ---
 
 # pr-feedback
@@ -57,7 +57,7 @@ Work through the accepted items on the head branch. A behavioural fix starts wit
 
 ### 6. Ship through /commit-push-pr
 
-/commit-push-pr is user-invoked, so no skill can start it. Stop with the tested local fixes, list them beside the approved disposition list, and tell the user to run `/commit-push-pr` on this head branch for the existing PR; its own approvals still apply. Continue at step 7 when it reports the pushed commit SHA(s) in this session. If it cannot update this PR's base or fork, the fixes stay local and the threads stay unanswered. If no code changed, skip shipping and post only approved non-fix replies.
+/commit-push-pr is user-invoked, so no skill can start it. Stop with the tested local fixes, list them beside the approved disposition list, and tell the user to run `/commit-push-pr` on this head branch for the existing PR; its own approvals still apply. Continue at step 7 when it reports the pushed commit SHA(s) in this session. If it cannot update this PR's base or fork, the fixes stay local and the threads stay unanswered. If no code changed, skip shipping. Post approved non-fix replies or approved already-fixed replies after confirming the cited commit and fix remain on refreshed PR head.
 
 ### 7. Answer the threads
 

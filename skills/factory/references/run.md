@@ -23,7 +23,7 @@ Mechanics for `run` mode. `SKILL.md` holds the loop; this file holds intake, sch
 
 ## Loading a stage skill
 
-Stage skills are user-invoked. Claude Code refuses a Skill-tool call for one and forbids repeating its steps another way, so the run starts a stage skill only as the user would: its slash command as the first token of a worker turn on the selected backend, with its arguments and a private brief the arguments name. The parent never calls the Skill tool for a stage skill and never performs its steps itself.
+User-invoked stage skills use the worker-turn procedure below. Claude Code refuses a Skill-tool call for one and forbids repeating its steps another way, so the run starts a stage skill only as the user would: its slash command as the first token of a worker turn on the selected backend, with its arguments and a private brief the arguments name. The parent never calls the Skill tool for a stage skill and never performs its steps itself.
 
 1. Confirm the skill is installed in the worker's runtime. Not installed → park the unit and name `npx skills add devarfeen/agent-skills-kit -g --skill <name>`.
 2. Submit `/<name> <args>` per the backend file: one line, no leading whitespace, short (herdr: under 700 characters, or a typed prefix plus pasted body). Put the brief, criteria source, checkout record and the facts its **Run authorization** needs in a private file the line names. Read the worker's first items back: a turn that shows no skill load ran no skill; resubmit once correctly, then park with `stage_skill_not_invoked`.
@@ -31,7 +31,7 @@ Stage skills are user-invoked. Claude Code refuses a Skill-tool call for one and
 4. Classify local setup/testability failures through **Readiness and recovery**, and stopped-worker failures through **Execution**, before parking. These exceptions repeat the original gate; **Execution** defines the factory-only post-commit resume exception. Every other refusal still stops the unit: an unmet criterion, a refused merge, missing authority or input, or an exhausted cap. Park with evidence; never do a refused step by hand.
 5. Where the skill stops, suggests a next skill, or ends, read its bounded report and place the unit again.
 
-A model-invoked skill (`tdd-loop`, `code-review`) is called with the Skill tool as usual. `using-git-worktrees` is user-invoked; an explicitly started `/factory run` may read it for its task-checkout setup only, through the backend's own worktree command and without a Skill-tool invocation. This exception grants no cleanup or unrelated workflow authorization.
+A model-invoked skill (`tdd-loop`, `code-review`, `risk-review`) is called with the Skill tool as usual in its assigned worker. For `risk-review`, REVIEW explicitly passes `local`; RISK explicitly passes `pr <number-or-url>` and the run authorization. The parent remains the supervisor, not the stage executor. `using-git-worktrees` is user-invoked; an explicitly started `/factory run` may read it for its task-checkout setup only, through the backend's own worktree command and without a Skill-tool invocation. This exception grants no cleanup or unrelated workflow authorization.
 
 ## Start
 

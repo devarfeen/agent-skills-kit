@@ -86,6 +86,12 @@ installs. `/using-git-worktrees` is user-invoked only. An explicitly started
 `/orchestrate-t3` or `/factory run` may read and follow it for checkout setup;
 other workflows do not invoke it automatically.
 
+Cursor’s `unslop` has a separate prose-only exception: workspace instructions
+and standalone ship policies authorize reading and applying its installed rules
+automatically. Preserve upstream metadata and mandated text; do not use a
+disabled Skill-tool invocation or turn cleanup into permission to publish.
+Keep this integration in the kit rather than editing the upstream companion.
+
 Keep handoffs narrow. Worktree setup returns its verified checkout to the
 already-requested task; it never authorizes a new implementation or shipping
 workflow. Third-party interlocks live in the `agents-md` assets
@@ -97,9 +103,23 @@ Worktree documentation uses `<project-repo>/.worktrees/<task-name>` and the
 `/.worktrees/` entry in that repo's `.gitignore`. Explain the source ignore edit
 and its task-branch copy without promising an entirely untouched source tree.
 Shipping uses the verified task checkout; merge and cleanup are separate.
-Keep the human example in `GUIDE.md`, concise usage in `README.md`, and the
-reasoning and failure patterns in `BEST-PRACTICES.md`. Do not load those guides
+Keep installation and the full procedure in `GUIDE.md`, a link in `README.md`,
+and the reasoning and failure patterns in `BEST-PRACTICES.md`. Do not load those guides
 into generated instructions.
+
+### Adapt external ideas into local skills
+
+Put a useful idea in the local skill that owns the decision. For example,
+`/tdd-loop` owns the reuse-first implementation choice, and `/risk-review`
+owns optional simplification advice. Preserve each skill's scope, test proof,
+approval requirements, and output markers. Maintenance advice stays separate
+from risk findings; it does not add a merge gate or waive an existing trigger.
+
+Credit the source under README's **Credits And Provenance** and in the guide's
+matching section. Explain which ideas were adapted and whether any separate
+installation is needed. Keep companion bundles out of this repository.
+Update the relevant workflow examples and behavior cases with the skill;
+record observed modeled decisions separately from actual runtime tests.
 
 ### Token budget (three-tier loading)
 
@@ -238,7 +258,8 @@ Score a new or changed skill against these before approving. A "no" on any of
 This is the **merge gate** — pass/fail, per PR. For ranking skills against each
 other and deciding where the next edit goes, [`evals/`](evals/) carries the
 scored instrument: eleven categories, 1–5 anchors, and per-skill results at
-`skills/<name>/evals/` (`rubric.md`, `baseline.md`, `final.md`, `test-cases.md`).
+`skills/<name>/evals/` (`rubric.md`, `test-cases.md`); fresh results live in
+[`evals/current/`](evals/current/README.md).
 The nine below are a subset of the eleven.
 When the two disagree, this file wins — it is what CI enforces.
 
@@ -313,7 +334,7 @@ eval pass.
 | A skill's frontmatter `description` (at most 200 characters — `validate.sh` check 19; what it does in one clause, the main trigger, and the nearest sibling) | Re-run the trigger evals, restamp that skill's `last_run`, and refresh `tools/trigger-evals/last-run-descriptions.json` (`score.py … --write-snapshot --record-run --judge-model <actual-model>`). Check 10 validates descriptions, query content, the complete catalog and invocation policies; any changed input requires a new sweep |
 | Any file in a skill folder outside `evals/` | That skill's `metadata.version` — patch, minor, or major per the one-minute version; `validate.sh` check 16 |
 | A stage `/factory run` loads, or a stage skill's approval gate | `skills/factory/references/run.md` (stage map), the late-stage file it names (`review-and-delivery.md`, `returned-by-qa.md`) and that skill's **Run authorization** line stay in agreement; a ship-policy change moves both copies |
-| A step that tells the agent to run another skill | The house rule in `skills/writing-kit-skills/SKILL.md` ("Calling another skill"): name the Skill-tool call for a model-invoked target; for a user-invoked target, tell the user to run it, except the documented user-started factory stage chain and T3/factory checkout-helper loading |
+| A step that tells the agent to run another skill | The house rule in `skills/writing-kit-skills/SKILL.md` ("Calling another skill"): name the Skill-tool call for a model-invoked target; for a user-invoked target, tell the user to run it, except the documented user-started factory stage chain, T3/factory checkout-helper loading, and prose-only reading of Cursor’s `unslop` |
 | Added/removed/renamed a skill, or changed where it sits in the workflow | The map in `skills/ask-kit/SKILL.md` — a router that omits a skill, or still names a removed one, misroutes |
 | Any skill behavior change | A dated `CHANGELOG.md` entry with the skill's new version |
 | A skill's `disable-model-invocation` flag | Its `agents/openai.yaml` mirror (`allow_implicit_invocation: false`) — parity enforced by `validate.sh` check 11 |

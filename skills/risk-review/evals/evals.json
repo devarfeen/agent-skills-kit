@@ -53,7 +53,7 @@
     {
       "q": "Prove what this change could break beyond the diff",
       "expect": "no-trigger",
-      "route": "blast-radius"
+      "route": "none"
     },
     {
       "q": "Merge PR 87 now",
@@ -64,13 +64,43 @@
       "q": "Open a PR for this issue",
       "expect": "no-trigger",
       "route": "/commit-push-pr"
+    },
+    {
+      "q": "Run local adversarial reviewers and an independent judge on my uncommitted implementation; no PR exists.",
+      "expect": "trigger"
+    },
+    {
+      "q": "implement has finished code-review. Run the local adversarial review before reporting completion.",
+      "expect": "trigger"
+    },
+    {
+      "q": "implement-spec integrated the tickets. Challenge the combined branch with five reviewers and judge their findings.",
+      "expect": "trigger"
+    },
+    {
+      "q": "Use risk-review local to challenge the tests and implementation assumptions; do not publish anything.",
+      "expect": "trigger"
+    },
+    {
+      "q": "The adversarial local reviewers disagree. Independently judge their code evidence and report unresolved claims.",
+      "expect": "trigger"
+    },
+    {
+      "q": "Write a regression test and implement the fix for this failing endpoint.",
+      "expect": "no-trigger",
+      "route": "/tdd-loop"
+    },
+    {
+      "q": "Please review this PR for our coding standards, without classifying merge risk.",
+      "expect": "no-trigger",
+      "route": "/code-review"
     }
   ],
   "last_run": {
-    "date": "2026-10-16",
+    "date": "2026-10-21",
     "method": "3 independent fresh catalog-only judges; majority vote; no workflow execution",
-    "result": "565/565 pass",
-    "judge_model": "Claude Opus 5.5 (claude-opus-5-5), inherited session model",
-    "catalog": "live kit descriptions and invocation policies + catalog-externals.md; 94792c376f080bf04155445a128a7c02ffa54c2c + uncommitted changes"
+    "result": "573/573 pass",
+    "judge_model": "Actual model identities not exposed; three independent fresh catalog-only sessions",
+    "catalog": "live kit descriptions and invocation policies + catalog-externals.md; 457a25430f64799475610bff9490fb5dce082f16 + uncommitted changes"
   }
 }

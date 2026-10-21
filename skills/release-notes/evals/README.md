@@ -1,16 +1,15 @@
 # Evals — `/release-notes`
 
-This skill owns its evals. Everything needed to judge `/release-notes` is in this folder.
+This folder keeps reusable tests for `/release-notes`. Observed results live in the current audit.
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issue comments, release notes, generated docs, settings, or code comments.
 
 | File | What it is |
 | :--- | :--- |
 | [`evals.json`](evals.json) | The routing test set, plus the `last_run` evidence record |
+| [Current audit](../../../evals/current/README.md) | Fresh findings, observed results and validation limits |
 | [`test-cases.md`](test-cases.md) | Readable form of the test set, with the sibling each negative routes to |
 | [`rubric.md`](rubric.md) | How to score: routing pass bar + the eleven quality categories |
-| [`baseline.md`](baseline.md) | Scores before the improvement pass |
-| [`final.md`](final.md) | Scores after, and any blocker |
 
 ## Running the trigger eval
 
@@ -31,8 +30,7 @@ routing is only meaningful against the full catalog of competitors.
 
 The `last_run` block in `evals.json` names the judge model, method, date, and result of a **real**
 run. Never refresh, restamp, or fabricate it. A stale-but-honest record beats a fresh-looking
-invented one — and a stale record is exactly how the kit once carried a 280/280 claim while actually
-scoring 277/280, after a description changed and nobody re-ran.
+invented one. Re-run the sweep after a routing-input change; never restamp an old result.
 
 Editing this skill's frontmatter `description` invalidates the recorded result.
 Before committing that edit, complete the three-judge run and use the scorer's

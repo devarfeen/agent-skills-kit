@@ -1,4 +1,4 @@
-<!-- agents-md marker · v52 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v54 · re-run /agents-md to regenerate -->
 # Agent instructions
 
 [one concise, factual workspace intro inferred from the .code-workspace name and folder scan — no promotional adjectives]
@@ -72,7 +72,7 @@ Skills are ad-hoc tools, not a pipeline: pick the installed skill that fits the 
 - After the authorized workflow, suggest a next skill when one fits and stop. A suggestion never authorizes a new workflow.
 - Companions are optional, separately installed helpers, never authority — repo code, tests, ADRs, `GLOSSARY.md`, and user instructions win. If one is missing, say so and use the best local fallback.
 - Use MCPs only for the current task. Database MCPs: the narrowest approved connection, read-only unless the user approves a specific write.
-- Style skills (e.g. unslop) rewrite free prose only. Text a skill mandates verbatim — templates, markers, section names, field labels, issue-title formats — is emitted exactly.
+- Before sending prose or finalizing written content, apply automatic unslop cleanup from `rules/skills.md`. Preserve required templates, markers, field labels, and canonical text exactly.
 
 ### 7. Read code & project context
 
@@ -138,4 +138,4 @@ Every added or modified logical code block gets a new or updated nearby comment 
 
 ### 16. Shipping is owned by the ship skills
 
-Nothing commits, pushes, opens a PR, or closes a delivery issue outside the ship skills. Any other skill that says to commit stops and hands off: report what is ready; do not stage, commit, or push. Local task-branch commits inside orchestration worktrees are the one exception. Detail: `rules/shipping.md`.
+Nothing commits, pushes, opens a PR, or closes a delivery issue outside the ship skills. Any other skill that says to commit stops and hands off: report what is ready; do not stage, commit, or push. Local engineering exceptions are defined only in `rules/shipping.md`.

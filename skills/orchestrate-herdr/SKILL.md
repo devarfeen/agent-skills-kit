@@ -1,9 +1,9 @@
 ---
 name: orchestrate-herdr
 disable-model-invocation: true
-description: "Fan a spec (PRD) out to per-issue herdr tabs, each running a coding CLI (claude, codex, opencode), and monitor to done. No tab, CLI or runtime named: /ask-kit. Tab action, no spec: herdr companion."
+description: "Dispatch spec (PRD) sub-issues to worker tabs; monitor to done. Tab, CLI, or runtime context selects herdr; without any of these: /ask-kit. Tab actions without spec/sub-issues: herdr companion."
 metadata:
-  version: "0.6.0"
+  version: "0.7.0"
 ---
 
 # Orchestrate herdr
@@ -32,7 +32,7 @@ Fan work out to one herdr-managed worker tab per unit (tracker sub-issue or harn
 - **Isolation is the user's choice, and herdr's job.** Keep the orchestrator's working directory. Create worktrees only in selected `worktree` mode through `herdr worktree create`, never hand-rolled Git. Verify project-owned placement per Intake before launch; unsupported placement blocks that worker. `branch` and `shared` tabs start in the orchestrator's folder, which must be the assigned repository's checkout.
 - **Saved IDs only.** Every submit, read, monitor, and follow-up call uses a tab ID and agent name saved at creation — never the active tab, latest tab, visual order, or a guess.
 - **Prompts are pasted and submitted into a ready CLI** — never passed as launch arguments/flags, never left staged or unsent, and **never pasted into a dead tab's shell**, where the prompt text would execute as commands.
-- **Completion requires test evidence:** the worker's test command plus its quoted passing output, read from the tab, and in spec mode an `AC map:` line covering every acceptance criterion. An unquoted "tests pass" or a criterion missing from the map stays incomplete; a worker's report is a claim until read from its tab.
+- **Read completion evidence from the tab.** Code tasks require the test command and quoted passing output; non-code harness tasks require their assigned evidence. Spec tasks also require an `AC map:` covering every criterion. Missing proof stays incomplete; a summary alone is a claim.
 - **Suggest, never auto-chain.** After the final report, suggest `/agentic-qa` for each PR whose `AC map` owes rows to it, `/code-review` on the workers' diffs, or `/release-notes` for what shipped — suggest only, then stop.
 
 ## Workflow
@@ -78,7 +78,7 @@ A worker is not launched until its tab ID and agent name are saved, its prompt i
 
 **Spec:** fill [`references/worker-prompt.md`](references/worker-prompt.md), one issue per worker. **Harness:** append its footer and checkout binding to that worker's prompt. Pass applicable instructions and the saved checkout record; workers verify identity and baseline before edits. Local lanes when useful; never cloud.
 
-Workers without `/tdd-loop` still owe test evidence; say so in the launch update.
+Code workers without `/tdd-loop` still owe test evidence; say so in the launch update.
 
 ### 6. Monitor
 
@@ -87,19 +87,19 @@ Wait on lifecycle state per **Watch** — it reacts the moment a worker settles,
 - **States:** `blocked` → an approval or question UI; surface under Needs user, never relaunch or answer it. `idle` / `done` → read the tab for the report. `working` → leave it.
 - **Stalls:** `unknown` never proves completion. After a start, submit, or wait error, inspect state and output before retrying; a timeout can follow successful submission. Agent gone → redo Launch workers once after confirming its process exited. A live long test stays running; silence alone never makes it blocked. Report a blocker only with an observed failure or missing human decision.
 - **Labels:** human blocker on a tracker-assigned worker → `ready-for-human` and a decision comment per **Block**. Never edit issue titles (no `BLOCKER:`, `AFK:`, or `HITL:` markers).
-- **Completion:** apply the test-evidence rule per issue — read the tab per **Read** and quote the passing output.
+- **Completion:** read each tab per **Read**; quote passing test output for code tasks, assigned evidence for non-code tasks.
 - **Status board:** on every state-change wake, emit a one-line count — `N running · M completed · K blocked/needs-user` — naming any tab whose state changed.
 
 ### 7. Report
 
-Report mode, agent, isolation, workspace/session ID, folder, tab map and assignments, each end state, decisive test tail, and `AC map` / `Decisions` / `Open items` (`AC map` in spec mode). In `worktree`/`branch` mode, list files changed by multiple branches (`git diff --name-only <base>...<branch>`) as merge risk.
+Report mode, agent, isolation, workspace/session ID, folder, tab map and assignments, each end state, task evidence, and `AC map` / `Decisions` / `Open items` (`AC map` in spec mode). In `worktree`/`branch` mode, list files changed by multiple branches (`git diff --name-only <base>...<branch>`) as merge risk.
 
 ## Completion criteria
 
 - [ ] The final tab map accounts for every worker in the set (discovered sub-issues or harness **WORKERS**), including failed launches and exited workers; saved IDs and end states match read-back
 - [ ] Each tab, read back, shows its submitted prompt and a worker response — nothing staged or unsent
-- [ ] Each launched worker's checkout record and instruction pointers match its prompt; write-task reports include baseline and first-write identity evidence
+- [ ] Each launched worker's checkout and instructions match its prompt; write tasks report baseline and first-write identity
 - [ ] In `worktree` or `branch` mode, each worker's commits land on that issue's branch and no other
-- [ ] Every sub-issue's end state is reported: completed with quoted test command, passing output, and (spec mode) its `AC map` line, blocked, or errored
+- [ ] Every worker is completed with code-test or assigned non-code evidence (plus spec `AC map`), blocked, or errored
 - [ ] Each blocked tracker-assigned issue shows `ready-for-human` and a decision-naming comment in the **Verify** read-back, title unchanged
 - [ ] The transcript ends with the final report and the `/agentic-qa` / `/code-review` / `/release-notes` suggestion — nothing after it

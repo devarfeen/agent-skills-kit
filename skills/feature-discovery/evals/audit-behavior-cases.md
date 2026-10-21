@@ -11,7 +11,7 @@ only the fixture inputs below. Withhold acceptance checks and prior results.
 Request ordered actions, questions/pauses, and the proposed user-facing report.
 Score all observable requirements for a case, not just whether its heading
 appears. Record actual decisions and limitations in
-[behavioral-results.md](behavioral-results.md); distinguish simulations from
+[current audit](../../../evals/current/README.md); distinguish simulations from
 executed commands and live observations. Never restamp routing evidence for a
 body-only review.
 

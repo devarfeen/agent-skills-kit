@@ -82,13 +82,17 @@
       "q": "Fix CI on PR 87",
       "expect": "no-trigger",
       "route": "/ci-loop"
+    },
+    {
+      "q": "Which kit skill should I use for adversarial local review with a judge? Explain the workflow, do not run it.",
+      "expect": "trigger"
     }
   ],
   "last_run": {
-    "date": "2026-10-16",
+    "date": "2026-10-21",
     "method": "3 independent fresh catalog-only judges; majority vote; no workflow execution",
-    "result": "565/565 pass",
-    "judge_model": "Claude Opus 5.5 (claude-opus-5-5), inherited session model",
-    "catalog": "live kit descriptions and invocation policies + catalog-externals.md; 94792c376f080bf04155445a128a7c02ffa54c2c + uncommitted changes"
+    "result": "573/573 pass",
+    "judge_model": "Actual model identities not exposed; three independent fresh catalog-only sessions",
+    "catalog": "live kit descriptions and invocation policies + catalog-externals.md; 457a25430f64799475610bff9490fb5dce082f16 + uncommitted changes"
   }
 }

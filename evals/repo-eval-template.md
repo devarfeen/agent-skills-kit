@@ -1,5 +1,7 @@
 # Repo eval
 
+Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
+
 Kit-wide health. Skills can each score 5/5 and the kit still be broken — this
 sheet catches what per-skill scoring cannot see.
 
@@ -43,7 +45,7 @@ Green is a gate, not a score. It proves nothing about whether the skills are goo
 
 ## Kit score
 
-Average the per-skill averages from each `skills/<name>/evals/final.md`.
+Average the per-skill averages from the per-skill entries in `evals/current/skills-audit.md`.
 Record the date, the rubric version, and how many readers scored each skill —
 a single-reader pass and a panel are not the same evidence.
 

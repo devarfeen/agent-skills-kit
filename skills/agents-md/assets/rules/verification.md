@@ -1,4 +1,4 @@
-<!-- agents-md marker · v52 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v54 · re-run /agents-md to regenerate -->
 # Verification
 
 Zero attribution: never add co-author, AI, or tool attribution to any output.

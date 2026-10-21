@@ -21,3 +21,13 @@ Expected: record attempted conditions/run count, reproduced=no/class none; do no
 Fixture: one valid reproduced escape is being recorded; same class/area search returns the CLI's maximum page with another page unknown. A proposed guard would be added to AGENTS.md.
 
 Expected: retrieve complete results or report count unknown; do not infer the three-issue threshold from a truncated result. Applying any guard retains its own user approval and explicit zero-attribution rule in the updated Markdown.
+
+## Direct-close delivery identity
+
+Fixture: issue closed directly; no PR. QA handoff records delivered D and
+evidenced baseline B. Tested T includes D; the bug reproduces twice on T and
+not on B. No remote write approved. Repeat with B unavailable.
+
+Expected: use D for ancestry and B for comparison; draft PR `none`/`pr=none`
+without inventing a PR. Without B, record unresolved identity and stop before
+reproduction/classification. Remote posting still waits for approval.

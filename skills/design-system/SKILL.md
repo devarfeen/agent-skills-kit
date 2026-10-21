@@ -3,7 +3,7 @@ name: design-system
 disable-model-invocation: true
 description: "Once per UI project: turn a design system (Figma, spec, reference screens, or a guided definition when no designs exist) into tokens, a UI library, a preview page, and an AGENTS.md rule; extend later."
 metadata:
-  version: "0.2.0"
+  version: "0.2.1"
 ---
 
 # design-system
@@ -46,7 +46,7 @@ Full first run; an existing design-system doc or library → switch to `extend`.
 3. **UI library** — build the base components (buttons, inputs, selects, toggles, cards, alerts, badges, …) from the tokens, faithful to the source.
 4. **Preview page** — one page/route/screen rendering every component in its states (default/hover/focus/disabled/active; empty/loading/error where relevant; responsive) — the verification gate, in two halves:
    - **Agent half — evidence first.** Build/serve the target, load the preview, and check every extracted component appears with no error output. A rendered screenshot is the evidence floor; served HTML substitutes only for server-rendered web output. Client-only web and native stacks require a screenshot or rendered DOM/tree snapshot from the local browser or simulator. Quote the evidence: URL/file, status, screenshot path or stated fallback, and the rendered component list checked off against the extracted inventory. A bare aggregate count is not evidence.
-   - **Human half — the gate.** Show the user how to open the preview and ask them to eyeball it. If the user is away, state the preview location and the agent-half evidence, record the eyeball as pending in the phase update, and continue to the suggestions — never claim the design system verified until they have looked.
+   - **Human half — the gate.** If workspace policy requires `/agentic-qa` first and its proof is missing, mark human inspection pending and suggest that QA step; do not auto-invoke it. Once applicable QA gates pass, show the preview location and ask the user to eyeball it. If the user is away, state the preview location and the agent-half evidence, record the eyeball as pending in the phase update, and continue to the suggestions — never claim the design system verified until they have looked.
    Where a snapshot harness exists, add a minimal render/snapshot test per base component.
 5. **Register** — write the doc, the AGENTS.md reference, and the project UI skill (below).
 
@@ -86,8 +86,8 @@ Emit the phase update and stop:
 ```markdown
 Stage: design-system (<bootstrap|extend>) — tokens+library+preview for <TARGET-PROJECT-CODE>; doc <docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md; AGENTS.md reference added; <ui-skill name> seeded/extended.
 Found: <N> tokens, <M> components (<states covered>); source = <DESIGN.md|project UI skill/library|Figma|spec|reference|guided(approved)>; contrast <all AA | N failing pairs>; stack = <from matrix>.
-Next: open <preview location>, eyeball every component/state; then `/feature-prompt` for the first feature.
-Needs user: verify the preview; confirm guided choices, failing contrast pairs, or DS/stack deviations.
+Next: <required agent QA pending: run /agentic-qa; otherwise open preview and inspect every component/state>. Then /feature-prompt for the first feature.
+Needs user: <agent QA pending: start the required QA; otherwise verify the preview>; confirm guided choices, failing contrast pairs, or DS/stack deviations.
 
 Suggested next skills (optional):
 - /feature-prompt: begin the first feature — it consumes this library.

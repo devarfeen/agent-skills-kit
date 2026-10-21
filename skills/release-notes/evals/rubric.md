@@ -14,7 +14,7 @@ judge agents** that route each query using only the catalog, then take a majorit
 - A `no-trigger` query passes when a valid majority picks another catalog entry or `none`. Missing, malformed, or split votes do not pass. Its `route` field is
   diagnostic, not pass/fail.
 
-Pass bar: **22/22**. Anything less is a description defect, not a query defect.
+Pass bar: every query in `evals.json` passes. Investigate failures against the catalog and intended boundary; never delete a failing query to inflate the score.
 
 ## 2. Quality (body)
 

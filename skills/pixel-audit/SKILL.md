@@ -3,7 +3,7 @@ name: pixel-audit
 disable-model-invocation: true
 description: "Audit ONE page or route for visual conformance against Figma or reference screens, fix gaps with the UI library, and verify at element level. Not feature porting; never auto-chains."
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
 ---
 
 # Pixel audit
@@ -111,12 +111,12 @@ After in-scope fixes:
 ```markdown
 Stage: pixel-audit — audited <page-slug> (<TARGET-PROJECT-CODE>) vs <source of truth>; wrote specs/pixel-audit/<TARGET-PROJECT-CODE>-<page-slug>-defects.md.
 Found: <N> defects (<M> MISSING, <E> EXTRA); <V> verified, <R> reopened; <U> EXTRA items awaiting your decision.
-Next: /code-review the diff, then /commit-push-*. Reopened rows and EXTRA decisions stay for the next pass.
+Next: <resolve reopened changed rows; otherwise /code-review, then /commit-push-* for verified changes>. Untouched open rows and EXTRA decisions stay for the next pass.
 Needs user: <EXTRA items to decide (keep/remove/restyle), or blocked states, or "none">.
 
 Suggested next skills (optional):
 - /code-review: eyeball the in-scope diff before shipping.
-- /commit-push-pr (or /commit-push-close): ship the verified fixes.
+- /commit-push-pr (or /commit-push-close): only when every changed row included in the shipment is verified.
 ```
 
 Do not proceed past the suggestion.

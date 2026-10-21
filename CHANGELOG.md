@@ -7,6 +7,87 @@ their new versions, so a workspace on an older copy can see what an update
 brings. Generated `AGENTS.md` files carry the `agents-md` marker version;
 re-run `/agents-md` after a marker bump.
 
+## 2026-10-21
+
+### Changed
+
+- Fresh-audit fixes: `/orchestrate-t3` 0.12.1 follows workspace project
+  binding; `/orchestrate-herdr` 0.7.0 separates code and non-code completion
+  evidence and respects workspace commit authority. `/agents-md` 0.8.0 uses
+  one local-commit definition. T3 and `/factory` 5.15.0 offer only feasible
+  recovery choices, without padded unavailable options.
+- `/design-system` 0.2.1 honors required agent QA before human preview;
+  `/pixel-audit` 1.0.1 gates shipping suggestions on verified changed rows;
+  `/agentic-qa` 0.9.1 leaves fixture preparation with its owner.
+- `/qa-escape` 1.2.0 accepts direct-close delivery evidence without inventing
+  a PR; missing delivery or baseline proof remains unresolved. `/pr-feedback`
+  0.2.3 supports approved replies for existing verified fixes. `/report-issue`
+  0.1.2 keeps duplicate comments separate from issue creation.
+- `/local-to-staging` 2.1.2 preserves ci-loop's forbidden-head boundary when
+  routing failures. `/commit-push-pr` 0.11.1 and `/commit-push-close` 0.8.1
+  verify env parity and hooks without making implementation repairs. PR
+  reference wording follows the resolved target's existing closure policy.
+- `/feature-prompt` 0.3.1 keeps settled seam decisions out of open questions;
+  `/port-feature` 0.2.1 ends at its existing advisory footer.
+- `/risk-review` 1.0.0 adds model-invoked local adversarial review with separate
+  reviewers and an independent judge. Its explicit PR mode keeps the fixed
+  risk rubric and remote-write approvals. Local reports never grant merge
+  permission. The PR procedure now lives in a reference loaded only for PR mode.
+- `/agents-md` 0.8.0 (marker `v54`) calls local review after Matt’s
+  `/code-review` boundary. `/implement-spec` reviews the combined branch once
+  per round. `/factory` 5.15.0 uses the same reviewer-and-judge process inside
+  its existing review budget and preserves its fix-only exception. Upstream
+  skills and shipping limits stay unchanged. `/ask-kit` 0.2.0 includes the
+  local-review route. Re-run `/agents-md` to refresh workspace rules.
+- `/tdd-loop` 0.3.1 aligns its urgency rule with the existing declared hotfix
+  exception: regression-red proof against the old commit is required before
+  issue closure, and no production authority is granted.
+- Replaced historical audit results with one fresh audit under `evals/current/`.
+  Reusable fixtures, cases, rubrics and routing tools are retained. Results
+  distinguish static review, modeled behavior, routing and executed validation.
+- Removed retired companion recommendations from installation commands,
+  guides, generated companion lists, and evaluation inputs. `/agents-md`
+  0.7.1 uses the reduced companion manifest; re-run it to refresh an existing
+  workspace's companion list.
+- Moved worktree installation and instructions into `GUIDE.md`, with a link
+  from README. Clarified workflow steps, why each is needed, and the order of
+  local verification, PR creation, and PR checks. Explained when an explicit
+  factory run may continue automatically and when it must stop.
+- `/risk-review` 0.7.1 clarifies that general change-impact checks belong to
+  `/code-review`; its own scope remains an open PR with green CI.
+  `/orchestrate-herdr` 0.6.2 clarifies that worker-tab requests supply enough
+  context to select its existing dispatch workflow. Routing tests exposed
+  both ambiguities; the workflows and test queries are unchanged.
+- Aligned the README, usage guide, best practices, and contributor guide with
+  reuse-first implementation and advisory review notes. Added practical usage
+  and evidence guidance, corrected stale workflow descriptions, and credited
+  Ponytail under **Credits And Provenance**.
+- `/tdd-loop` 0.3.0 checks project code, standard-library or platform features,
+  and installed dependencies before adding new behavior. The first option
+  must meet all acceptance criteria and project conventions; reuse keeps the
+  existing test-first checks, exception protocol, and safety requirements.
+- `/risk-review` 0.7.0 can include up to three evidence-backed simplification
+  notes within its current review scope. These are advisory and change no
+  tier, blocking count, verdict marker, or merge condition. These two skills
+  adapt Ponytail ideas without installing the companion or adding a new gate.
+- `/agents-md` 0.7.0 (marker `v53`) automatically reads and applies Cursor’s
+  `unslop` before sending agent-written prose or finalizing written content.
+  `/commit-push-pr` 0.11.0 and `/commit-push-close` 0.8.0 carry the same
+  permission in their standalone ship policies. Upstream skill metadata stays
+  unchanged. Meaning, evidence, technical text, quotations, and required
+  templates and markers stay exact. Cleanup grants no publishing permission.
+- `/writing-kit-skills` 0.5.0 documents the narrow permission to read and
+  follow explicit-only `unslop` for prose cleanup.
+- `/report-issue` 0.1.1 clarifies that its existing reporting workflow accepts
+  single and batch reports. The routing sweep exposed batch requests being
+  mistaken for spec slicing; the workflow itself is unchanged.
+- `/orchestrate-herdr` 0.6.1 clarifies its existing sub-issue dispatch to worker
+  tabs so those requests do not route to `/ask-kit`. No workflow changes.
+- Updated companion recommendations and install commands to use Cursor’s
+  `unslop`; retired companion references have been removed. Ponytail was
+  evaluated and remains uninstalled; its selected ideas are built into local
+  skills rather than added as a workflow step.
+
 ## 2026-10-17
 
 ### Changed
@@ -353,9 +434,9 @@ re-run `/agents-md` after a marker bump.
 - **Boundary corrections** — `/incident-triage` 0.2.0, `/staging-fix` 0.3.0,
   `/staging-to-production` 0.1.0 and `/pr-feedback` 0.2.2 retain environment and
   attribution constraints. Canonical standalone-install copies remain identical.
-- **Local Codex profile** — disable overlapping `new-feature`, user-level
-  `skill-creator`, and `tdd` entries; preserve their installed files. The kit
-  retains checkout setup, the built-in creator, and `tdd-loop` respectively.
+- **Local Codex profile** — disable user-level `skill-creator` and `tdd`
+  entries; preserve their installed files. The kit retains the built-in creator
+  and `tdd-loop` respectively.
 - **Evaluation** — strict YAML parsing is required locally and in CI.
   Provenance now covers query content, complete catalog and invocation policy,
   rejects missing eval files and records scored runs. A separate native Codex
@@ -605,11 +686,6 @@ re-run `/agents-md` after a marker bump.
   existing reader of a changed rule, format, or field, forbids editing the
   issue body or removing an assertion to reach green, and takes an optional
   `LESSONS:` field that only `/factory run` fills.
-- **Companions.** `before-and-after`, `code-structure`, and
-  `evidence-driven-testing` from michaelshimeles/skills are listed as optional
-  companions (`/agents-md` 0.3.1). They stay separate installs and no kit
-  skill calls them. `before-and-after` is listed for local capture only;
-  screenshots are never uploaded.
 
 ## 2026-10-08
 

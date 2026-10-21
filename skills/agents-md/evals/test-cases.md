@@ -41,13 +41,11 @@ proves nothing — if a query could never plausibly hit this skill, it is not te
 
 ## Scope correction
 
-The 2026-10-13 audit narrowed this generator to workspace-root generation and
-existing project-runtime synchronization. The repo-only and shim-only queries
-are retained, with expectations corrected to hand-authored instruction editing;
-the generator explicitly never creates `CLAUDE.md`. Added cases cover runtime-only
-synchronization and no-workspace editing. This changes the supported boundary,
-not the query wording to improve a score. A new real trigger sweep is required;
-historical `last_run` evidence is not a result for this revised set.
+The generator supports workspace-root generation and existing project-runtime
+synchronization. Repo-only and shim-only requests route to hand-authored
+instruction editing; the generator never creates `CLAUDE.md`. Cases cover
+runtime-only synchronization and no-workspace editing. Current run evidence
+belongs in the [current audit](../../../evals/current/README.md).
 
 ## Rule
 
@@ -55,7 +53,7 @@ Fix descriptions, not queries. A missed should-trigger means the description lac
 A captured near-miss means the boundary sentence is missing, or the sibling's description is weaker
 than this one's. Never delete a query to make the eval pass.
 
-## 2026-10-13 legacy combined-output correction
+## Combined-output boundary
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 

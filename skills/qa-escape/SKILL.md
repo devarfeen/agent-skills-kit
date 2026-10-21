@@ -3,7 +3,7 @@ name: qa-escape
 disable-model-invocation: true
 description: "Record a bug human QA found after delivery, including factory QA_RETURNED: reproduce it and identify the missed check. No prior delivery: /diagnosing-bugs."
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # qa-escape
@@ -13,7 +13,7 @@ An escape is a bug a human found after an agent's checks said the work was done.
 ## Inputs
 
 - **QA report** — steps, expected, actual, environment, screenshots or logs. Missing expected or actual → ask for that one field.
-- **The issue and its PR** — the ticket QA tested and the PR that shipped it. Read the PR's `agentic-qa` and `risk-review` marker comments and the `/tdd-loop` summary if present: they are the agent's claim.
+- **Delivery evidence** — issue plus PR, or the direct-close QA handoff. Resolve delivered commit and baseline from recorded evidence; missing either → report unresolved and stop before reproduction/classification. Read the recorded QA/risk claims and `/tdd-loop` summary.
 - **Isolated worktree** — only when reproduction is needed, use `<project-repo>/.worktrees/qa-escape-<issue>` detached at the revision QA tested: use `git worktree add --detach` per workspace policy. Only an explicitly started `/factory run` or `/orchestrate-t3` may read/follow `using-git-worktrees` for its task setup; direct skill use requires the user's invocation. Before the first command there, verify and report the checkout record the workspace `AGENTS.md` requires: path, owning repository and common Git directory, branch or detached state, starting commit, and baseline. Setup failure or a mismatch blocks the run; never fall back to the main checkout. Leave the worktree in place and report its path; cleanup follows the workspace rules.
 - **Environment** — local, staging or production. Production evidence is pasted only. Staging needs this session's explicit user approval and user-provided SSH access; each mutation requires separate approval.
 
@@ -35,7 +35,7 @@ An escape is a bug a human found after an agent's checks said the work was done.
 
 ### 1. Write the reproduction brief
 
-First check the fix was there to test: `git merge-base --is-ancestor <pr-merge-sha> <tested-sha>`. It was not → class `not-deployed`; skip to step 6 and record `reproduced=no` with both SHAs, since nothing was tested. Otherwise state expected and actual as observations. Reproduce on the same revision QA tested. Shrink the case: remove one condition at a time, restore the last one whose removal makes the bug disappear, and record it as required. Run the final case twice; record `reproduced: yes | intermittent (n of m) | no`. On `no`, skip to step 6 and record what was tried. Then run the minimal case once on the PR's base commit, from `.worktrees/qa-escape-<issue>-base`. Reproduces there → class `not-a-regression`.
+First check delivery inclusion: `git merge-base --is-ancestor <delivered-sha> <tested-sha>`; use the PR merge commit or direct-close handoff commit. It was not → class `not-deployed`; skip to step 6 and record `reproduced=no` with both SHAs, since nothing was tested. Otherwise state expected and actual as observations. Reproduce on the same revision QA tested. Shrink the case: remove one condition at a time, restore the last one whose removal makes the bug disappear, and record it as required. Run the final case twice; record `reproduced: yes | intermittent (n of m) | no`. On `no`, skip to step 6 and record what was tried. Then run the minimal case once on the evidenced baseline, from `.worktrees/qa-escape-<issue>-base`. Reproduces there → class `not-a-regression`.
 
 ### 2. Read the agent's claim
 
@@ -58,10 +58,10 @@ Name the lowest layer that can show the bug: a unit test for logic; a handler te
 Draft the issue comment from the reference template. Linear uses `## QA escape` and readable Class, Area, PR, Tested commit and Reproduced fields, with full commit SHA and reproduction evidence; emit no HTML marker. Readers/counts accept these complete records and legacy markers. On GitHub end with the marker line exactly:
 
 ```
-<!-- qa-escape: class=<slug|none> area=<PROJECT-CODE>:<surface> pr=<pr-number> tested=<tested-sha> reproduced=<yes|intermittent|no> -->
+<!-- qa-escape: class=<slug|none> area=<PROJECT-CODE>:<surface> pr=<pr-number|none> tested=<tested-sha> reproduced=<yes|intermittent|no> -->
 ```
 
-Add the `qa-escape` label in the same approval. It is a marker label beside the issue's category and state labels, never a replacement for them; create it only if the tracker lacks it, in that approval. After approval, post, label, and read both back. An approved guard is applied in its own step: an `AGENTS.md` rule line is added under `## QA escape guards`; a type, lint, or CI guard becomes a ticket via the suggested `/to-tickets`.
+For direct closure, report PR `none`; never invent a PR. Add the `qa-escape` label in the same approval. It is a marker label beside the issue's category and state labels, never a replacement for them; create it only if the tracker lacks it, in that approval. After approval, post, label, and read both back. An approved guard is applied in its own step: an `AGENTS.md` rule line is added under `## QA escape guards`; a type, lint, or CI guard becomes a ticket via the suggested `/to-tickets`.
 
 ## Output
 

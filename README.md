@@ -1,144 +1,425 @@
 # Agent Skills Kit
 
-Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issues, docs, settings, or comments.
+Use these skills to help your coding agent understand a project, plan work,
+build with tests, review changes, and prepare releases. Each skill is a small
+set of instructions, examples, and templates for one job. You can install and
+use any skill on its own.
 
-A collection of reusable **skills** for six supported AI coding CLIs:
-Codex CLI, Claude CLI, Antigravity CLI, Cursor CLI, Opencode CLI, and
-GitHub Copilot CLI. No other agent runtime is supported by this kit.
+## Built for several projects in one workspace
 
-A *skill* is a small, self-contained bundle of instructions, examples, and
-templates that teaches an agent how to do one specific job well — for example,
-"write PM-friendly release notes from git history". Install a skill into your
-agent's workflow and the agent picks it up — automatically or via
-`/skill-name` — when a matching request comes in.
+The skills in this repository are designed especially for work across
+**multiple modules, separate codebases, and separate Git repositories in one
+workspace**. Each project can have its own language, framework, tests, and
+release process.
 
-Each folder under `skills/` follows the
-[Agent Skills spec](https://agentskills.io/specification): a `SKILL.md` with
-`name` + `description` frontmatter (the description is what triggers the skill)
-plus optional `references/` (docs loaded on demand) and `assets/` (output
-templates). Every skill installs standalone.
+For example, a shop might have:
 
-## Repository Layout
+| Project code | Separate repository | Purpose |
+| :--- | :--- | :--- |
+| `SHOP-ADMIN` | `shop-admin` | Admin control panel for products, orders, and staff |
+| `SHOP-WEB` | `shop-web` | Customer-facing website |
+| `SHOP-API` | `shop-api` | APIs shared by the admin panel, website, and mobile app |
+| `SHOP-MOBILE` | `shop-mobile` | Customer mobile app |
 
-```
-agent-skills-kit/
-├── README.md            # This file — front door + skill index
-├── GUIDE.md             # Day-to-day workflow guide (human-facing)
-├── BEST-PRACTICES.md    # Mental model and anti-patterns (human-facing)
-├── CONTRIBUTING.md      # Skill authoring guide, review rubric, sync map
-├── CHANGELOG.md         # Dated record of what changed in the kit
-├── .out-of-scope/       # Ideas considered and declined, with the reason
-├── AGENTS.md            # Conventions for agents working in this repo
-│                        # (CLAUDE.md / GEMINI.md are redirect shims)
-├── .claude-plugin/
-│   └── marketplace.json # Plugin groups (one per workflow phase, plus factory-workflow)
-├── .github/workflows/   # CI: runs tools/validate.sh on every PR
-├── tools/
-│   ├── validate.sh      # Repo invariant checks — run before every commit
-│   ├── hooks/           # Tracked pre-commit hook that runs validate.sh
-│   └── trigger-evals/   # Maintainer trigger-eval harness (score.py, query sets)
-├── evals/               # Kit-level eval method, rubrics, audit templates
-└── skills/<name>/       # One folder per skill
-    ├── SKILL.md         # Required: frontmatter + instructions
-    ├── references/      # Optional: on-demand docs
-    ├── assets/          # Optional: output templates
-    ├── agents/          # Optional: per-runtime invocation policy (openai.yaml)
-    └── evals/           # Trigger-eval set + rubric scorecards (never loaded into context)
-```
+One feature can touch several of these projects. The workspace gives the agent
+access to the related code, while project codes keep instructions, changes,
+and test results tied to the correct project. Each repository keeps its own
+Git history.
+
+You can group projects through a **VS Code multi-root workspace** or a
+**workspace folder containing symbolic links to existing repositories**.
+Individual skills also work with a single project.
+
+### Create a workspace on macOS, Linux, or Windows
+
+1. Create a folder named `shop-workspace`; keep your four repositories in their existing locations or clone them separately.
+2. For a VS Code workspace, use **File → Add Folder to Workspace** to add each repository.
+3. For a linked folder on macOS or Linux, run `ln -s /absolute/path/shop-admin /absolute/path/shop-workspace/shop-admin`; repeat for each repository.
+4. On Windows, use directory junctions from Command Prompt: `mklink /J "C:\shop-workspace\shop-admin" "C:\repos\shop-admin"`; repeat for each repository.
+5. Save `shop.code-workspace` inside `shop-workspace`, listing each repository or linked folder once; VS Code’s **Save Workspace As** creates this file.
+6. Set each folder entry’s `name` in that file to its project code above, so the agent can identify projects consistently.
+7. Start your coding agent from `shop-workspace` and run `/agents-md`; it requires the `.code-workspace` file even when you use symbolic links.
+
+The setup follows the official [VS Code workspace instructions](https://code.visualstudio.com/docs/editing/workspaces/multi-root-workspaces),
+[symbolic-link syntax](https://www.gnu.org/software/coreutils/manual/html_node/ln-invocation.html),
+and [Windows junction syntax](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/mklink).
+
+## Find your next step
+
+The kit supports six command-line coding tools: Codex CLI, Claude CLI,
+Antigravity CLI, Cursor CLI, Opencode CLI, and GitHub Copilot CLI. It does not
+claim support for other agent runtimes.
+
+| What you need | Where to start |
+| :--- | :--- |
+| Pick a skill for a new task | Install `ask-kit`, then run `/ask-kit` in your coding agent. |
+| Find the next step for an existing spec, ticket, or PR | Run `/factory 87`, replacing `87` with your reference. It checks the work and recommends a next step. |
+| Install a skill | Follow [Installing a Skill](#installing-a-skill). |
+| Follow the day-to-day workflow | Read [GUIDE.md](GUIDE.md#core-progression). |
+| Work in a separate checkout | Follow [Working in a worktree](GUIDE.md#working-in-a-worktree). |
+| Understand why the workflow is designed this way | Read [BEST-PRACTICES.md](BEST-PRACTICES.md). |
+| Add or change a skill | Read [CONTRIBUTING.md](CONTRIBUTING.md). |
 
 ## Installing a Skill
+
+Run this in your terminal. Replace `<skill-name>` with a name from
+[Available Skills](#available-skills):
 
 ```bash
 npx skills add devarfeen/agent-skills-kit -g --skill <skill-name>
 ```
 
-Omit `-g` to install into the current project instead of user-global
-(`~/.agents/skills/`). Do not pass a long `--agent` list; that creates empty
-`~/.<tool>` homes. **PromptScript** does not support `npx skills -g`; use
-[`prs skills add`](https://getpromptscript.dev/latest/reference/cli/) or project
-scope (no `-g`). **Antigravity** reads
-`~/.gemini/antigravity-cli/skills/` (and `~/.gemini/antigravity/skills/`); global
-`-g` still lands in `~/.agents/skills/` — symlink or copy into those paths if
-Antigravity does not pick them up.
+For example, install the skill that helps you choose what to run:
 
-Update an installed skill:
+```bash
+npx skills add devarfeen/agent-skills-kit -g --skill ask-kit
+```
+
+Then type `/ask-kit` inside your coding agent and describe your task.
+
+Choose where to install:
+
+| You want the skill available… | What to use |
+| :--- | :--- |
+| Across your projects | Keep `-g`. This installs into your user-level skills directory, normally `~/.agents/skills/`. |
+| Only in the current project | Omit `-g`. |
+
+Do not pass `--all` or a long `--agent` list. They can create empty agent
+configuration directories such as `~/.<tool>`. To select every skill from a
+repository, use `--skill '*'` instead.
+
+**Compatibility notes.** PromptScript does not support `npx skills -g`. Use
+[`prs skills add`](https://getpromptscript.dev/latest/reference/cli/) or install
+in the project without `-g`. Antigravity reads skills from
+`~/.gemini/antigravity-cli/skills/` and `~/.gemini/antigravity/skills/`.
+A global install still goes to `~/.agents/skills/`; link or copy the skills
+into an Antigravity directory if it does not find them.
+
+To update a skill you already installed:
 
 ```bash
 npx skills update <skill-name>
 ```
 
-Line-by-line global installs are under [Available Skills](#available-skills),
-[grouped by GitHub source](#global-install-commands). Companions mirror
-[Credits And Provenance](#credits-and-provenance). The `skills` CLI has no version or ref option,
-so companions install from each source's default branch (unpinned).
+Most kit skills wait for you to type `/skill-name`. Their instructions set
+`disable-model-invocation: true`, which asks the agent not to choose them
+automatically. `feature-discovery` and `tdd-loop` also load when a request
+matches their description. Opencode and Antigravity ignore that setting and
+use `name` and `description`, so any matching kit skill can load there.
+Descriptions stay under 200 characters and name the closest alternative skill
+to help the agent choose correctly. If you are unsure, run `/ask-kit`.
 
-The `skills` CLI fetches the named subfolder from this repo and installs it
-into your agent's local skills directory. After install, invoke a skill with
-`/skill-name` — most kit skills mark themselves for explicit invocation
-(`disable-model-invocation: true`), so the slash command is the reliable path;
-`feature-discovery` and `tdd-loop` also trigger
-automatically when a request matches their description. Opencode and
-Antigravity ignore that flag (they read only `name` and `description`), so
-there any kit skill can load when a request matches. Every description is
-therefore kept to 200 characters and names the skill's nearest sibling. Not sure which skill fits? Run `/ask-kit`.
+The installer fetches the skill’s folder from its source repository.
+[Global install commands](#global-install-commands) list the sources, and
+[Credits And Provenance](#credits-and-provenance) explains where the ideas came
+from. The `skills` CLI has no version or ref option, so companion installs use
+the source’s default branch rather than a pinned version.
 
-[CHANGELOG.md](CHANGELOG.md) records what each update changes, including
-breaking changes such as the `CONTEXT.md` → `GLOSSARY.md` rename.
+Read [CHANGELOG.md](CHANGELOG.md) before updating. It records behavior changes
+and changes that need migration, such as renaming `CONTEXT.md` to `GLOSSARY.md`.
 
-Skills avoid changing your git state unless their own instructions say
-otherwise. Skills that inspect history (`release-notes`, `feature-discovery`)
-only read commits already on your machine — never `git fetch` / `git pull`.
-`ci-loop` is the one exception: it runs `git fetch` before each attempt to
-confirm the PR head hasn't moved under it.
+A skill changes your Git state only when its instructions allow it. History
+inspection by `release-notes` or `feature-discovery` uses commits already on
+your machine. It never runs `git fetch` or `git pull`. `ci-loop` is the
+exception: before each attempt, it runs `git fetch` to check whether the PR’s
+latest commit changed.
 
 ## Available Skills
 
-Skills sit on a workflow gradient — discover → sharpen → plan → slice →
-implement → verify → ship — plus two startup skills that run once per
-workspace/project and an on-demand worktree companion. Full behavior, modes,
-and rules live in each skill's `SKILL.md`; this table is the index. Global
-install commands are [grouped by source](#global-install-commands) below the table,
-with the [groups `npx skills` shows](#skill-groups) under this repo's command.
+Pick the skill for your current task. The stages describe the usual order:
+understand the project (`discover`), clarify the request (`sharpen`), plan,
+split work into tickets (`slice`), implement, verify, and ship. The kit also
+has two setup skills and helpers you use when needed. You do not have to run
+every stage for every task.
+
+A few terms used below:
+
+| Term | Meaning here |
+| :--- | :--- |
+| Spec or PRD | A written description of what to build and its requirements. |
+| Ticket | A tracked piece of work, usually an issue. |
+| PR | A pull request: proposed changes for review and merging. |
+| CI | Automated checks, usually run by GitHub Actions. |
+| QA | Testing the result, either by an agent or a person. |
+| ADR | A saved record of a design decision and its reasons. |
+| PROJECT-CODE | A project’s short name in the workspace’s Project Matrix, which lists its projects. |
+| MCP | A connection that gives an agent access to tools or services, such as T3 Code or Figma. |
+
+The table is a quick index. Expand the notes below it for each skill’s full
+behavior and limits, or open its `SKILL.md`. See [Skill groups](#skill-groups)
+for how these skills appear in the installer.
 
 | Skill | Phase | What it does | Example prompt |
 | :--- | :--- | :--- | :--- |
-| [`agents-md`](skills/agents-md/SKILL.md) | startup | Generates a small workspace-root `AGENTS.md` (the rules every task needs, plus a table of what to read before which action) and seven on-demand files under `rules/` (Project Matrix, orchestration, verification, browser, shipping, issues, skills) from a `.code-workspace` file (marker `v50`). Writes no `CLAUDE.md` or `GEMINI.md` — every supported runtime reads `AGENTS.md`. Reports competing per-runtime instruction files without touching them, and suggests an optional env-guard hook template when production or staging hosts are named | `Generate AGENTS.md for this workspace` |
-| [`design-system`](skills/design-system/SKILL.md) | startup | Turns a design source into tokens + a UI library + a verifiable preview + a binding AGENTS.md rule. Source order: one you name, else a root `DESIGN.md`, else a project UI/brand/component-library skill, else Figma, spec, reference screens, or a guided session. Checks WCAG AA contrast, loaded fonts, and light/dark modes; re-run `extend` as the design grows | `Set up the design system for ADMIN-WEB from this Figma file` |
-| [`feature-discovery`](skills/feature-discovery/SKILL.md) | discover | Read-only, evidence-backed trace of how a feature, module, or behavior works, with current code as the source of truth, then ADRs. Git history is read only if you accept the report's offer | `Trace the invite-user workflow across ADMIN-WEB and API-SERVICE` |
-| [`port-feature`](skills/port-feature/SKILL.md) | discover | Maps a feature from a REFERENCE implementation into a TARGET stack as one gap map — including validation, bulk actions, role gates, and reference behaviour no test covers — then hands to planning | `Port stock-transfer approvals from LEGACY-PORTAL to ADMIN-WEB` |
-| [`feature-prompt`](skills/feature-prompt/SKILL.md) | sharpen | Turns a rough idea into a small, PR-sized prompt file for `grill-with-docs`, showing inferred facts separately from what you stated | `Help me create a feature prompt for stock transfer approvals` |
-| [`tdd-loop`](skills/tdd-loop/SKILL.md) | implement | Enforceable test-first loop — one failing test, watch it fail right, smallest change to green, widen, refactor on green — plus an exception protocol for spikes, legacy code, hotfixes, and infra work. Called by `/implement` at each seam when that's installed; stands alone when it isn't | `Fix this bug test-first` |
-| [`orchestrate-herdr`](skills/orchestrate-herdr/SKILL.md) | implement | Inside [herdr](https://herdr.dev) only: fans a spec's (PRD's) open sub-issues out to one local coding-CLI worker tab each and monitors for test-backed completion; holds back sub-issues blocked by another open one and flags shared ports, databases, and merge-risk files | `orchestrate-herdr for <spec URL> using codex` |
-| [`orchestrate-t3`](skills/orchestrate-t3/SKILL.md) | implement | With the [T3 Code](https://github.com/pingdotgg/t3code) MCP server connected: fans a spec's (PRD's) open sub-issues, or a list of issues, out to T3 Code threads running the coding agent and model of the session you started it in (name another to override); issues that block one another or touch the same surface share one worktree and thread, the rest get their own; monitors for test-backed completion | `orchestrate-t3 for issues 41, 44 and 52 using codex` |
-| [`pixel-audit`](skills/pixel-audit/SKILL.md) | verify | Strict per-page visual-conformance audit against Figma or reference screens, with an element-level verification gate on served assets, a final re-check of every verified row, and no new console errors | `Pixel-audit the assets list page in ADMIN-WEB against this Figma node` |
-| [`polish-batch`](skills/polish-batch/SKILL.md) | verify | Captures cosmetic QA nits without fixing them, dispatches them per PROJECT-CODE in one bounded pass, then verifies; copy fixed in a shared string or translation key waits for your confirmation | `Punch-list this for SPEC-142: Billing header says "Recieve invoices"` |
-| [`integration-contract`](skills/integration-contract/SKILL.md) | verify | For multi-project specs (PRDs) only: writes a producer/consumer contract — each change labelled compatible, rollout-dependent, or breaking — plus a smoke gate (agent-browser / curl / manual) that must pass before the spec ships | `Build the integration contract for SPEC-142` |
-| [`agentic-qa`](skills/agentic-qa/SKILL.md) | verify | Agent-run functional QA before a human sees the work: drives every acceptance criterion across states, viewports, and roles, fails on console errors and failed requests, replays a failure once before reporting it, checks writes survive a reload and controls work by keyboard, and records VERIFIED/PARTIAL/BLOCKED on the PR — never edits code | `QA PR 87 like a tester would` |
-| [`qa-escape`](skills/qa-escape/SKILL.md) | verify | Turns a bug human QA found after an agent said done into a reproduction (also tried on the PR's base commit, to spot bugs that predate it), an escape class recorded on the issue, and the regression test to write first; proposes a durable guard when a class repeats three times — a deterministic check for a mechanical escape, an instruction only for a judgement call | `QA bounced #418 — empty invoice list crashes` |
-| [`report-issue`](skills/report-issue/SKILL.md) | verify | Turns a reporter's plain problem statement and screenshots into one tracker issue an agent can build from: reads the live templates, traces the screen or error to code in each candidate project, searches for duplicates, picks the primary project and lists every other PROJECT-CODE involved, then sets title, labels, priority, cycle and due date with a reason each. Lists code-found edge cases to check apart from the acceptance criteria; `batch` drafts up to 10 problems against one approval table. Shows one draft and creates the issue only after approval; never edits code. A bug on already-delivered work routes to `/qa-escape` | `Report this: the invoice list crashes for a new tenant (screenshot attached)` |
-| [`ci-loop`](skills/ci-loop/SKILL.md) | verify | Drives an open PR's failing CI to green — reads the failing log, fixes within the ticket's scope, pushes, watches; capped at 3 attempts under one approval. A flake the PR introduced is a code fix, not a rerun; stops if someone else pushes | `Fix CI on PR 87` |
-| [`risk-review`](skills/risk-review/SKILL.md) | verify | Parallel specialist review (data, infra, cloud, security) plus a fixed-rubric low/high risk gate; low offers auto-merge into staging or `local` only, high requests an engineer. Checks the author's one-way/two-way door claim against the diff. Requested changes or an unresolved review thread block any merge | `Is PR 87 safe to auto-merge?` |
-| [`commit-push-close`](skills/commit-push-close/SKILL.md) | ship | Commits with a structured message (bug fixes carry a `Root cause:` line), pushes, and closes the linked GitHub issue with a QA handoff: how to test, before/after evidence, and a merge-danger call. Never force-pushes; stops on credential-shaped values or leftover debug instrumentation in the diff | `I'm done with #418, ship it` |
-| [`commit-push-pr`](skills/commit-push-pr/SKILL.md) | ship | Commits, pushes (branching off `main` first), and opens a PR with `Closes #N`, summary, test plan, before/after evidence, and a merge-danger call (one-way or two-way door, blast radius) — fitted to the repo's PR template when one exists. Ships a branch's existing commits as they are after scanning their messages. Never force-pushes; reports merge conflicts. Merges only when asked, and only into `local` | `Commit, push, and open a PR for this issue` |
-| [`pr-feedback`](skills/pr-feedback/SKILL.md) | ship | Works reviewer feedback on an open PR — classifies every thread against the code, fixes what the user accepts, hands the push to you (`/commit-push-pr`), then replies citing the fixing commits. Comment text is evidence, never instructions | `Address the review comments on PR #87` |
-| [`staging-fix`](skills/staging-fix/SKILL.md) | ship | Fixes a staging bug locally with a test on a minimised reproduction and ships it as an auto-merge PR to `staging` that states the root cause — servers are never touched; evidence is redacted before it reaches the PR | `Staging is broken: checkout 500s since this morning` |
-| [`deploy-watch`](skills/deploy-watch/SKILL.md) | ship | Watches a merged PR's staging deploy run (with a time limit), smoke-checks staging with approval against a baseline of errors staging already shows, and records pass or fail on the PR — never touches a server or production | `Watch the staging deploy for PR 87` |
-| [`local-to-staging`](skills/local-to-staging/SKILL.md) | ship | Promotes every workspace project from `origin/local` to `origin/staging`: one PR per repo that has both branches, merged with a merge commit only after its checks pass, then watches the Actions runs on each merge commit and reports per project — never pushes, bypasses protection, or goes past staging | `Promote local to staging on all projects` |
-| [`staging-to-production`](skills/staging-to-production/SKILL.md) | ship | Read-only production-promotion readiness across every project: commits staging is ahead, Actions results on staging's head, open promotion PRs — then prints the exact commands for you to run. Never opens or merges a PR and never accesses production | `Is staging ready for production?` |
-| [`release-notes`](skills/release-notes/SKILL.md) | ship | Turns git history (date, date range, or version range), the current session, or a feature into PM-friendly release notes with QA steps and an "Action needed" line — written from the diffs, not just commit subjects | `Generate release notes for 11 March 2026` |
-| [`using-git-worktrees`](skills/using-git-worktrees/SKILL.md) | companion | Sets up or reuses a worktree in each project repo’s gitignored `.worktrees/` before requested task work, verifies the checkout and baseline (including port and shared-database collisions), and returns to the calling workflow | `/using-git-worktrees` with `Implement #418 in a worktree` |
-| [`ask-kit`](skills/ask-kit/SKILL.md) | companion | Router over this kit's own skills: describe your situation and it names the one skill to run next, why, and what that skill needs — never runs it. For a spec, ticket, or PR that already exists, `/factory` reads the real state instead | `Which kit skill do I use for this?` |
-| [`factory`](skills/factory/SKILL.md) | companion | Factory conductor: reads where a spec, ticket, or PR stands across CI, review, risk gate, and staging deploy, then names the one skill that moves it next — never runs it, never goes past staging. Shows how long each unit has sat in its state and flags stalled ones. Started as `/factory run <label or reference>` it carries the chain out itself after any missing reviewer choice (the builder keeps the harness, provider and model you started it in): build through the selected local executor (herdr tabs, T3 Code threads, or native agents), QA with before/after screenshots, PR, a second agent's code review, merge into `local` or staging, handover to manual QA, then `/local-to-staging`, `/deploy-watch`, `/staging-fix` on a failed deploy, and a read-only `/staging-to-production` report. It never closes an issue | `/factory SPEC-142` · `/factory run PRWL-127` · `/factory run automate` |
-| [`incident-triage`](skills/incident-triage/SKILL.md) | companion | Read-only incident triage: timeline, ranked causes with evidence (always including one that isn't a recent change), owner-run mitigations, one redacted incident note with a Resolution section — production never accessed; a suspected breach goes straight to the owner | `We have an incident: checkout 502s since 14:00` |
-| [`writing-kit-skills`](skills/writing-kit-skills/SKILL.md) | — | Kit-internal house style for authoring and editing this repo's skills: skeleton, word budget, the seven canonical one-liners, output caps, eval gates, and matching each rule's form to the failure it fixes | `Rewrite this SKILL.md to house style` |
+| [`agents-md`](skills/agents-md/SKILL.md) | startup | Set up workspace instructions from a `.code-workspace` file. | `Generate AGENTS.md for this workspace` |
+| [`design-system`](skills/design-system/SKILL.md) | startup | Turn your design source into shared UI rules and components. | `Set up the design system for ADMIN-WEB from this Figma file` |
+| [`feature-discovery`](skills/feature-discovery/SKILL.md) | discover | Understand how existing code works. Read-only. | `Trace the invite-user workflow across ADMIN-WEB and API-SERVICE` |
+| [`port-feature`](skills/port-feature/SKILL.md) | discover | Compare an existing feature with the project that will receive it. | `Port stock-transfer approvals from LEGACY-PORTAL to ADMIN-WEB` |
+| [`feature-prompt`](skills/feature-prompt/SKILL.md) | sharpen | Turn a rough idea into a small prompt for planning. | `Help me create a feature prompt for stock transfer approvals` |
+| [`tdd-loop`](skills/tdd-loop/SKILL.md) | implement | Build or fix behavior with reuse-first choices and test-first proof. | `Fix this bug test-first` |
+| [`orchestrate-herdr`](skills/orchestrate-herdr/SKILL.md) | implement | Run several tickets in local herdr worker tabs. | `orchestrate-herdr for <spec URL> using codex` |
+| [`orchestrate-t3`](skills/orchestrate-t3/SKILL.md) | implement | Run related tickets in local T3 Code threads. | `orchestrate-t3 for issues 41, 44 and 52 using codex` |
+| [`pixel-audit`](skills/pixel-audit/SKILL.md) | verify | Check each page against its design or reference screen. | `Pixel-audit the assets list page in ADMIN-WEB against this Figma node` |
+| [`polish-batch`](skills/polish-batch/SKILL.md) | verify | Collect and dispatch a bounded batch of cosmetic fixes. | `Punch-list this for SPEC-142: Billing header says "Recieve invoices"` |
+| [`integration-contract`](skills/integration-contract/SKILL.md) | verify | Check how changes across projects fit together. | `Build the integration contract for SPEC-142` |
+| [`agentic-qa`](skills/agentic-qa/SKILL.md) | verify | Test the running app and report evidence. Never edits code. | `QA PR 87 like a tester would` |
+| [`qa-escape`](skills/qa-escape/SKILL.md) | verify | Investigate a bug that human QA found after the work was called done. | `QA bounced #418 — empty invoice list crashes` |
+| [`report-issue`](skills/report-issue/SKILL.md) | verify | Turn a problem report into an approved, complete tracker issue. | `Report this: the invoice list crashes for a new tenant (screenshot attached)` |
+| [`ci-loop`](skills/ci-loop/SKILL.md) | verify | Fix failing PR checks, with at most three attempts. | `Fix CI on PR 87` |
+| [`risk-review`](skills/risk-review/SKILL.md) | verify | Challenge local implementations with reviewers and a judge, or assess PR merge risk. | `Is PR 87 safe to auto-merge?` |
+| [`commit-push-close`](skills/commit-push-close/SKILL.md) | ship | Commit, push, and close an issue with a testing handoff. | `I'm done with #418, ship it` |
+| [`commit-push-pr`](skills/commit-push-pr/SKILL.md) | ship | Commit, push, and open a PR with review and testing details. | `Commit, push, and open a PR for this issue` |
+| [`pr-feedback`](skills/pr-feedback/SKILL.md) | ship | Work through reviewer comments and apply accepted fixes. | `Address the review comments on PR #87` |
+| [`staging-fix`](skills/staging-fix/SKILL.md) | ship | Fix a staging bug locally and send a PR to staging. | `Staging is broken: checkout 500s since this morning` |
+| [`deploy-watch`](skills/deploy-watch/SKILL.md) | ship | Watch a staging deployment and check it with your approval. | `Watch the staging deploy for PR 87` |
+| [`local-to-staging`](skills/local-to-staging/SKILL.md) | ship | Promote all eligible workspace projects from local to staging. | `Promote local to staging on all projects` |
+| [`staging-to-production`](skills/staging-to-production/SKILL.md) | ship | Report readiness and owner-run commands. Never accesses production. | `Is staging ready for production?` |
+| [`release-notes`](skills/release-notes/SKILL.md) | ship | Write release notes and QA steps from the actual changes. | `Generate release notes for 11 March 2026` |
+| [`using-git-worktrees`](skills/using-git-worktrees/SKILL.md) | companion | Prepare and verify a separate checkout for a requested task. | `/using-git-worktrees` with `Implement #418 in a worktree` |
+| [`ask-kit`](skills/ask-kit/SKILL.md) | companion | Name the skill you should use next. Never runs it. | `Which kit skill do I use for this?` |
+| [`factory`](skills/factory/SKILL.md) | companion | Check existing work, or carry it through when you explicitly start a run. | `/factory SPEC-142` · `/factory run PRWL-127` · `/factory run automate` |
+| [`incident-triage`](skills/incident-triage/SKILL.md) | companion | Investigate an incident and suggest owner-run actions. Read-only. | `We have an incident: checkout 502s since 14:00` |
+| [`writing-kit-skills`](skills/writing-kit-skills/SKILL.md) | — | Follow this repository’s rules when editing its skills. | `Rewrite this SKILL.md to house style` |
 
-Current workflow versions: `/factory` **5.13.0**, `/orchestrate-t3` **0.11.1** and `/orchestrate-herdr` **0.5.0**. The factory selects a herdr, T3 or native backend per `references/execution-and-continuity.md`. The [factory guide](GUIDE.md#factory-workflow) covers builder contracts, fixture restoration rehearsals, compact supervisor receipts, private PR preparation during QA and verified cleanup. It also explains active waits, context checkpoints and the three operating modes. Harness choice stays explicit; an optional native controller belongs to the workspace and is not bundled with these skills.
+### Skill behavior and limits
+
+<details>
+<summary>Set up and understand a project</summary>
+
+**`agents-md`.** Creates workspace-root `AGENTS.md` from a `.code-workspace`
+file. The root file holds shared rules and tells the agent what to read for
+each task. Seven files under `rules/` cover the Project Matrix, orchestration,
+verification, browser use, shipping, issues, and skills. Each generated file records
+generator version `v54`. It does not write `CLAUDE.md` or `GEMINI.md`; all supported
+runtimes read `AGENTS.md`. It reports competing instruction files without
+editing them. When production or staging hosts are named, it suggests an
+optional environment-guard hook template.
+
+**`design-system`.** Creates shared design values, called tokens, a UI
+component library, a preview you can check, and a binding `AGENTS.md` rule.
+It uses the design source you name first. Otherwise it looks for root
+`DESIGN.md`, then a project UI, brand, or component-library skill, then Figma,
+a spec, reference screens, or a guided session. It checks WCAG AA contrast,
+loaded fonts, and light and dark modes. Re-run `extend` as the design grows.
+
+**`feature-discovery`.** Explains how a named feature, module, or behavior
+works and cites the code behind each claim. It reads current code first,
+then ADRs for intended decisions. It changes nothing. It reads Git history
+only if you accept its offer to do so.
+
+**`port-feature`.** Compares a REFERENCE implementation with the TARGET
+project that will receive the feature. Its gap map records what is missing
+or different, including validation, bulk actions, role restrictions, and
+reference behavior with no test coverage. It hands the result to planning.
+
+**`feature-prompt`.** Turns a rough idea into a small prompt file for
+`grill-with-docs`. The request is sized for one PR. It separates what you said
+from what the agent inferred.
+
+</details>
+
+<details>
+<summary>Implement work</summary>
+
+**`tdd-loop`.** Before adding code, checks project helpers and components,
+standard-library or platform features, and installed dependencies in that
+order. It chooses the first option that meets the whole requirement and
+project conventions. The test-first loop then writes one test, observes it
+fail for the right reason, makes the smallest passing change, runs wider
+checks, and refactors only while tests pass. Its exception process covers
+spikes, legacy code, hotfixes, and infrastructure work. `/implement` calls
+this loop at each agreed part of the work when installed. You can also run
+it directly.
+
+**`orchestrate-herdr`.** Works only inside [herdr](https://herdr.dev).
+It opens one local coding-agent tab for each open sub-issue of a spec or PRD
+and monitors progress until there is test evidence of completion. It waits
+on issues blocked by other open issues and flags shared ports, shared
+databases, and files likely to cause merge conflicts.
+
+**`orchestrate-t3`.** Requires the connected
+[T3 Code](https://github.com/pingdotgg/t3code) MCP server. It takes a spec’s
+sub-issues or a list of issues and assigns them to T3 Code threads. It keeps
+the coding agent and model from the session you started unless you name
+another. Issues that depend on one another or touch the same part of the
+code share a worktree and thread; independent groups get their own. It
+monitors completion using test evidence.
+
+</details>
+
+<details>
+<summary>Test and review changes</summary>
+
+**`pixel-audit`.** Checks each page against Figma or reference screens.
+It verifies individual elements and the assets the app actually serves,
+rechecks every item marked verified, and requires no new console errors.
+
+**`polish-batch`.** Collects cosmetic QA problems without fixing them first.
+It dispatches the agreed batch by PROJECT-CODE in one bounded pass, then
+verifies the fixes. A wording fix in a shared string or translation key waits
+for your confirmation.
+
+**`integration-contract`.** Applies only when a spec or PRD spans several
+projects. It records what one project provides and what another consumes.
+Each change is marked compatible, rollout-dependent, or breaking. These
+labels mean it works with existing callers, needs an agreed update order,
+or changes an existing contract. A short working check using `agent-browser`,
+`curl`, or manual steps must pass before the spec ships.
+
+**`agentic-qa`.** Tests the running app before human review. It exercises
+every acceptance criterion across app states, screen sizes, and roles.
+Console errors and failed requests fail the check; it replays a failure once
+before reporting it. It checks that saved changes survive reloads and that
+controls work by keyboard. It records `VERIFIED`, `PARTIAL`, or `BLOCKED` on
+the PR. It never edits code.
+
+**`qa-escape`.** Investigates a bug human QA finds after an agent says the
+work is done. It reproduces the bug and tries it on the PR’s base commit to
+check whether it already existed. It records the type of missed check,
+called the escape class, on the issue and names the regression test to write
+first. If a class repeats three times, it proposes a lasting prevention
+rule: an automated check for a mechanical mistake, or an instruction when
+judgment is needed.
+
+**`report-issue`.** Turns your problem statement and screenshots into a
+complete tracker issue. It reads the live templates, traces the screen or
+error to code in each candidate project, and searches for duplicates. It
+chooses the project responsible for the fix and lists every other involved
+PROJECT-CODE. It sets the title, labels, priority, cycle, and due date, with
+a reason for each. It lists code-discovered edge cases separately from
+acceptance criteria. `batch` can draft up to 10 problems in one approval
+table. It creates issues only after you approve the draft and never edits
+code. Bugs in already-delivered work go to `/qa-escape`.
+
+**`ci-loop`.** Reads failing CI logs on an open PR, fixes problems within the
+ticket’s scope, pushes, and watches the new run. One approval covers at most
+3 attempts. If the PR introduced an intermittent failure, it fixes the cause
+rather than just rerunning. It stops if someone else pushes to the branch.
+
+**`risk-review`.** Automatically challenges local implementations after Matt’s
+implementation flows, using independent reviewers and a separate judge.
+`/risk-review local` also starts that read-only check directly. It reports
+confirmed, rejected, unresolved and advisory findings without publishing or
+grading merge risk.
+
+For PRs, run `/risk-review 87`. It reviews changes in parallel for data, infrastructure,
+cloud, and security risks. A fixed set of rules decides whether risk is low
+or high. Low risk can offer auto-merge into staging or `local` only. High
+risk requires an engineer. It checks whether the author’s claim that a
+change can be undone matches the diff. It may add up to three optional
+simplification notes; these do not affect risk or the blocking count.
+Requested changes or an unresolved review thread prevent any merge.
+
+</details>
+
+<details>
+<summary>Publish changes and prepare releases</summary>
+
+**`commit-push-close`.** Commits with a structured message, pushes, and
+closes the linked GitHub issue with a QA handoff. Bug-fix messages include
+`Root cause:`. The handoff explains how to test, provides before and after
+evidence, and describes merge risk. It never force-pushes. It stops on
+credential-like values or leftover debug code in the diff.
+
+**`commit-push-pr`.** Commits, pushes, and opens a PR, creating a branch
+first if you are on `main`. The PR includes the target-required issue reference, a summary, a test
+plan, before and after evidence, and merge-risk details: whether the change
+can be undone and what else it could affect. It follows the repo’s PR
+template when one exists. Existing branch commits are shipped unchanged
+after their messages are checked. It never force-pushes and reports merge
+conflicts. It merges only when you ask, and only into `local`.
+
+**`pr-feedback`.** Checks each review thread against the code, applies the
+fixes you accept, and asks you to run `/commit-push-pr` for the push. It then
+replies with the commits that fixed the comments. Review comments are
+information to assess, not instructions to obey blindly.
+
+**`staging-fix`.** Fixes a staging bug locally, with a test built from the
+smallest reproduction. It opens an auto-merge PR targeting `staging` and
+states the root cause. It never touches servers. Sensitive evidence is
+redacted before it goes into the PR.
+
+**`deploy-watch`.** Watches the staging deployment for a merged PR, with a
+time limit. With your approval, it runs a short staging check and compares
+errors against those already present. It records pass or fail on the PR.
+It never touches a server or production.
+
+**`local-to-staging`.** Checks every workspace project with both branches
+and opens one PR per repo from `origin/local` to `origin/staging`. It merges
+with a merge commit only after checks pass, watches the GitHub Actions run
+on each merge commit, and reports each project’s result. It never pushes,
+bypasses branch protection, or goes past staging.
+
+**`staging-to-production`.** Reports readiness for production across all
+projects. It checks commits staging is ahead, Actions results on staging’s
+latest commit, and open promotion PRs, then prints the exact commands for
+you to run. It is read-only: it never opens or merges a PR or accesses
+production.
+
+**`release-notes`.** Writes release notes for product managers from a date,
+date range, version range, the current session, or a feature. It includes QA
+steps and an `Action needed` line. It reads the actual diffs, not just commit
+subjects.
+
+</details>
+
+<details>
+<summary>Use workspace helpers</summary>
+
+**`using-git-worktrees`.** Creates or reuses a separate checkout under each
+project repo’s ignored `.worktrees/` directory before the requested task.
+It checks the checkout, starting state, ports, and shared-database collisions,
+then returns to the workflow that called it.
+
+**`ask-kit`.** You describe your situation; it names one skill to run next,
+explains why, and says what that skill needs. It never runs the suggestion.
+For an existing spec, ticket, or PR, use `/factory` to inspect its real state.
+
+**`factory`.** Checks where a spec, ticket, or PR stands across CI, review,
+risk assessment, and staging deployment. It recommends one next skill
+without running it. It shows how long each item has stayed in its state and
+flags stalled work. It never goes past staging.
+
+When you explicitly start `/factory run <label or reference>`, it carries
+out the workflow after any missing reviewer choice. The builder keeps the
+coding tool, provider, and model you started with. It uses the selected local
+executor: herdr tabs, T3 Code threads, or native agents. The run covers build,
+QA with before and after screenshots, PR creation, a second agent’s code
+review, merging into `local` or staging, and handover to manual QA. It can
+then use `/local-to-staging`, `/deploy-watch`, and `/staging-fix` if deployment
+fails, and produce a read-only `/staging-to-production` report. It never
+closes an issue.
+
+**`incident-triage`.** Builds an incident timeline, ranks possible causes
+with evidence, and always includes a cause other than a recent change.
+It proposes actions for the owner and writes one redacted incident note
+with a Resolution section. It is read-only and never accesses production.
+A suspected breach goes directly to the owner.
+
+**`writing-kit-skills`.** Provides this repo’s rules for editing skills:
+structure, word limits, seven required shared sentences, report limits,
+evaluation requirements, and choosing a rule that addresses the failure
+observed. It is for maintaining this kit, not a normal project task.
+
+</details>
+
+Current workflow versions: `/factory` **5.14.0**, `/orchestrate-t3` **0.12.0**,
+and `/orchestrate-herdr` **0.6.1**. The factory chooses herdr, T3 Code, or
+native agents using `references/execution-and-continuity.md`. You explicitly
+choose which coding tool runs the work. An optional native controller belongs
+to your workspace; it is not bundled with the kit.
+
+The [factory guide](GUIDE.md#factory-workflow) explains builder requirements,
+restoring test fixtures in rehearsals, saved supervisor status records,
+preparing private PRs during QA, and verified cleanup. It also covers waiting
+for active work, context checkpoints, and the three operating modes.
 
 ### Global install commands
 
-Grouped by author or org. Omit `-g` for project scope. Do not use `--all` or a
-long `--agent` list (empty `~/.<tool>` homes). To install **every** skill in a
-repo without naming them: `--skill '*'`.
+Choose the source repository below. Keep `-g` for a user-level install, or
+omit it for the current project. Avoid `--all` and long `--agent` lists, which
+can create empty `~/.<tool>` directories. To select every skill without listing
+the names, use `--skill '*'`.
 
 #### [devarfeen/agent-skills-kit](https://github.com/devarfeen/agent-skills-kit) (this repo)
 
@@ -148,10 +429,9 @@ npx skills add devarfeen/agent-skills-kit -g
 
 #### Skill groups
 
-The `npx skills` picker lists this kit's skills under seven headings, sorted
-alphabetically. The groups come from `.claude-plugin/marketplace.json`; each
-skill sits in exactly one. They only organize the picker — every skill still
-installs on its own with `--skill <name>`.
+The installer shows seven groups, sorted alphabetically. Each skill belongs
+to one group in `.claude-plugin/marketplace.json`. The groups help you find a
+skill; you can still install it on its own with `--skill <name>`.
 
 | Group | Heading in `npx skills` | Skills |
 | :--- | :--- | :--- |
@@ -165,7 +445,8 @@ installs on its own with `--skill <name>`.
 
 ### Companion install commands (global)
 
-Credited third-party skills, grouped by source repo.
+These optional skills come from other repositories. Install the ones you need.
+They are credited under [Credits And Provenance](#credits-and-provenance).
 
 #### [anthropics/skills](https://github.com/anthropics/skills)
 
@@ -182,8 +463,7 @@ npx skills add mattpocock/skills -g
 #### Vercel Labs
 
 [`agent-browser`](https://github.com/vercel-labs/agent-browser) and
-[`find-skills`](https://github.com/vercel-labs/skills) live in two repos; install
-both:
+[`find-skills`](https://github.com/vercel-labs/skills) come from separate repositories. Install both:
 
 ```bash
 npx skills add vercel-labs/agent-browser -g --skill agent-browser
@@ -193,34 +473,26 @@ npx skills add vercel-labs/skills -g --skill find-skills
 #### [cursor/plugins](https://github.com/cursor/plugins)
 
 ```bash
-npx skills add cursor/plugins -g --skill blast-radius show-me-your-work unslop
+npx skills add cursor/plugins -g --skill unslop
 ```
 
-#### [michaelshimeles/skills](https://github.com/michaelshimeles/skills)
+Keep Cursor’s installed `unslop` file unchanged. The kit reads and applies its
+writing rules before sending prose or finishing written content. It keeps the
+original settings that control when a skill can run. Required templates and
+technical text stay exact. Re-run `/agents-md` to update an existing workspace.
 
-```bash
-npx skills add michaelshimeles/skills -g --skill before-and-after code-structure evidence-driven-testing
-```
+The kit uses Ponytail-inspired ideas in two local skills: `/tdd-loop` checks
+what can be reused before adding code, and `/risk-review` offers optional
+simplification advice. Use those skills as usual. You do not need to install
+Ponytail, add hooks, choose its modes, or run another review.
+See [choosing an implementation](GUIDE.md#choose-the-smallest-complete-implementation)
+and [reading simplification notes](GUIDE.md#read-risk-review-simplification-notes)
+for the decision order, evidence, and limits.
 
-`before-and-after` also needs its CLI (`npm i -g @vercel/before-and-after`).
-Left out on purpose: `new-feature`, because `/using-git-worktrees` owns
-worktree setup here. In Codex, disable a previously installed `new-feature`
-with `[[skills.config]]`, its `SKILL.md` path, and `enabled = false`; also disable
-the user-level `skill-creator` when the built-in creator is available, and
-`/tdd` when `/tdd-loop` is selected as the test-first workflow. Preserve
-the installed files. `greploop` / `greploop-apps` are omitted because they need Greptile.
-
-#### [github/awesome-copilot](https://github.com/github/awesome-copilot)
-
-```bash
-npx skills add github/awesome-copilot -g --skill boost-prompt
-```
-
-#### [google-labs-code/stitch-skills](https://github.com/google-labs-code/stitch-skills)
-
-```bash
-npx skills add google-labs-code/stitch-skills -g --skill enhance-prompt
-```
+In Codex, avoid loading duplicate skills. When the built-in creator is
+available, disable the user-level `skill-creator`. When you use `/tdd-loop`
+for test-first work, disable `/tdd`. Keep the installed files. In each case,
+use `[[skills.config]]` with that skill’s `SKILL.md` path and `enabled = false`.
 
 #### [herdrdev/herdr](https://github.com/herdrdev/herdr)
 
@@ -234,163 +506,138 @@ npx skills add herdrdev/herdr -g --skill herdr
 npx skills add pbakaus/impeccable -g --skill impeccable
 ```
 
-#### [sickn33/agentic-awesome-skills](https://github.com/sickn33/agentic-awesome-skills)
+### Using companion skills with the kit
 
-```bash
-npx skills add sickn33/agentic-awesome-skills -g --skill docker-expert
-```
+**Cursor CLI.** Install with `npx skills add`. Skills go into
+`~/.cursor/skills/` or `.cursor/skills/`. Use `/skill-name`, for example
+`/release-notes`, inside the agent. Start interactive sessions with `agent`,
+or use `agent -p "..."` for scripts and CI.
 
-### Working in a worktree
+The planning and implementation skills `/grill-with-docs`, `/wayfinder`,
+`/to-spec`, `/to-tickets`, `/implement`, `/implement-spec`, `/tdd`,
+`/code-review`, `/diagnosing-bugs`, and `/triage` come from
+[Matt Pocock’s skills](https://github.com/mattpocock/skills). They are separate
+installs that the kit can work with. Before using them, run
+`/setup-matt-pocock-skills` once per workspace. Follow First-Time Setup in
+[GUIDE.md](GUIDE.md).
 
-Install the companion with:
+The kit adds these rules when you use those skills together:
 
-```bash
-npx skills add devarfeen/agent-skills-kit -g --skill using-git-worktrees
-```
-
-Invoke **`/using-git-worktrees`** with the task, for example “Fix checkout in
-SHOP in a worktree,” or request setup only. The companion creates or reuses
-`<shop-repo>/.worktrees/<task-name>`, adds `/.worktrees/` to the repo's `.gitignore`,
-and checks the checkout before returning to the requested task. Each affected
-project gets its own worktree. A request for a branch alone does not trigger it.
-
-Direct use is user-invoked only. An explicitly started `/orchestrate-t3` or
-`/factory run` may follow it automatically for checkout setup. Before task writes, it reports
-the verified checkout, branch, starting commit, and baseline. Commands and edit
-paths stay bound to that checkout; handoffs and restarts require a fresh check.
-This is an instruction gate, not a harness-level write blocker.
-
-Use `/commit-push-pr` to ship the worktree branch for review. It commits,
-pushes, and opens a PR; merging is a later step, unless you ask it to
-merge a PR into `local`. `/commit-push-close` closes
-the issue directly after pushing and does **not** merge the branch. Keep the
-worktree until its work is integrated and verified, then request cleanup.
-
-For existing generated workspaces, re-run `/agents-md` and review its proposed
-update to add worktree routing, including the interlocks with Matt's skills.
-See the [worktree walkthrough](GUIDE.md#working-in-a-worktree) for setup,
-shipping, and cleanup examples.
-
-**Cursor CLI:** Install with `npx skills add` (skills land in
-`~/.cursor/skills/` or `.cursor/skills/`). Invoke a skill with `/skill-name`
-(for example `/release-notes`). Run the CLI with `agent` for interactive
-sessions or `agent -p "..."` for scripts and CI.
-
-The gradient's plan/slice/implement/verify core (`/grill-with-docs`,
-`/wayfinder`, `/to-spec`, `/to-tickets`, `/implement`, `/implement-spec`,
-`/tdd`, `/code-review`, `/diagnosing-bugs`, `/triage`) comes from
-[Matt Pocock's skills](https://github.com/mattpocock/skills) — separate
-installs this kit is designed to interlock with. Run
-`/setup-matt-pocock-skills` once per workspace (see the First-Time Setup
-sequence in [GUIDE.md](GUIDE.md)) before using them.
-
-These interlocks use optional upstream skills alongside the kit:
-
-- **Worktrees** are user-invoked. Run `/using-git-worktrees` before the
-  task skill, using that project repo’s
-  `.worktrees/<task-name>` and adding `/.worktrees/` to its `.gitignore`.
-  User-started `/orchestrate-t3` and `/factory run` may load this setup helper automatically.
-  The generated workspace rules (`rules/orchestration.md` and `rules/skills.md`) route Matt’s implementation, debugging, prototype, and review skills through
-  that setup and pass them the verified checkout. Third-party installations
-  stay untouched.
-- **Implementing** stacks three layers. `/implement` is an optional *ticket
-  driver*; the kit's `tdd-loop` is the test-first *procedure* it calls at each
-  seam (gates, completion evidence, exception protocol); Matt's `/tdd` is the
-  *test-quality reference*. Install none of the upstream ones and `tdd-loop`
-  still stands alone. `/implement` stops after `/code-review` — the kit's ship
-  skills own every commit. `/implement-spec` is the whole-spec alternative:
-  user-invoked, it fans the ticket graph out to implementer subagents in
-  worktrees and merges them onto one local integration branch. The same
-  boundary holds — it stops after `/code-review`; the push, the PR, and
-  closing tickets go through the ship skills.
-- **Planning** forks on fog. If you can state the destination and every open
-  decision sharply, `/feature-prompt` → `/grill-with-docs`. If decisions gate
-  the scope, `/wayfinder` charts them as tracker tickets and resolves them one
-  per session. Both arms rejoin at `/to-spec`.
-- **PR bodies** have two shapes. `/commit-push-pr` mandates its own body
-  (`Closes #N`, summary, where changed, how to test) plus a QA comment. Matt's
-  model-invoked `/pr` proposes another: the smallest visual that shows the
-  change, before/after evidence, and a merge-danger call (one-way or two-way
-  door, blast radius). The kit's body carries the same ideas as an optional
-  Summary visual plus **Evidence** and **Merge danger** sections. Inside the
-  ship skill its headings, order, and `Closes #N` win; `/pr` shapes only the
-  visual and the wording inside them.
-- **Retros** close the loop. `/retro` (user-invoked) looks back over a session
-  and proposes changes to the agent's environment — automated checks, coding
-  standards, steering files, navigation pointers — never to the code. Run it
-  after shipping, in the session it looks back on.
+- **Separate checkouts.** If the task asks for a worktree, use the project
+  repo’s `.worktrees/<task-name>` and ignore `/.worktrees/` in its
+  `.gitignore`. You start `/using-git-worktrees`, or let your explicitly
+  started `/orchestrate-t3` or `/factory run` use it for setup. Generated
+  `rules/orchestration.md` and `rules/skills.md` pass the verified checkout
+  to Matt’s implementation, debugging, prototype, and review skills. They
+  do not rewrite the installed third-party files.
+- **Building one ticket.** `/implement` is an optional coordinator for one
+  ticket. It calls the kit’s `/tdd-loop` for each agreed part of the work.
+  `/tdd` supplies advice on test quality and where to test. `/tdd-loop` owns
+  the required checks, completion evidence, and exceptions, and works on
+  its own if neither upstream skill is installed. `/implement` stops after
+  `/code-review` and local adversarial `/risk-review`; shipping skills own the commits.
+- **Building a whole spec.** You explicitly start `/implement-spec` as the
+  alternative to one `/implement` per ticket. It assigns ready tickets to
+  local worker agents in worktrees and merges their work onto one local
+  integration branch. It stops after `/code-review` and local adversarial `/risk-review`. Pushing, opening a PR,
+  and closing tickets stay with the shipping skills.
+- **Planning.** If you can state the goal and every open decision clearly,
+  use `/feature-prompt`, then `/grill-with-docs`. If unresolved decisions
+  prevent you from defining the work, use `/wayfinder` to track them as
+  tickets and resolve one per session. Both paths lead to `/to-spec`.
+- **PR descriptions.** `/commit-push-pr` requires its own headings and order,
+  including the target-required issue reference, summary, where changed, how to test, and a separate
+  QA comment. Matt’s automatically selected `/pr` suggests a small visual,
+  before and after evidence, and merge-risk details. The kit supports those
+  ideas through the optional Summary visual, **Evidence**, and **Merge danger**
+  sections. Merge danger explains a one-way door, which cannot be undone,
+  or a two-way door, which can, plus the blast radius: what else could be
+  affected. The ship skill’s headings, order, and the target-required issue reference stay exact.
+  `/pr` only shapes the visual and wording within them.
+- **Learning after delivery.** Start `/retro` after shipping, in the session
+  you want it to review. It proposes automated checks, coding standards,
+  agent instruction files, and pointers that help the agent find things.
+  It proposes changes to the agent’s working environment, never to the
+  application code.
 
 ## Workflow Guide
 
-See [GUIDE.md](GUIDE.md) for the recommended workflow from workspace setup
-through spec, issues, TDD implementation, verification, PR shipping, and
-release notes — including the issue-title/label hard gate, workflow gates, and
-recovery loops. See [BEST-PRACTICES.md](BEST-PRACTICES.md) for the mental
-model: the gradient, context discipline, and anti-patterns.
+Read [GUIDE.md](GUIDE.md) for the practical steps: set up a workspace, write
+a spec, create issues, implement with tests, verify, prepare a PR, and write
+release notes. It explains required issue titles and labels, the checks that
+must pass before continuing, and what to do when a step fails.
 
-The kit ships `using-git-worktrees` as a companion. External companion skills
-and MCPs (agent-browser, Figma MCP, herdr,
-docker-expert, Laravel Boost, database MCPs, …) are separate installs used
-beside this kit when installed and task-fit — helpers, not a required
-pipeline. The list lives in
+Read [BEST-PRACTICES.md](BEST-PRACTICES.md) for why the workflow works,
+when to use each stage, how to manage the agent’s context, and mistakes to
+avoid.
+
+The kit includes `using-git-worktrees`. Other helpers, such as agent-browser,
+Figma MCP, herdr, Laravel Boost, and database MCPs, are separate
+installs. Use one when it fits the current task; they are not a required
+sequence. The full list is maintained in
 [`skills/agents-md/references/skills-manifest.md`](skills/agents-md/references/skills-manifest.md)
-(single source) and is explained in [GUIDE.md](GUIDE.md).
+and explained in [GUIDE.md](GUIDE.md).
 
 ## Agent Runtime Behavior
 
-The main session acts as a local **orchestrator**: it splits work into
-role-typed lanes (Explorer, Researcher, Planner, Implementer, Reviewer,
-Tester, Tool-runner), dispatches each to a **local** subagent, and keeps the
-only merge and final-judgment seat. **Local only — no cloud agents:** these
-skills never delegate to remote background-agent products (Cursor Cloud
-Agents, Copilot cloud coding agent, Codex Cloud, Antigravity managed/remote
-execution, Claude Routines, claude.ai background agents). Claude Code agent
-teams are local but sit outside this model too — the main session stays the
-only orchestrator.
+When a skill delegates work, the main agent coordinates local workers.
+Workers may explore, research, plan, implement, review, test, or run tools.
+The main agent keeps control of merging and the final decision.
 
-The per-runtime mechanics — tool names, parallel/background mechanisms,
-role-to-mechanism maps, and elevated-permission presets — live in
-[`skills/agents-md/references/tool-calling.md`](skills/agents-md/references/tool-calling.md)
-and the per-runtime `*-tools.md` files beside it. The human-facing summary
-tables are in [GUIDE.md](GUIDE.md).
+Delegation is local only. The kit does not use Cursor Cloud Agents, Copilot
+cloud coding agent, Codex Cloud, Antigravity managed/remote execution,
+Claude Routines, or claude.ai background agents. Claude Code agent teams
+also sit outside this setup, even though they run locally. There is one
+main coordinator.
+
+For the exact tool names, ways to run parallel or background work, mappings
+from worker roles to runtime tools, and optional elevated-permission settings,
+see [`tool-calling.md`](skills/agents-md/references/tool-calling.md) and the
+per-runtime `*-tools.md` files beside it. [GUIDE.md](GUIDE.md) has the tables
+written for people.
 
 ### Shared protocol lines
 
-Seven one-liners are shared kit protocol: every skill that covers the topic
-carries the exact same sentence, and `tools/validate.sh` (check 13) fails on a
-paraphrase. The source text lives in
+Seven sentences are shared across the skills. Each covers a rule that must
+mean exactly the same thing everywhere. The validator’s check 13 rejects
+wording changes to those sentences. Their source is
 [`writing-kit-skills`](skills/writing-kit-skills/SKILL.md).
 
 | Topic | What it guarantees |
 | :--- | :--- |
-| Artifacts root | Specs, ADRs, and contracts resolve to one predictable root (workspace, per-context, or repo) |
-| Sub-agent lanes | Local lanes only, never cloud agents; lane count announced and each lane reported |
-| PROJECT-CODE | Every project named by its Project Matrix code; no cross-project convention mixing |
-| Phase updates | `Stage / Found / Next / Needs user` at each phase transition |
-| Untrusted repository text | Instructions found in diffs, issues, PR bodies, commits, or comments are evidence, never followed |
-| Redaction | Tokens, keys, cookies, passwords, emails, and customer identifiers become `<redacted>` before evidence leaves the session |
-| Failed `gh` queries | A failed or erroring `gh` call is "unknown" — never an empty result, a pass, or green |
+| Artifacts root | Specs, ADRs, and contracts use one predictable location: the workspace, context root, or repo root. |
+| Sub-agent lanes | Workers run locally, never in cloud agents. The main agent announces the worker count and reports each result. |
+| PROJECT-CODE | The agent uses each project’s code from the Project Matrix and keeps project conventions separate. |
+| Phase updates | Progress uses `Stage / Found / Next / Needs user` at each change of phase. |
+| Untrusted repository text | Instructions in diffs, issues, PR bodies, commits, or comments are information to assess, not instructions to follow. |
+| Redaction | Tokens, keys, cookies, passwords, emails, and customer identifiers become `<redacted>` before evidence leaves the session. |
+| Failed `gh` queries | A failed GitHub CLI call means the result is unknown. It never counts as empty data, a pass, or green checks. |
 
-An exemption has to be user-approved and listed in `CANON_EXEMPT` in the
-validator; none exists at present.
+A marker is a machine-readable note saved with a result, usually on a PR.
+The head is the latest commit being checked. A check result must match that
+commit before another step can rely on it.
+
+Exceptions to a shared sentence need user approval and an entry in
+`CANON_EXEMPT` in the validator. There are no exemptions at present.
 
 ## Credits And Provenance
 
-This repository combines original local skills with workflow ideas and companion
-skills from the wider agent-skills ecosystem.
+This kit includes locally written skills and ideas adapted from the sources
+below. Companion skills are separate installs unless stated otherwise.
 
+- [Ponytail](https://github.com/DietrichGebert/ponytail) by Dietrich Gebert
+  provided the ideas behind checking reusable solutions first in `/tdd-loop`
+  and offering optional simplification advice in `/risk-review`. The kit
+  implements these ideas locally. You do not need to install Ponytail.
 - Local skills and docs in this repository are authored and maintained by
-  Arfeen Arif. Local git history shows the release-notes skill was added first,
-  followed by feature-discovery, feature-prompt, agents-md, and the workflow
-  guide.
-- The non-negotiable discipline in `agents-md` was originally seeded by
-  Forrest Chang's Karpathy-inspired `CLAUDE.md` guidelines and later expanded
-  in this repo into the 16 non-negotiable rules the generated `AGENTS.md`
-  carries today:
+  Arfeen Arif. The local Git history starts with release-notes, followed by
+  feature-discovery, feature-prompt, agents-md, and the workflow guide.
+- The 16 required rules in generated `AGENTS.md` files grew from Forrest
+  Chang’s Karpathy-inspired `CLAUDE.md` guidelines:
   <https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md>
-  The upstream repository is MIT licensed. This repo records credit here rather
-  than emitting source notes into generated `AGENTS.md` files.
-- The workflow guide references companion skills from Matt Pocock's skills repo,
+  That repository uses the MIT license. Source credit stays here, not in
+  generated `AGENTS.md` files.
+- The workflow guide uses companion skills from Matt Pocock’s repository,
   including `ask-matt`, `setup-matt-pocock-skills`, `grill-with-docs`,
   `grilling`, `to-spec`, `to-tickets`, `implement`, `implement-spec`,
   `code-review`, `pr`, `retro`, `wayfinder`, `research`, `tdd`,
@@ -398,13 +645,14 @@ skills from the wider agent-skills ecosystem.
   `improve-codebase-architecture`, `prototype`, `handoff`, `wait-what`,
   `wizard`, and `to-questionnaire`:
   <https://github.com/mattpocock/skills>
-  (`implement-spec`, `pr`, and `retro` joined upstream's engineering bucket in
-  v1.3.0; `pr`'s summary visuals are adapted upstream from Dex Horthy's
-  `show-me`.)
+  Those skills added `implement-spec`, `pr`, and `retro` to the engineering
+  group in v1.3.0. The visuals in `pr` were adapted there from Dex Horthy’s
+  `show-me`.
 - The worktree companion follows the setup approach in
   [using-git-worktrees](https://github.com/obra/superpowers/blob/main/skills/using-git-worktrees/SKILL.md).
-  Its local rules preserve requested isolation on failure, leave commits to the
-  ship skills, and return the verified checkout to the authorized task.
+  The local version keeps requested work isolated even if setup fails,
+  leaves commits to the shipping skills, and returns the checked checkout
+  to the task you authorized.
 - `/skill-creator` is credited to Anthropic's public skills repository:
   <https://github.com/anthropics/skills/tree/main/skills/skill-creator>
 - `/agent-browser`, the `skills` CLI, `find-skills`, and Vercel React/React
@@ -412,49 +660,18 @@ skills from the wider agent-skills ecosystem.
   <https://github.com/vercel-labs/agent-browser>
   <https://github.com/vercel-labs/skills>
   <https://github.com/vercel-labs/agent-skills>
-- Other optional companions referenced by `agents-md`: Matt Pocock's
+- Other optional helpers that `agents-md` can reference: Matt Pocock's
   `ask-matt` router (<https://github.com/mattpocock/skills>), Codex plugin for Claude Code
   (<https://github.com/openai/codex-plugin-cc>), Impeccable
   (<https://github.com/pbakaus/impeccable>), notebooklm-py
   (<https://github.com/teng-lin/notebooklm-py>), herdr
-  (<https://github.com/herdrdev/herdr>), docker-expert from
-  agentic-awesome-skills (<https://github.com/sickn33/agentic-awesome-skills>, formerly antigravity-awesome-skills),
-  Laravel Boost (<https://github.com/laravel/boost>), unslop, blast-radius, and
-  show-me-your-work from Cursor's plugins repo
+  (<https://github.com/herdrdev/herdr>),
+  Laravel Boost (<https://github.com/laravel/boost>), unslop from Cursor's plugins repo
   (<https://github.com/cursor/plugins>), and Figma MCP
   (<https://developers.figma.com/docs/figma-mcp-server/>).
-- **Globally installed skills.** The skills below were installed globally
-  (`npx skills list -g`, 2026-10-03) beside this kit's own skills. They are
-  separate installs, credited by source and never vendored here:
-  - Anthropic (<https://github.com/anthropics/skills>): `mcp-builder`,
-    `skill-creator`, `frontend-design`.
-  - Matt Pocock (<https://github.com/mattpocock/skills>): `ask-matt`,
-    `claude-handoff`, `code-review`, `codebase-design`, `diagnosing-bugs`,
-    `domain-modeling`, `git-guardrails-claude-code`, `grill-me`,
-    `grill-with-docs`, `grilling`, `handoff`, `implement`, `implement-spec`,
-    `improve-codebase-architecture`, `loop-me`, `migrate-to-shoehorn`, `pr`,
-    `prototype`, `research`, `retro`, `scaffold-exercises`,
-    `setup-matt-pocock-skills`, `setup-pre-commit`, `setup-ts-deep-modules`,
-    `tdd`, `teach`, `to-questionnaire`, `to-spec`, `to-tickets`, `triage`,
-    `wait-what`, `wayfinder`, `wizard`, `writing-beats`, `writing-for-agents`,
-    `writing-fragments`, `writing-shape`.
-  - Vercel Labs: `agent-browser` (<https://github.com/vercel-labs/agent-browser>)
-    and `find-skills` (<https://github.com/vercel-labs/skills>).
-  - Cursor (<https://github.com/cursor/plugins>): `blast-radius`,
-    `show-me-your-work`, `unslop`.
-  - Michael Shimeles (<https://github.com/michaelshimeles/skills>):
-    `before-and-after` (from vercel-labs/before-and-after, PolyForm Shield
-    1.0.0), `code-structure`, `evidence-driven-testing`.
-  - GitHub awesome-copilot (<https://github.com/github/awesome-copilot>):
-    `boost-prompt`.
-  - Google Labs Stitch skills (<https://github.com/google-labs-code/stitch-skills>):
-    `enhance-prompt`.
-  - herdr (<https://github.com/herdrdev/herdr>): `herdr`.
-  - Impeccable (<https://github.com/pbakaus/impeccable>): `impeccable`.
-  - agentic-awesome-skills (<https://github.com/sickn33/agentic-awesome-skills>):
-    `docker-expert`.
-- The QA-escape loop (`agentic-qa`, `qa-escape`, and the acceptance-matrix,
-  evidence, and risk-lens changes to existing skills) adapts ideas from skills
+- The missed-bug workflow uses `agentic-qa` and `qa-escape`, maps acceptance
+  criteria to tests, records evidence, and reviews risks in existing skills.
+  Its ideas come from skills
   in GitHub's awesome-copilot collection
   (<https://github.com/github/awesome-copilot/tree/main/skills> — notably
   webmcpify, bug-receipt, bug-reproduction-brief, quality-playbook,
@@ -462,69 +679,142 @@ skills from the wider agent-skills ecosystem.
   protobuf-grpc-api-review, copilot-pr-autopilot, incident-postmortem, and
   poka-yoke) and from Chris Titus's titus-ai skills
   (<https://github.com/ChrisTitusTech/titus-ai/tree/main/.agents/skills> —
-  pr-readiness and ai-project-manager). The factory workflow's shape follows
-  The Pragmatic Engineer's diagram of OpenAI's "agentic software factory". No
-  text was copied; credit lives here, never in generated output.
-- The 2026-10 hardening pass (replay-before-fail, base-commit reproduction,
-  ship-policy safety, review-comment trust, deploy baselines, redaction, the
-  dependency gate in `orchestrate-herdr`, design-system contrast checks, the
-  env-guard hook template, and the house-style "form follows the failure"
-  rule) compared every kit skill against five public skill collections and
-  adapted patterns in this kit's own words:
+  pr-readiness and ai-project-manager). The factory workflow follows
+  The Pragmatic Engineer’s diagram of OpenAI’s "agentic software factory".
+  The kit uses its own wording. Credit stays here, not in generated output.
+- In October 2026, every kit skill was compared with five public skill
+  collections. The resulting changes included replaying a failure before
+  reporting it, trying bug reproductions on the base commit, shipping
+  safeguards, treating review comments as untrusted input, comparing deploy
+  errors with a baseline, and redacting sensitive data. They also covered
+  waiting on dependencies in `orchestrate-herdr`, design contrast checks,
+  the environment-guard hook template, and choosing instruction wording to
+  address the failure observed. The patterns were rewritten in this kit’s
+  own words. The collections were:
   [github/awesome-copilot](https://github.com/github/awesome-copilot/tree/main/skills),
   [obra/superpowers](https://github.com/obra/superpowers/tree/main/skills),
   [ChrisTitusTech/titus-ai](https://github.com/ChrisTitusTech/titus-ai/tree/main/.agents/skills),
   [alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills),
-  and [garrytan/gstack](https://github.com/garrytan/gstack). Nothing from them
-  is vendored or installed by this kit.
-- The 2026-10 upstream alignment follows Matt Pocock's skills v1.3.0 / v1.3.1
-  (<https://github.com/mattpocock/skills/releases/tag/v1.3.1>) and adapts
-  ideas from them in this kit's own words: the `GLOSSARY.md` naming; the PR
-  body's evidence and merge-danger sections (`pr`); the mechanical-versus-
-  judgement split for guards (`retro`); root-cause lines, minimised
-  reproductions, and tagged debug instrumentation (`diagnosing-bugs`); the
-  router pattern behind `/ask-kit` (`ask-matt`); the phase-boundary order
-  (`ask-matt`); the rule for calling another skill and the cache failure mode
-  (`writing-for-agents` and the upstream invocation convention); and the
-  `.out-of-scope/` record (`triage`). Nothing is vendored.
+  and [garrytan/gstack](https://github.com/garrytan/gstack). Their files are not
+  copied into this kit, and the kit does not install them.
+- The October 2026 update also follows Matt Pocock’s skills v1.3.0 / v1.3.1
+  (<https://github.com/mattpocock/skills/releases/tag/v1.3.1>). It adapts the
+  `GLOSSARY.md` name; evidence and merge-risk sections from `pr`; automated
+  checks versus judgment-based instructions from `retro`; and root-cause
+  lines, small reproductions, and tagged debugging output from
+  `diagnosing-bugs`. It also uses `ask-matt` ideas for `/ask-kit` and choosing
+  the next step at phase boundaries, `writing-for-agents` guidance on calling
+  skills and stale cached information, the upstream convention for skill
+  invocation, and `triage`’s `.out-of-scope/` record. The wording is local;
+  none of those skill files is copied here.
 - `/sentry` refers to Sentry's CLI for developers and agents:
   <https://cli.sentry.dev/>
-- **Cursor CLI:** `AGENTS.md` is the canonical workspace context file;
-  skills use `/skill-name` invocation and the `Task` tool for subagents.
+- **Cursor CLI.** `AGENTS.md` is the workspace’s main instruction file.
+  Skills run through `/skill-name`; subagents use the `Task` tool.
   <https://cursor.com/docs/cli/overview>
   <https://cursor.com/docs/context/skills>
-- **Supported runtime boundary:** This kit supports Codex CLI, Claude CLI,
+- **Supported tools.** This kit supports Codex CLI, Claude CLI,
   Antigravity CLI, Cursor CLI, Opencode CLI, and GitHub Copilot CLI only.
-  Compatibility files such as `GEMINI.md` exist solely for supported runtimes
-  that read those filenames; they do not indicate support for Gemini CLI or
+  Files such as `GEMINI.md` exist because a supported tool reads that
+  filename. Their presence does not mean the kit supports Gemini CLI or
   any other runtime.
+
+<details>
+<summary>Recorded global skill installations, 2026-10-03</summary>
+
+The list below records a user-level installation snapshot from 2026-10-03,
+checked with `npx skills list -g`. It includes skills installed beside this
+kit. It is not a requirement to install all of them, and their files are not
+copied into this repository. Only companions still recommended by this kit
+are listed:
+
+- Anthropic (<https://github.com/anthropics/skills>): `mcp-builder`,
+  `skill-creator`, `frontend-design`.
+- Matt Pocock (<https://github.com/mattpocock/skills>): `ask-matt`,
+  `claude-handoff`, `code-review`, `codebase-design`, `diagnosing-bugs`,
+  `domain-modeling`, `git-guardrails-claude-code`, `grill-me`,
+  `grill-with-docs`, `grilling`, `handoff`, `implement`, `implement-spec`,
+  `improve-codebase-architecture`, `loop-me`, `migrate-to-shoehorn`, `pr`,
+  `prototype`, `research`, `retro`, `scaffold-exercises`,
+  `setup-matt-pocock-skills`, `setup-pre-commit`, `setup-ts-deep-modules`,
+  `tdd`, `teach`, `to-questionnaire`, `to-spec`, `to-tickets`, `triage`,
+  `wait-what`, `wayfinder`, `wizard`, `writing-beats`, `writing-for-agents`,
+  `writing-fragments`, `writing-shape`.
+- Vercel Labs: `agent-browser` (<https://github.com/vercel-labs/agent-browser>)
+  and `find-skills` (<https://github.com/vercel-labs/skills>).
+- Cursor (<https://github.com/cursor/plugins>): `unslop`.
+- herdr (<https://github.com/herdrdev/herdr>): `herdr`.
+- Impeccable (<https://github.com/pbakaus/impeccable>): `impeccable`.
+
+</details>
+
+## Repository Layout
+
+```
+agent-skills-kit/
+├── README.md            # Start here, choose skills, and find install commands
+├── GUIDE.md             # Day-to-day instructions for people
+├── BEST-PRACTICES.md    # Why the workflow works and mistakes to avoid
+├── CONTRIBUTING.md      # How to edit skills and keep related files in sync
+├── CHANGELOG.md         # Dated record of what changed in the kit
+├── .out-of-scope/       # Ideas considered and declined, with the reason
+├── AGENTS.md            # Instructions for agents working in this repo
+│                        # (CLAUDE.md / GEMINI.md point agents to this file)
+├── .claude-plugin/
+│   └── marketplace.json # Installer groups, one per phase plus factory-workflow
+├── .github/workflows/   # Runs tools/validate.sh automatically on each PR
+├── tools/
+│   ├── validate.sh      # Required repository checks, run before each commit
+│   ├── hooks/           # Tracked pre-commit hook that runs validate.sh
+│   └── trigger-evals/   # Checks whether requests select the right skills
+├── evals/               # Evaluation methods, scoring rules, and audit templates
+└── skills/<name>/       # One folder per skill
+    ├── SKILL.md         # Required skill settings and instructions
+    ├── references/      # Optional: on-demand docs
+    ├── assets/          # Optional: output templates
+    ├── agents/          # Optional runtime settings in openai.yaml
+    └── evals/           # Request-routing tests and scores, not agent instructions
+```
+
+Each folder under `skills/` follows the [Agent Skills spec](https://agentskills.io/specification).
+Its `SKILL.md` begins with a settings block, called frontmatter, containing
+`name` and `description`. The description helps the agent decide when the
+skill fits. `references/` holds detail read only when needed; `assets/` holds
+output templates. Every skill can be installed independently.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the skill authoring guide (token
-budget, description-as-trigger, kit contract), the review rubric, and the
-maintenance sync map. Before any commit, run:
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before editing skills. It explains
+word limits, descriptions that help agents choose correctly, required skill
+behavior, review criteria, and which files must be updated together.
+
+Before every commit, run:
 
 ```bash
 bash tools/validate.sh
 ```
 
-Enable the tracked hook once per clone so it runs on every commit:
-`git config core.hooksPath tools/hooks`. Behavior changes get a dated entry in
-[CHANGELOG.md](CHANGELOG.md); declined ideas are recorded in
-[`.out-of-scope/`](.out-of-scope/).
+To run that check automatically before commits, enable the tracked hook once
+per clone:
 
-CI runs the same script on every PR. It checks, in short: frontmatter and
-naming; byte-identical shared files (`ship-policy.md`, `context-terms.md`);
-manifest, README, and plugin-group coverage for every skill; link and anchor
-integrity; zero attribution in files and commit messages; agents-md version
-marker agreement and a byte budget for the always-loaded `AGENTS.md`
-template; trigger-eval sets and their provenance; invocation parity
-with `agents/openai.yaml`; the 1,500-word body ceiling; the canonical
-one-liners; no placeholder scaffolding; version bumps on every changed skill;
-no hidden zero-width or bidi characters; every installed companion credited
-here; a 200-character cap on every description; and a 3,000-character total
-budget for model-invocable descriptions.
+```bash
+git config core.hooksPath tools/hooks
+```
+
+Behavior changes need a dated [CHANGELOG.md](CHANGELOG.md) entry. Record
+considered but declined ideas in [`.out-of-scope/`](.out-of-scope/).
+
+Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issues, docs, settings, or comments.
+
+CI runs the same validator on every PR. It checks:
+
+| Area | Checks |
+| :--- | :--- |
+| Skill definitions | Valid frontmatter and names, a version bump for every changed skill, a 200-character limit on every description, and a 3,000-character total for descriptions available to automatic selection. |
+| Related files | Every skill appears in the manifest, README, and one plugin group. Installed companions have source credits here. Shared files such as `ship-policy.md` and `context-terms.md` match byte for byte. |
+| Instruction limits | Matching `agents-md` version markers, the byte limit for its always-loaded `AGENTS.md` template, the 1,500-word skill-body limit, and exact shared protocol sentences. |
+| Evaluation and runtime settings | Request-routing test sets and the evidence behind their recorded results, plus matching invocation settings in `SKILL.md` and `agents/openai.yaml`. |
+| Text and links | Working links and anchors, no unfinished placeholder scaffolding, no hidden zero-width or bidirectional text-control characters, and zero attribution in files and commit messages. |
 
 ## License
 

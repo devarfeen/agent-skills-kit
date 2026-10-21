@@ -32,12 +32,12 @@ Unanswered items are not created. Reporter away → print the drafts and stop.
 
 ## Create
 
-Create approved items in number order, then relate items listed as related. Read back each one as in step 6. A failure on one item is reported in its row; continue with the rest.
+Apply approved create/comment operations in number order per step 6; duplicate comments change no issue fields. Relate only newly created items listed as related. Read back each result. A failure on one item is reported in its row; continue with the rest.
 
 ## Output
 
 ```
-Created 2 of 3 (1 merged)
+Created 2 of 3 (1 merged; report duplicate comments separately when present)
 | # | Issue | Title | Priority · cycle |
 | 1 | PRWL-212 <url> | PARTNERS-WEB: Show empty-state message on an empty invoice list | High · 5 |
 | 2 | PRA-431 <url> | PARTNERS-API: Return 422 for a missing transfer date | Medium · 6 |

@@ -72,6 +72,8 @@ A fail in one of these states is checked in the same state on every other surfac
 
 ## Runtime and browser preparation
 
+Read [Fixture ownership](qa-records.md#fixture-ownership) before testing. The builder or runtime repair owner prepares missing fixtures; the tester does not seed or edit them.
+
 Verify the workspace/project binding against live checkout, command directory/user and served revision before using either URL. Send failures to the runtime repair owner; QA remains read-only. Keep BASE and HEAD data, trust configuration and login sessions separate. A locator or HTTP health response alone cannot prove the tested revision or authenticated readiness.
 
 Use the browser tool and headed/headless mode required by current target policy and user preference, including workers. Where policy selects T3 first, make one bounded live capability/connection probe; on failure use its authorized fallback and record the exact reason. Tool exposure alone is not availability. A different project's policy may select a different tool. Missing required console/page-error/failed-request diagnostics remains a gap; choosing another tool never waives them.
@@ -98,7 +100,7 @@ Set states inside the cell's batch, before the action, and reset them after.
 | Offline | `set offline on`, then `set offline off` |
 | Viewport | `set viewport 375 812` and `set viewport 1280 800` |
 | Loading | Assert the loading indicator while a routed request is held by a slow fixture, or read it from the component's state |
-| Long content | Seed a fixture or local record with long text, many items, and non-ASCII characters |
+| Long content | Use an owner-prepared fixture with long text, many items, and non-ASCII characters; missing fixture returns to its owner |
 | Permission denied | Log in as the role; first prove the control exists for a role that should see it |
 | Keyboard-only | 1280 only, with `press Tab`, `press Enter` or `press Space`, and `press Escape`. Pass when Tab reaches the control, Enter/Space activates it, Escape closes overlays, and focus stays visible |
 

@@ -3,7 +3,7 @@ name: feature-prompt
 disable-model-invocation: true
 description: "Turn a feature idea, change request, or rough requirement into a small prompt for grill-with-docs. An ADR to a spec is /to-spec; how existing behaviour works is /feature-discovery."
 metadata:
-  version: "0.3.0"
+  version: "0.3.1"
 ---
 
 # feature-prompt
@@ -76,10 +76,10 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 
 - Use the full Project Matrix code verbatim whenever one exists. Never
   abbreviate project codes or invent shorthand.
-- Reference existing files/modules/seams when known, and keep "reuse existing
-  seam vs create new seam" under `Open questions` explicitly — it is how
-  duplicate logic gets prevented. When cheap search finds no existing seam,
-  say which terms were searched.
+- Reference existing files/modules/seams. Put "reuse existing seam vs create
+  new seam" under `Open questions` only while unresolved; otherwise record
+  the settled choice and evidence. If search finds no existing seam, name
+  the terms searched.
 - Include only non-obvious context: constraints, architecture quirks, and
   domain rules the model cannot infer cheaply from repo scans. Omit stack
   facts the code already shows.

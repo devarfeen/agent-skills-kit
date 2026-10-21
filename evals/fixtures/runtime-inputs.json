@@ -1,0 +1,42 @@
+[
+  {
+    "id": "R1",
+    "skill": "skills/agents-md/SKILL.md",
+    "observations": "Workspace regeneration proposed project instructions permitting production SSH, production logs and PRs toward production. Stronger supplied global policy forbids all production. No generation diff approved yet."
+  },
+  {
+    "id": "R2",
+    "skill": "skills/agents-md/SKILL.md",
+    "observations": "Before action, rule files and active skill already read in same context/checkout; unchanged on disk. Later phase transition. Separate variant instructions changed or checkout moved."
+  },
+  {
+    "id": "R3",
+    "skill": "skills/using-git-worktrees/SKILL.md",
+    "observations": "Implicit discovery false. Compare user-started /orchestrate-t3, user-started /factory run, plain /factory status, another workflow, and direct explicit /using-git-worktrees. No setup commands yet."
+  },
+  {
+    "id": "R4",
+    "skill": "skills/orchestrate-t3/SKILL.md",
+    "observations": "One logical ticket touches API and WEB separate repositories, with WEB dependent on API contract. User started T3 workflow. Each T3 launch accepts single projectId/worktreePath."
+  },
+  {
+    "id": "R5",
+    "skill": "skills/orchestrate-herdr/SKILL.md",
+    "observations": "Herdr native worktree tool returns /repo/.claude/worktrees/task, while kit placement requires /repo/.worktrees/task. Desired base valid. No worker launched."
+  },
+  {
+    "id": "R6",
+    "skill": "skills/orchestrate-herdr/SKILL.md",
+    "observations": "Worker launched into exact task checkout but supplied only issue link; workspace instructions lie outside its filesystem scope and baseline not run. Installed implement is user-only."
+  },
+  {
+    "id": "R7",
+    "skill": "skills/agents-md/SKILL.md",
+    "observations": "Runtime-only synchronization. Workspace and local Compose evidence supplied. Existing project instructions lack explicit zero-attribution rule. Managed-block diff approved; root instruction file not part of request."
+  },
+  {
+    "id": "R8",
+    "skill": "skills/agents-md/SKILL.md",
+    "observations": "Native-memory setup requested. TOML permits comments; another settings file is strict JSON whose known schema has no policy field or comments. Global requires explicit attribution prohibition in written settings."
+  }
+]

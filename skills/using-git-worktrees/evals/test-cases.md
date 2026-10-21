@@ -24,26 +24,4 @@ Maintainer-only fixtures. Zero attribution: never add co-author, AI, or tool att
 | Escaping edit | An absolute path or symlink points outside the assigned worktree | Resolve the target and block task writes outside the checkout unless separately scoped |
 | Advanced HEAD | Authorized task commits have advanced HEAD beyond the starting commit | Keep the checkout and branch binding; record current revision without rejecting legitimate commits |
 
-## 2026-10-01 checkout gate results
-
-An independent evaluator read only the current setup skill and workspace
-rules with the five checkout-gate fixtures, without acceptance criteria or
-prior results. All five modeled decisions passed: skipped setup blocks
-writes, wrong targets are corrected, stale branches block writes, resolved
-symlink escapes block writes, and authorized HEAD advancement is allowed.
-These simulations do not establish live harness enforcement.
-
-Executed local Git fixtures at `/tmp/checkout-gate-ifrud5bt/repo with spaces`
-confirmed matching assigned-checkout identity, source-checkout and stale-branch
-mismatches, symlink containment failure, legitimate HEAD advancement, and
-source-file preservation. These checks establish Git/path evidence, not tool
-interception. `bash tools/validate.sh` and `git diff --check` passed.
-No remote operations were performed.
-
-## 2026-09-12 results
-
-- Three independent catalog-only routing evaluations: **20/20**, unanimous for every new-skill query. The full 352-query run passed 348; see [validation.md](validation.md).
-- Independent modeled evaluation of the first seven fixtures confirmed creation/reuse, failure boundaries, and Matt routing. It identified the source-ignore shipping gap and an overclaim that the source checkout stays untouched; both were corrected. The reuse fixture requires an assigned worker; independently launched main sessions still follow the existing launch rule. Catalog installation filtering beyond Matt subsection omission is unchanged.
-- Executed Git fixtures in two temporary project repos, including a path containing spaces: per-project placement, ignore matching, expected base, linked-worktree detection, preservation of source branch/index/unstaged/untracked work, and rejection of an occupied branch all passed. Fixture operations used local temporary repositories, with no remotes.
-
-Modeled decisions do not prove native runtime integration. Live Git checks do not test remote shipping. No remote commit, push, issue closure, or PR operation was performed.
+Results belong in the [current audit](../../../evals/current/README.md); fixtures alone do not establish a pass.
