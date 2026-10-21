@@ -3,7 +3,7 @@ name: pr-feedback
 disable-model-invocation: true
 description: "Address reviewer comments on an open GitHub PR: triage them for approval, apply accepted fixes, ship via /commit-push-pr, reply with commit SHAs. Reviewing a PR yourself is /code-review."
 metadata:
-  version: "0.2.3"
+  version: "0.2.4"
 ---
 
 # pr-feedback
@@ -57,7 +57,7 @@ Work through the accepted items on the head branch. A behavioural fix starts wit
 
 ### 6. Ship through /commit-push-pr
 
-/commit-push-pr is user-invoked, so no skill can start it. Stop with the tested local fixes, list them beside the approved disposition list, and tell the user to run `/commit-push-pr` on this head branch for the existing PR; its own approvals still apply. Continue at step 7 when it reports the pushed commit SHA(s) in this session. If it cannot update this PR's base or fork, the fixes stay local and the threads stay unanswered. If no code changed, skip shipping. Post approved non-fix replies or approved already-fixed replies after confirming the cited commit and fix remain on refreshed PR head.
+/commit-push-pr is user-invoked, so no skill can start it. Stop with the tested local fixes, list them beside the approved disposition list, and tell the user to run `/commit-push-pr` on this head branch for the existing PR; its own approvals still apply. Continue at step 7 when it reports the pushed commit SHA(s) in this session. If it cannot update this PR's base or fork, the fixes stay local and the threads stay unanswered. If no code changed, skip shipping. Post approved non-fix replies or approved already-fixed replies after confirming the cited commit is listed in `gh pr view <pr> --json commits` and the fix remains on the refreshed PR head; a base-branch commit merged into the head does not qualify.
 
 ### 7. Answer the threads
 
@@ -94,7 +94,7 @@ Then `Suggested next skills (optional)` — 1–3 advisory items (e.g. /code-rev
 
 ## Completion criteria
 
-- [ ] Threads re-fetched after replying: every accepted item's thread carries a reply citing a SHA that `git branch -r --contains <sha>` places on the PR's head branch
+- [ ] Threads re-fetched after replying: every accepted item's thread carries a reply citing a SHA listed in the PR's own commits (`gh pr view <pr> --json commits`) on the refreshed head
 - [ ] No thread replied to or resolved whose disposition was not fixed-and-pushed or user-approved wontfix — checked against the step 4 disposition list
 - [ ] After the re-fetch, every unresolved thread whose last comment is not yours is a needs-discussion item named in the report
 - [ ] Each behavioural fix names its test, quoted failing on the recorded head and passing on the pushed head

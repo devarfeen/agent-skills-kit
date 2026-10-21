@@ -29,9 +29,11 @@ Use the supplied checkout record and instructions for project/repository context
 Drive each seam with `/tdd-loop` directly when available; use `/tdd` only as
 test-quality reference. Never auto-invoke user-only `/implement`. Without
 `/tdd-loop`, reproduce the failure with a test and make it pass; still report
-the command and passing output. Commit green steps to the assigned branch only when workspace policy permits
-local engineering commits. Otherwise return verified uncommitted changes for
-the ship skill, including branch/shared modes. Never push or open a PR.
+the command and passing output. In `worktree` or `branch` mode, commit each green step to BRANCH; task-branch
+commits are local engineering commits and need no ship skill. In `shared`
+mode, commit only when the workspace permits commits on that shared branch;
+otherwise return verified uncommitted changes for the ship skill. Never push
+or open a PR.
 
 Before coding, read the issue's acceptance criteria, any issues labelled
 `qa-escape` for this area, and the `## QA escape guards` lines in AGENTS.md.

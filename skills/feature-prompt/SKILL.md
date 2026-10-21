@@ -3,7 +3,7 @@ name: feature-prompt
 disable-model-invocation: true
 description: "Turn a feature idea, change request, or rough requirement into a small prompt for grill-with-docs. An ADR to a spec is /to-spec; how existing behaviour works is /feature-discovery."
 metadata:
-  version: "0.3.1"
+  version: "0.3.2"
 ---
 
 # feature-prompt
@@ -78,7 +78,8 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
   abbreviate project codes or invent shorthand.
 - Reference existing files/modules/seams. Put "reuse existing seam vs create
   new seam" under `Open questions` only while unresolved; otherwise record
-  the settled choice and evidence. If search finds no existing seam, name
+  the settled choice and its evidence in the contract section that names
+  the seam, never as a new section. If search finds no existing seam, name
   the terms searched.
 - Include only non-obvious context: constraints, architecture quirks, and
   domain rules the model cannot infer cheaply from repo scans. Omit stack

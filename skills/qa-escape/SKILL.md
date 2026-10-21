@@ -3,7 +3,7 @@ name: qa-escape
 disable-model-invocation: true
 description: "Record a bug human QA found after delivery, including factory QA_RETURNED: reproduce it and identify the missed check. No prior delivery: /diagnosing-bugs."
 metadata:
-  version: "1.2.0"
+  version: "1.2.1"
 ---
 
 # qa-escape
@@ -13,7 +13,7 @@ An escape is a bug a human found after an agent's checks said the work was done.
 ## Inputs
 
 - **QA report** — steps, expected, actual, environment, screenshots or logs. Missing expected or actual → ask for that one field.
-- **Delivery evidence** — issue plus PR, or the direct-close QA handoff. Resolve delivered commit and baseline from recorded evidence; missing either → report unresolved and stop before reproduction/classification. Read the recorded QA/risk claims and `/tdd-loop` summary.
+- **Delivery evidence** — issue plus PR, or the direct-close QA handoff. Resolve the delivered commit and baseline from recorded evidence: the PR's merge commit and base, or the direct-close QA handoff's `Change:` and `Baseline:` lines; missing either → report unresolved and stop before reproduction/classification. Read the recorded QA/risk claims and `/tdd-loop` summary.
 - **Isolated worktree** — only when reproduction is needed, use `<project-repo>/.worktrees/qa-escape-<issue>` detached at the revision QA tested: use `git worktree add --detach` per workspace policy. Only an explicitly started `/factory run` or `/orchestrate-t3` may read/follow `using-git-worktrees` for its task setup; direct skill use requires the user's invocation. Before the first command there, verify and report the checkout record the workspace `AGENTS.md` requires: path, owning repository and common Git directory, branch or detached state, starting commit, and baseline. Setup failure or a mismatch blocks the run; never fall back to the main checkout. Leave the worktree in place and report its path; cleanup follows the workspace rules.
 - **Environment** — local, staging or production. Production evidence is pasted only. Staging needs this session's explicit user approval and user-provided SSH access; each mutation requires separate approval.
 

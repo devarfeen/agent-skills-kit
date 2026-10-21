@@ -2,7 +2,7 @@
 
 Zero attribution: never add co-author, AI, tool, or generator attribution to any output, except the permitted comment-only Tester field below.
 
-Read before fixture preparation or producing the QA report. Discover the target's evidence adapter from current instructions; use its supported result schema and manifest commands. Without an adapter, retain the same identities and checks in the report and manifest. Standalone installs do not assume a workspace script path.
+The fixture owner reads this before fixture preparation; the tester reads it before producing the QA report and never runs the restore or cleanup command itself. Discover the target's evidence adapter from current instructions; use its supported result schema and manifest commands. Without an adapter, retain the same identities and checks in the report and manifest. Standalone installs do not assume a workspace script path.
 
 ## Fixture ownership
 

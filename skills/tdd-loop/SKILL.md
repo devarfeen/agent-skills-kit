@@ -2,7 +2,7 @@
 name: tdd-loop
 description: "Kit TDD/red-green loop for changes, safe refactors and untested legacy code. Urgent production bug reports get local test-first fixes even if tests are requested later. Bare builds: /implement."
 metadata:
-  version: "0.3.1"
+  version: "0.3.2"
 ---
 
 # TDD loop
@@ -23,7 +23,7 @@ this procedure.
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output. Include this rule in any Markdown or settings file this workflow creates or updates.
 
-Work locally; never access production or create production-target PRs. Urgency alone grants no exception; an urgent hotfix follows the declared exception protocol, including regression-red proof before issue closure.
+Work locally; never access production or create production-target PRs. Urgency alone grants no permission to skip tests; an urgent hotfix is declared through the exception protocol and still needs regression-red proof before issue closure.
 
 1. **Restate the change as observable behavior.** One sentence: "when
    <input/action>, <observable result>." If you can't write that sentence, the
@@ -124,7 +124,10 @@ run per slice adds no signal.
 Done means you can show all of these. For a declared exception, replace only
 the inapplicable test checks with its named verification command or manual
 steps and observed result; mark those tests N/A with the reason, never invent
-red/green evidence. Keep the remaining checks and follow-up plan.
+red/green evidence. Keep the remaining checks and follow-up plan. A declared
+urgent hotfix is done only once its regression test has been seen failing on
+the pre-fix commit and passing on the fix; until then say so instead of
+suggesting `/commit-push-close`.
 
 - [ ] Each new test was seen failing — quote the failing run — before it passed.
       (A characterization test pins current behavior and passes by design —

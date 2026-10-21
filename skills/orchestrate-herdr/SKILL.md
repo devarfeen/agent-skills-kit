@@ -3,7 +3,7 @@ name: orchestrate-herdr
 disable-model-invocation: true
 description: "Dispatch spec (PRD) sub-issues to worker tabs; monitor to done. Tab, CLI, or runtime context selects herdr; without any of these: /ask-kit. Tab actions without spec/sub-issues: herdr companion."
 metadata:
-  version: "0.7.0"
+  version: "0.7.1"
 ---
 
 # Orchestrate herdr
@@ -32,7 +32,7 @@ Fan work out to one herdr-managed worker tab per unit (tracker sub-issue or harn
 - **Isolation is the user's choice, and herdr's job.** Keep the orchestrator's working directory. Create worktrees only in selected `worktree` mode through `herdr worktree create`, never hand-rolled Git. Verify project-owned placement per Intake before launch; unsupported placement blocks that worker. `branch` and `shared` tabs start in the orchestrator's folder, which must be the assigned repository's checkout.
 - **Saved IDs only.** Every submit, read, monitor, and follow-up call uses a tab ID and agent name saved at creation — never the active tab, latest tab, visual order, or a guess.
 - **Prompts are pasted and submitted into a ready CLI** — never passed as launch arguments/flags, never left staged or unsent, and **never pasted into a dead tab's shell**, where the prompt text would execute as commands.
-- **Read completion evidence from the tab.** Code tasks require the test command and quoted passing output; non-code harness tasks require their assigned evidence. Spec tasks also require an `AC map:` covering every criterion. Missing proof stays incomplete; a summary alone is a claim.
+- **Read completion evidence from the tab.** A task whose diff touches source or tests requires the test command and quoted passing output, however the worker describes it; a non-code task requires the evidence its prompt named, or the observable result when none was named. Spec tasks also require an `AC map:` covering every criterion. Missing proof stays incomplete; a summary alone is a claim.
 - **Suggest, never auto-chain.** After the final report, suggest `/agentic-qa` for each PR whose `AC map` owes rows to it, `/code-review` on the workers' diffs, or `/release-notes` for what shipped — suggest only, then stop.
 
 ## Workflow

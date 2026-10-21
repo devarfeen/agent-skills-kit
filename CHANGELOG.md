@@ -31,6 +31,16 @@ re-run `/agents-md` after a marker bump.
   worker), allows the parent that review-dispatch fallback, defines
   confirmed-actionable findings, and logs `incomplete` rounds. `/ask-kit`
   0.2.1 routes the merge question to `/risk-review <pr>`.
+- Unworkable paths closed: `/pr-feedback` 0.2.4 accepts an already-fixed
+  reply only for a SHA in the PR's own commits; `/qa-escape` 1.2.1 resolves
+  the direct-close baseline from the handoff's new `Baseline:` line;
+  `/design-system` 0.2.2 can resume the pending human preview through
+  `preview` or `extend`; `/pixel-audit` 1.0.2 suggests shipping only when the
+  shipped rows are verified; `/orchestrate-herdr` 0.7.1 commits in worktree
+  and branch mode and defines code versus non-code evidence by the diff;
+  `/tdd-loop` 0.3.2 finishes a declared hotfix only after the regression red;
+  `/feature-prompt` 0.3.2 records settled seams inside the contract sections;
+  `/agentic-qa` 0.9.2 keeps restore and cleanup commands with the fixture owner.
 
 ## 2026-10-21
 

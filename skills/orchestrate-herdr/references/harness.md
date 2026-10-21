@@ -18,7 +18,7 @@ Minimum prompt footer (append if the user's text omits it):
 ```md
 Report back when completed, errored, or blocked.
 
-Completion requires test evidence when the task involves code: the test command and its passing output, with the verified checkout identity and baseline result from the supplied checkout block. Zero attribution: never add co-author, AI, or tool attribution to output.
+Completion requires test evidence when the task changes source or tests: the test command and its passing output, with the verified checkout identity and baseline result from the supplied checkout block. A task without code changes reports the evidence its prompt names, or the observable result when it names none. Zero attribution: never add co-author, AI, or tool attribution to output.
 End the report with three fields, one line each:
 Status: <completed | blocked — decision needed | errored — cause>
 Decisions: <choices made that the task didn't dictate, or "none">

@@ -3,7 +3,7 @@ name: pixel-audit
 disable-model-invocation: true
 description: "Audit ONE page or route for visual conformance against Figma or reference screens, fix gaps with the UI library, and verify at element level. Not feature porting; never auto-chains."
 metadata:
-  version: "1.0.1"
+  version: "1.0.2"
 ---
 
 # Pixel audit
@@ -97,7 +97,7 @@ Scope: <route + states audited>
 ## Rules
 
 - Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issue comments, release notes, generated docs, settings, or code comments.
-- **Suggest, never auto-chain.** After the audit, suggest `/code-review` then `/commit-push-close` / `/commit-push-pr`, and stop.
+- **Suggest, never auto-chain.** After the audit, suggest `/code-review`, then `/commit-push-close` / `/commit-push-pr` only when every changed row in the shipment is verified; with a reopened changed row, suggest resolving it first. Then stop.
 - Decisions are **artifacts** — inventory and defect list live on disk, not in chat.
 - Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
 - **Local-only.** Local creds, local browser, no cloud agents.
