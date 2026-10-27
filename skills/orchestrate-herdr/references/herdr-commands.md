@@ -87,6 +87,8 @@ A timeout or stalled response does not prove non-delivery. Inspect `agent get` a
 
 ## Watch
 
+Check the installed host's completion capabilities before choosing a wait mode. herdr 0.9.5 `agent --help` and `agent wait --help`, checked 2026-10-27, expose the settled-state waits below; they do not expose a parent completion-notice or PR-watch command. Use bounded waits unless a supported supervisor adapter proves automatic completion delivery. For that mode, save the notice owner/continuation and yield as directed instead of polling too. Never invent watcher controls, infer completion from silence, or run two watchers for one PR.
+
 ```bash
 herdr agent wait <agent-name> --timeout 60000
 herdr agent get <agent-name>

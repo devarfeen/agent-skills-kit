@@ -4,9 +4,25 @@ Zero attribution: omit co-author, AI, and tool attribution from all output.
 
 T3 Code is controlled through its MCP server, never a shell command. The connected server's live tool schema is the authority for parameter names and enum values: inspect it before the first call and use what it shows. T3 Code is pre-1.0, so a tool named here that the live list lacks is a stop, not a cue to improvise. Tools carry the prefix of the name the server was added under (`t3` in the setup below), so match each tool by the suffix given here.
 
+## Contents
+
+- Connect
+- Capabilities
+- Project
+- Launch
+- Delegated tasks
+- Wait
+- PR watches
+- Read
+- Context
+- Queued native compaction
+- Questions
+- Send
+- Recover
+
 ## Connect
 
-Discover `orchestrator_capabilities` and a supported launcher for the workspace's binding policy: `t3_thread_launch` or local child delegation. Missing connectivity or a compatible launcher → stop and print the setup for the user to run; a skill cannot complete the sign-in:
+Discover `orchestrator_capabilities` and a supported launcher for the workspace's binding policy: `t3_thread_launch` or `delegate_task` child delegation. Missing connectivity or a compatible launcher → stop and print the setup for the user to run; a skill cannot complete the sign-in:
 
 ```sh
 claude mcp add --transport http t3 <MCP URL>
@@ -44,11 +60,21 @@ Save returned worker/thread and run IDs. Read live thread project/root/branch/wo
 
 Keep actual thread binding separate from product execution identity in group maps, checkpoints and replacement-parent handoffs. Resolve null `worktreePath` against the registered project root, never against the product assignment. Resolve absolute paths from local workspace/project records on macOS, Linux and WSL2; do not embed another platform's home path.
 
-A launch has no assumed retry key: after an error or lost response, reconcile live workers/threads before relaunching. Confirm any previous writer terminal before replacement. Use the selected launcher's matching wait/read/send/recovery controls; the T3 thread controls below apply when it returns T3 thread/run IDs. Shared workspace binding grants no shared write ownership, conversation inheritance for reviewers, or permission to bypass supervisor telemetry gates.
+For `delegate_task`, use its supported `clientRequestId` and reconcile that task on a lost response. Other launches have no assumed retry key: after an error or lost response, reconcile live workers/threads before relaunching. Confirm any previous writer terminal before replacement. Use the selected launcher's matching wait/read/send/recovery controls; the T3 thread controls below apply when it returns T3 thread/run IDs. Shared workspace binding grants no shared write ownership, conversation inheritance for reviewers, or permission to bypass supervisor telemetry gates.
+
+## Delegated tasks
+
+When the live schema exposes `delegate_task`, it starts a child with only its task prompt and no parent history. For review use `role: "review"`, the explicit saved provider/model/effort through the live target schema, and a fresh task each round. No `fork_turns` parameter is required or assumed. Use `isolation: "shared"` only when workspace binding requires it; `worktree` creates a new checkout from the parent commit and does not bind an already prepared product worktree. Retain separate execution-checkout verification and read-only review scope.
+
+Save `taskId`, `childThreadId`, launch identity and any run ID separately. `taskId` controls the delegated task; `childThreadId` is not a task handle. `mode: "async"` is the normal completion-notice path; `wait` is supported when this turn needs the result, within the live timeout limits. A timeout does not cancel work. A returned completion-wake instruction means checkpoint as `WAITING_WORKERS`, end this turn and resume automatically on the notice; do not poll it with `task_status`, `t3_thread_wait` or repeated thread reads. Read `task_status` after the completion notice; `result_available` is a result to inspect, while `working` and `waiting_for_children` are not completion. Read the complete report before accepting a gate.
+
+Use `task_cancel` for an owned delegated task only when cancellation is authorized; verify its terminal state before replacement. Use the live send control for follow-up to a finished child; if `t3_thread_send` returns a new `taskId`, save it and follow the delegated lifecycle again, including after the readiness turn. Never target a cancelled task with a guessed thread/run. Lost acknowledgements require reconciliation, not blind relaunch.
 
 ## Wait
 
-`t3_thread_wait` with the saved `threadId` and `runId` blocks until the run reaches a terminal state or the timeout passes. Issue waits of at most 60 seconds for all threads together. `timedOut: true` leaves the work running; wait again. Compare cheap progress deltas; after five minutes without progress inspect pending requests/authentication, live commands and supported provider/host health. A verified running long command differs from no events or dead transport; elapsed time alone never authorizes a competing writer.
+These controls apply to separate thread runs, not asynchronous delegated tasks.
+
+`t3_thread_wait` with the saved `threadId` and `runId` blocks until the run reaches a terminal state or the timeout passes. Issue waits of at most 60 seconds for all threads together. `timedOut: true` leaves the work running; wait again unless the response provides an automatic continuation instruction, in which case checkpoint and yield for that continuation. Compare cheap progress deltas; after five minutes without progress inspect pending requests/authentication, live commands and supported provider/host health. A verified running long command differs from no events or dead transport; elapsed time alone never authorizes a competing writer.
 
 | Status | Meaning for the orchestrator |
 | :--- | :--- |
@@ -56,6 +82,14 @@ A launch has no assumed retry key: after an error or lost response, reconcile li
 | `waiting` | Stopped on a question or an approval — see **Questions** |
 | `completed`, `idle` | The turn ended — **Read** the report; not proof the task finished |
 | `failed`, `interrupted`, `cancelled`, `rolled_back` | Errored — **Read** the cause |
+
+## PR watches
+
+When the owning parent thread exposes `watch_pull_request`, handle existing CI/review events first, save repository/PR, head, owner thread and watch state, then start one watch for that PR and end the turn as its response directs. It wakes on failed checks, passed required checks, new comments/reviews or conflicts. The watch persists after a wake; do not register another one on every notice. Delegated children cannot watch: the tools are hidden from subagents. A stage worker reports its pending PR to the owner instead.
+
+On each wake, read current head/base and complete required check/thread evidence before placing the unit. A notice is not readiness or permission to reply, resolve, approve or merge. Human review comments still use `/pr-feedback` and its approval gate. Stop the owned watch with `unwatch_pull_request` at handoff, a true blocker, user question or stop; reconcile saved watch state on resume. If tools or a reliable continuation are unavailable, use existing bounded CI reads/waits; do not copy an external watcher or create a second watcher. Rate-limit failures are unknown signals: honor any reset, keep the gate blocked and avoid tight retries. No GraphQL-to-REST fallback is added.
+
+Runtime facts checked 2026-10-27 against T3 source at [dc84b096](https://github.com/pingdotgg/t3code/blob/dc84b0962efa4f4e05ef392c08986a9cd7c994d1/apps/server/src/mcp/toolkits/orchestrator/tools.ts), its [task contract](https://github.com/pingdotgg/t3code/blob/dc84b0962efa4f4e05ef392c08986a9cd7c994d1/packages/contracts/src/orchestratorMcp.ts) and [PR tools](https://github.com/pingdotgg/t3code/blob/dc84b0962efa4f4e05ef392c08986a9cd7c994d1/apps/server/src/mcp/toolkits/pullRequests/tools.ts). These source checks are not a successful connected-host launch/watch test; the installed schema remains authoritative.
 
 ## Read
 

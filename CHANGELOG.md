@@ -11,6 +11,12 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- `/orchestrate-t3` 0.13.0 distinguishes delegated tasks from separate threads.
+  Delegated tasks use completion notices; separate threads use their supported
+  wait control. `/orchestrate-herdr` 0.8.0 checks the installed host before
+  choosing completion notices or bounded waits. Factory uses one owned PR
+  watch where supported, with bounded checks otherwise. Notifications never
+  approve replies, thread resolution or merging. No watcher script is copied.
 - README and CONTRIBUTING now explain that the installer supports selecting a version or
   commit. Companion commands remain unpinned. Validation Check 18 stops at
   the end of the companion-install section and keeps the same credit rule.

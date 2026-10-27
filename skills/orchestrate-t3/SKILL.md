@@ -3,7 +3,7 @@ name: orchestrate-t3
 disable-model-invocation: true
 description: "Fan a spec (PRD) or issue list out to T3 Code worker threads, one worktree per group, and monitor them to done. Needs the T3 Code MCP. Inside herdr use /orchestrate-herdr; one issue is /tdd-loop."
 metadata:
-  version: "0.12.2"
+  version: "0.13.0"
 ---
 
 # Orchestrate T3
@@ -37,7 +37,7 @@ T3 Code tool calls are cited by bold section name from [`references/t3-tools.md`
 
 ## Workflow
 
-Use the portable status contract in [`references/session-handoff.md`](references/session-handoff.md) at phase and worker state changes. Waiting on children keeps this session active; no user continuation prompt. A supported queued compaction boundary yields only after saving both maintenance and automatic-continuation receipts.
+Use the portable status contract in [`references/session-handoff.md`](references/session-handoff.md) at phase and worker state changes. Waiting on children keeps workflow ownership active; follow the launcher-specific notice/wait contract in **Delegated tasks/Wait**. A supported completion notice may end this turn without a user continuation prompt. A supported queued compaction boundary yields only after saving both maintenance and automatic-continuation receipts.
 
 ### 1. Pre-flight
 
