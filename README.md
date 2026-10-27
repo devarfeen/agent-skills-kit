@@ -154,7 +154,7 @@ for how these skills appear in the installer.
 | :--- | :--- | :--- | :--- |
 | [`agents-md`](skills/agents-md/SKILL.md) | startup | Set up workspace instructions from a `.code-workspace` file. | `Generate AGENTS.md for this workspace` |
 | [`design-system`](skills/design-system/SKILL.md) | startup | Turn your design source into shared UI rules and components. | `Set up the design system for ADMIN-WEB from this Figma file` |
-| [`plain-language`](skills/plain-language/SKILL.md) | startup | Keep chat and written prose plain; loads at every session start. Never touches code, ADRs, or specs. | `Clean up this PR description` |
+| [`plain-language`](skills/plain-language/SKILL.md) | startup | Use fifth-grade English with bold glossary terms in chat and prose; loads at session start. Never touches code, ADRs, or specs. | `Clean up this PR description` |
 | [`feature-discovery`](skills/feature-discovery/SKILL.md) | discover | Understand how existing code works. Read-only. | `Trace the invite-user workflow across ADMIN-WEB and API-SERVICE` |
 | [`port-feature`](skills/port-feature/SKILL.md) | discover | Compare an existing feature with the project that will receive it. | `Port stock-transfer approvals from LEGACY-PORTAL to ADMIN-WEB` |
 | [`feature-prompt`](skills/feature-prompt/SKILL.md) | sharpen | Turn a rough idea into a small prompt for planning. | `Help me create a feature prompt for stock transfer approvals` |

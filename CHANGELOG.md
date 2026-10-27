@@ -11,6 +11,15 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- `/plain-language` 0.3.0 uses fifth-grade-level English for chat and prose.
+  It reads relevant glossary entries, explains unfamiliar terms, and makes
+  exact glossary terms bold where the format allows. Technical facts and
+  protected text stay unchanged. Extra teaching examples remain optional.
+- `/agents-md` 0.13.0, marker v60, uses the same simple-English rule before
+  the writing skill loads. Re-run `/agents-md` to update workspace instructions.
+- `/incident-triage` 0.2.2 fixes its short description: staging fixes go to
+  `/staging-fix`; investigating an outage stays with `/incident-triage`.
+
 - `/local-to-staging` 2.2.1 no longer merges on an empty check list when a
   workflow trigger covers the base branch: the checks have not started yet.
 - `/commit-push-pr` 0.11.4 treats an empty check list as absent configured CI

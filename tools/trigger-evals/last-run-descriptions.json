@@ -1,15 +1,15 @@
 {
  "_comment": "Hashes of the actual complete scored sweep; validate.sh checks descriptions, queries, catalog and invocation policies.",
- "recorded_at_commit": "643f377dd767bb0690949086923f49710a82dd7e + uncommitted changes",
- "catalog_sha256": "dd2538ffabcfcdaa2ec141aa5ce69d297a093d1a88d0bd8298176326b2f0f11e",
+ "recorded_at_commit": "fc0c94a7b24a5285fc32feae4412037ce3e525dc + uncommitted changes",
+ "catalog_sha256": "85bf6ea74598c4a3ff59001f5698b4740e8e9e39eb5a06c1becfb13ff1d065c0",
  "manifest_sha256": "22ebf21d1c247cbe690a12335db6fb0ec34d51695ad86b36a5724fd720951a76",
  "judge_sha256": [
-  "d4b7948dc08433f791665161f3b7126e2bf54701511ac0c9488ff8b69178d8e6",
-  "d28d9fad44445d234b134db475d8e73c40583a251df7b18f22027f42330691bf",
-  "7c65282ade10059593480e48dcf147db524d6fd93122fbdf368bc48bab235885"
+  "2ab69fb4b171b41914749224546024a5377580391f96586b88522c7fb333891b",
+  "d41d88145e090f2ff5936c4e3f9dc54da4d654c77f3e7cea0c796dca8cea3b13",
+  "3a290a66fb629946a8f3380a52d59c578d46ab55c3a7b9d465e7fcd830cfea82"
  ],
  "queries_sha256": "4e3debbaec6f14c03281682611fa93dabfc0826d69ea4cca54a689b902a36c2b",
- "catalog_content_sha256": "51eb8c040e1215e3884e33a651babf47df33b9fe315add31d9734b884c15d0bc",
+ "catalog_content_sha256": "b246a963077042ef4281e71fa18abd38676e71bc40a1402bfa383b9a21437799",
  "invocation_sha256": "e3982223d5d71cfdf02c79c536bf6296698501c52ddaed624b00505b1cf8279b",
  "descriptions_sha256": {
   "agentic-qa": "16a802defce32df5a404c6fa665bd52b9296138b0e45c08445f2d57018339d7a",
@@ -24,13 +24,13 @@
   "feature-discovery": "3274c012202bdc4c004757555ea33ac53e57c3576aa01ec14fc05d37e0e3ea8a",
   "feature-prompt": "d8df16434ed565ccbae35b96e19b67a66e01d0dca4a2911929c718fdd7919b97",
   "grill-with-field": "893c2cceff30df570bb702763a313509cbed454def265c9b180f6ba23eb85b61",
-  "incident-triage": "13584e96eab366fe52374fba753739b0aace664a92f2a8c76280ba46db0f52a2",
+  "incident-triage": "d532a28a9530571e5379d60c8f67e3a478fe4267713e4ddec075fbf28870d5b2",
   "integration-contract": "6114820506e076f63d705c8145d27ce58811e3141ece21aeed66a430755bc25b",
   "local-to-staging": "7b3e6db59d532533f379322287afd35e6f200a6b748a153c6bca26b96e68bb1c",
   "orchestrate-herdr": "562d2d2e18465a0598e319f50f9252b18acab39b1cbf046444c9b7c67a7a2956",
   "orchestrate-t3": "8b7b2577b0c3e214583b11459283147f4f3f249e255c1fdf8f882f342d719998",
   "pixel-audit": "264d03e968ae9dfd46343272d4485f856eb494eb4da28fdd63f9c5d80cc33809",
-  "plain-language": "46f252c88dbbb0b10cfdc8b37a10a04192c0bf3620deb44677e13bd9dfd5fbf7",
+  "plain-language": "b2d53895ee580fd5f0824e0b2a55a0ab35d15f356d9f16ecd06ea30df105f37e",
   "polish-batch": "0f735f8d64048023e550ea9ab8f03a4a3f09efe9b713dc30e7bc84195104529b",
   "port-feature": "1fccbfb9f05a51a1c60d7c05775d9bb5e4d74ec58f2d261f6716c9d06a39d336",
   "pr-feedback": "8638f418d4abf95c6119a7447a01519d9b8d54558aeef304035898aa632cb55c",

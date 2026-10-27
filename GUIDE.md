@@ -40,7 +40,9 @@ Choose the instructions for your task:
 
 `/plain-language` is the kit's own writing skill. Your workspace instructions
 load it at the start of every session, and the ship policies apply it to the
-free prose of commits, PRs, and issues. It never edits code, ADRs, or specs,
+free prose of commits, PRs, and issues. It uses fifth-grade-level English,
+explains unfamiliar terms, and highlights exact glossary terms in bold where
+the format allows. It never edits code, ADRs, or specs,
 preserves required text, and adds no permission to publish. Re-run `/agents-md`
 to refresh an existing workspace’s instructions. `/tdd-loop` checks existing
 project code, standard-library or platform features, and installed dependencies

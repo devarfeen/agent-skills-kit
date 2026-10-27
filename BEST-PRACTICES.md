@@ -161,7 +161,9 @@ These principles hold whatever is on the list:
 
 `/plain-language` is the kit's writing skill. Workspace instructions load it
 at session start and the ship policies apply it to free prose before anything
-is sent or finalized. It edits the agent's own prose while preserving meaning,
+is sent or finalized. It uses fifth-grade-level English and explains unfamiliar
+terms. Exact glossary terms appear in bold where the format allows. It edits
+the agent's own prose while preserving meaning,
 evidence, technical text, quotations, and required templates, and it never
 touches code, ADRs, or specs. It never authorizes publishing.
 

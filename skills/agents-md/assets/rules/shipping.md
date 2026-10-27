@@ -1,4 +1,4 @@
-<!-- agents-md marker · v59 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v60 · re-run /agents-md to regenerate -->
 # Shipping
 
 Zero attribution: never add co-author, AI, or tool attribution to any output.

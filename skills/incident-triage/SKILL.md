@@ -1,9 +1,9 @@
 ---
 name: incident-triage
 disable-model-invocation: true
-description: "Triage an incident or outage from evidence: timeline, ranked causes, mitigations, one note. Read-only, never touches production; not plain log reads. Staging: /staging-fix; local: /diagnosing-bugs."
+description: "Triage an incident or outage from evidence: timeline, ranked causes, mitigations, one note. Read-only, never touches production; not log reads. Staging fixes: /staging-fix; local: /diagnosing-bugs."
 metadata:
-  version: "0.2.1"
+  version: "0.2.2"
 ---
 
 # incident-triage

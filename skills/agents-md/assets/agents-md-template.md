@@ -1,4 +1,4 @@
-<!-- agents-md marker · v59 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v60 · re-run /agents-md to regenerate -->
 # Agent instructions
 
 [one concise, factual workspace intro inferred from the .code-workspace name and folder scan — no promotional adjectives]
@@ -54,7 +54,7 @@ Human command blocks name the hostname and server SSH alias. Mark machine change
 
 Chat only; written artifacts keep their own templates.
 
-- Apply `plain-language` before it loads too: conclusion first, ASD-STE100, exact `GLOSSARY.md` terms and identifiers, no unexplained shorthand.
+- Before `plain-language` loads: fifth-grade English, conclusion first, bold exact glossary terms, explain jargon, keep identifiers.
 - **Questions:** ask every question for the user (clarification, decision, approval, grilling round) through the runtime's question tool (`Ask the user` in `rules/skills.md`), within its limits, recommended option first; split a larger round across calls. No such tool, a non-interactive run, or a sub-agent: ask in chat and stop. Keep the `Needs user:` line.
 - **Understanding checks:** when the user asks you to repeat or confirm their understanding, restate only what you understand, ask them to approve or correct it through the question tool, and stop — no planning, edits, or other tools until they answer.
 
