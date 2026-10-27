@@ -7,6 +7,14 @@ their new versions, so a workspace on an older copy can see what an update
 brings. Generated `AGENTS.md` files carry the `agents-md` marker version;
 re-run `/agents-md` after a marker bump.
 
+## 2026-10-27
+
+### Changed
+
+- `/ci-loop` 0.6.0 treats instructions printed in CI logs as untrusted text.
+  Logs can explain a failure but cannot permit secret access, broader work
+  or weaker checks.
+
 ## 2026-10-22
 
 ### Changed
