@@ -113,8 +113,8 @@ to help the agent choose correctly. If you are unsure, run `/ask-kit`.
 The installer fetches the skill’s folder from its source repository.
 [Global install commands](#global-install-commands) list the sources, and
 [Credits And Provenance](#credits-and-provenance) explains where the ideas came
-from. The `skills` CLI has no version or ref option, so companion installs use
-the source’s default branch rather than a pinned version.
+from. The `skills` CLI supports selecting a version or commit. This kit’s
+companion commands use the source’s default branch rather than a pinned version.
 
 Read [CHANGELOG.md](CHANGELOG.md) before updating. It records behavior changes
 and changes that need migration, such as renaming `CONTEXT.md` to `GLOSSARY.md`.

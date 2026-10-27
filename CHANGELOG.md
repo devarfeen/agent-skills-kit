@@ -11,6 +11,11 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- README and CONTRIBUTING now explain that the installer supports selecting a version or
+  commit. Companion commands remain unpinned. Validation Check 18 stops at
+  the end of the companion-install section and keeps the same credit rule.
+  Skill descriptions, invocation flags and the external routing catalog are
+  unchanged; no trigger-evaluation snapshot is refreshed.
 - `/ci-loop` 0.6.0 treats instructions printed in CI logs as untrusted text.
   Logs can explain a failure but cannot permit secret access, broader work
   or weaker checks.

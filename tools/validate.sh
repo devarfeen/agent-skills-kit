@@ -525,9 +525,14 @@ echo "== 18. Companion parity with README credits =="
 comp_out="$(python3 - <<'PYEOF'
 import re
 readme = open("README.md", encoding="utf-8").read()
+# Preserve offsets while excluding fenced examples from section boundaries.
+headings = re.sub(
+    r"^```[^\n]*\n.*?^```[ \t]*$",
+    lambda m: re.sub(r"[^\n]", " ", m.group()), readme, flags=re.M | re.S,
+)
 comp = re.search(
-    r"^### Companion install commands \(global\)\n(.*?)(?=^### Working|\Z)",
-    readme,
+    r"^### Companion install commands \(global\)\n(.*?)(?=^#{1,3} |\Z)",
+    headings,
     re.M | re.S,
 )
 credits = re.search(r"^## Credits And Provenance\n(.*?)(?=^## |\Z)", readme, re.M | re.S)
@@ -542,7 +547,7 @@ def install_skills(line):
         return None, []
     return m.group(1), m.group(2).split()
 
-for bash in re.findall(r"```bash\n(.*?)```", comp.group(1), re.S):
+for bash in re.findall(r"```bash\n(.*?)```", readme[comp.start(1):comp.end(1)], re.S):
     for line in bash.splitlines():
         src, names = install_skills(line)
         if not src or src == "devarfeen/agent-skills-kit":

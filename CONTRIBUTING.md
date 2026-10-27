@@ -366,8 +366,9 @@ experimental stays on a branch until it meets the review rubric.
 Every change to a skill's behavior gets an entry in
 [CHANGELOG.md](CHANGELOG.md) under the date it lands on `main`, naming the
 skill and its new version; breaking changes go under **Breaking**. Tag that
-commit `vYYYY.MM.DD` so a consumer can diff two dates. The `skills` CLI has no
-version pin, so the changelog is how a consumer learns what an update brings.
+commit `vYYYY.MM.DD` so you can compare releases by date. The `skills` CLI
+supports selecting a version or commit, but this kit’s companion commands use
+the source’s default branch. Read the changelog before updating either way.
 
 ### Declined ideas
 
