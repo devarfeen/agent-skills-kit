@@ -32,6 +32,9 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- README adds optional, on-demand installs and license credits for Cloudflare's
+  `security-audit`, the community marketplace's Claude CLI `eli5` plugin, and
+  tstack's `modernize` and `babysit-pr`; kit behavior stays unchanged.
 - Factory intake assesses whether existing PR work is still needed, needs
   rework or is already solved. This grants no rebase, force-push or closure
   authority. Continuing commits preserves original Git authors and adds no

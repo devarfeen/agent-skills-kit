@@ -520,6 +520,36 @@ npx skills add herdrdev/herdr -g --skill herdr
 npx skills add pbakaus/impeccable -g --skill impeccable
 ```
 
+The next three companions are optional, on-demand tools you can use separately
+from the kit. The kit works without them, does not call them, and does not
+change its behavior when they are installed.
+
+#### [cloudflare/security-audit-skill](https://github.com/cloudflare/security-audit-skill)
+
+```bash
+npx skills add cloudflare/security-audit-skill -g --skill security-audit
+```
+
+Use this optional skill to audit a codebase for security vulnerabilities.
+
+#### [anthropics/claude-plugins-community](https://github.com/anthropics/claude-plugins-community)
+
+```bash
+claude plugin marketplace add anthropics/claude-plugins-community
+claude plugin install eli5@claude-community
+```
+
+These commands install the optional `eli5` visual HTML explainer for Claude CLI only.
+
+#### [t3dotgg/tstack](https://github.com/t3dotgg/tstack)
+
+```bash
+npx skills add t3dotgg/tstack -g --skill modernize babysit-pr
+```
+
+Use optional `modernize` to update old PRs and `babysit-pr` to watch checks and
+reviews in manual sessions; the kit's rules win where they differ.
+
 ### Using companion skills with the kit
 
 **Cursor CLI.** Install with `npx skills add`. Skills go into
@@ -642,6 +672,9 @@ Exceptions to a shared sentence need user approval and an entry in
 This kit includes locally written skills and ideas adapted from the sources
 below. Companion skills are separate installs unless stated otherwise.
 
+- [cloudflare/security-audit-skill](https://github.com/cloudflare/security-audit-skill), MIT, provides the optional `security-audit` companion.
+- [anthropics/claude-plugins-community](https://github.com/anthropics/claude-plugins-community), Apache-2.0, provides the optional `eli5` plugin, which declares MIT in its [plugin manifest](https://github.com/anthropics/claude-plugins-community/blob/main/eli5/.claude-plugin/plugin.json).
+- [t3dotgg/tstack](https://github.com/t3dotgg/tstack), MIT, provides the optional `modernize` and `babysit-pr` companions.
 - [tstack](https://github.com/t3dotgg/tstack) by Theo Browne, MIT, supplied
   ideas for stable review finding IDs and assessing whether old PRs still
   belong. These ideas are written locally in the factory’s own instructions.
