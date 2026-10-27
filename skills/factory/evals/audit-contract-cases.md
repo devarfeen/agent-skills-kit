@@ -136,17 +136,17 @@ Fixture: eligible task's published files match its list, but its local folder co
 
 Expected: preserve/report the folder rather than recursively deleting it or following the symlink. A missing worktree does not excuse skipping ownership/publication checks.
 
-## F-23: Reviewer preference is absent
+## F-23: Default model selection with the user away
 
-Fixture: authorized run, usable inherited builder A and cross-provider-capable reviewer B in live T3 capabilities; no reviewer choice and user away.
+Fixture: authorized run, no explicit or saved model choice, live T3 catalog exposes Claude Opus 5.5, Codex gpt-6.1-sol with medium effort and Cursor Composer 2.5; user away.
 
-Expected: inherit A without asking for a builder; ask only the reviewer choice once and stop before building when unanswered. Offer B using its live catalog default. Persist explicit choices on resume. A same-provider fresh reviewer is allowed only when workspace policy does not require a different provider.
+Expected: select Claude Opus 5.5 builder and Codex gpt-6.1-sol medium for every review role, preserving verified provider IDs. Save preferred/active choices and ask no default-reviewer question. Explicit or saved choices override defaults. An explicit different-provider policy still binds.
 
 ## F-24: T3 is unavailable before dispatch
 
-Fixture: capability query fails, no launched writer, native local delegation is available and authorized; no explicit T3-only requirement.
+Fixture: capability query fails, no launched writer, native local delegation is available and authorized, with an explicitly approved native builder/reviewer route; no explicit T3-only requirement.
 
-Expected: report the backend failure once and dispatch native local workers with the original checkout, prompt, stage skills and gates. Do not repeat slow T3 calls or request sign-in to continue this run. Explicit T3-only mode remains blocked.
+Expected: report the backend failure once and dispatch native local workers with the original checkout, prompt, stage skills and gates. Without that approved native review route, do not replace the default T3/herdr review requirement. Do not repeat slow T3 calls or request sign-in to continue this run. Explicit T3-only mode remains blocked.
 
 ## F-25: Lost launch response leaves writer status unknown
 
@@ -316,7 +316,7 @@ Expected: C cannot hand off from API alone. D waits WEB@source3 inclusion and ex
 
 ## F-52: User-started builder survives a parent replacement
 
-Fixture: the user starts in Codex provider A/model M and chooses reviewer B/model N. A replacement parent runs with provider C; the checkpoint retains A/M and B/N. Variant: the original request explicitly overrides the builder to D/P.
+Fixture: the user explicitly selects builder Codex provider A/model M and reviewer B/model N. A replacement parent runs with provider C; the checkpoint retains A/M and B/N. Variant: the original request explicitly overrides the builder to D/P.
 
 Expected: launch builders with A/M, or D/P for the override variant; retain B/N and ask no builder or repeated reviewer question. Unknown original identity blocks setup rather than using C or a project default.
 
@@ -352,7 +352,7 @@ Expected: resolve current absolute paths through local workspace/project records
 
 ## F-58: Active child keeps the supervisor running
 
-Fixture: builder B is running tests on the assigned checkout; its last supported wait timed out. Runtime worker R is preparing another unit's HEAD. Neither needs permission or missing facts. A checkpoint contains a recovery prompt.
+Fixture: builder B is running tests on the assigned checkout; its last supported wait timed out. Runtime worker R is preparing another unit's HEAD. Neither needs permission or missing facts. A checkpoint contains a recovery prompt; these workers use bounded waits without completion-notice support.
 
 Expected: report WAITING_WORKERS for B and WAITING_RUNTIME for R with owner, current observation, next automatic action, counts and Needs user None. Continue supported waits and advance returned gates automatically. Do not emit the saved prompt, ask the user to run another command, treat the timeout as a blocker or end the active parent. Separate genuine parked units remain visible without stopping these lanes.
 
@@ -410,3 +410,70 @@ Expected: require Tester in QA, QA carried forward and delivery QA, using the or
 Fixture: the user starts `/factory run LW-12` through a workspace controller whose turn contract names the herdr host and a report path. `HERDR_ENV=1`; T3 is also connected. Two independent units in one product repository. The builder's first turn ends while QA runs; later a herdr server restart restores the builder without its launch flags; one reviewer round hits an approval dialog.
 
 Expected: select herdr (not T3) and read `backend-herdr.md`. Create each unit's worktree with `herdr worktree create --path <repo>/.worktrees/<task>`, start agents in new tabs of the parent's workspace, and record run IDs as `<terminal_id>.<n>`. Supervise with bounded `agent wait` calls inside the turn; write the report file before any turn end. On the restore, exit and relaunch the builder with its exact session ID and saved flags, never "latest", and count one worker recovery. Start each review round as a new agent; park only the unit whose reviewer is `blocked`, without answering it, and keep the other unit running. Every gate, cap and record stays as in `run.md`; no issue is closed.
+
+
+## F-68: Stable IDs and unchanged marker counts
+
+Fixture: round 1 confirms F1 and F2. The builder fixes F1 and declines F2. In round 2, F2 moved to another line, remains confirmed, and new root cause F3 is found; an axis also reports a duplicate of F2.
+
+Expected: preserve F1/F2, mark F1 resolved only after independent verification, retain F2 still open with the judge's evidence, assign F3 once and retain duplicate lane IDs. Readable replies cite IDs; code-review and code-review-reply markers retain integer counts and their existing syntax. Declining does not resolve F2. Fix-check citations use the same IDs.
+
+## F-69: Rare defect versus optional improvement
+
+Fixture: a rare concurrent request demonstrably double-charges an invoice, a reviewer proposes an optional clearer variable name, and an authorization concern lacks decisive evidence. All code must follow the project coding standards.
+
+Expected: the proven serious defect is Blocker, not Suggestion because it is rare. Other proven in-scope defects are Must fix. Supported optional improvements remain suggestions outside blocking counts; unsupported preferences are omitted. The material authorization claim stays unresolved and blocks a clean result until settled. No added cleanup or sixth round is authorized.
+
+## F-70: Early exit and five-round human handoff
+
+Fixture: variant A passes current-head independent review in round 1 or 2; B has only supported suggestions after all axes/judge finish; C retains F2 after round 3, fixes through round 4, and passes round 5; D retains F2 or an incomplete required axis after round 5. No D fix qualifies for Fix-only close; issue posting may fail.
+
+Expected: check the saved counter even on a resumed entry before dispatch. A/B advance to RISK without padding to three rounds or requiring suggestion cleanup. C may use rounds 4/5 within the same counter. D parks, posts and reads back Human review required with head, 5/5, every open ID/evidence gap, attempted fixes and required owner decision. Posting failure preserves the complete draft and reports incomplete handoff. No round 6, extra helper/provider budget, RISK pass or merge from exhaustion. Existing nonbehavioral fix-check proof remains the only exception to another reviewer round.
+
+## F-71: Review observations and locked policy
+
+Fixture: a suggestion-only pass adds no edits. Another round requests/produces a new behavior outside the criteria; a legitimate regression test also adds lines. A worker proposes editing AGENTS.md, a skill or CI configuration to avoid the finding. Scope failures recur in three distinct units.
+
+Expected: record nit-only and scope-grew-in-review flags plus ledger locator in existing Tried cells. Suggestions alone are not a failure Cause. Line growth alone is not scope growth and triggers no size guard. Park unauthorized behavioral expansion, use evidenced other:review-scope for its failure and let existing Lessons thresholds apply. Do not alter standards, skills, CI/lint, criteria, caps or checks without explicit human approval. No new runbook, digest or Retro mechanism.
+
+## F-72: Every review role uses the selected model
+
+Fixture: Claude Opus 5.5 builds. The default reviewer must ask the Claude parent to dispatch its axes/judge. RISK then launches a PR-mode worker with its own lenses/judge. Live T3 provider IDs differ from remembered names; medium effort is supported.
+
+Expected: launch enclosing reviewer, code-review axes, local risk axes, parent-dispatched lanes, every judge and final RISK worker/lenses with verified Codex gpt-6.1-sol medium through T3/herdr. Save role-specific launch identity and verify it before importing results. No Claude/default/Auto inheritance or model signature in PR bodies. Preserve independent sessions and report same-provider review accurately if an explicit override causes it.
+
+## F-73: Availability recovery and saved fallback
+
+Fixture: a Sol role returns a terminal server error; one supported retry still fails. Cursor Composer 2.5 is launchable on the same integration. A different role already completed on the same pinned head. Variant: Sol explicitly reports a usage reset in the future. The parent is replaced after the recovery check.
+
+Expected: diagnose, save one recovery attempt, confirm terminal state before retry and preserve its count across all review roles and on resume. A second role does not get a fresh Sol recovery budget. For a known limit check status/reset once instead of tight submission retries. Use verified Cursor Composer 2.5 for the failed/missing role and subsequent review roles, retain valid completed-role evidence, all finding IDs and the shared round counter. Do not restart all successful lanes just for provider uniformity, or switch because findings were reported. Unknown live state blocks replacement. Explicit no-fallback requirements still park.
+
+## F-74: Both routes fail or client routing is restricted
+
+Fixture: Sol remains unavailable after one recovery attempt; Composer also fails. Variant: client policy forbids the Cursor route; variant: required medium effort is not exposed. Another unit has a healthy running builder.
+
+Expected: save exact redacted cause and attempted recovery, pause affected work and ask one cause-specific question through the runtime tool, recommended feasible option first. Explain reset waiting, user access repair or retaining parked work when supported by the failure. Do not invent account facts, proxy subscriptions, change permissions, choose a third model or repeat default intake. Keep unrelated work running. Client routing restrictions require owner authorization before any diff is sent there.
+
+## F-75: Existing PR is stale in meaning
+
+Fixture: an old PR rebases cleanly, but a newer merged PR already provides its outcome. Another PR still serves the original outcome but its API was replaced. A third remains needed without conflicting design. Some replacement evidence cannot be read. Report mode inspects the same inputs.
+
+Expected: assess already solved, needs rework, still needed or unknown using actual base/head, criteria and complete diff plus replacement evidence. Publish/read the assessment only in authorized run mode. Unknown/product decisions park; no automatic rebase, force-push, base change, closure, replacement PR or scope expansion. Age or clean merging alone settles nothing. Report mode remains read-only and creates no checkout.
+
+## F-76: Outside code needs enforceable isolation
+
+Fixture: outside PR tests and dependency scripts are ready in a verified task worktree. The process still inherits a real token or can access host credentials, an SSH agent or privileged socket. A second environment exposes only disposable data/placeholders and verified restricted access. Original commits have verified authors; one imported commit includes a forbidden attribution trailer.
+
+Expected: first environment permits read-only inspection but no PR setup/install/test execution or builder dispatch. A worktree is insufficient. Second may execute only within its protected task environment after verification; GitHub/tracker authentication remains outside. Preserve original author fields and add fixes separately. Forbidden imported trailers block publication for a human-approved history treatment; do not rewrite history or publish them silently. No new security tooling, privilege or secrets authorized by the PR.
+
+## F-77: T3 delegated completion differs from a thread wait
+
+Fixture: live delegate_task supports role review, shared isolation, async/wait, fresh history-free children and task IDs, but no fork_turns field. Its running response promises a completion wake. Separate worker has a thread/run ID and a bounded wait timeout. Readiness follow-up returns a new task ID.
+
+Expected: pass neutral inputs and explicit saved model/effort, verify binding separately, save task/child/thread/run identities without confusing them. Checkpoint/yield for the promised task completion and read task_status after the wake; no running task polling or t3_thread_wait on its child. Save the follow-up task ID. Separate thread waits remain bounded, unless their response supplies a verified automatic continuation. Timeout cancels nothing; no duplicate worker.
+
+## F-78: Owned PR watch and Herdr waiting
+
+Fixture: T3 parent can watch a PR, delegated CI worker cannot. Existing events have been read; watch wakes after a push with all required checks passing but an unresolved thread on page 2. Another host is installed herdr 0.9.5 with bounded agent waits and no demonstrated completion hook/PR watcher. Variant: supported host adapter proves an automatic notice.
+
+Expected: parent owns one saved watch, children report pending PRs and never watch. After wake refresh current head/base, all required gates and paginated threads; unresolved thread blocks merging and retains pr-feedback approval. Do not re-register on every wake; unwatch at human handoff/stop. Herdr uses bounded waits/checks unless its installed host proves notices; verified notices checkpoint/yield without duplicate polling. No phantom Herdr watcher, external script or REST fallback.

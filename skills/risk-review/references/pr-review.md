@@ -44,6 +44,8 @@ Match changed paths and diff content against the rubric's lens table: `data`, `c
 
 ### 2. Review in parallel
 
+When called by factory RISK, use its saved active review provider/model/effort for this worker, every lens and the judge, including parent-dispatched lanes. Availability failures return to the factory's bounded recovery policy; a lane never substitutes its own model.
+
 One lane per chosen lens. Each lane gets the diff, the ticket scope, its lens checklist from the rubric, and the instruction to return findings as `{file, line, severity: blocking|note, summary, failure_scenario, proving_test}`. Read surrounding code where a hunk is ambiguous. Lanes do not edit files.
 
 ### 3. Verify findings

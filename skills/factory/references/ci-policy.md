@@ -19,7 +19,7 @@ Read the PR's actual base/head, check runs/statuses and workflow runs for that h
 | Observation | Action |
 | --- | --- |
 | Required checks present and passing with matching head/identity | CI gate satisfied; record run/check evidence. |
-| Known check queued/running/pending | State `CI`; bounded polling, other independent units may advance. |
+| Known check queued/running/pending | State `CI`; use the backend's supported owned PR watch, else bounded polling; other independent units may advance. |
 | Required check fails/cancels/times out | State `CI`; diagnose through `ci-loop` within its cap. Never reuse an older pass. |
 | Required check expected but absent/not triggered/unavailable | Gate blocked: name the missing required check and cause. Do not wait for a nonexistent run or waive it. |
 | Required policy or check query unreadable/ambiguous | State `UNKNOWN`; name the failed query/missing proof. |

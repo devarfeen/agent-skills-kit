@@ -398,14 +398,21 @@ without running it. It shows how long each item has stayed in its state and
 flags stalled work. It never goes past staging.
 
 When you explicitly start `/factory run <label or reference>`, it carries
-out the workflow after any missing reviewer choice. The builder keeps the
-coding tool, provider, and model you started with. It uses the selected local
-executor: herdr tabs, T3 Code threads, or native agents. The run covers build,
+out the workflow. The default builder is Claude Opus 5.5. Reviews use Codex
+`gpt-6.1-sol` at medium reasoning effort through T3 or herdr. If Sol is
+unavailable, the run makes one recovery attempt, then tries Cursor Composer
+2.5 through that integration. If both fail, it explains why and asks you what
+to do. Explicit choices and saved run settings take precedence. The run uses
+herdr tabs, T3 Code workers, or explicitly authorized native execution. The run covers build,
 QA with before and after screenshots, PR creation, a second agent’s code
 review, merging into `local` or staging, and handover to manual QA. It can
 then use `/local-to-staging`, `/deploy-watch`, and `/staging-fix` if deployment
 fails, and produce a read-only `/staging-to-production` report. It never
-closes an issue.
+closes an issue. Review can finish after any round from one to five. If it
+needs a sixth round, the run stops and posts the open findings on the issue
+for a person to decide. Existing PRs are checked for outdated work before
+execution. Outside code needs a separate task checkout and a test environment
+without real secrets or staging/production access.
 
 **`incident-triage`.** Builds an incident timeline, ranks possible causes
 with evidence, and always includes a cause other than a recent change.
@@ -420,8 +427,8 @@ observed. It is for maintaining this kit, not a normal project task.
 
 </details>
 
-Current workflow versions: `/factory` **5.14.0**, `/orchestrate-t3` **0.12.0**,
-and `/orchestrate-herdr` **0.6.1**. The factory chooses herdr, T3 Code, or
+Current workflow versions: `/factory` **6.0.0**, `/orchestrate-t3` **0.13.0**,
+and `/orchestrate-herdr` **0.8.0**. The factory chooses herdr, T3 Code, or
 native agents using `references/execution-and-continuity.md`. You explicitly
 choose which coding tool runs the work. An optional native controller belongs
 to your workspace; it is not bundled with the kit.
@@ -635,6 +642,10 @@ Exceptions to a shared sentence need user approval and an entry in
 This kit includes locally written skills and ideas adapted from the sources
 below. Companion skills are separate installs unless stated otherwise.
 
+- [tstack](https://github.com/t3dotgg/tstack) by Theo Browne, MIT, supplied
+  ideas for stable review finding IDs and assessing whether old PRs still
+  belong. These ideas are written locally in the factory’s own instructions.
+  No tstack files are copied and no companion installation is required.
 - [Ponytail](https://github.com/DietrichGebert/ponytail) by Dietrich Gebert
   provided the ideas behind checking reusable solutions first in `/tdd-loop`
   and offering optional simplification advice in `/risk-review`. The kit

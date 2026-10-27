@@ -31,6 +31,7 @@ Choose the instructions for your task:
 - **Anthropic:** Source for `/skill-creator`.
 - **Vercel Labs:** Source for `/agent-browser`, `skills` CLI, and React/React Native best practices.
 - **[Ponytail](https://github.com/DietrichGebert/ponytail), by Dietrich Gebert:** Source of the reuse-first decision order adapted into `/tdd-loop` and advisory simplification ideas adapted into `/risk-review`. No companion installation is required.
+- **[tstack](https://github.com/t3dotgg/tstack), by Theo Browne, MIT:** Source of the factory’s stable review finding IDs and old-PR assessment ideas. The instructions are written locally; no tstack files are copied or installed.
 - **Optional companions:** Codex plugin for Claude Code, Impeccable, notebooklm-py, herdr, Laravel Boost, Figma MCP, MySQL/Postgres MCP, These are separate installs. The kit uses them only when they are installed and fit the task.
 - **Pattern references (not vendored):** [github/awesome-copilot](https://github.com/github/awesome-copilot), [obra/superpowers](https://github.com/obra/superpowers), [ChrisTitusTech/titus-ai](https://github.com/ChrisTitusTech/titus-ai), [alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills), and [garrytan/gstack](https://github.com/garrytan/gstack). The 2026-10 hardening pass compared every kit skill against these and adapted individual rules in the kit's own style. No files were copied.
 - **Cursor:** Cursor CLI (`agent` command, `/skill-name`, `AGENTS.md` as canonical context, `Task` for subagents). Tool names and permissions: [`skills/agents-md/references/tool-calling.md`](skills/agents-md/references/tool-calling.md). https://cursor.com/docs/cli/overview
@@ -666,7 +667,7 @@ You can also give it the ticket (`/factory PRWL-142`), and it finds the PR for y
 
 **2. Run the next step yourself: `/ci-loop 87`, `/agentic-qa 87`, and so on.** Every skill in the table below works on its own. You do not need `/factory` first. If you can already see that CI is red, run `/ci-loop 87` straight away.
 
-**3. Hand it over: `/factory run 87`.** The factory runs each step for you, one after another, and stops when the PR is ready for the owner on staging. It asks you one thing first, which agent should review the code. It works from the PR's linked issue. If that issue isn't labeled properly, it stops and tells you to run `/triage`.
+**3. Hand it over: `/factory run 87`.** The factory runs each step for you, one after another, and stops when the PR is ready for the owner on staging. It uses the factory’s default builder and review models unless you supplied different choices. It works from the PR's linked issue. If that issue isn't labeled properly, it stops and tells you to run `/triage`.
 
 **Which one to use:**
 
@@ -775,9 +776,9 @@ failed required reviewer is not a pass. A proposed test is never described as
 an executed failure. Local review pins uncommitted changes as well as commits;
 changed inputs invalidate its verdict.
 
-The builder fixes confirmed in-scope defects and rechecks within three review
-rounds. Factory uses its existing round budget and retains its narrowly
-verified fix-only exception. Advisory notes alone do not block completion.
+Matt implementation flows fix confirmed in-scope defects within three review
+rounds. Factory has a separate maximum of five, stops early on a pass, and
+retains its narrowly verified fix-only exception. Advisory notes alone do not block completion.
 Local review returns a report; it cannot publish, assign a merge-risk tier,
 replace CI/QA, or satisfy the later PR risk gate. Existing commit and shipping
 limits remain in force.
@@ -825,8 +826,16 @@ Start a run with `/factory run <issue or label>`:
 
 A label runs every open issue that carries it. The factory then follows its own advice.
 
-- **Reviewer.** It asks which agent and model should review the code, but only if you haven't said already.
-- **Builder.** The builder is the harness, provider, and model you started the run in, unless you explicitly choose others.
+The default models are:
+
+| Role or situation | What runs |
+| :--- | :--- |
+| Build the change | Claude Opus 5.5 |
+| Review the change | Codex `gpt-6.1-sol` at medium reasoning effort through T3 or herdr |
+| Sol is unavailable after one recovery attempt | Cursor Composer 2.5 through the same integration |
+| Both review routes are unavailable | The run explains the problems and asks you what to do |
+
+The review choice applies to every review worker and judge, including the final PR risk review. Explicit requirements and saved choices take precedence. A review that finds bugs does not trigger a model switch. The [model-selection reference](skills/factory/references/review-models.md) defines the launch and recovery rules.
 
 The run keeps these choices if it has to recover from an interruption, and it continues approved work by itself. It can still park a unit (stop working on it and say why) when a real human decision is needed, when it lacks access, or when it has used up its recovery attempts.
 
@@ -836,7 +845,7 @@ For each issue it:
 2. creates separate BASE and HEAD worktrees, each with its own runtime. BASE is the code before the change; HEAD is the code with it. It prepares any infrastructure needed, and practices restoring any test data the run will change.
 3. gives the builder an exact brief: what the component must do, which tests to write, and which docs to update. Then it builds through the chosen local executor, on the verified checkout and runtime.
 4. runs `/agentic-qa`. While QA runs, it drafts the PR text privately and prepares neutral inputs for the reviewer. It opens the PR only after QA on that same code and the local checks pass, then drives CI.
-5. has the second agent review the code and post its findings on the issue. The builder fixes or declines each finding, for up to three rounds.
+5. has the second agent review the code and post its findings on the issue. The builder fixes or declines each finding using a lasting ID such as `F1`. Findings are labelled Blocker, Must fix, or Suggestion. Review ends as soon as the current code passes, even after one round. It can use up to five rounds; three is not a minimum.
 6. runs `/risk-review`. For a low tier, it merges into `local` or the staging branch through GitHub.
 7. posts the handover comment and sets the issue to In Review. Once test-data restore, evidence publishing, and merging have all passed, it cleans up the task's runtimes, evidence, and worktrees, and checks the cleanup worked.
 8. promotes `local` to staging with `/local-to-staging` for the repos it merged into, then runs `/deploy-watch`. A failed deploy gets one `/staging-fix`, and that fix's PR goes through the same checks.
@@ -846,13 +855,17 @@ You can still run these ship skills yourself. Inside a run they skip their usual
 
 **Several issues.** Ready, independent units may run at the same time, up to what the runtime can handle, as long as each has its own checkout, data, and browser session. A unit that depends on another waits until that one is verified done. The main session integrates finished work one unit at a time. The run keeps issue priority, and later workers get the relevant lessons from earlier work.
 
-**When it parks.** The run parks an issue and moves to the next one when a person is needed: a high risk tier, three failed rounds, a problem it cannot reproduce, or a fact only the reporter knows. It never closes an issue, never edits a tracked compose file, and never goes past staging. Plain `/factory` stays read-only.
+**When it parks.** The run parks an issue and moves to the next one when a person is needed: a high risk tier, five review rounds without a pass, a problem it cannot reproduce, or a fact only the reporter knows. It never closes an issue, never edits a tracked compose file, and never goes past staging. Plain `/factory` stays read-only.
+
+After five review rounds without a pass, it posts `Human review required` on the issue with the current commit, open finding IDs, missing evidence and attempted fixes. It starts no sixth round automatically. Optional suggestions alone do not require cleanup or another review; serious missing evidence still blocks a pass.
+
+Before working on an existing PR, it checks whether the task is still needed, needs a new approach, or is already solved. That assessment permits no rebase, force-push or closure. Existing Git authors are preserved when continuing commits; attribution trailers are not added. Outside contributors’ code runs only in a task checkout and an isolated test environment without real secrets, host credentials or staging/production access. A separate checkout alone does not provide that protection.
 
 **The run label.** If you started the run with a label, it removes that label from each issue at handover, and from any issue where it found nothing to build. Parked and `needs-info` issues keep the label, so the next run looks at them again. To send a delivered issue back, add the label again, reopen the issue, or run `/factory run <issue>` on it.
 
-**Manual QA starts on staging.** The run doesn't assign anyone. When `/local-to-staging` or `/deploy-watch` sees the change deployed on staging, it assigns the issue to the manual QA person and says which build to test. That person is the one your issue-tracker document names, or else the issue's reporter. The status stays In Review. The tester closes the issue.
+**Manual QA starts on staging.** The shared GitHub Action assigns the issue to its original reporter when the change reaches staging. The factory, `/local-to-staging` and `/deploy-watch` check and report that assignment; they do not make a replacement assignment. Reaching staging and assigning a tester do not prove that deployment or smoke tests passed. Missing automation or an incomplete assignment stays pending. The status stays In Review, and the tester closes the issue.
 
-**What a run learns.** Each check round (a QA result, a CI attempt, a risk review, a code review) is logged as one row in `specs/factory/rounds.md`: what failed, the cause, and what the worker tried. When the same cause shows up in three issues of one project, the run writes a one-line instruction into `specs/factory/lessons.md`. It pastes that project's lessons into every later worker prompt, in this run and the next. It doesn't ask first. The run report lists each line it added, and you can edit or delete any of them.
+**What a run learns.** Review rows also record when only optional suggestions remained and when review grew beyond the task. Suggestion-only reviews are observations, not failures. Repeated, evidenced scope failures can feed the existing Lessons process. Neither log grants permission to edit standards, skills, CI or lint configuration. Each check round (a QA result, a CI attempt, a risk review, a code review) is logged as one row in `specs/factory/rounds.md`: what failed, the cause, and what the worker tried. When the same cause shows up in three issues of one project, the run writes a one-line instruction into `specs/factory/lessons.md`. It pastes that project's lessons into every later worker prompt, in this run and the next. It doesn't ask first. The run report lists each line it added, and you can edit or delete any of them.
 
 A lesson only changes how a worker works. It never changes a criterion, a test, a required check, or a cap. A fix that deletes a test or removes an assertion parks the issue. Neither file is state: `/factory` still places every issue from the tracker and the PR alone.
 
@@ -884,6 +897,8 @@ You don't need this part to use run mode. It explains what the run does behind t
 
 The saved state includes related rows, timestamps, binary values encoded without loss, and counters the fixture changes. After QA, the owner stops anything that writes, restores the same snapshot, and measures it again. If the restore is incomplete, the runtime and snapshot are kept. Temporary helper files stay out of the app's lint and typo-check scope.
 
+**Wait for real changes.** T3 delegated tasks can send completion notices. The run saves their IDs and yields for the notice instead of checking repeatedly. Separate T3 threads and the checked Herdr CLI use bounded waits. Each integration is checked before choosing a method. A supported PR watch belongs to one owner; a notification never replaces current-code checks or approval for replies and thread resolution. Unsupported watchers use the existing bounded checks. No external watcher script is installed.
+
 **Drafts during QA, released after checks.** To save time, the run drafts the PR text and the reviewer's inputs while QA is still running. Each draft gets a saved record (a receipt) that ties it to the exact checkout, commit, criteria, policies, and input files it was built from.
 
 - Before shipping uses a draft, it checks the draft still matches that record.
@@ -909,11 +924,11 @@ The saved state includes related rows, timestamps, binary values encoded without
 | `WAITING_WORKERS` | A worker or check is still running. It names the owner and the next automatic action. | No (`Needs user: None`). It does not ask you to paste a continuation prompt. |
 | `WAITING_RUNTIME` | The app's runtime is being prepared or repaired. It names the owner and the next automatic action. | No (`Needs user: None`). It does not ask you to paste a continuation prompt. |
 | `WAITING_COMPACTION` | The run is about to shrink its context (compaction). It pauses only after its maintenance and continuation requests are saved. | No. |
-| A real blocker | It explains what failed, what recovery it tried, and three reasoned recovery choices. If a choice isn't available, it says so instead of inventing one. | Yes. |
+| A real blocker | It explains what failed, what recovery it tried, and up to three feasible recovery choices. It names missing capabilities without inventing unavailable options. | Yes. |
 
-You get a recovery prompt to paste only when a person is truly needed, or after an interruption. Resuming keeps the same builder, reviewer, checkout ownership, and remaining attempt budgets. If you explicitly pause or stop a run, it stays stopped until you say to continue. `/orchestrate-t3` uses the same handoff rules.
+You get a recovery prompt to paste only when a person is truly needed, or after an interruption. Resuming keeps the original builder, preferred and active reviewer, any recorded fallback, checkout ownership, and remaining attempt budgets. A model recovery attempt is not reset by an interruption. If you explicitly pause or stop a run, it stays stopped until you say to continue. `/orchestrate-t3` uses the same handoff rules.
 
-**Before a run builds.** It checks that these are in place: the chosen executor (the tool that runs workers), the checkout, the project's standard checks, the branch it will deliver to, and a runtime that fits the project. If you asked for T3 only, T3 stays required. Otherwise, an approved native executor is another way to run. Runtime setup uses the project's real stack; not every project needs Compose. If something essential is missing, only the affected units are parked.
+**Before a run builds.** It checks that these are in place: the chosen executor (the tool that runs workers), the checkout, the project's standard checks, the branch it will deliver to, and a runtime that fits the project. If you asked for T3 only, T3 stays required. An approved native executor can run work only when it also preserves any required builder and review routes; it cannot silently replace the default T3/herdr review route. Runtime setup uses the project's real stack; not every project needs Compose. If something essential is missing, only the affected units are parked.
 
 **Operating modes.** A run can be hosted in three ways:
 

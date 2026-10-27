@@ -3,7 +3,7 @@ name: ask-kit
 disable-model-invocation: true
 description: "Route kit skill-map and workflow questions or pick the next agent-skills-kit skill; names one recommendation, never runs it. Existing work: /factory. Matt-only routing: ask-matt."
 metadata:
-  version: "0.3.0"
+  version: "0.3.1"
 ---
 
 # ask-kit
@@ -55,7 +55,7 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 | Production incident or outage | `/incident-triage` |
 | Notes for PMs and QA on what shipped | `/release-notes` |
 | A spec, ticket, or PR exists and its next gate is unclear | `/factory <reference>` |
-| Work one issue, or every issue carrying a label, end to end with one question at the start | `/factory run <issue or label>` |
+| Work one issue, or every issue carrying a label, end to end using factory execution defaults or saved choices | `/factory run <issue or label>` |
 | Editing this kit's own skills | `/writing-kit-skills` |
 
 ## Output

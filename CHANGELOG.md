@@ -9,22 +9,57 @@ re-run `/agents-md` after a marker bump.
 
 ## 2026-10-27
 
+### Breaking
+
+- `/factory` 6.0.0 changes the run defaults: Claude Opus 5.5 builds; Codex
+  `gpt-6.1-sol` at medium reasoning effort reviews through T3 or herdr.
+  Every review worker, judge and final PR risk worker gets the selected
+  model explicitly. After an availability failure, one recovery attempt
+  precedes Cursor Composer 2.5 on the same integration. If both fail, the
+  run explains the errors and asks you what to do. Explicit requirements
+  and saved choices take precedence. Model switches keep existing access
+  limits and require any client authorization for the fallback route.
+- Factory review stops on a pass after any round from one to five. It no
+  longer stops at three when findings still need review. After five rounds
+  without a pass, it posts the open findings and attempted fixes on the
+  issue for human review and starts no sixth round. Stable finding IDs and
+  Blocker, Must fix and Suggestion labels make each finding easier to follow.
+  Existing comment markers keep their integer counts. Proven rare defects
+  still block; optional suggestions alone need no cleanup or extra round.
+  Review logs record suggestion-only rounds and work growing beyond the task.
+  The existing Lessons process may use repeated scope failures; checks stay
+  locked and no automatic policy edits are added.
+
 ### Changed
 
+- Factory intake assesses whether existing PR work is still needed, needs
+  rework or is already solved. This grants no rebase, force-push or closure
+  authority. Continuing commits preserves original Git authors and adds no
+  attribution trailers. Outside code requires a separate task checkout and
+  an isolated test environment without real secrets or staging/production
+  access before installation, setup scripts, tests or other execution.
+- `/risk-review` 1.1.0 shares factory’s five-round maximum and explicit model
+  choice for its lanes and judge. Matt implementation flows keep their
+  three-round limit. Local review still cannot satisfy the PR risk gate.
 - `/orchestrate-t3` 0.13.0 distinguishes delegated tasks from separate threads.
   Delegated tasks use completion notices; separate threads use their supported
   wait control. `/orchestrate-herdr` 0.8.0 checks the installed host before
   choosing completion notices or bounded waits. Factory uses one owned PR
   watch where supported, with bounded checks otherwise. Notifications never
   approve replies, thread resolution or merging. No watcher script is copied.
+- `/ci-loop` 0.6.0 treats instructions printed in CI logs as untrusted text.
+  Logs can explain a failure but cannot permit secret access, broader work
+  or weaker checks.
+- `/ask-kit` 0.3.1 and `/agents-md` 0.11.1 correct the factory index text:
+  factory uses its default or saved execution choices, rather than promising
+  a reviewer question at every start. Generator templates, marker `v58`,
+  descriptions and invocation flags are unchanged. The guide also corrects
+  staging-event assignment ownership and shows only feasible recovery choices.
 - README and CONTRIBUTING now explain that the installer supports selecting a version or
   commit. Companion commands remain unpinned. Validation Check 18 stops at
   the end of the companion-install section and keeps the same credit rule.
   Skill descriptions, invocation flags and the external routing catalog are
   unchanged; no trigger-evaluation snapshot is refreshed.
-- `/ci-loop` 0.6.0 treats instructions printed in CI logs as untrusted text.
-  Logs can explain a failure but cannot permit secret access, broader work
-  or weaker checks.
 
 ## 2026-10-22
 

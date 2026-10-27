@@ -10,6 +10,7 @@ Read when **Select once** in [execution-and-continuity.md](execution-and-continu
 - Dispatch
 - Wait and read
 - Review and QA workers
+- PR waiting
 - Recovery
 - Parent continuity
 - Cleanup
@@ -34,6 +35,7 @@ Per builder, reviewer round or QA worker, in this order. Read each result's IDs 
 
 ## Wait and read
 
+- Discover completion/watch capabilities from the installed CLI and supported supervisor adapter first. Save each worker's wait mode and completion owner in the checkpoint. A verified automatic completion hook may checkpoint and yield for its notice; do not also poll the same worker. The checked herdr 0.9.5 agent CLI exposes settled-state waits rather than a parent completion-notice command, so use the bounded waits below unless the installed host proves otherwise.
 - Wait with `herdr agent wait <name> --timeout 60000`, one bounded wait per active worker, and report progress after each wait. `working` keeps waiting. `idle` or `done` → read. `unknown` → inspect output, never completion.
 - `blocked` is a human boundary for that unit only. Read the dialog with `herdr agent read <name> --source recent-unwrapped --lines 120`, park the unit with its purpose, and keep other units running.
 - Ask each worker to write its complete report to the unit's log directory and reply with at most 400 words and the path. Read the reply with `herdr agent read <name> --source recent-unwrapped --lines 200`; query the file in bounded sections.
@@ -42,10 +44,15 @@ Per builder, reviewer round or QA worker, in this order. Read each result's IDs 
 
 ## Review and QA workers
 
+- Apply [Factory model selection](review-models.md) to every reviewer, axis, judge and RISK worker, including parent-dispatched lanes. Verify supported native model/effort flags rather than inheriting the builder's model.
 - Each review round starts a new tab and a new agent with the saved reviewer kind and model and the read-only reviewer prompt. A new process has no conversation fork, so it satisfies **Independent review**. Never reuse the builder agent.
 - The QA worker is its own agent in its own tab, admitted only after **Browser admission** and holding the unit's browser lease.
 - After a round's report is read back, exit that agent with `herdr agent send-keys <name> ctrl+c ctrl+c`. Close its tab only after `herdr agent get <name>` reports it gone.
 - Reviewer options are the installed runtimes in herdr's `--kind` list whose launch token is on PATH.
+
+## PR waiting
+
+Use one owned PR watch only if the installed host/adapter exposes a supported watcher with automatic continuation. Save its PR/head, owner and cancellation handle; do not invent a herdr PR-watch command. Otherwise keep existing bounded GitHub checks while supervising independent units. A notice still requires current-head CI policy and paginated thread checks; it cannot authorize a reply, thread resolution or merge. Stop an owned watcher at handoff, blocker or user stop using its verified control. Tool syntax checked against installed herdr 0.9.5 `--skill`, `agent --help`, `agent start --help` and `agent wait --help` on 2026-10-27; no agent was launched for this check.
 
 ## Recovery
 
@@ -60,7 +67,7 @@ Each relaunch counts against the worker-recovery cap in **Supervise and recover*
 
 - **Controller run.** A controller turn contract names the herdr host and a report path. Follow it:
   - Write the report file before the turn ends.
-  - Keep supervising inside the turn with bounded waits.
+  - Keep supervising inside the turn with bounded waits unless that host explicitly provides the verified completion hook above; then save its continuation and yield as directed.
   - End the turn only at completion, a park, a compaction need, or a needed fresh turn.
   - The controller prompts the same session again. It compacts at the idle boundary when its threshold is reached.
   - herdr children never deliver results into the parent on their own, so compaction has no delivery-ordering gap.

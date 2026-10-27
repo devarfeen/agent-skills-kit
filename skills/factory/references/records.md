@@ -70,6 +70,10 @@ Used by **Carrying QA forward**, **Fix-only close** in `review-and-delivery.md`,
 
 A changed test file is behavior for checks and review, so it fails this proof. A file that fails a test, or any doubt, fails the proof: run the full step instead.
 
+## Finding identities
+
+Factory review uses the stable finding ledger in [review-and-delivery.md](review-and-delivery.md#finding-ledger). Carry IDs in readable finding/reply text and preserve them in fix-check citations. GitHub `code-review` and `code-review-reply` marker syntax stays unchanged: `findings`, `fixed` and `declined` remain nonnegative aggregate counts, not ID lists. Suggestions stay outside blocking finding counts; material unresolved claims do not. Linear retains its existing headings and fields.
+
 ## Code review fix check
 
 Written by the parent for **Fix-only close** in `review-and-delivery.md`. It closes the review loop for head; it does not replace review of new behavior.

@@ -3,7 +3,7 @@ name: factory
 disable-model-invocation: true
 description: "Shows where a spec (PRD), ticket, or PR stands in the factory workflow and names the one skill that moves it on. Read-only unless the user starts /factory run. Never closes issues or passes staging."
 metadata:
-  version: "5.15.2"
+  version: "6.0.0"
 ---
 
 # factory
@@ -13,7 +13,7 @@ Derive state and next skill from tracker, PR, check, review and deploy evidence.
 ## Inputs
 
 - **Mode** — `report` (default) or `run`, from the first argument. Enter `run` only when the user's own request says it; a status question never does.
-- **Reference** — one of: a spec (PRD) issue (`PRWL-100`, a GitHub issue URL or number), a ticket, a PR number or URL, or the word `start` for an idea with no spec yet. `run` also takes a label name (`/factory run automate`): every open issue carrying it. Missing → ask; never guess from the current branch. Optional `reviewer=<harness>/<provider>/<model>` answers the reviewer question for an unattended start.
+- **Reference** — one of: a spec (PRD) issue (`PRWL-100`, a GitHub issue URL or number), a ticket, a PR number or URL, or the word `start` for an idea with no spec yet. `run` also takes a label name (`/factory run automate`): every open issue carrying it. Missing → ask; never guess from the current branch. Optional `reviewer=<harness>/<provider>/<model>` overrides the default reviewer for this run.
 - **Tracker of record** — Linear (via Linear MCP) or GitHub (via `gh`), read from the workspace `AGENTS.md`. Unclear → ask.
 - **Staging branch** — default `staging`; confirm with `git ls-remote --heads origin <branch>` before any state that depends on it.
 
@@ -67,9 +67,9 @@ The user's `/factory run <reference>` approves the whole chain. Read [`reference
 
 Read [brief](references/builder-brief.md) before dispatch; [receipts](references/supervisor-receipts.md) when continuing; [drafts](references/delivery-drafts.md) during QA.
 
-1. **Intake.** Resolve units as in step 1 and apply **Triage** before builder/runtime work. A fully specified ticket may receive its narrow eligibility transition under run authority; ambiguous work parks. Post missing criteria only to restate existing outcomes. Apply **Start** to inherit the builder. Ask only the reviewer question, unless already answered.
+1. **Intake.** Resolve units as in step 1 and apply **Triage** before builder/runtime work. A fully specified ticket may receive its narrow eligibility transition under run authority; ambiguous work parks. Post missing criteria only to restate existing outcomes. Apply **Start** for builder and reviewer selection.
 
-   Reviewer unanswered → stop with the setup and continuation prompt. Preserve the choices on resume. After this intake the run asks nothing more.
+   Unresolved execution setup → stop with its handoff. Preserve choices on resume. Only the exhausted review-route recovery in **Start** asks a new execution question.
 2. **Loop.** Wait for active children and continue automatically; a worker turn ending is not a factory stop. Follow **Dependency-aware scheduling**: isolated independent units may overlap within capacity; the parent serializes integration. For each ready unit: place it (steps 2–4), carry out its `Next` per **Stage map**, and place it again; log it and apply **Lessons**. Per unit: status In Progress, its own worktree and **Task stack**, a builder worker on the selected backend, agentic QA in a QA worker, a PR, CI, the **Review loop** between the reviewer and the builder, risk review, **Merge**, **Handover** with status In Review, **Cleanup**, **Promotion**, **Staging**. For setup or local-runtime blockers, read [`references/readiness-and-recovery.md`](references/readiness-and-recovery.md); **Loading a stage skill** governs recovery and stops.
 3. **Parks.** Park units awaiting a person — high risk review, a spent cap, reporter-only facts — with evidence; continue the run. No tracked compose file or issue body is edited; no issue is closed.
 4. **Run report.** When no automatic work remains, print the output table, parked units' [standard handoffs](references/session-handoff.md), drafted criteria, **Production readiness**, and **Lessons**.

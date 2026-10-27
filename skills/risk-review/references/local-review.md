@@ -86,6 +86,6 @@ Run relevant checks on the changed snapshot. The caller owns scheduling:
 Matt flows request another review; factory may use its existing **Fix-only close**
 record for eligible nonbehavioral fixes.
 Matt implementation flows allow at most three rounds total; factory retains
-its existing shared three-round budget, never three additional rounds here.
+its shared five-round maximum with early exit on a pass, never an additional budget here. Apply the factory caller's saved review model/effort to every axis and judge, including parent-dispatched assignments.
 Unresolved scope/requirements or exhausted rounds return findings to the user.
 Existing code-review, QA, CI, shipping and human-review requirements still apply.

@@ -2,7 +2,7 @@
 name: risk-review
 description: "Adversarial local review with a judge after implementation; PR merge-risk classification on request. General impact/standards/spec review: /code-review. Comments: /pr-feedback."
 metadata:
-  version: "1.0.1"
+  version: "1.1.0"
 ---
 
 # risk-review
