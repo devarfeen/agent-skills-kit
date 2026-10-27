@@ -11,6 +11,11 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- `/local-to-staging` 2.2.1 no longer merges on an empty check list when a
+  workflow trigger covers the base branch: the checks have not started yet.
+- `/commit-push-pr` 0.11.4 treats an empty check list as absent configured CI
+  only when no workflow trigger covers the base, and records the triggers and
+  the local check result.
 - `/agents-md` 0.12.0, marker v59, labels human commands with their machine
   and preserves workspace-added rule links during regeneration. Shell changes
   require checks under the interpreter that will run them. Shipping follows

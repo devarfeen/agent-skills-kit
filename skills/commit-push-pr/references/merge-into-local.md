@@ -28,7 +28,7 @@ gh pr view <pr-num> --json state,baseRefName,mergeCommit,autoMergeRequest,url
 | --------- | ------ |
 | `state: MERGED` with a `mergeCommit` | `merged into local at <merge-sha>` |
 | `autoMergeRequest` set, or a confirmed merge-queue entry | `auto-merge enabled, waiting on checks` — not merged yet |
-| Auto-merge is not enabled for the repository | Read `gh pr checks <pr-num>`. Every check `pass` or `skipping` → run without `--auto` and read back. `no checks reported` counts only with a successful `statusCheckRollup` read returning an empty list; an error is unknown and stops the merge. Anything pending or failing → leave the PR open; suggest `/ci-loop <pr-num>` |
+| Auto-merge is not enabled for the repository | Read `gh pr checks <pr-num>`. Every check `pass` or `skipping` → run without `--auto` and read back. `no checks reported` counts only with a successful `statusCheckRollup` read returning an empty list; an error is unknown and stops the merge. When no workflow trigger covers the base branch (CI runs only on promotion branches, and lints and tests ran locally before the push), that empty read is absent configured CI. Record the workflows and triggers you read, and the local check result. Anything pending or failing → leave the PR open; suggest `/ci-loop <pr-num>` |
 | Branch protection refuses the merge | Leave the PR open and quote the refusal under `Needs user:` |
 
 Merge with the flags above and nothing more: protection, required reviews, and merge queues decide, so `--admin` and `--delete-branch` stay out of the command. The head branch, the worktree, and every local checkout stay as they are.
