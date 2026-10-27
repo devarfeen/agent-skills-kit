@@ -15,7 +15,7 @@ Zero attribution: omit co-author, AI, and tool attribution from all output.
 
 Create `rules/` when it is missing. Write no other file there, and never edit or delete a file this map does not name.
 
-The on-demand table in `AGENTS.md` is fixed text. Never add, drop, or reword a row to fit the workspace — every row's file is always written, also when Matt routing is omitted from `skills.md`.
+Emit every standard on-demand table row and its mapped file, also when Matt routing is omitted from `skills.md`. Keep uncustomized rows byte-exact. During regeneration, retain workspace-added rows and their trigger wording and paths; these are customizations, not new generator-owned files. Keep customizations within standard rows under the reconciliation rules in [regeneration.md](regeneration.md#reconcile-customized-rules), without silently discarding either trigger or link. Check every retained link. A missing target stops the write with its path reported; do not delete the row or create an unmapped file to make validation pass.
 
 Sections another skill adds (`## Design System / UI Library`, `## QA escape guards`) stay in `AGENTS.md`. Never move them into `rules/`.
 

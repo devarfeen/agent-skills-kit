@@ -3,7 +3,7 @@ name: local-to-staging
 disable-model-invocation: true
 description: "Promote every project from origin/local to origin/staging: open each PR, merge on green, watch the Actions runs. Never pushes or goes past staging. Production is /staging-to-production."
 metadata:
-  version: "2.1.3"
+  version: "2.2.0"
 ---
 
 # local-to-staging
@@ -47,7 +47,7 @@ gh pr list --repo <owner/repo> --base <target> --head <source> --state open --js
 gh repo view <owner/repo> --json mergeCommitAllowed
 ```
 
-Read staging deployment routing: the workflow's push trigger, deploy job, checkout revision and staging destination. No or ambiguous deploy workflow → deployment unverified even if test runs pass. Read [staging-handoff.md](references/staging-handoff.md) to discover the separate merge-event automation and its issue/delivery evidence before promotion.
+Read staging deploy push triggers, jobs, checkout revisions and destinations. Apply [deployment policy](references/deployment-policy.md) before PR creation and merge; blockers stop only that repo. Missing/ambiguous routing leaves deployment unverified despite green tests. Read [staging-handoff.md](references/staging-handoff.md) for separate merge-event automation and issue/delivery evidence before promotion.
 
 Classify each repo: **skip** (branch missing, or 0 commits ahead — nothing to promote), **blocked** (merge commits disallowed), or **promote** (reuse the open PR when one exists for this exact head/base pair).
 

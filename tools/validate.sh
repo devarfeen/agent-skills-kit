@@ -154,6 +154,7 @@ skills/commit-push-close/references/ship-policy.md skills/commit-push-pr/referen
 skills/feature-discovery/references/context-terms.md skills/feature-prompt/references/context-terms.md
 skills/local-to-staging/references/staging-handoff.md skills/deploy-watch/references/staging-handoff.md
 skills/local-to-staging/references/staging-handoff.md skills/staging-fix/references/staging-handoff.md
+skills/local-to-staging/references/deployment-policy.md skills/staging-fix/references/deployment-policy.md
 "
 PAIR_COUNT=0
 while read -r a b; do

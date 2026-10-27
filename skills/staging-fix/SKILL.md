@@ -3,7 +3,7 @@ name: staging-fix
 disable-model-invocation: true
 description: "Fix a staging bug without touching a server: fix locally with a test, then a PR to the staging branch with auto-merge. Use for staging is broken. Inspecting staging alone is not this skill."
 metadata:
-  version: "0.5.1"
+  version: "0.6.0"
 ---
 
 # staging-fix
@@ -44,6 +44,8 @@ If read-only staging inspection was explicitly approved this session, use it wit
 On the workspace's required delivery branch (`local` when it mandates `origin/local`), otherwise a task branch, never directly on `staging` or production. A default `local` is permitted only when explicitly designated for delivery and not a production deployment branch. In the workspace-authorized task checkout, shrink the reproduction to the smallest case that still fails, write a failing test that captures it, then make it pass. Tag temporary instrumentation with one unique prefix (`[DEBUG-<4 hex>]`) and grep every tagged line out before shipping. Where a test is impractical, say so and name the substitute verification. Run the repo's check suite before shipping. Compare suspected baseline failures in a clean checkout of the pre-fix commit, preserving unrelated changes; record confirmed baseline failures in the PR. Failures introduced by the fix stop the workflow.
 
 ### 3. Ship
+
+Apply [deployment policy](references/deployment-policy.md) before publishing and again before enabling auto-merge, against the revisions that will deploy. Under factory, pass its evidence to the parent for the merge check.
 
 Read the staging deploy workflow and confirm its branch trigger and destination. Missing or ambiguous CI routing stops shipping; do not promise a deploy from the branch name alone. Draft the commit and PR with the fix, its root cause (the cause removed, or `not established` with what was ruled out), changed paths, human reproduction steps with expected results, and test evidence, redacted per Rules. Include canonical `Issue: <identifier>` commit trailers and non-closing `Ref <identifier>` PR references plus the stable owner-delivery identities required by the caller's handoff parser; read [staging-handoff.md](references/staging-handoff.md). A fix creates a new delivery key. Scrub attribution and present both for the combined approval. After approval, stage only the fix paths, inspect the staged diff, commit with the approved message, then:
 

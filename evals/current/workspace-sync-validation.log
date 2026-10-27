@@ -1,0 +1,42 @@
+== 1. SKILL.md frontmatter ==
+  ok: frontmatter checked for 31 skills
+  ok: frontmatter parses as strict YAML
+== 2. Duplicated-by-design copies byte-identical ==
+  ok: duplicated-by-design copies match (5 pairs)
+== 3. Skill folders and skills-manifest.md rows agree ==
+  ok: manifest coverage checked (both directions)
+== 4. Every skill has a README table-row link ==
+  ok: README table-row links checked
+== 5. Relative markdown links resolve ==
+  ok: relative links checked
+== 6. Zero-attribution tripwire ==
+  ok: no attribution leaks in files
+== 7. agents-md version markers in sync ==
+  ok: agents-md markers consistent (v59 x9 + stated)
+  ok: agents-md template within byte budget (12899 <= 12900)
+== 8. Manifest phases are valid ==
+  ok: manifest phases valid
+== 9. Trigger-eval sets parse ==
+  ok: eval sets parsed (31 files)
+== 10. Eval provenance: live inputs match their recorded run ==
+  ok: eval descriptions, query content, catalog and invocation policies match the recorded run
+== 11. Invocation parity: frontmatter flag ⇔ agents/openai.yaml ==
+  ok: invocation parity checked
+== 12. SKILL.md body word ceiling ==
+  ok: all SKILL.md bodies <= 1500 words
+== 13. Canonical one-liners byte-exact where used ==
+  ok: canonical one-liners byte-exact where used
+== 14. No placeholder scaffolding in references/assets ==
+  ok: no placeholder scaffolding in references/assets
+== 15. Every skill in exactly one marketplace.json plugin group ==
+  ok: every skill in exactly one marketplace.json plugin group
+== 16. Skill versions present and bumped on change ==
+  ok: every skill versioned; changed skills bumped since 924a846
+== 17. No hidden zero-width or bidi-control characters ==
+  ok: no hidden zero-width or bidi-control characters in skills/**/*.md
+== 18. Companion parity with README credits ==
+  ok: every installed companion credited in README.md
+== 19. Total description budget for model-invocable skills ==
+  ok: model-invocable descriptions total 726 characters (<= 3000)
+
+validate.sh: all checks passed

@@ -7,6 +7,21 @@ their new versions, so a workspace on an older copy can see what an update
 brings. Generated `AGENTS.md` files carry the `agents-md` marker version;
 re-run `/agents-md` after a marker bump.
 
+## 2026-10-28
+
+### Changed
+
+- `/agents-md` 0.12.0, marker v59, labels human commands with their machine
+  and preserves workspace-added rule links during regeneration. Shell changes
+  require checks under the interpreter that will run them. Shipping follows
+  the workspace's migration policy and waits for required human-run migrations.
+- `/local-to-staging` 2.2.0 and `/staging-fix` 0.6.0 check deployment paths
+  against workspace migration restrictions before they can deploy. Required
+  human-run migrations need a completion report for the target environment.
+  These checks add no migration ban where the workspace has none.
+- `/factory` 6.1.0 applies the same migration checks before its own merges,
+  including merges of staging-fix PRs. A blocked check parks the affected work.
+
 ## 2026-10-27
 
 ### Breaking

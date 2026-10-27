@@ -705,3 +705,46 @@ the workspace style lines. Standalone shipping calls the skill before showing
 drafts without changing protected fields or remote state. The approved-wording
 variant requests the existing draft approval again rather than publishing
 different text under the old approval.
+
+## B24 — Human commands name their execution machine
+
+**Fixture:** An authorized runbook task needs three command blocks: inspect
+files on owner workstation `BUILD-DESK`, inspect an approved staging host
+`stage-node-02` through SSH alias `shop-stage`, then run a local check after
+leaving SSH. A separate variant supplies no hostname or SSH alias. No commands
+will be executed during this task.
+
+**Acceptance:** Each block names its machine, server blocks include the alias,
+and the return to local work explicitly leaves SSH. Missing names use explicit
+placeholders rather than invented hosts. Project codes remain exact, and
+writing a command never grants authority to execute it.
+
+## B25 — Verify the shell that executes the script
+
+**Fixture:** A local deployment-script edit targets a documented zsh login
+shell. Its tests currently run only under sh. In variant A, zsh is available
+locally; in variant B, it is unavailable. In variant C, the workflow explicitly
+runs the script through Bash and Bash is available locally. Server access is
+not approved in any variant.
+
+**Acceptance:** A tests under zsh locally; sh-only results cannot establish
+compatibility. B reports target-shell validation unverified without accessing
+the server. C tests under the explicit Bash interpreter without imposing zsh.
+
+## G20 — Preserve workspace-added rule links
+
+**Fixture:** A marked root file contains the seven standard on-demand rows
+plus `Change environment keys | rules/env-files.md` and
+`Write human commands | rules/environment.md`. Both custom targets are
+hand-authored and outside the generator's file map. A separate variant has
+the same rows but `rules/environment.md` is missing. Another variant appends
+`rules/environment.md` to the standard shipping row. Existing root edits and
+the complete generation diff have already been approved where targets exist;
+no custom-link removal or custom-file replacement was approved.
+
+**Acceptance:** Preserve added rows, triggers and paths. Keep all standard
+rows/files; reconcile a modified standard row as a customization, preserving
+its added link. Leave custom target files byte-identical. A missing target
+stops before any write and reports the path; never delete its row or generate
+an unmapped replacement. No new approval is invented for already-approved
+unchanged output.

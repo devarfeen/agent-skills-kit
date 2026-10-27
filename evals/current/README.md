@@ -11,6 +11,7 @@ tracked.
 
 ## Evidence
 
+- [28 October workspace rule sync: seven modeled cases and validation](workspace-sync-results.md)
 - [All-skill audit, decisions, remaining conflict and body sizes](skills-audit.md)
 - [Local review behavior: 12 cases, two repetitions](behavioral-results.md)
 - [Approved repair behavior: 15 cases, two repetitions and focused rechecks](repair-results.md)

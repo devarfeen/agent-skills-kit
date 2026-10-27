@@ -132,6 +132,8 @@ The parent then posts `## Code review fix check` from [`records.md`](records.md)
 
 ## Merge
 
+Before enabling auto-merge or merging a deploy-triggering PR, recheck workspace migration policy against the revisions that will deploy, including called workflows, scripts and startup hooks. Where server migrations are forbidden, an offending or unresolved deploy path parks the unit. A deployment needing human-run migrations waits for the human's completion report naming the required changes and target environment. Stage-skill evidence is input to this check, not a waiver; run authorization never clears it. The run neither performs those server actions nor treats general approval as completion.
+
 The run merges a PR itself, through GitHub, when all of these hold for head: the CI gate in [`ci-policy.md`](ci-policy.md) is satisfied; agentic-qa `verified` or `no-ui-reach`, or a valid `## QA carried forward` record for head; the **Review loop** settled; risk-review `tier=low` with `blocking=0`; and no review thread is unresolved or changes requested; and the PR base is an authorized delivery `local` or the staging branch. Re-read head, base, checks and paginated threads immediately before merging; a moved head re-enters CI, and an unreadable gate parks. A PR on any other base is the owner's. A high tier waits at `HUMAN_REVIEW` for a person to approve and merge.
 
 Pick the merge method from repository policy (`gh repo view --json mergeCommitAllowed,squashMergeAllowed,rebaseMergeAllowed`), preferring the one the workspace names.

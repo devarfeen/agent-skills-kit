@@ -1,4 +1,4 @@
-<!-- agents-md marker · v58 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v59 · re-run /agents-md to regenerate -->
 # Shipping
 
 Zero attribution: never add co-author, AI, or tool attribution to any output.
@@ -16,6 +16,8 @@ Nothing commits, pushes, opens a PR, or closes a delivery issue outside the ship
 - `/factory run` — only when the user starts it. It ships solely through the skills above, merges into the delivery branch `local` or the staging branch once its gates pass, and never closes an issue; plain `/factory` writes nothing.
 
 Each ship skill's own text sets its branch limits and confirmations. A target is the branch a step pushes to or opens a PR against. No ship skill targets a production branch or a branch a production workflow deploys from. `/staging-fix` and `/local-to-staging` open PRs only against `staging`; `/staging-fix` pushes only the delivery branch `local`. `/factory run` merges only into `staging` or the delivery branch `local`, including when `local` is the repository's default branch; any other default branch is never a factory, staging-fix, or local-to-staging target.
+
+Before a push, PR, or merge can trigger deployment, read the workspace's migration policy and trace the resulting deploy path through called workflows, scripts and startup hooks. Where server migrations are forbidden, block a path that runs them or cannot be verified. Prepare required changes locally and wait for the human's completion report for the target environment before a deployment that depends on human-run migrations. Shipping approval does not waive this policy or grant server access.
 
 - Local engineering commits are not shipping: task-branch commits in orchestration worktrees and local `--no-ff` merges into the local integration branch need no ship skill. Zero attribution still applies, and any push, PR, or issue close exits through a ship skill.
 - Any other skill that says to commit — `/implement` included — stops and hands off: report what is ready; do not stage, commit, or push.
