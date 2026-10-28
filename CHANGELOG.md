@@ -7,6 +7,15 @@ their new versions, so a workspace on an older copy can see what an update
 brings. Generated `AGENTS.md` files carry the `agents-md` marker version;
 re-run `/agents-md` after a marker bump.
 
+## 2026-10-29
+
+### Changed
+
+- `/agents-md` 0.14.0, marker v61: in its verification rules, commands for a
+  human use the owner's login shell from the workspace environment rules, and
+  agents may run their own commands and scratch scripts in bash. Re-run
+  `/agents-md` to update workspace instructions.
+
 ## 2026-10-28
 
 ### Changed

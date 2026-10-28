@@ -1,4 +1,4 @@
-<!-- agents-md marker · v60 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v61 · re-run /agents-md to regenerate -->
 # Agent instructions
 
 [one concise, factual workspace intro inferred from the .code-workspace name and folder scan — no promotional adjectives]

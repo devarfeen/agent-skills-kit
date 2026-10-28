@@ -57,3 +57,11 @@ so precision beats volume.
    field labels, canonical text, quotations, evidence, and qualifications.
    Leave unrelated prose alone. If unavailable, report once and continue under
    existing writing rules.
+10. **The owner and this computer use zsh; agents may use bash.** zsh is
+    the login shell of the machine you run on. Run your own commands and
+    scratch scripts in bash when that is simpler (`bash -c`, `bash -s`, or a
+    `#!/usr/bin/env bash` script). Your tool shell may still be zsh: quote
+    globs that may match nothing and do not rely on unquoted word splitting.
+    Commands written for the owner stay zsh-safe. Shell guidance inside
+    skills still resolves each workspace's target shell; never hard-code zsh
+    or bash there.

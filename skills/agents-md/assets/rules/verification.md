@@ -1,4 +1,4 @@
-<!-- agents-md marker · v60 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v61 · re-run /agents-md to regenerate -->
 # Verification
 
 Zero attribution: never add co-author, AI, or tool attribution to any output.
@@ -15,7 +15,7 @@ Before the first implementation edit, the main agent:
 - resolves the checkout, working directory, runtime or container, environment, and canonical verification commands from project instructions and scripts, and reuses those command forms;
 - inspects the aggregate full-check command before using it.
 
-For shell or deployment script changes, resolve the target shell from project instructions and script/workflow configuration. Use that shell's syntax or an explicit interpreter; never assume every host uses Bash or zsh. Test the changed script under the interpreter that will execute it, using local fixtures where server access is restricted. A test under another shell does not establish compatibility; an unavailable target interpreter leaves that check unverified.
+For shell or deployment script changes, resolve the target shell from project instructions and script/workflow configuration. Use that shell's syntax or an explicit interpreter; never assume every host uses Bash or zsh. Test the changed script under the interpreter that will execute it, using local fixtures where server access is restricted. A test under another shell does not establish compatibility; an unavailable target interpreter leaves that check unverified. Commands and scripts for a human use the owner's login shell from the workspace environment rules; agents may run their own commands and scratch scripts in bash.
 
 Pick the lowest check layer that can disprove the claim — unit or feature test, then HTTP/API, then browser. Browser checks prove UI claims only (`browser.md`); persistence, authorization, tenant isolation, mail, and queues need automated tests.
 
