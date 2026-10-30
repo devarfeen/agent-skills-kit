@@ -32,7 +32,7 @@ Categories: purpose clarity · trigger clarity · scope control · instruction q
 engineering usefulness · agent usability · verification quality · TDD/testing compat ·
 maintainability · frontier readiness.
 
-**Trigger clarity is scored from routing evidence, not prose.** State the actual run date and whether it was rerun. Name any colliding sibling and misrouted query, or missing runtime evidence. Catalog routing does not prove a host implicitly loads a user-only skill.
+**Trigger clarity is scored from routing evidence, not prose.** State the actual run date and whether it was rerun. Name any colliding sibling and misrouted query, or missing runtime evidence. This skill is model-invoked: a should-trigger query that a host routes elsewhere is a trigger miss, and a near-miss that loads it is a false start.
 
 `N/A` is permitted only on TDD/testing compat, only when the skill has no testable surface, and only
 with a written justification. `/staging-fix` produces code (a local fix with a test), so `N/A` never

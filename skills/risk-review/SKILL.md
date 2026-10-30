@@ -1,8 +1,8 @@
 ---
 name: risk-review
-description: "Adversarial local review with a judge after implementation; PR merge-risk classification on request. General impact/standards/spec review: /code-review. Comments: /pr-feedback."
+description: "Adversarial local review with a judge after implementation; PR merge-risk classification on request. Not open-ended impact questions. Standards/spec: /code-review. Comments: /pr-feedback."
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
 ---
 
 # risk-review

@@ -3,7 +3,7 @@ name: factory
 disable-model-invocation: true
 description: "Shows where a spec (PRD), ticket, or PR stands in the factory workflow and names the one skill that moves it on. Read-only unless the user starts /factory run. Never closes issues or passes staging."
 metadata:
-  version: "6.1.0"
+  version: "6.1.1"
 ---
 
 # factory

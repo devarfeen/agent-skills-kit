@@ -7,6 +7,26 @@ their new versions, so a workspace on an older copy can see what an update
 brings. Generated `AGENTS.md` files carry the `agents-md` marker version;
 re-run `/agents-md` after a marker bump.
 
+## 2026-10-31
+
+### Changed
+
+- `/local-to-staging` 2.3.0, `/staging-fix` 0.7.0, and
+  `/staging-to-production` 0.3.0 are now model-invoked: the agent can load
+  them when your request matches, without you typing the slash command. Each
+  one still starts only when you ask for that work in the current session or
+  a `/factory run` you started loads it. A suggestion from another skill does
+  not start it. Every other limit is unchanged: `/local-to-staging` still
+  waits for your approval before opening or merging PRs, `/staging-fix` still
+  needs your approval before it looks at staging, and
+  `/staging-to-production` stays read-only.
+- `/factory` 6.1.1 notes that these three skills still start through its
+  worker-turn procedure, so their run authorization applies.
+- `/risk-review` 1.1.1 says in its short description that it does not answer
+  open-ended "what could this break" questions.
+- `/agentic-qa` 0.9.3 says in its short description that it runs QA on a PR
+  that `/factory` has placed in QA.
+
 ## 2026-10-29
 
 ### Changed

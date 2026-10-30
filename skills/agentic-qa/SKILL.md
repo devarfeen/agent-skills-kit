@@ -1,9 +1,9 @@
 ---
 name: agentic-qa
 disable-model-invocation: true
-description: "Agent-run functional QA of a PR or branch that can reach a screen: drives acceptance criteria through the running app and records the result on the PR. Never edits code. Pixel checks are /pixel-audit."
+description: "Agent-run functional QA of a PR or branch that reaches a screen, incl. a PR /factory puts in QA: runs acceptance criteria in the live app, records the result. Never edits code. Pixels: /pixel-audit."
 metadata:
-  version: "0.9.2"
+  version: "0.9.3"
 ---
 
 # agentic-qa
