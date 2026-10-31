@@ -147,11 +147,17 @@ A PR on staging, including an authorized `local` PR whose merge is in staging �
 
 ## Promotion
 
-A PR merged into `local` has not reached staging; its handover says `not staged`. Once per round, after that round's merges, load `local-to-staging` for the repos holding such units. Its merge triggers configured event automation. Then place each unit again: a staging branch containing its merge commit → **Staging**. A repo it reports blocked, failed or awaiting review parks its units with that evidence and names `/local-to-staging`; the run never retries a promotion. It emits no pre-staging QA-user mentions or bespoke handoff notifications.
+A PR merged into `local` has not reached staging; its handover says `not staged`. Once per round, after that round's merges, load `local-to-staging` for the repos holding such units. Its merge triggers configured event automation. When it returns, apply **Moved by promotion** below. Then place each unit again: a staging branch containing its merge commit → **Staging**. A repo it reports blocked, failed or awaiting review parks its units with that evidence and names `/local-to-staging`; the run never retries a promotion. It emits no pre-staging QA-user mentions or bespoke handoff notifications.
+
+### Moved by promotion
+
+A tracker can move an issue by itself when a PR that references it opens: Linear's GitHub automation applies "PR opened → In Progress" to every base branch unless the team sets a branch exception, and a promotion PR lists `Ref <identifier>` for each delivered issue. So after `local-to-staging` returns, re-read the status of every issue it delivered and note the read time (UTC). Still In Review, or Completed, Cancelled or closed → leave it. Otherwise read the issue's status history. The latest change made by a person → leave it and report it in the run report; history unreadable → leave it and report that. The latest change made by an integration or automation → set **In Review** per **Tracker status** in [`run.md`](run.md) and read it back. Record each restore in the run report as `<issue> — found <status> at <read time>, restored to In Review`, and log a **Round log** row with Check `ci`, Result `pass (status restored)`, Cause `tracker-status`, Tried `found <status> at <read time>`. Then report under Needs user, once per tracker team, that a tracker automation moved delivered issues on promotion, likely "PR opened → In Progress" without a branch exception for `<staging-branch>`, and that the team should set that branch to no action. The run cannot read or change that setting. It changes no other status and never edits the issue body.
+
+**Staging** opens no PR, so it needs no re-check. **Deploy failure** does: its `staging-fix` PR carries `Ref <identifier>` for the delivered issue.
 
 ## Deploy failure
 
-Load `staging-fix` once per unit per run, with the failed deploy run's `--log-failed` tail as evidence. Its fix PR on the staging base goes through CI, QA, **Review loop**, risk review and **Merge** like any PR; once merged, **Staging** watches the later deploy run. A staging-fix stop, or a second `DEPLOY_FAILED`, parks the unit naming `/staging-fix` or a revert PR.
+Load `staging-fix` once per unit per run, with the failed deploy run's `--log-failed` tail as evidence. When it returns, merged or stopped, apply **Moved by promotion** to the unit's issue. Its fix PR on the staging base goes through CI, QA, **Review loop**, risk review and **Merge** like any PR; once merged, **Staging** watches the later deploy run. A staging-fix stop, or a second `DEPLOY_FAILED`, parks the unit naming `/staging-fix` or a revert PR.
 
 ## Production readiness
 

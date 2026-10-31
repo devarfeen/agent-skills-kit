@@ -11,6 +11,13 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- `/factory` 6.2.0 re-checks each delivered issue's status after
+  `/local-to-staging` returns and after a `/staging-fix` run. Some trackers
+  move an issue back to In Progress when a PR that mentions it opens. If an
+  automation did that, the run sets the issue back to In Review, reads it
+  back, and logs it. It leaves alone any status a person set, and any issue
+  that is done, cancelled or closed. It also asks you, once per tracker team,
+  to stop that automation from acting on the staging branch.
 - `/local-to-staging` 2.3.0, `/staging-fix` 0.7.0, and
   `/staging-to-production` 0.3.0 are now model-invoked: the agent can load
   them when your request matches, without you typing the slash command. Each

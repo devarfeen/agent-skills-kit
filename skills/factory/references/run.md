@@ -108,7 +108,7 @@ Apply every per-unit stage, cap and cleanup guard. The scheduler changes timing,
 The issue's status follows the work, so a person reading the tracker sees where it stands.
 
 - **In Progress** — when **Build** starts for the unit, including the rebuild of a returned issue.
-- **In Review** — at **Handover**. It stays there through manual QA.
+- **In Review** — at **Handover**. It stays there through manual QA. **Moved by promotion** in [`review-and-delivery.md`](review-and-delivery.md#moved-by-promotion) re-checks it after each promotion and staging fix.
 
 Take each status name from the workspace's issue-tracker document when it lists them; otherwise use the tracker's own status of that name for the issue's team (Linear: the live status list). Not found → skip the change and report it under Needs user; never create a status. GitHub issues have no status: skip, unless the workspace names a label or project field for each. Read every change back.
 
