@@ -7,6 +7,52 @@ their new versions, so a workspace on an older copy can see what an update
 brings. Generated `AGENTS.md` files carry the `agents-md` marker version;
 re-run `/agents-md` after a marker bump.
 
+## 2026-11-01
+
+### Changed
+
+- `/factory` 6.3.0 loads less text per stage. `SKILL.md` now has a load map
+  that lists which reference files, or which sections of them, each state
+  needs. Start and triage moved from `run.md` to a new `intake.md`. Building,
+  fixes, check timing and screenshots moved to a new `build.md`. The review
+  loop moved from `review-and-delivery.md` to a new `review-loop.md`. The old
+  headings stay as one-line pointers, and no rule changed. What a stage reads
+  (the skill file plus its references) drops from about 106 KB to 98 KB for
+  a build, 101 KB to 79 KB for QA, and 98 KB to 70 KB for review.
+- `/factory` 6.3.0, on T3 Code: start a stage skill by creating the child
+  thread first and then sending `/<skill> <args>` to it with
+  `t3_thread_send`. Never put a slash command inside `delegate_task` text.
+  `delegate_task` adds a role line in front of your text, so the skill does
+  not load. A run on 2026-10-30 confirmed the working path for
+  `/agentic-qa`, `/commit-push-pr` and `/local-to-staging`.
+- `/factory` 6.3.0 adds an edge data map before QA. The runtime owner links
+  each edge case from the builder brief that needs data to a test fixture, or
+  writes down why it cannot be reached. QA then does not come back `partial`
+  just because the test data was missing.
+- `/agentic-qa` 0.10.0 treats saved evidence files as append-only. When the
+  host has an evidence ledger, the tester registers each file and folder as
+  it creates it. It never edits a file after recording it; each re-run or
+  round writes a new file. Before, an edited comment file and an unlisted
+  folder stopped evidence cleanup.
+- New project setting **Full-check point**. Put `Full-check point: ship` or
+  `Full-check point: promotion` in your project's verification rules. `ship`
+  is the default and changes nothing. With `promotion`, builders and workers
+  run an **area check** before review, QA and ship instead of the whole test
+  suite: static tools on the changed files, the tests related to the change,
+  and the cheap whole-app checks the project lists. Shipping into the
+  delivery branch (for example `local`) records
+  `Full check: deferred to promotion`, never "passed". The full check then
+  runs once per repository when you promote, on the exact head being
+  promoted, one repository at a time. A failure stops only that repository
+  and names the failing tests and the commits since the last promotion. The
+  setting moves when the full check runs; it skips no check. Skills:
+  `/commit-push-pr` 0.12.0 and `/commit-push-close` 0.9.0 (shared ship
+  policy), `/factory` 6.3.0, `/tdd-loop` 0.4.0, `/orchestrate-t3` 0.14.0,
+  `/agents-md` 0.15.0 (marker v62; re-run `/agents-md`), and
+  `/local-to-staging` 2.4.0, which now runs the full check before it opens
+  each promotion PR and writes the result, tied to the head commit, into the
+  PR body.
+
 ## 2026-10-31
 
 ### Changed

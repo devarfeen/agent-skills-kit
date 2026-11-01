@@ -2,7 +2,7 @@
 
 Zero attribution: never add co-author, AI, tool, or generator attribution to any output, except the permitted comment-only Tester field below.
 
-The fixture owner reads this before fixture preparation; the tester reads it before producing the QA report and never runs the restore or cleanup command itself. Discover the target's evidence adapter from current instructions; use its supported result schema and manifest commands. Without an adapter, retain the same identities and checks in the report and manifest. Standalone installs do not assume a workspace script path.
+The fixture owner reads this before fixture preparation; the tester reads it before writing the grid and never runs the restore or cleanup command itself. Discover the target's evidence adapter from current instructions; use its supported result schema and manifest commands. Without an adapter, retain the same identities and checks in the report and manifest. Standalone installs do not assume a workspace script path.
 
 ## Fixture ownership
 
@@ -17,6 +17,10 @@ For authorization rows, prove the permitted role can perform the same action and
 When workspace instructions allow QA provenance, require `Tester: <provider>/<requested-model> via <harness> (coding agent: <agent>; resolved model: <actual-model-or-unavailable>)` in the GitHub/Linear QA comment. Use the tester's launch/execution records, supplied by the caller when needed. Distinguish the host harness from the coding agent; a T3 Code worker may use Codex or Cursor. Keep Auto/default aliases and state `resolved model: unavailable` when execution metadata exposes no concrete model; never guess. A concrete requested/executed model needs no duplicate suffix. Before publication and on read-back compare this field with those records. Without workspace permission, omit it.
 
 QA carried forward and QA nested in delivery comments retain the original tester and evidence link, without claiming a fresh run. Supply identity separately from `report.md`, `grid.md`, `results.json` and other evidence files, which stay attribution-free. Correct historical comment metadata without changing its original SHA, result, findings, counts or evidence. Posting still requires the calling workflow's authorization.
+
+## Local evidence files
+
+Evidence files are append-only once recorded. When the host provides an evidence ledger or local-file inventory, register every evidence file and folder (grid, report, images, `results.json`, comment drafts, a `pdf/` folder) as you create it: reserve its path before writing, seal it once its bytes are final. Never edit a sealed file; a re-run or later round writes a new file (`qa-comment-r4.md`, not an edited `qa-comment-r3.md`). Write only inside reserved paths. An edited sealed file or an unregistered file blocks cleanup of its whole folder.
 
 ## Result and evidence identity
 

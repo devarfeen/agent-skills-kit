@@ -20,7 +20,9 @@ A root-bound thread may report `worktreePath: null`; reconcile it against its re
 
 For worker monitoring, follow **Delegated tasks/Wait** in `orchestrate-t3/references/t3-tools.md`: save task handles for delegates and thread/run handles for separate threads. A completion-notice response checkpoints and yields; never poll its running task or wait on its child thread. Supported PR watches belong to the owning parent under **PR watches**, never a delegated stage worker.
 
-Stage skills: send `/<skill> <args>` as the first token of a `t3_thread_send` message to the unit's idle builder thread or a stage thread. Read the thread's first new items back; no skill load means no skill ran: resubmit once, then park the stage as `stage_skill_not_invoked`. If the send returns a new delegated task, save its task ID and follow its completion notice. No T3 run has recorded a positive readback for this path yet.
+Stage skills: create the stage's child thread first (or reuse the unit's idle builder thread), then send `/<skill> <args>` as the first token of a `t3_thread_send` message to that idle thread. Read the thread's first new items back; no skill load means no skill ran: resubmit once, then park the stage as `stage_skill_not_invoked`. If the send returns a new delegated task, save its task ID and follow its completion notice. This path has recorded positive readbacks (`agentic-qa`, `commit-push-pr`, `local-to-staging`).
+
+Never put a slash command inside `delegate_task` text: it prepends a role line ("Act as the … sub-agent"), so the command is no longer the first token and the skill does not load. Use `delegate_task` only for work that needs no stage skill.
 
 ## Compaction
 

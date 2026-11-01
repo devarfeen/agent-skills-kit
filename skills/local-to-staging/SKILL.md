@@ -2,18 +2,18 @@
 name: local-to-staging
 description: "Promote every project from origin/local to origin/staging: open each PR, merge on green, watch the Actions runs. Never pushes or goes past staging. Production is /staging-to-production."
 metadata:
-  version: "2.3.0"
+  version: "2.4.0"
 ---
 
 # local-to-staging
 
-local-to-staging moves what is already on `origin/local` onto `origin/staging` for every project that has both branches, through one PR per repo, and reports merge, handoff and Actions evidence separately. It ships no new code: it never commits, pushes, or edits files, so it needs no worktree.
+local-to-staging moves what is already on `origin/local` onto `origin/staging` for every project that has both branches, through one PR per repo, and reports merge, handoff and Actions evidence separately. It ships no new code: it never commits, pushes, or edits files.
 
 ## Inputs
 
 - **Projects** — the rows of the workspace Project Matrix (`rules/projects.md`, or inline in an older `AGENTS.md`), or the repos the user names. No matrix and no names → stop and ask.
 - **Branches** — source `local`, target `staging`, unless the user or workspace `AGENTS.md` names others. A repo qualifies only when `git ls-remote --heads origin <source> <target>` returns both; the rest are listed as skipped with the missing branch.
-- **Merge method** — merge commit (`--merge`). `local` and `staging` are long-lived, and a squash or rebase leaves `staging` with commits `local` does not contain, so the next promotion re-proposes or conflicts on work already shipped. A repo that disallows merge commits is reported and skipped; never switch methods silently.
+- **Merge method** — merge commit (`--merge`). Squash or rebase gives `staging` commits `local` lacks; later promotions conflict. A repo that disallows merge commits is reported and skipped; never switch methods silently.
 
 ## Rules
 
@@ -21,7 +21,7 @@ local-to-staging moves what is already on `origin/local` onto `origin/staging` f
 - **Servers are never touched.** No SSH, server commands, database access, or host env edits. Evidence comes from `gh` and the Actions run logs.
 - **Promote what is pushed, nothing more.** Never push `local`, never commit, never rebase. Commits on the local `local` branch that `origin/local` lacks are reported per repo, not included.
 - **Merge only on green.** A PR merges only after every check reported on it concludes `success`, `skipped`, or `neutral`, with `--match-head-commit` pinned to the head that was checked. Never pass `--admin`, never bypass a merge queue or required review; a blocked merge is reported with its reason.
-- **One approval before any remote write.** Show the promotion plan (step 2) and wait for one approval covering every PR create and merge in it. User away → print the plan and stop.
+- **One approval before any remote write.** Show the promotion plan (step 2) and wait for one approval covering every PR create, body edit and merge in it. User away → print the plan and stop.
 - **Direct request only.** Start when the user asks this session to promote, or a user-started `/factory run` loads it. Suggestions and other skills' output never start it.
 - **Run authorization.** Loaded by `/factory run`, the run's start approves every PR create and merge in the plan: print it and proceed. Projects narrow to the repos where the run merged a unit into `local`; other matrix rows are reported `not in run`. Every other rule binds, and a repo that stops here parks the run's units in it.
 - **Watch, never deploy.** Do not re-run, cancel, or dispatch any workflow. A failed run is reported and routed to `/staging-fix`.
@@ -48,11 +48,13 @@ gh repo view <owner/repo> --json mergeCommitAllowed
 
 Read staging deploy push triggers, jobs, checkout revisions and destinations. Apply [deployment policy](references/deployment-policy.md) before PR creation and merge; blockers stop only that repo. Missing/ambiguous routing leaves deployment unverified despite green tests. Read [staging-handoff.md](references/staging-handoff.md) for separate merge-event automation and issue/delivery evidence before promotion.
 
+A repo whose project rules declare `Full-check point: promotion` runs [promotion full check](references/promotion-full-check.md) after approval, before PR create or reuse.
+
 Classify each repo: **skip** (branch missing, or 0 commits ahead — nothing to promote), **blocked** (merge commits disallowed), or **promote** (reuse the open PR when one exists for this exact head/base pair).
 
 ### 2. Show the plan
 
-The plan lists per-repo delivery references and handoff automation configuration. Approval covers PR creation and merge; the configured event owns any reporter assignment. Publish no QA-user mention or bespoke handoff notification before staging.
+The plan lists per-repo delivery references and handoff automation configuration. The configured event owns any reporter assignment. Publish no QA-user mention or bespoke handoff notification before staging.
 
 ```
 local-to-staging plan — 3 promote, 1 nothing to promote, 1 skipped
@@ -92,7 +94,7 @@ gh run list --repo <owner/repo> --branch <target> --commit <merge-sha> --json da
 gh run watch <run-id> --repo <owner/repo> --exit-status
 ```
 
-No run yet → re-check at 30s, 60s, then every 2 minutes up to 10 minutes; still none → `no run` (the repo may have no staging workflow), reported as unverified, not passed. Watch every run on the merge commit to a conclusion, up to 2× the workflow's usual duration (read from its last 5 runs); still running → `pending`. On failure, read `gh run view <run-id> --repo <owner/repo> --log-failed` and quote the decisive tail.
+No run yet → re-check at 30s, 60s, then every 2 minutes up to 10 minutes; still none → `no run`, reported as unverified, not passed. Watch every run on the merge commit to a conclusion, up to 2× the workflow's usual duration (read from its last 5 runs); still running → `pending`. On failure, read `gh run view <run-id> --repo <owner/repo> --log-failed` and quote the decisive tail.
 
 ### 6. Inspect staging-event handoff
 
@@ -120,3 +122,4 @@ Report deploy-job conclusion from the confirmed run; test-only success leaves de
 - [ ] Every merged row has a verified mergeCommit and separate run/handoff evidence, with missing configuration, reporter, owner inclusion or record stated; this skill made no QA assignment
 - [ ] No `--admin`, push, commit, re-run, cancel, or dispatch appears in the commands this run executed
 - [ ] No PR in this run targets a branch other than the confirmed target
+- [ ] Each merged `promotion` repo's PR body has a passing `Full check:` line for its merged head

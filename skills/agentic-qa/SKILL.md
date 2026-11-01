@@ -3,7 +3,7 @@ name: agentic-qa
 disable-model-invocation: true
 description: "Agent-run functional QA of a PR or branch that reaches a screen, incl. a PR /factory puts in QA: runs acceptance criteria in the live app, records the result. Never edits code. Pixels: /pixel-audit."
 metadata:
-  version: "0.9.3"
+  version: "0.10.0"
 ---
 
 # agentic-qa
@@ -23,7 +23,7 @@ Drive the change through the running app; judge visible behavior, logs and reque
 
 - **The tester never edits code.** No source, test, fixture, or config edits, even for a one-character fix. Every failure becomes a finding with reproduction steps, routed to `/tdd-loop`.
 - **Reach is decided by the code, not the label.** The change needs this skill when any changed file is reachable from a route, page, component, template, translation, or style, or is an API whose response a screen renders.
-- **A criterion a user sees must be reachable.** When no changed file reaches a screen but an acceptance criterion describes something a user sees or does, the feature is built and not connected. Record a finding with class `not-wired` naming that criterion and the missing entry point; the result is `partial`, never `no-ui-reach`.
+- **A criterion a user sees must be reachable.** When no changed file reaches a screen but an acceptance criterion describes something a user sees or does, record a finding with class `not-wired` naming that criterion and the missing entry point; the result is `partial`, never `no-ui-reach`.
 - **A blank cell is not done.** Every grid cell is `pass`, `fail`, `gap — <missing input>`, or `not reachable — <reason>`. A reason names why the state cannot occur, not why it was inconvenient.
 - **Browser errors fail the cell.** Capture console, page errors, and XHR/fetch responses for every flow. A new `error`-level message, unhandled rejection, or 4xx/5xx response fails the cell, unless the cell expects it (a 403 for a forbidden role) or the same signal appears on the base commit run.
 - **Success is a visible change.** Capture the relevant state before acting and assert the expected change after. A success message with no changed state is a fail. For a write, the change also survives a reload.
@@ -46,7 +46,7 @@ Trace each changed file to a screen per the reference. Quote one path per reacha
 
 ### 2. Build the grid
 
-Use `<change>` as the PR number or sanitized branch name before a PR exists. Rows: each acceptance criterion and each AC map path it owes, each escape class for the area, each surface's default states, and one row per neighbouring flow — other screens that call the changed code. Columns: relevant states, roles, and desktop/phone widths from target policy; record coverage reasons per the reference. Write the grid to `<artifacts-root>/specs/qa/<change>-<short-sha>/grid.md` before driving anything; template in the reference.
+Use `<change>` as the PR number or sanitized branch name before a PR exists. Rows: each acceptance criterion and each AC map path it owes, each escape class for the area, each surface's default states, and one row per neighbouring flow — other screens that call the changed code. Columns: relevant states, roles, and desktop/phone widths from target policy; record coverage reasons per the reference. Write the grid to `<artifacts-root>/specs/qa/<change>-<short-sha>/grid.md` before driving anything (template in the reference); register every evidence file per [QA records](references/qa-records.md#local-evidence-files).
 
 ### 3. Baseline
 
@@ -56,7 +56,7 @@ Where a second checkout of the base commit can run, drive the same routes there 
 
 ### 4. Drive each cell
 
-Use the tool, mode and fallback policy resolved in **Runtime and browser preparation**. Per cell: clear diagnostics, capture before state, act, assert after state, read console/page errors and failed XHR/fetch responses, retain assertions and logs. Use one stable named session and batched flow with short explicit timeouts. Force states with the reference recipes. Staging mutations require approval.
+Use the tool, mode and fallback policy resolved in **Runtime and browser preparation**. Per cell: clear diagnostics, capture before state, act, assert after state, read console/page errors and failed XHR/fetch responses, retain assertions and logs. Use one stable named session and batched flow with short explicit timeouts. Force states with the reference recipes.
 
 ### 5. Judge and write findings
 

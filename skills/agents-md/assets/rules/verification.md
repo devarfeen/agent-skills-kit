@@ -1,4 +1,4 @@
-<!-- agents-md marker · v61 · re-run /agents-md to regenerate -->
+<!-- agents-md marker · v62 · re-run /agents-md to regenerate -->
 # Verification
 
 Zero attribution: never add co-author, AI, or tool attribution to any output.
@@ -21,6 +21,10 @@ Pick the lowest check layer that can disprove the claim — unit or feature test
 
 A change whose code can reach a screen — a component, view, template, page, style, translation, or store, or an API, model, policy, job, mail, or migration a screen shows; unsure → it reaches — passes `/agentic-qa` on its head revision before a human reviews or tests it. A worker's report that something works is a claim, not evidence. When human QA finds a bug in work an agent called done, run `/qa-escape` on that issue before fixing it.
 
-Verify each fix with its focused test. Run the required full check once per batch, after integration and the last edit, before shipping; later edits invalidate affected results, so rerun them. Final verification covers the combined changes in the integration checkout. Report the checkout, tested revision, layers run and not run, command, and result.
+Verify each fix with its focused test. Run the required final gate once per batch, after integration and the last edit, before shipping; later edits invalidate affected results, so rerun them. Final verification covers the combined changes in the integration checkout. Report the checkout, tested revision, layers run and not run, command, and result.
+
+Full-check point: ship
+
+A project may override this line in its own rules. The setting picks when the canonical full check runs. `ship` (default): it is the final gate before shipping. `promotion`: the final gate before review, QA and shipping into the delivery branch is the area check — static tools on changed files, tests related to the change, and the cheap whole-app checks a project lists beside its setting. Records say `Full check: deferred to promotion`, never passed. The promotion step runs the full check once per repository on the head it promotes, one repository at a time under the project's heavy-run rule; a failure stops that repository only. It moves the timing and waives no other gate.
 
 If a check fails, fix the cause. Never delete, skip, or loosen a test or assertion to pass; if the check is wrong, say why and ask.
