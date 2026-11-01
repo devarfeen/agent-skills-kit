@@ -40,6 +40,12 @@ Checks:
 
 Each line is `<command> — <passed/failed counts or exit status> — <duration> — <full tested SHA>`. A resumed aggregate lists the failed attempt and the resumed stages as separate lines; a reused result names the SHA it ran on. Use real values only; an unknown count or duration says `unknown`. The block reports checks; it never replaces **Check records** proof.
 
+Under **Full-check point** `promotion` (shared ship policy), the lines are the area check's commands, followed by this exact line:
+
+```md
+- Full check: deferred to promotion
+```
+
 ## Carrying QA forward
 
 Allowed only when the **No-behavior proof** below holds for the diff from the last QA-tested commit to the new head. Test files outside any rendered path may also change, because they cannot reach a screen; the changed tests must then run and pass on the new head, and the record lists them under Changed files as `test-only` with that run in Proof. The prior QA result must be `verified` or `no-ui-reach` with findings 0. Anything else, or any doubt about reach, runs full QA. Post on the issue, and on GitHub also on the PR:
@@ -62,7 +68,7 @@ On GitHub append `<!-- qa-carried-forward: sha=<new-head> from=<qa-sha> -->`. Re
 
 ## No-behavior proof
 
-Used by **Carrying QA forward**, **Fix-only close** in `review-and-delivery.md`, and the comment-only check cadence in `run.md`. It holds only when every changed file passes one of these, each quoted with its command output:
+Used by **Carrying QA forward**, **Fix-only close** in `review-loop.md`, and the comment-only check cadence in `build.md`. It holds only when every changed file passes one of these, each quoted with its command output:
 
 - A doc file outside any rendered, routed or built path.
 - PHP code: identical `php -w` output before and after, and no changed line holds an annotation or attribute (`@` inside a docblock, or `#[`).
@@ -72,11 +78,11 @@ A changed test file is behavior for checks and review, so it fails this proof. A
 
 ## Finding identities
 
-Factory review uses the stable finding ledger in [review-and-delivery.md](review-and-delivery.md#finding-ledger). Carry IDs in readable finding/reply text and preserve them in fix-check citations. GitHub `code-review` and `code-review-reply` marker syntax stays unchanged: `findings`, `fixed` and `declined` remain nonnegative aggregate counts, not ID lists. Suggestions stay outside blocking finding counts; material unresolved claims do not. Linear retains its existing headings and fields.
+Factory review uses the stable finding ledger in [review-loop.md](review-loop.md#finding-ledger). Carry IDs in readable finding/reply text and preserve them in fix-check citations. GitHub `code-review` and `code-review-reply` marker syntax stays unchanged: `findings`, `fixed` and `declined` remain nonnegative aggregate counts, not ID lists. Suggestions stay outside blocking finding counts; material unresolved claims do not. Linear retains its existing headings and fields.
 
 ## Code review fix check
 
-Written by the parent for **Fix-only close** in `review-and-delivery.md`. It closes the review loop for head; it does not replace review of new behavior.
+Written by the parent for **Fix-only close** in `review-loop.md`. It closes the review loop for head; it does not replace review of new behavior.
 
 ```md
 ## Code review fix check

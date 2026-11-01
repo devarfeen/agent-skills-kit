@@ -127,6 +127,13 @@ When a `/tdd-loop` AC map exists for the shipped content (an `ac-map.md` the cal
 
 Before drafting or shipping, inspect existing check proof and run only missing or invalidated checks. Do not rerun a valid canonical full check merely because the workflow entered shipping, a result came from a worker, or a commit changed only its SHA. One final canonical full check must cover the combined integrated batch after its last edit in the integration checkout, preserving every mandatory subcheck/assertion/coverage threshold. Focused red/green and surrounding checks remain required during fixes.
 
+**Full-check point.** Read the project's declared `Full-check point` from its rules; none declared → `ship`.
+
+- `ship` — the final canonical full check above gates shipping.
+- `promotion` — shipping into the delivery branch (the integration branch a later promotion moves on) requires a passing **area check** on the same final integrated content instead: static tools on the changed files, the tests related to the change, and the cheap whole-app checks the project names. The area check takes the final aggregate gate's place throughout this section, under the same proof and invalidation rules. Record its command lines and `Full check: deferred to promotion` under `Verification`; never record the full check as passed. The canonical full check runs once per repository at promotion, on the delivery-branch head being promoted. Shipping into any other base keeps `ship`.
+
+The setting moves the full check's timing and waives nothing: QA, review, risk, acceptance criteria, PR CI and the coverage/thresholds inside the full check still bind.
+
 A reusable proof contains all of:
 
 - Exact command/arguments and required subcommands, assertions and coverage scope; execution directory/user and caller/target environment.
@@ -136,7 +143,7 @@ A reusable proof contains all of:
 
 Inspect the actual producer output and independently verify these identities at reuse; cite the proof/log and tested revision in the QA handoff. A supplied claim, failed/partial check, synthetic substitute, absent exit status or unknown identity cannot clear a gate. Evidence provenance may be `supplied` or `mixed`; it need not have run in the ship session when its verified identity is unchanged.
 
-Later content, check-command/assertion/coverage, relevant runtime/configuration, dependency, asset or database changes invalidate affected results. Establish impact from the diff and check dependencies, rerun the affected checks and any mandatory final aggregate gate; unknown impact reruns the full gate. Preserve unaffected proof with its source revision and explicit identity checks. Hooks/staging changes are included: if they alter tested content, recheck before push. A fresh SHA alone does not require duplicate execution of unchanged local tests; SHA-bound QA/review/risk and GitHub CI still require their current-head evidence under their own contracts.
+Later content, check-command/assertion/coverage, relevant runtime/configuration, dependency, asset or database changes invalidate affected results. Establish impact from the diff and check dependencies, rerun the affected checks and any mandatory final aggregate gate; unknown impact reruns this ship point's mandatory gate (the full check under **Full-check point** `ship`, the area check under `promotion`). Preserve unaffected proof with its source revision and explicit identity checks. Hooks/staging changes are included: if they alter tested content, recheck before push. A fresh SHA alone does not require duplicate execution of unchanged local tests; SHA-bound QA/review/risk and GitHub CI still require their current-head evidence under their own contracts.
 
 An unavailable required gate remains blocked. User deferral of a criterion or an optional-check skip cannot waive it. A final full check from a unit checkout does not prove a different integration checkout or combined batch. If repository policy mandates a rerun, follow it and report why; proof reuse never overrides that policy.
 

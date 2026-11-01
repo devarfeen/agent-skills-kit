@@ -2,7 +2,7 @@
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
-Read when a unit is placed at `QA_RETURNED`. **Build**, **Round log** and **Lessons** are in [`run.md`](run.md).
+Read when a unit is placed at `QA_RETURNED`. **Build** is in [`build.md`](build.md); **Round log** and **Lessons** are in [`run.md`](run.md).
 
 A person found a problem in work an agent called done. The run takes it through `qa-escape` and back into the build; it never fixes a returned issue without that record.
 

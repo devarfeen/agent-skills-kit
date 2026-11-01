@@ -2,7 +2,7 @@
 name: tdd-loop
 description: "Kit TDD/red-green loop for changes, safe refactors and untested legacy code. Urgent production bug reports get local test-first fixes even if tests are requested later. Bare builds: /implement."
 metadata:
-  version: "0.3.2"
+  version: "0.4.0"
 ---
 
 # TDD loop
@@ -63,7 +63,9 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
 Repeat per behavior, smallest slice first. When one session works a batch —
 several tickets or bug fixes — each slice runs only its focused and widened
 commands; the project's full check runs once, after the last slice — a full
-run per slice adds no signal.
+run per slice adds no signal. Under a project's `Full-check point: promotion`,
+its area check (static tools on changed files, related tests, named cheap
+whole-app checks) runs there instead; the full check runs at promotion.
 
 1. **Red.** Write ONE failing test asserting the new behavior. Run the focused
    test and read the failure.
@@ -105,7 +107,7 @@ run per slice adds no signal.
   ```markdown
   Behavior: <the one-sentence behavior>
   Red → Green: <test name(s)> — seen failing (<how>), now passing
-  Scope run: <focused command> · <widened command> · <full check | deferred to batch end | widest feasible — why>[; pre-existing failures: <names, baseline command and result>]
+  Scope run: <focused command> · <widened command> · <full check | area check (commands) — full check deferred to promotion | deferred to batch end | widest feasible — why>[; pre-existing failures: <names, baseline command and result>]
   AC map: <AC-n path → test | agentic-qa (surface) | deferred — why>; span check: <finding | none found>
   Edges: <covered: …> · <deferred: … — why>
   Docs: <path updated | nothing documents this behavior>
@@ -135,7 +137,8 @@ suggesting `/commit-push-close`.
 - [ ] Focused test passes and the widened scope passes (pre-existing failures
       verified as such and noted on the Scope run line); both commands named.
 - [ ] Before suggesting ship: the project's full check (whole suite or the CI
-      command) ran green once for the batch, per The loop —
+      command) ran green once for the batch, per The loop (under
+      `promotion`, the area check, with the full check deferred) —
       apart from failures verified as pre-existing and noted; or the summary
       states why the widened scope is the widest feasible run.
 - [ ] No assertion weakened, no failing test deleted to reach green (or the

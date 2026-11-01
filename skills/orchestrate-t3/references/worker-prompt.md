@@ -85,7 +85,7 @@ Keep BASE and HEAD state separate. During factory, the parent admits browser QA
 only after pinned BASE/HEAD runtime readiness and a browser lease. Await that
 release; report unready services to the runtime owner rather than starting a
 browser or fallback. Follow workspace browser tool/mode policy and fallback
-rules. Within factory, run focused checks per fix; its parent owns the complete canonical check after final integration, once per batch.
+rules. Within factory, run focused checks per fix; its parent owns the final integrated gate after final integration, once per batch: the complete canonical check, or the area check when the project's Full-check point is `promotion`.
 Standalone work retains the project's required worker checks.
 
 Do not work on the full spec. Do not redo spec orchestration. Do only the
