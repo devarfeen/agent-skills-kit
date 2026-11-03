@@ -11,6 +11,17 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- `/plain-language` 0.5.1 fixes the length target from 0.5.0. Eval case P01
+  ran three times, and every run kept every fact but came out near 230
+  words, past the 133-word cap. The cap could only be met by dropping a
+  fact, and the old #36 example did exactly that. The case now allows up to
+  200 words with every fact kept. The agent also skips an explaining clause
+  that repeats its own sentence, and writes "4 of 4 fixed" only when each
+  fix matches one finding. The #36 example now keeps every fact. A re-run
+  showed agents guess at a length ratio without counting, so length now
+  comes from limits an agent can check while writing: at most 15 words per
+  list item and two sentences per **Next**. Pattern #32 now also flags an
+  -ing phrase such as "following it" that hides who acts.
 - `/plain-language` 0.5.0 keeps phase updates short. The 0.4.0 rules made
   updates about twice as long as before, because every finding got its own
   bullet and every term got its own sentence. Now each finding starts with a
