@@ -403,7 +403,7 @@ for f in skills/*/SKILL.md; do
     [[ -z "$marker" ]] && continue
     grep -qxF "$f"$'\t'"$marker" <<< "$CANON_EXEMPT" && continue
     if grep -qF "$marker" "$f" && ! grep -qF "$canon" "$f"; then
-      fail "$f mentions '$marker' without the canonical one-liner — paste it byte-exact from skills/writing-kit-skills/SKILL.md"
+      fail "$f mentions '$marker' without the canonical one-liner — paste it byte-exact from skills/writing-kit-skills/SKILL.md, or, if the skill only mentions the protocol, add a named pair to CANON_EXEMPT"
     fi
   done <<< "$CANON"
 done
