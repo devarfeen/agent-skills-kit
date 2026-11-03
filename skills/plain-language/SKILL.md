@@ -2,7 +2,7 @@
 name: plain-language
 description: "Chat and prose cleanup at session start: fifth-grade English with bold glossary terms. Clean supplied prose; preserve mandated text. Not code, comments, ADRs, or specs."
 metadata:
-  version: "0.3.0"
+  version: "0.4.0"
 ---
 
 # plain-language
@@ -33,6 +33,8 @@ Apply to all in-scope prose. Written artifacts keep their required templates and
 - Simplify the explanation, not the subject: keep technical depth, facts, conditions, uncertainty, failure behavior, and exact identifiers. Address an adult reader; do not adopt a child persona or replace precise mechanisms with loose analogies. Use the tense the facts require.
 - State the plain effect before implementation details. Explain unfamiliar technical terms once per standalone output; use the glossary rules below for domain terms. Keep code, DB, API, route, screen, and file names verbatim.
 - No unexplained shorthand and no arrow-only flows. Brevity skills are user-invoked only.
+- Newcomer test, before sending: for each noun phrase, ask whether a reader who has not seen this session knows what it names. Terms you used all session feel familiar to you, not to them. If not, say what it is or does, or use the plain description instead.
+- Phase and status updates get the same rules: their mandated labels stay verbatim, but each finding, fix, or next step under them is its own sentence or bullet, and step ids, passes, and file roles are explained on first use in each update.
 - Extra teaching depth ("explain like I'm new"), on request only: [`references/learner-depth.md`](references/learner-depth.md). Simple English and first-use explanations are already the default.
 
 ## Glossary integration
