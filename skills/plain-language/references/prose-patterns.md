@@ -56,3 +56,11 @@ Exact glossary terms and protected text take precedence over the substitutions b
 33. **Over-compression.** Dropped articles, verbless fragments, symbol-speak, and abbreviations that make the reader decode instead of read. "Parser rejects bad date → exit 2, no write" becomes "The parser rejects a bad date, exits with code 2, and writes nothing." Write whole sentences with their articles and verbs, and spell out arrows and abbreviations.
 34. **Noun stacks.** A modifier with two or more parts, or several nouns, packed in front of a noun hides a clause: "secret-persisting helpers", "root CI-wait instructions", "this runtime's PR-watch rules". Unpack it: "helpers that save secrets to disk", "the CI waiting steps in the root `AGENTS.md`". Code names and glossary terms stay exact.
 35. **Internal labels.** Step ids, pass numbers, phase names, and file roles from your own working context ("T3", "second pass", "owning files", "production admission") mean nothing to a newcomer. Explain each on first use in each standalone output ("step T3, which must resume after a crash"), or replace it with what it refers to. Vague pointers to that context ("the remaining rules", "the full set", "this runtime") get the same fix: name the thing.
+
+### Status updates
+
+36. **Compact phase update.** Count first, then the items, each unpacked but short. The count-and-theme lead may be a fragment. Keep every fact and limit; cut the narration around them.
+    - Dense: "I found conflicting guidance: bootstrap and task-runtime instructions can persist secrets, browser examples use credential files, and the orchestration guide says to avoid state files while T3 requires durable checkpoints."
+    - Too long: one bullet and full sentence per conflict, each with a separate definition.
+    - Target: "4 conflicts, about secrets, saved progress, and CI: agents can save secrets to disk; browser examples read logins from a file; one guide bans state files that step T3 needs for crash recovery; two files disagree on waiting for CI."
+    - Fixes: "4 of 4 fixed. Only the owner can save secrets, login files are gone from examples, and the saving-progress and pull-request rules agree."

@@ -11,6 +11,14 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- `/plain-language` 0.5.0 keeps phase updates short. The 0.4.0 rules made
+  updates about twice as long as before, because every finding got its own
+  bullet and every term got its own sentence. Now each finding starts with a
+  count, such as "4 conflicts" or "4 of 4 fixed", and the items follow in one
+  list after a colon. Terms like step ids get a short explanation inside the
+  sentence instead of a new one. An update should be no longer than a dense
+  draft of the same facts. The new pattern #36 shows the target shape, and
+  eval case P01 now checks the length.
 - `/plain-language` 0.4.0 catches text that is grammatical but too dense for
   a newcomer. Before, a status update with no AI habits could pass even when
   it was full of internal labels and packed phrases. Now the agent asks, for
