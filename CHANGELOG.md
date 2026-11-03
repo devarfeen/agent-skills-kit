@@ -7,6 +7,22 @@ their new versions, so a workspace on an older copy can see what an update
 brings. Generated `AGENTS.md` files carry the `agents-md` marker version;
 re-run `/agents-md` after a marker bump.
 
+## 2026-11-03
+
+### Changed
+
+- `/plain-language` 0.4.0 catches text that is grammatical but too dense for
+  a newcomer. Before, a status update with no AI habits could pass even when
+  it was full of internal labels and packed phrases. Now the agent asks, for
+  each noun phrase, whether someone who has not seen the session would know
+  what it names. Two new patterns cover **noun stacks** ("secret-persisting
+  helpers" becomes "helpers that save secrets to disk") and internal labels
+  such as step ids ("T3") or "second pass", which must be explained the first
+  time they appear. The rule against things doing what they cannot do now
+  also covers links, files, and rules. Phase updates keep their
+  `Stage / Found / Next / Needs user` labels, but each finding goes in its own
+  sentence or bullet. A new eval case, P01, uses a real dense update.
+
 ## 2026-11-01
 
 ### Changed
