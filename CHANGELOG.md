@@ -20,7 +20,8 @@ re-run `/agents-md` after a marker bump.
   fix matches one finding. The #36 example now keeps every fact. A re-run
   showed agents guess at a length ratio without counting, so length now
   comes from limits an agent can check while writing: at most 15 words per
-  list item and two sentences per **Next**.
+  list item and two sentences per **Next**. Pattern #32 now also flags an
+  -ing phrase such as "following it" that hides who acts.
 - `/plain-language` 0.5.0 keeps phase updates short. The 0.4.0 rules made
   updates about twice as long as before, because every finding got its own
   bullet and every term got its own sentence. Now each finding starts with a
