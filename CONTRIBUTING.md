@@ -37,6 +37,9 @@ for agents working *in* this repo live in [AGENTS.md](AGENTS.md).
 | `skills/*/assets/*` | model (on demand) | Output templates the skill fills in. |
 | `skills/*/evals/evals.json` | maintainer | Trigger-eval set. Ships with installs but is never loaded into model context. |
 | `tools/trigger-evals/` | maintainer | The eval harness (catalog builder, judge prompt, scorer). |
+| `skills/*/evals/behavior-cases.md`, `fixtures/`, `reference/`, `behavior-checks.json` | maintainer | Behavior evals: what a skill should do with a given input, a sample answer that passes, and the checks a script can score. |
+| `tools/behavior-evals/` | maintainer | Scores the mechanical checks of a behavior eval. |
+| `tools/wait-checks.sh` | maintainer | Waits for a PR's CI checks to start, then watches them. |
 | `AGENTS.md` (this repo's) | model + human | Conventions for working in this repo. |
 | `README.md` | human | Front door: what the kit is, install, skill index. |
 | `GUIDE.md` | human | Day-to-day workflow: gates, recovery loops, setup, operational tables. |
@@ -312,6 +315,37 @@ missing or the sibling's description is weaker than yours. Fix the
 description, re-run, and keep the query — never delete a query to make the
 eval pass.
 
+## Behavior evals
+
+Trigger evals test whether the right skill loads. Behavior evals test what the
+skill does once it has loaded: you give an evaluator agent an input and grade
+what comes back. They live in `skills/<name>/evals/behavior-cases.md`.
+
+Each case has up to three parts:
+
+- **A fixture** in `fixtures/<case>.md`: the input. Point the evaluator at this
+  file by path. Keep it separate so the evaluator never sees the pass checks.
+- **Acceptance checks** in `behavior-cases.md`: what a passing answer does.
+- **Mechanical checks** in `behavior-checks.json`: the checks a script can
+  score, such as a word limit or the most words per list item.
+
+Score an answer from the repo root:
+
+```sh
+python3 tools/behavior-evals/score.py skills/plain-language/evals/behavior-checks.json P01 answer.md
+```
+
+Then read the answer against the remaining acceptance checks.
+
+**If a case has a number in it, write a sample answer first.** Put an answer
+that passes every check, including the ones only a person can judge, in
+`reference/<case>.md`. `validate.sh` check 20 scores it on every run. This
+catches a limit no real answer can meet before you spend evaluator runs on it.
+Don't make the limit fit by dropping a fact from the sample answer.
+
+Record each run, with the scores and the full outputs, in
+[`evals/current/`](evals/current/README.md).
+
 ## Maintenance
 
 ### Sync map — if you edit X, also update Y
@@ -361,6 +395,14 @@ eval pass.
 - Update a vendored idea from its original source repo; do not fork-and-drift
   silently (see BEST-PRACTICES "skills are ad-hoc tools" — the local/third-party
   distinction only matters at maintenance time).
+
+### Waiting for CI
+
+Right after you push, `gh pr checks --watch` can exit at once with "no checks
+reported" because GitHub hasn't started the run yet. Use
+`tools/wait-checks.sh <pr-number>` instead. It waits up to two minutes for the
+checks to appear, then watches them until they finish. It exits non-zero if a
+check fails.
 
 ### Releasing
 

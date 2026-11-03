@@ -52,6 +52,9 @@
 #  19. Description budgets: every description at most 200 characters, and a
 #      3000-character total for model-invocable skills (1779 at introduction)
 #      — every model-invocable description loads into every session's catalog.
+#  20. Behavior-eval references: every case in skills/*/evals/behavior-checks.json
+#      has a reference output that passes its own mechanical checks, so a
+#      threshold no answer can meet fails here, before any evaluator runs.
 
 set -u
 
@@ -400,7 +403,7 @@ for f in skills/*/SKILL.md; do
     [[ -z "$marker" ]] && continue
     grep -qxF "$f"$'\t'"$marker" <<< "$CANON_EXEMPT" && continue
     if grep -qF "$marker" "$f" && ! grep -qF "$canon" "$f"; then
-      fail "$f mentions '$marker' without the canonical one-liner — paste it byte-exact from skills/writing-kit-skills/SKILL.md"
+      fail "$f mentions '$marker' without the canonical one-liner — paste it byte-exact from skills/writing-kit-skills/SKILL.md, or, if the skill only mentions the protocol, add a named pair to CANON_EXEMPT"
     fi
   done <<< "$CANON"
 done
@@ -600,6 +603,15 @@ if (( desc_total > DESC_BUDGET )); then
   fail "model-invocable descriptions total $desc_total characters (> $DESC_BUDGET) — every one loads into each session's catalog; tighten or set disable-model-invocation"
 else
   note "model-invocable descriptions total $desc_total characters (<= $DESC_BUDGET)"
+fi
+
+echo "== 20. Behavior-eval references pass their mechanical checks =="
+if beh_out="$(PYTHONDONTWRITEBYTECODE=1 python3 tools/behavior-evals/score.py --all 2>&1)"; then
+  note "every behavior-eval reference passes its mechanical checks"
+else
+  while IFS= read -r line; do
+    [[ -n "$line" && "$line" != ok:* ]] && fail "behavior eval — $line"
+  done <<< "$beh_out"
 fi
 
 echo
