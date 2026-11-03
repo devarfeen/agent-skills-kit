@@ -2,7 +2,7 @@
 name: plain-language
 description: "Chat and prose cleanup at session start: fifth-grade English with bold glossary terms. Clean supplied prose; preserve mandated text. Not code, comments, ADRs, or specs."
 metadata:
-  version: "0.5.0"
+  version: "0.5.1"
 ---
 
 # plain-language
@@ -34,7 +34,7 @@ Apply to all in-scope prose. Written artifacts keep their required templates and
 - State the plain effect before implementation details. Explain unfamiliar technical terms once per standalone output; use the glossary rules below for domain terms. Keep code, DB, API, route, screen, and file names verbatim.
 - No unexplained shorthand and no arrow-only flows. Brevity skills are user-invoked only.
 - Newcomer test, before sending: for each noun phrase, ask whether a reader who has not seen this session knows what it names. Terms you used all session feel familiar to you, not to them. If not, say what it is or does, or use the plain description instead.
-- Phase and status updates stay compact: mandated labels stay verbatim, and the update is no longer than a dense draft of the same facts. A finding leads with its count and theme, then lists items after a colon, separated by semicolons; fixes lead with the count fixed ("4 of 4 fixed."). Explain a step id, pass, or file role in a short clause, not a separate sentence. Shape: [`references/prose-patterns.md`](references/prose-patterns.md) #36.
+- Phase and status updates stay compact: mandated labels stay verbatim, and the update is no longer than a dense draft of the same facts. A finding leads with its count and theme, then lists items after a colon, separated by semicolons; fixes lead with their count ("4 of 4 fixed." only when each fix maps to one finding; otherwise "4 changes so far:"). Explain a step id, pass, or file role in a short clause, not a separate sentence, and skip a clause that repeats what the sentence already says. Shape: [`references/prose-patterns.md`](references/prose-patterns.md) #36.
 - Extra teaching depth ("explain like I'm new"), on request only: [`references/learner-depth.md`](references/learner-depth.md). Simple English and first-use explanations are already the default.
 
 ## Glossary integration

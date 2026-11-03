@@ -59,8 +59,9 @@ Exact glossary terms and protected text take precedence over the substitutions b
 
 ### Status updates
 
-36. **Compact phase update.** Count first, then the items, each unpacked but short. The count-and-theme lead may be a fragment. Keep every fact and limit; cut the narration around them.
+36. **Compact phase update.** Count first, then the items, each unpacked but short. The count-and-theme lead may be a fragment. Keep every fact and limit; cut the narration around them. Expect at most about 1.5 times the dense draft's length.
     - Dense: "I found conflicting guidance: bootstrap and task-runtime instructions can persist secrets, browser examples use credential files, and the orchestration guide says to avoid state files while T3 requires durable checkpoints."
     - Too long: one bullet and full sentence per conflict, each with a separate definition.
-    - Target: "4 conflicts, about secrets, saved progress, and CI: agents can save secrets to disk; browser examples read logins from a file; one guide bans state files that step T3 needs for crash recovery; two files disagree on waiting for CI."
-    - Fixes: "4 of 4 fixed. Only the owner can save secrets, login files are gone from examples, and the saving-progress and pull-request rules agree."
+    - Target: "4 conflicts, about secrets, saved progress, and CI: agents can save secrets to disk; browser examples read logins from a file; the orchestration guide bans state files, but step T3 needs saved checkpoints to resume after a crash; the root CI waiting steps disagree with this runtime's rules for watching pull requests."
+    - Fixes that do not map one to one: "4 changes so far: local authorization and secret handling are now separate rules; only the owner runs helpers that save secrets; examples no longer read logins from a file; the checkpoint and pull-request watching rules agree."
+    - Repeating clause: "step T3, which must resume after a crash, needs checkpoints that survive a crash" says the crash twice. Write "step T3 needs saved checkpoints to resume after a crash".

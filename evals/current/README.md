@@ -11,6 +11,7 @@ tracked.
 
 ## Evidence
 
+- [3 November plain-language P01: three runs on 0.5.0, 0/3 pass on length](plain-language-p01-results.md)
 - [28 October workspace rule sync: seven modeled cases and validation](workspace-sync-results.md)
 - [All-skill audit, decisions, remaining conflict and body sizes](skills-audit.md)
 - [Local review behavior: 12 cases, two repetitions](behavioral-results.md)
