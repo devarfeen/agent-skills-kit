@@ -17,7 +17,10 @@ re-run `/agents-md` after a marker bump.
   fact, and the old #36 example did exactly that. The case now allows up to
   200 words with every fact kept. The agent also skips an explaining clause
   that repeats its own sentence, and writes "4 of 4 fixed" only when each
-  fix matches one finding. The #36 example now keeps every fact.
+  fix matches one finding. The #36 example now keeps every fact. A re-run
+  showed agents guess at a length ratio without counting, so length now
+  comes from limits an agent can check while writing: at most 15 words per
+  list item and two sentences per **Next**.
 - `/plain-language` 0.5.0 keeps phase updates short. The 0.4.0 rules made
   updates about twice as long as before, because every finding got its own
   bullet and every term got its own sentence. Now each finding starts with a

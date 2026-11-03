@@ -59,9 +59,9 @@ Exact glossary terms and protected text take precedence over the substitutions b
 
 ### Status updates
 
-36. **Compact phase update.** Count first, then the items, each unpacked but short. The count-and-theme lead may be a fragment. Keep every fact and limit; cut the narration around them. Expect at most about 1.5 times the dense draft's length.
+36. **Compact phase update.** Count first, then the items, each unpacked but short. The count-and-theme lead may be a fragment. Keep every fact and limit; cut the narration around them. Hold length with the per-item limits in SKILL.md, not a ratio: count each item's words, because estimates run long.
     - Dense: "I found conflicting guidance: bootstrap and task-runtime instructions can persist secrets, browser examples use credential files, and the orchestration guide says to avoid state files while T3 requires durable checkpoints."
     - Too long: one bullet and full sentence per conflict, each with a separate definition.
-    - Target: "4 conflicts, about secrets, saved progress, and CI: agents can save secrets to disk; browser examples read logins from a file; the orchestration guide bans state files, but step T3 needs saved checkpoints to resume after a crash; the root CI waiting steps disagree with this runtime's rules for watching pull requests."
+    - Target: "4 conflicts, about secrets, saved progress, and CI: the bootstrap and task-runtime instructions let agents save secrets; browser examples read logins from a file; the orchestration guide bans state files that step T3 needs to resume after a crash; the root CI waiting steps disagree with this runtime's rules for watching pull requests."
     - Fixes that do not map one to one: "4 changes so far: local authorization and secret handling are now separate rules; only the owner runs helpers that save secrets; examples no longer read logins from a file; the checkpoint and pull-request watching rules agree."
     - Repeating clause: "step T3, which must resume after a crash, needs checkpoints that survive a crash" says the crash twice. Write "step T3 needs saved checkpoints to resume after a crash".
