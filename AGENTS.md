@@ -15,7 +15,9 @@ so precision beats volume.
 1. **Run `bash tools/validate.sh` before every commit.** It enforces frontmatter,
    manifest coverage, ship-policy parity, link integrity, and zero-attribution.
    CI runs it on every PR. `tools/hooks/pre-commit` runs it automatically once
-   `git config core.hooksPath tools/hooks` is set.
+   `git config core.hooksPath tools/hooks` is set. Changes reach `main` only
+   through a PR whose `validate` check is green; a GitHub ruleset enforces
+   this. Wait for checks with `tools/wait-checks.sh <pr>`.
 2. **Respect the sync map** in [CONTRIBUTING.md](CONTRIBUTING.md): a new/renamed
    skill needs a `skills-manifest.md` row, a README table row, and its path in
    one `.claude-plugin/marketplace.json` plugin group; the two
@@ -65,3 +67,9 @@ so precision beats volume.
     Commands written for the owner stay zsh-safe. Shell guidance inside
     skills still resolves each workspace's target shell; never hard-code zsh
     or bash there.
+11. **Run the evals a change touches before merge.** A changed skill
+    description re-runs the trigger evals ([CONTRIBUTING.md](CONTRIBUTING.md#trigger-evals)).
+    A behavior change to a skill with `evals/behavior-cases.md` runs the
+    cases that cover it and records scores and outputs in `evals/current/`
+    ([CONTRIBUTING.md](CONTRIBUTING.md#behavior-evals)). The PR body lists
+    each eval run with its result, and names any eval skipped and why.
