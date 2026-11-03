@@ -11,6 +11,15 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- `/commit-push-pr` 0.13.0 and `/commit-push-close` 0.10.0 can now be
+  started by the agent. Before, you had to type the slash command yourself.
+  Now the agent can load them when your request matches, such as "open a PR"
+  or "ship it". Each skill still shows you its drafts and waits for your OK
+  before it commits, pushes, opens a PR, or closes an issue.
+- `/factory` 6.3.1 notes that `/commit-push-pr` still starts through its
+  worker-turn procedure, so its run authorization applies.
+- `/feature-prompt` 0.3.4 says in its short description that turning an ADR
+  into a prompt is still `/to-spec`.
 - Maintainers: behavior evals now have a scorer. Run
   `tools/behavior-evals/score.py` to check an eval answer's word count,
   list-item length, sentence count and kept labels. Each case's input now

@@ -1,16 +1,16 @@
 {
  "_comment": "Hashes of the actual complete scored sweep; validate.sh checks descriptions, queries, catalog and invocation policies.",
- "recorded_at_commit": "9f654b40ce283998e8c1d5b6e82d5a3995847307 + uncommitted changes",
- "catalog_sha256": "c2a4a7e4a314a6ea9cf0819f4f87c297268ba80e7fb8b8139e18ec8597c08485",
+ "recorded_at_commit": "ef048b5c8dc13dc35683148fdf2389e83f9fbab4 + uncommitted changes",
+ "catalog_sha256": "1208832406a8b4f8185806e7ee63cbd55676802bccec067f4154172c6dec9906",
  "manifest_sha256": "22ebf21d1c247cbe690a12335db6fb0ec34d51695ad86b36a5724fd720951a76",
  "judge_sha256": [
-  "1830bd80c7ed0fd7defcd0f1dda0a238a9d55635f834b0086be2d41e16a0295d",
-  "2a83055dfa8eb31d523a5cab83b22eb3382fc364248f1aa367c020bf584ae8cd",
-  "09fd8a8e70f035c1e2fcb95489d85092c4ee433edd3edd27e48530e7ce4a44e5"
+  "8331e65a1dc4a089b94dd143797e7c70c8205cf7978eb3dfa2d20754a9231e3e",
+  "4711d4725c6a48d9b5f3edcbdf486ab6d9f7785e1e0a4dc74c4c6a0653d21883",
+  "b2b5638df261c8ea07d4010645dcd97b9dd83126f3aab92a4880bca32b09a96c"
  ],
  "queries_sha256": "4e3debbaec6f14c03281682611fa93dabfc0826d69ea4cca54a689b902a36c2b",
- "catalog_content_sha256": "f7bdf11a0ddcc9d81899295692d6a1deb6a451c6816dc852290e677217c32198",
- "invocation_sha256": "074e92529b645222115a1e2a948524f3c8d2fd367b5e687805b26da56b29f17c",
+ "catalog_content_sha256": "28b941766254a6b184ec2a1a2720cbe77b752cf8a743f469742187e46c3c8b09",
+ "invocation_sha256": "84726f306ee49efeacb2746562bb8fb9e98dcbe321fda8533403a72470a85a47",
  "descriptions_sha256": {
   "agentic-qa": "cc9b584db8a648f22aa93dc87dc57bdeab199dafa7c139e295c6dbfe4c0f1cbe",
   "agents-md": "d6a6c9d3f94435ac22ec3a278581648b8a64733cd35f03f599fc75bf4bdd8768",
@@ -22,7 +22,7 @@
   "design-system": "f948aeee175bd1a38e2ebabc9f3f988d56a7142736a93c97eba732a546f20f49",
   "factory": "97b4b1bbf93c8ccd850bd71aae47949fb7226f4c3a08a750bd80dcf1728de61d",
   "feature-discovery": "3274c012202bdc4c004757555ea33ac53e57c3576aa01ec14fc05d37e0e3ea8a",
-  "feature-prompt": "d8df16434ed565ccbae35b96e19b67a66e01d0dca4a2911929c718fdd7919b97",
+  "feature-prompt": "df06effceb8bb812a9ba34728190ccdc9327970e91a58e737596203afb98c6ad",
   "grill-with-field": "893c2cceff30df570bb702763a313509cbed454def265c9b180f6ba23eb85b61",
   "incident-triage": "d532a28a9530571e5379d60c8f67e3a478fe4267713e4ddec075fbf28870d5b2",
   "integration-contract": "6114820506e076f63d705c8145d27ce58811e3141ece21aeed66a430755bc25b",

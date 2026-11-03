@@ -104,7 +104,8 @@ npx skills update <skill-name>
 Most kit skills wait for you to type `/skill-name`. Their instructions set
 `disable-model-invocation: true`, which asks the agent not to choose them
 automatically. `feature-discovery`, `tdd-loop`, `risk-review` (local mode),
-`local-to-staging`, `staging-fix`, and `staging-to-production` also load
+`local-to-staging`, `staging-fix`, `staging-to-production`,
+`commit-push-pr`, and `commit-push-close` also load
 when a request matches their description, and `plain-language` is loaded at
 the start of every session by the generated workspace rules. Opencode and Antigravity ignore that setting and
 use `name` and `description`, so any matching kit skill can load there.

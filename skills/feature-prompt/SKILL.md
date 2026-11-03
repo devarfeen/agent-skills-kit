@@ -1,9 +1,9 @@
 ---
 name: feature-prompt
 disable-model-invocation: true
-description: "Turn a feature idea, change request, or rough requirement into a small prompt for grill-with-field. An ADR to a spec is /to-spec; how existing behaviour works is /feature-discovery."
+description: "Turn a feature idea, change request, or rough requirement into a small prompt for grill-with-field. An ADR, even as a prompt, is /to-spec; how existing behaviour works is /feature-discovery."
 metadata:
-  version: "0.3.3"
+  version: "0.3.4"
 ---
 
 # feature-prompt
