@@ -11,6 +11,15 @@ re-run `/agents-md` after a marker bump.
 
 ### Changed
 
+- Maintainers: behavior evals now have a scorer. Run
+  `tools/behavior-evals/score.py` to check an eval answer's word count,
+  list-item length, sentence count and kept labels. Each case's input now
+  lives in its own `fixtures/` file, so you can point an evaluator at it
+  without showing the pass checks. A case with a number in its checks ships a
+  sample answer in `reference/`, and the new `validate.sh` check 20 fails if
+  that answer misses its own limits. CI also runs the scorer's tests. The new
+  `tools/wait-checks.sh <pr>` waits for CI to start before watching it. When
+  check 13 fails, its message now names the `CANON_EXEMPT` list.
 - `/plain-language` 0.5.1 fixes the length target from 0.5.0. Eval case P01
   ran three times, and every run kept every fact but came out near 230
   words, past the 133-word cap. The cap could only be met by dropping a
