@@ -39,6 +39,7 @@ for agents working *in* this repo live in [AGENTS.md](AGENTS.md).
 | `tools/trigger-evals/` | maintainer | The eval harness (catalog builder, judge prompt, scorer). |
 | `skills/*/evals/behavior-cases.md`, `fixtures/`, `reference/`, `behavior-checks.json` | maintainer | Behavior evals: what a skill should do with a given input, a sample answer that passes, and the checks a script can score. |
 | `tools/behavior-evals/` | maintainer | Scores the mechanical checks of a behavior eval. |
+| `tools/wait-checks.sh` | maintainer | Waits for a PR's CI checks to start, then watches them. |
 | `AGENTS.md` (this repo's) | model + human | Conventions for working in this repo. |
 | `README.md` | human | Front door: what the kit is, install, skill index. |
 | `GUIDE.md` | human | Day-to-day workflow: gates, recovery loops, setup, operational tables. |
@@ -394,6 +395,14 @@ Record each run, with the scores and the full outputs, in
 - Update a vendored idea from its original source repo; do not fork-and-drift
   silently (see BEST-PRACTICES "skills are ad-hoc tools" — the local/third-party
   distinction only matters at maintenance time).
+
+### Waiting for CI
+
+Right after you push, `gh pr checks --watch` can exit at once with "no checks
+reported" because GitHub hasn't started the run yet. Use
+`tools/wait-checks.sh <pr-number>` instead. It waits up to two minutes for the
+checks to appear, then watches them until they finish. It exits non-zero if a
+check fails.
 
 ### Releasing
 
