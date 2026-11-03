@@ -25,9 +25,10 @@ Maintainer-only. Do not load during a session. Give an independent evaluator the
 **Acceptance:**
 
 - Labels `Stage`, `Found`, `Next`, `Needs user`, the 🟦 marker, and `[current]` stay byte-exact.
-- Each conflict and each fix is its own sentence or bullet; no colon joins several findings.
+- Each **Found** leads with a count ("4 conflicts", "4 of 4 fixed"); items follow as a colon list or short sentences, not one bullet and paragraph each.
+- The whole cleaned update is no longer than the fixture (133 words).
 - Noun stacks are unpacked: "secret-persisting helpers", "root CI-wait instructions", "PR-watch rules", "credential-file examples", "policy/guide backlinks".
-- T3, the second pass, and owning files are explained on first use, using only the supplied context.
+- T3, the second pass, and owning files are explained on first use in a short clause, using only the supplied context.
 - Terms with no supplied meaning ("production admission", "emergency-stop verification", "task-runtime") are kept and flagged or asked about, not given an invented definition.
 - No link, file, or rule is the actor of a verb it cannot do; the backlink sentence names who would restart a workflow.
 - Every fact, the "All Markdown links resolve" result, the owner-only and production-access limits, and `Needs user: None` survive.
