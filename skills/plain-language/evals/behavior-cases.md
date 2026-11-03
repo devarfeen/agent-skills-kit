@@ -2,25 +2,11 @@
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in evaluation output.
 
-Maintainer-only. Do not load during a session. Give an independent evaluator the current `SKILL.md`, `references/prose-patterns.md`, and only the **Fixture** text, not the acceptance checks. Ask it to clean the fixture as a phase update it wrote. Score against the acceptance checks afterward; every check must pass. These cases are unexecuted until a run is recorded in the [current audit](../../../evals/current/README.md).
+Maintainer-only. Do not load during a session. Give an independent evaluator the current `SKILL.md`, `references/prose-patterns.md`, and the case's fixture file by path; never this file or `reference/`. Ask it to clean the fixture as a phase update it wrote. Score the mechanical checks with `python3 tools/behavior-evals/score.py skills/plain-language/evals/behavior-checks.json <case> <output>` from the repo root, then the rest of the acceptance checks by reading; every check must pass. A case with a numeric limit ships a reference output that passes every check, judgement checks included; `tools/validate.sh` check 20 scores it. These cases are unexecuted until a run is recorded in the [current audit](../../../evals/current/README.md).
 
 ## P01 — Dense phase update with no AI tells
 
-**Fixture:** A phase update the agent wrote. Context the agent knows: T3 is the step that must resume after a crash; the "second pass" re-reads every rule after the first round of fixes; "owning file" is the file where a rule is defined.
-
-```text
-**Found:** I found conflicting guidance: bootstrap and task-runtime instructions can persist secrets, browser examples use credential files, and the orchestration guide says to avoid state files while T3 requires durable checkpoints. The root CI-wait instructions also conflict with this runtime's PR-watch rules.
-
-**Next:** Finish reading the remaining rules, then fix these conflicts at their owning files. Production access and owner-only restrictions will stay intact.
-
-**Needs user:** None.
-
-**Stage:** 🟦 [current] Run the second pass.
-
-**Found:** The fixes now distinguish local authorization from secret handling, make secret-persisting helpers owner-run, remove credential-file examples, and align checkpoint and watcher guidance. All Markdown links resolve. The reference cycles found so far are policy/guide backlinks, which now explicitly cannot restart a workflow.
-
-**Next:** Recheck the changed rules against the full set, including production admission, emergency-stop verification, and owner-only deployment steps.
-```
+**Fixture:** [`fixtures/P01.md`](fixtures/P01.md). **Reference output:** [`reference/P01.md`](reference/P01.md). **Mechanical checks:** `P01` in [`behavior-checks.json`](behavior-checks.json).
 
 **Acceptance:**
 
