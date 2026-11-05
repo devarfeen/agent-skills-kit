@@ -19,7 +19,7 @@ Mechanics for `run` mode. `SKILL.md` holds the loop and the **Load map**; this f
 
 ## Loading a stage skill
 
-User-invoked stage skills use the worker-turn procedure below. Claude Code refuses a Skill-tool call for one and forbids repeating its steps another way, so the run starts a stage skill only as the user would: its slash command as the first token of a worker turn on the selected backend, with its arguments and a private brief the arguments name. The parent never calls the Skill tool for a stage skill and never performs its steps itself.
+User-invoked stage skills, and the model-invoked stages listed at the end of this section, use the worker-turn procedure below. Claude Code refuses a Skill-tool call for a user-invoked skill and forbids repeating its steps another way, so the run starts a stage skill only as the user would: its slash command as the first token of a worker turn on the selected backend, with its arguments and a private brief the arguments name. The parent never calls the Skill tool for a stage skill and never performs its steps itself.
 
 1. Confirm the skill is installed in the worker's runtime. Not installed → park the unit and name `npx skills add devarfeen/agent-skills-kit -g --skill <name>`.
 2. Submit `/<name> <args>` per the backend file: one line, no leading whitespace, short (herdr: under 700 characters, or a typed prefix plus pasted body). Put the brief, criteria source, checkout record and the facts its **Run authorization** needs in a private file the line names. Read the worker's first items back: a turn that shows no skill load ran no skill; resubmit once correctly, then park with `stage_skill_not_invoked`.
