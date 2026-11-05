@@ -52,6 +52,19 @@ re-run `/agents-md` after a marker bump.
   three such restores every builder prompt got a bogus "lesson" about a
   tracker setting. `delivery-draft` rows are now on the allowed Check list
   too.
+- `/local-to-staging` 2.4.1 merges a promotion PR only when every check
+  passed. A `skipped` or `neutral` check counts only when the repository's CI
+  policy accepts it, the same rule the factory uses. Before, every skipped or
+  neutral check counted as passed.
+- `/orchestrate-t3` 0.15.1 notes that `/factory run` uses its own recovery
+  in place of the "never relaunch after a commit" rule. The rule itself is
+  unchanged.
+- `/factory` 6.5.0 checks at the start of a run that `orchestrate-t3`,
+  `orchestrate-herdr` (for herdr runs), `tdd-loop`, `risk-review` and
+  `qa-escape` are installed, because it reads their files. If one is
+  missing, the run stops before any work starts and shows the install
+  command. For several tickets it again suggests `/orchestrate-t3` as well
+  as `/orchestrate-herdr`.
 
 ## 2026-11-03
 

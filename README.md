@@ -469,6 +469,10 @@ skill; you can still install it on its own with `--skill <name>`.
 | `visual-design` | Visual Design | `design-system`, `pixel-audit`, `polish-batch` |
 | `workspace-setup` | Workspace Setup | `agents-md`, `ask-kit`, `plain-language`, `writing-kit-skills` |
 
+To use `/factory run`, install the `build`, `ship` and `staging-promotion`
+groups as well as `factory-workflow`. The run uses skills from all four, and
+it stops before starting any work if one it needs is missing.
+
 ### Companion install commands (global)
 
 These optional skills come from other repositories. Install the ones you need.
