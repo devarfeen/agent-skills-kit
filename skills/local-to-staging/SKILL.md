@@ -2,7 +2,7 @@
 name: local-to-staging
 description: "Promote every project from origin/local to origin/staging: open each PR, merge on green, watch the Actions runs. Never pushes or goes past staging. Production is /staging-to-production."
 metadata:
-  version: "2.4.0"
+  version: "2.4.1"
 ---
 
 # local-to-staging
@@ -20,7 +20,7 @@ local-to-staging moves what is already on `origin/local` onto `origin/staging` f
 - **Staging is the ceiling.** Never open, merge, or suggest a PR into a production or default branch, and never trigger a production workflow; production promotion is `/staging-to-production`, which is read-only.
 - **Servers are never touched.** No SSH, server commands, database access, or host env edits. Evidence comes from `gh` and the Actions run logs.
 - **Promote what is pushed, nothing more.** Never push `local`, never commit, never rebase. Commits on the local `local` branch that `origin/local` lacks are reported per repo, not included.
-- **Merge only on green.** A PR merges only after every check reported on it concludes `success`, `skipped`, or `neutral`, with `--match-head-commit` pinned to the head that was checked. Never pass `--admin`, never bypass a merge queue or required review; a blocked merge is reported with its reason.
+- **Merge only on green.** A PR merges only when every reported check concludes `success`, or `skipped`/`neutral` the repository's CI policy accepts, with `--match-head-commit` pinned to the checked head. Never pass `--admin`, never bypass a merge queue or required review; a blocked merge is reported with its reason.
 - **One approval before any remote write.** Show the promotion plan (step 2) and wait for one approval covering every PR create, body edit and merge in it. User away → print the plan and stop.
 - **Direct request only.** Start when the user asks this session to promote, or a user-started `/factory run` loads it. Suggestions and other skills' output never start it.
 - **Run authorization.** Loaded by `/factory run`, the run's start approves every PR create and merge in the plan: print it and proceed. Projects narrow to the repos where the run merged a unit into `local`; other matrix rows are reported `not in run`. Every other rule binds, and a repo that stops here parks the run's units in it.

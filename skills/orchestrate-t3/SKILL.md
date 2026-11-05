@@ -3,7 +3,7 @@ name: orchestrate-t3
 disable-model-invocation: true
 description: "Fan a spec (PRD) or issue list out to T3 Code worker threads, one worktree per group, and monitor them to done. Needs the T3 Code MCP. Inside herdr use /orchestrate-herdr; one issue is /tdd-loop."
 metadata:
-  version: "0.15.0"
+  version: "0.15.1"
 ---
 
 # Orchestrate T3
@@ -81,7 +81,7 @@ At phase boundaries, before fan-out, large reads, completion imports or provider
 - **Working** → leave it. A long test run is not a stall; a wait that timed out is waited on again.
 - **Waiting** → apply the question rule. No pending question means a permission prompt: surface it under Needs user and never relaunch the thread.
 - **Turn ended** → read the report and apply the test-evidence rule per issue. A report missing evidence or an `AC map` row gets one follow-up per **Send** naming the gap; a second incomplete report is reported as incomplete.
-- **Errored** → read the cause and report it. Relaunch only when the cause was the launch itself and the thread made no commit.
+- **Errored** → read the cause and report it. Relaunch only when the cause was the launch itself and the thread made no commit. A `/factory run` replaces this rule with its own post-commit recovery (factory **Execution**).
 - **Labels:** a human blocker → `ready-for-human` and a decision comment per **Block**. Never edit issue titles.
 - **Status board:** on every state change emit one line — `N running · M completed · K blocked/needs-user` — naming the thread that changed.
 
