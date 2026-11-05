@@ -116,7 +116,7 @@ Missing file → create it with the zero-attribution line from the top of this f
 
 Append at worker dispatch/recovery and when a check returns for a unit — a readiness repair, an `agentic-qa` result, a `ci-loop` attempt, a `risk-review` marker, a **Review loop** round, a `qa-escape` marker. A passing round is one row; a failing round is one row per distinct cause.
 
-- **Check** — `execution`, `readiness`, `agentic-qa`, `ci`, `risk-review`, `code-review`, or `qa-escape`.
+- **Check** — `execution`, `readiness`, `agentic-qa`, `ci`, `risk-review`, `code-review`, `qa-escape`, `delivery-draft`, or `tracker`. `delivery-draft` and `tracker` rows record events, not failures: their Cause is always `-`.
 - **Cause** — for `execution`, `readiness` or `ci`, the failing operation/check's name. Otherwise one slug from the class list in the `qa-escape` skill's `references/escape-classes.md`, chosen by that file's rule; no slug fits → `other:<two-word-slug>`. `-` on a pass. Name the missing check, not the symptom: a word broken mid-line is `responsive-layout`, a failed save with no message is `missed-error-state`. A bare slug outside the list is invalid, because **Lessons** counts only matching slugs. When workspace policy names a round-log check, run it before **Lessons** counts and before the run report; fix the rows it rejects.
 - **Tried** — execution uses the worker/budget record in **Execution**, plus preferred/active model, effort, role and availability recovery/fallback record; readiness uses the repair record in **Readiness and recovery**. Other checks use the subjects of commits made since the unit's previous round; `first build` on round 1.
 
