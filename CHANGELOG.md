@@ -42,6 +42,16 @@ re-run `/agents-md` after a marker bump.
   `risk-review` are called directly. Before, one file said every
   agent-startable skill was called directly, which skipped the run
   authorization and left shipping waiting for an approval.
+- `/commit-push-pr` 0.13.2 and `/commit-push-close` 0.10.2: the shared ship
+  policy no longer mentions the factory's old review and merge "pauses". A
+  run's PR now records `Review: deferred to the run's review loop`, and the
+  run's **Merge** step owns every merge.
+- `/factory` 6.4.2: the round log no longer teaches builders false lessons.
+  Restoring an issue's tracker status after promotion is logged as Check
+  `tracker` with no cause. Before, it was logged as a `ci` failure, so after
+  three such restores every builder prompt got a bogus "lesson" about a
+  tracker setting. `delivery-draft` rows are now on the allowed Check list
+  too.
 
 ## 2026-11-03
 

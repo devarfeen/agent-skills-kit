@@ -40,7 +40,7 @@ Applies only when `/factory run` loaded the ship skill; a ship skill the user ra
 
 The user's start of the run is the combined draft approval. Prepare the drafts, print them, then commit, push, open the PR, and post the QA comment without waiting. It also settles these points raised elsewhere in this policy:
 
-- **Code review** — not asked. The run holds its own review pause after the PR opens; record `Review: deferred to the run's review pause`.
+- **Code review** — not asked. The run's own **Review loop** reviews the PR after it opens; record `Review: deferred to the run's review loop`.
 - **Optional Composer test run** — select Run; satisfy it through **Check evidence and reuse**, executing only missing or invalidated checks.
 - **Branch name** — use the proposed name.
 - **Naming anchor** for several issues on one branch with no spec issue — the title of the first issue in the group.
@@ -48,7 +48,7 @@ The user's start of the run is the combined draft approval. Prepare the drafts, 
 - **Issue reference** — use ordinary references for every issue, never closing keywords; the run leaves issues open for manual QA.
 - **Eligibility** — factory intake may replace only a fully specified issue’s exact `needs-triage` workflow label with live `ready-for-agent`, preserving other labels. Validate its read-back here; this grants no ship-time relabeling, taxonomy creation/rename, or bypass for ambiguous issues.
 
-It approves nothing else. Each of these still stops shipping for that issue, and the run parks it: **Pre-commit safety**, **Authorship policy**, **Env parity policy**, **Label validation**, a failing check, an unmet **Acceptance criteria** item, a conflict, a rejected push, or a prohibited target. **Inline issue creation** does not happen inside a run — an issue with no tracker entry is not part of it. **Merge into local** is not part of it either; the run's merge pause owns every merge.
+It approves nothing else. Each of these still stops shipping for that issue, and the run parks it: **Pre-commit safety**, **Authorship policy**, **Env parity policy**, **Label validation**, a failing check, an unmet **Acceptance criteria** item, a conflict, a rejected push, or a prohibited target. **Inline issue creation** does not happen inside a run — an issue with no tracker entry is not part of it. **Merge into local** is not part of it either; the run's **Merge** step owns every merge.
 
 ## Read state
 

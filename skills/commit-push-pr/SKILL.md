@@ -2,7 +2,7 @@
 name: commit-push-pr
 description: "Ship issue work as a pull request: structured commit, push, PR with Closes #N. Use only when the user explicitly asks for a PR; a bare ship it is /commit-push-close."
 metadata:
-  version: "0.13.1"
+  version: "0.13.2"
 ---
 
 # commit-push-pr
