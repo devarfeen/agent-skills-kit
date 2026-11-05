@@ -35,14 +35,12 @@ maintainer can re-run the baseline comparably.
 4. `python3 tools/trigger-evals/score.py /tmp/query-manifest.json j1.jsonl j2.jsonl j3.jsonl`
 5. **Pass rule** (majority vote per query): an `expect: trigger` query passes
    when the majority picks that skill; an `expect: no-trigger` query passes
-   when the majority picks anything else, or when no judge picked that skill
-   at all — its `route` field is diagnostic, not pass/fail. Three different
-   picks fail a trigger query, and fail a no-trigger query only when one of
-   them is the skill under test. Missing,
+   when the majority picks anything else — its `route` field is diagnostic,
+   not pass/fail. Three different picks fail for either query kind. Missing,
    duplicate, extra, or unknown picks invalidate the run; so does reusing one
    judge file in multiple argument positions.
 6. Record `date`, `method`, `result`, `model`, and the catalog provenance in
-   each eval file's `last_run`, or use the scorer's `--record-run --judge-model <actual-model>` after a passing full sweep.
+   each eval file's `last_run`.
 7. Refresh the description snapshot: re-run step 4 with `--write-snapshot`. It
    writes `last-run-descriptions.json` (sha256 per description) and refuses on
    anything short of a clean sweep — a snapshot taken from a failing run would
@@ -66,25 +64,3 @@ Fix descriptions, not queries: a missed should-trigger means the description
 lacks that phrasing; a captured near-miss means the boundary sentence is
 missing or the sibling's description is weaker. Fix, re-run, and keep the
 query — never delete a query to make the eval pass.
-
-## Installed Codex profile
-
-`python3 tools/trigger-evals/build-installed-catalog.py /tmp/installed-routing`
-captures the actual catalog from `codex debug prompt-input` and builds queries
-for kit skills exposed for implicit use. It rejects duplicate exposed names.
-Run three fresh judges and score these ballots separately, without
-`--write-snapshot`: a runtime subset does not replace the complete package sweep.
-Keep the generated catalog, inputs and ballots as evidence. This verifies
-candidate routing and metadata exposure, not workflow execution or permissions.
-
-## Validation dependencies and provenance
-
-Use a virtual environment for `tools/requirements.txt`; the repository
-validator uses `.venv/bin/python3` when available. CI installs these dependencies
-before strict YAML and harness checks. A missing parser is an error.
-
-`python3 tools/trigger-evals/score.py --check-provenance` checks every skill has
-an eval set and that descriptions, query wording/outcomes/routes, external
-catalog entries and invocation policies match a scored full sweep. Record the
-exact judge model when available, otherwise state that inherited identity was
-not exposed. Never label simulated cases as live workflow passes.

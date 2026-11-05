@@ -1,9 +1,7 @@
 ---
 name: design-system
 disable-model-invocation: true
-description: "Once per UI project: turn a design system (Figma, spec, reference screens, or a guided definition when no designs exist) into tokens, a UI library, a preview page, and an AGENTS.md rule; extend later."
-metadata:
-  version: "0.2.3"
+description: Project start-off skill, run once per UI project after /agents-md and setup; re-run `extend` as the design grows or to fold a shipped page's UI back into the library. Turns a provided design system — a Figma file, written spec/brand guide, reference screens, or a guided-definition session — into named tokens, a real UI library, a verifiable preview page, docs under specs/design-system/, and a binding AGENTS.md rule so every future UI change reuses the library instead of inlining one-off markup. Stack-adaptive — reads each project's stack from the workspace matrix that /agents-md generates. A design-system source is required — never fabricated. Never auto-chains.
 ---
 
 # design-system
@@ -17,7 +15,7 @@ Builds a provided design system into named tokens, a UI library in the target st
 Infer from the request and cheap repo evidence; interview only for gaps:
 
 - **TARGET PROJECT-CODE** — the full Project Matrix code; it determines the output idiom. Project Matrix missing → stop and route to `/agents-md` first. Read the target's stack from the matrix / `AGENTS.md`, never guess it.
-- **DESIGN-SYSTEM SOURCE (required)** — the named source wins. When none is named, load [`references/source-selection.md`](references/source-selection.md) and follow its ordered discovery. A source with tokens remains their single source of truth. No source or explicitly approved guided definition → stop and ask; never fabricate a system.
+- **DESIGN-SYSTEM SOURCE (required)** — a **Figma** file/URL (via the Figma MCP companion — not installed → say so and ask for exported frames/tokens or a written spec); a **written design spec / brand guide**; **reference screens or a reference app**; or, when none exists, a **guided-definition session** — walk the user through colours, neutrals, typography, type scale, spacing, radius, shadow, and base components; build only after **explicit user approval**. **Never fabricate a whole design system silently.** No source and no approved guided session → stop and ask.
 
 ## Rules
 
@@ -40,13 +38,11 @@ Emit in the target's idiom, never one hardcoded framework: framework web (Larave
 Full first run; an existing design-system doc or library → switch to `extend`. In order:
 
 1. **Extract** tokens and the base component list with states from the source.
-2. **Tokens** — colours, typography, spacing, radii, shadows as named tokens in the project's existing mechanism, checked against its installed framework version; never hardcoded per use. Source defines light and dark → tokens carry both and the preview renders both.
-   - **Contrast:** check every text/background token pair against WCAG AA — 4.5:1 body, 3:1 large text, focus indicators, and control boundaries. A failing source pair goes under Deviations and Needs user; never adjust a source colour silently.
-   - **Fonts:** a font token names a face the project loads; one it cannot load is a Deviation, never a silent fallback.
+2. **Tokens** — colours, typography, spacing, radii, shadows as named tokens in the project's existing mechanism, checked against its installed framework version; never hardcoded per use.
 3. **UI library** — build the base components (buttons, inputs, selects, toggles, cards, alerts, badges, …) from the tokens, faithful to the source.
 4. **Preview page** — one page/route/screen rendering every component in its states (default/hover/focus/disabled/active; empty/loading/error where relevant; responsive) — the verification gate, in two halves:
    - **Agent half — evidence first.** Build/serve the target, load the preview, and check every extracted component appears with no error output. A rendered screenshot is the evidence floor; served HTML substitutes only for server-rendered web output. Client-only web and native stacks require a screenshot or rendered DOM/tree snapshot from the local browser or simulator. Quote the evidence: URL/file, status, screenshot path or stated fallback, and the rendered component list checked off against the extracted inventory. A bare aggregate count is not evidence.
-   - **Human half — the gate.** If workspace policy requires `/agentic-qa` first and its proof is missing, mark human inspection pending and suggest that QA step; do not auto-invoke it. A later `preview` request, or the next `extend`, resumes at this half once that proof exists. Once applicable QA gates pass, show the preview location and ask the user to eyeball it. If the user is away, state the preview location and the agent-half evidence, record the eyeball as pending in the phase update, and continue to the suggestions — never claim the design system verified until they have looked.
+   - **Human half — the gate.** Show the user how to open the preview and ask them to eyeball it. If the user is away, state the preview location and the agent-half evidence, record the eyeball as pending in the phase update, and continue to the suggestions — never claim the design system verified until they have looked.
    Where a snapshot harness exists, add a minimal render/snapshot test per base component.
 5. **Register** — write the doc, the AGENTS.md reference, and the project UI skill (below).
 
@@ -56,15 +52,14 @@ Triggers: the design system grew (a new Figma component); a UI change needs a mi
 
 - **Missing component:** check the library first. Exists → nothing to build; stop and say so. Missing → build from the design-system source; no covering reference → ask the user for one before building — do not invent it.
 - **Feedback loop:** review the shipped page's diff and promote each reusable piece into the library, built from the shipped UI plus the source; leave page-local one-offs only when documented with a reason.
-- **Pending eyeball:** when bootstrap left the human half pending, show the preview location and ask for the eyeball before the sync.
 - **Sync:** update library, preview, doc, AGENTS.md reference, and project UI skill together in one pass.
-- **Boundary — design system only.** `extend` updates the design system and nothing else. It does not commit, push, write ADRs, or produce handovers; those stay `/grill-with-field` and `/commit-push-*`, invoked separately per suggest-never-auto-chain.
+- **Boundary — design system only.** `extend` updates the design system and nothing else. It does not commit, push, write ADRs, or produce handovers; those stay `/grill-with-docs` and `/commit-push-*`, invoked separately per suggest-never-auto-chain.
 
 ## Registration
 
 ### The `specs/design-system/` doc
 
-Write the full doc to `<docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md`, with `<docs-root>` the setup docs location; no setup decision → `<artifacts-root>/specs/`. Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`GLOSSARY-MAP.md` at repo root; legacy `CONTEXT-MAP.md`), else the repo root. Fill the doc skeleton in [`references/registration-templates.md`](references/registration-templates.md) §1.
+Write the full doc to `<docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md`, with `<docs-root>` the setup docs location; no setup decision → fall back to `<artifacts-root>/specs/`. Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`CONTEXT-MAP.md` at repo root), else the repo root. Fill the doc skeleton in [`references/registration-templates.md`](references/registration-templates.md) §1.
 
 ### The AGENTS.md reference
 
@@ -78,7 +73,7 @@ The deep reference for real UI work; every project-specific UI rule lives in it 
 - Found one → adopt and extend it in place; **never seed a parallel skill beside it** — two UI skills compete for routing. Fold in the real paths, component inventory and states, reuse-before-new discipline, missing-component procedure, and the consume-the-library rule; sharpen its description so UI work still routes to it.
 - Preserve its hand-grown conventions and voice: show the diff, and where an existing rule contradicts the design system, surface the conflict to the user rather than silently rewriting either side.
 - Record the adopted skill's **real name** in the doc's `Project skill:` line and the AGENTS.md reference.
-- Only when no UI skill exists anywhere: seed a project-local `<project-slug>-ui-coding` (kebab-case, per target naming); load [`references/fresh-ui-skill.md`](references/fresh-ui-skill.md) for location, per-runtime copies, and content.
+- Only when no UI skill exists anywhere: seed a project-local `<project-slug>-ui-coding` (kebab-case, per target naming); location, per-runtime copies, and content: [`references/registration-templates.md`](references/registration-templates.md) §3.
 
 ## Output
 
@@ -86,9 +81,9 @@ Emit the phase update and stop:
 
 ```markdown
 Stage: design-system (<bootstrap|extend>) — tokens+library+preview for <TARGET-PROJECT-CODE>; doc <docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md; AGENTS.md reference added; <ui-skill name> seeded/extended.
-Found: <N> tokens, <M> components (<states covered>); source = <DESIGN.md|project UI skill/library|Figma|spec|reference|guided(approved)>; contrast <all AA | N failing pairs>; stack = <from matrix>.
-Next: <required agent QA pending: run /agentic-qa; otherwise open preview and inspect every component/state>. Then /feature-prompt for the first feature.
-Needs user: <agent QA pending: start the required QA; otherwise verify the preview>; confirm guided choices, failing contrast pairs, or DS/stack deviations.
+Found: <N> tokens, <M> components (<states covered>); source = <Figma|spec|reference|guided(approved)>; stack = <from matrix>.
+Next: open <preview location>, eyeball every component/state; then `/feature-prompt` for the first feature.
+Needs user: verify the preview; confirm guided-definition choices or DS/stack deviations.
 
 Suggested next skills (optional):
 - /feature-prompt: begin the first feature — it consumes this library.

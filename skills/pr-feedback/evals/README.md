@@ -1,13 +1,14 @@
 # Evals — `/pr-feedback`
 
-This folder keeps reusable tests for `/pr-feedback`. Observed results live in the current audit.
+This skill owns its evals. Everything needed to judge `/pr-feedback` is in this folder.
 
 | File | What it is |
 | :--- | :--- |
 | [`evals.json`](evals.json) | The routing test set, plus the `last_run` evidence record |
-| [Current audit](../../../evals/current/README.md) | Fresh findings, observed results and validation limits |
 | [`test-cases.md`](test-cases.md) | Readable form of the test set, with the sibling each negative routes to |
 | [`rubric.md`](rubric.md) | How to score: routing pass bar + the eleven quality categories |
+| [`baseline.md`](baseline.md) | Scores at first scoring (2026-07-17, new skill) |
+| `final.md` | Scores after an improvement pass — written when one happens |
 
 ## Running the trigger eval
 

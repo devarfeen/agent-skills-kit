@@ -14,17 +14,11 @@ so precision beats volume.
 
 1. **Run `bash tools/validate.sh` before every commit.** It enforces frontmatter,
    manifest coverage, ship-policy parity, link integrity, and zero-attribution.
-   CI runs it on every PR. `tools/hooks/pre-commit` runs it automatically once
-   `git config core.hooksPath tools/hooks` is set. Changes reach `main` only
-   through a PR whose `validate` check is green; a GitHub ruleset enforces
-   this. Wait for checks with `tools/wait-checks.sh <pr>`.
+   CI runs it on every PR.
 2. **Respect the sync map** in [CONTRIBUTING.md](CONTRIBUTING.md): a new/renamed
-   skill needs a `skills-manifest.md` row, a README table row, and its path in
-   one `.claude-plugin/marketplace.json` plugin group; the two
+   skill needs a `skills-manifest.md` row and a README table row; the two
    `ship-policy.md` copies stay byte-identical; template changes in `agents-md`
-   bump its version marker; a new or moved skill updates the `ask-kit` map; a
-   behavior change gets a dated `CHANGELOG.md` entry. Check `.out-of-scope/`
-   before proposing a change that may already be declined.
+   bump its version marker.
 3. **Know the audience before editing a file.** `skills/*/SKILL.md` and
    `references/` are model-facing (loaded into agent context; every sentence
    costs tokens). `README.md`, `GUIDE.md`, `BEST-PRACTICES.md`, `CONTRIBUTING.md`
@@ -42,34 +36,17 @@ so precision beats volume.
 7. **Preserve refusal boundaries.** When editing a skill, keep its "stops and
    refuses" lines (never auto-chain, scope gates, cosmetic-only, etc.) — they
    are the safety property, not filler.
-8. **Write human-facing docs in plain English.** `README.md`, `GUIDE.md`,
-   `BEST-PRACTICES.md`, `CONTRIBUTING.md` and `CHANGELOG.md` are read by
-   people, not models. Lead with what the reader should do and a real command
-   (`/factory 87`), use short sentences and "you", and explain any term a
-   newcomer would not know (head, marker, unit, gate) or drop it. When there is
-   a choice, add a small "which one to use" table. Keep every fact, command and
-   refusal boundary; plain does not mean vaguer. Model-facing files keep their
-   terse style.
-9. **Load `plain-language` at session start.** Right after the first
-   reporting-gate update, call the Skill tool with `plain-language` (or read
-   `skills/plain-language/SKILL.md`). Apply it to agent-written chat and to
-   the free prose of commits, PRs, issues, and release notes before sending or
-   finalizing them. It never edits code, comments, ADRs, specs, prompts, or
-   glossary entries, and it preserves mandated templates, markers, headings,
-   field labels, canonical text, quotations, evidence, and qualifications.
-   Leave unrelated prose alone. If unavailable, report once and continue under
-   existing writing rules.
-10. **The owner and this computer use zsh; agents may use bash.** zsh is
-    the login shell of the machine you run on. Run your own commands and
-    scratch scripts in bash when that is simpler (`bash -c`, `bash -s`, or a
-    `#!/usr/bin/env bash` script). Your tool shell may still be zsh: quote
-    globs that may match nothing and do not rely on unquoted word splitting.
-    Commands written for the owner stay zsh-safe. Shell guidance inside
-    skills still resolves each workspace's target shell; never hard-code zsh
-    or bash there.
-11. **Run the evals a change touches before merge.** A changed skill
-    description re-runs the trigger evals ([CONTRIBUTING.md](CONTRIBUTING.md#trigger-evals)).
-    A behavior change to a skill with `evals/behavior-cases.md` runs the
-    cases that cover it and records scores and outputs in `evals/current/`
-    ([CONTRIBUTING.md](CONTRIBUTING.md#behavior-evals)). The PR body lists
-    each eval run with its result, and names any eval skipped and why.
+## Graphify
+
+This project may have a knowledge graph at `graphify-out/` (god nodes, community
+structure, cross-file relationships). Only when `graphify-out/graph.json` exists:
+
+- For codebase questions, first run `graphify query "<question>"`; use
+  `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"`
+  for focused concepts — these return a scoped subgraph far smaller than raw grep.
+- If `graphify-out/wiki/index.md` exists, use it for broad navigation instead of
+  raw source browsing.
+- Read `graphify-out/GRAPH_REPORT.md` only for broad architecture review or when
+  query/path/explain do not surface enough context.
+- After modifying files, or when `graphify-out/graph.json` is more than ~7 days
+  old, run `graphify update .` to keep the graph current (AST-only, no API cost).

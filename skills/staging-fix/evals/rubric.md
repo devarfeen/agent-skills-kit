@@ -14,7 +14,7 @@ judge agents** that route each query using only the catalog, then take a majorit
 - A `no-trigger` query passes when a valid majority picks another catalog entry or `none`. Missing, malformed, or split votes do not pass. Its `route` field is
   diagnostic, not pass/fail.
 
-Pass bar: every query in `evals.json` passes. Investigate failures against the catalog and intended boundary; never delete a failing query to inflate the score.
+Pass bar: **15/15**. Anything less is a description defect, not a query defect.
 
 ## 2. Quality (body)
 
@@ -32,7 +32,7 @@ Categories: purpose clarity · trigger clarity · scope control · instruction q
 engineering usefulness · agent usability · verification quality · TDD/testing compat ·
 maintainability · frontier readiness.
 
-**Trigger clarity is scored from routing evidence, not prose.** State the actual run date and whether it was rerun. Name any colliding sibling and misrouted query, or missing runtime evidence. This skill is model-invoked: a should-trigger query that a host routes elsewhere is a trigger miss, and a near-miss that loads it is a false start.
+**Trigger clarity is scored from routing evidence, not prose.** State the actual run date and whether it was rerun. Name any colliding sibling and misrouted query, or missing runtime evidence. Catalog routing does not prove a host implicitly loads a user-only skill.
 
 `N/A` is permitted only on TDD/testing compat, only when the skill has no testable surface, and only
 with a written justification. `/staging-fix` produces code (a local fix with a test), so `N/A` never

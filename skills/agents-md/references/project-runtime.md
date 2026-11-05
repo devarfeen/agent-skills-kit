@@ -6,10 +6,8 @@ files. Derive every project, path, service, and container value from workspace
 evidence. No project-specific defaults or name-based service guesses.
 
 Zero attribution: never add or leave co-author, AI, tool, or generator attribution
-in output. Preserve existing zero-attribution rules and include the explicit rule in each managed block. The required neutral source
+in output. Preserve existing zero-attribution rules. The required neutral source
 comment below describes the data source, not authorship.
-
-Contents: [1. Resolve the local model](#1-resolve-the-local-model) · [2. Match projects to services](#2-match-projects-to-services) · [3. Prepare the managed block](#3-prepare-the-managed-block) · [4. Show the diff, then apply approved changes](#4-show-the-diff-then-apply-approved-changes) · [Completion checks](#completion-checks)
 
 ## 1. Resolve the local model
 
@@ -28,7 +26,7 @@ environment values never reach the session. Never run the command without the
 filter; if `jq` is unavailable, skip runtime synchronization with that reason. Do not start containers, inspect running containers, or use
 staging/production files. An absent file, unavailable command, failed resolution,
 or invalid JSON skips runtime synchronization with a reason; default root
-generation remains independent. Runtime-only leaves the root `AGENTS.md` and `rules/` untouched.
+generation remains independent. Runtime-only leaves the root pair untouched.
 
 ## 2. Match projects to services
 
@@ -58,7 +56,6 @@ Fill exactly these three facts from the matched service and bind mount:
 ```markdown
 <!-- agents-md:project-runtime:start -->
 <!-- Source: resolved local Compose model. -->
-<!-- Zero attribution: never add or leave co-author, AI, or tool attribution in output. -->
 - Compose service: `<service key>`.
 - Container name: `<resolved container_name>`.
 - Application path inside container: `<bind-mount target>`.
@@ -69,7 +66,7 @@ When `container_name` is absent (`null` in the filtered model), use the service 
 Compose-generated container name. The application path is always the matching
 mount's `target`, even if the service has a different `working_dir`. The mount
 alone does not establish a working directory; only explicit Compose `working_dir`
-can support that claim. Keep the managed block to the three facts and policy comment above.
+can support that claim. Keep the managed block to the three facts above.
 
 **First synchronization, no markers:** insert under an existing local-runtime or
 local-app heading, allowing case, spacing, and hyphen variants. The section ends
@@ -111,6 +108,6 @@ marker refresh, artifact migration, or setup-skill suggestions.
   preserves the marker lines and all bytes outside them. A repeat run is a no-op.
 - No missing project instruction file was created. Every project edit appeared
   in the approved diff; skipped projects remain unchanged.
-- Runtime-only leaves the root `AGENTS.md` byte-identical or absent as before.
+- Runtime-only leaves both root files byte-identical or absent as before.
 
 Compose resolution semantics: [Docker Compose config](https://docs.docker.com/reference/cli/docker/compose/config/).

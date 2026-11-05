@@ -1,19 +1,18 @@
 ---
 name: commit-push-close
-description: "Ship issue work directly: structured commit, push, then close the issue with how-to-test steps. Use for commit, push, and close, or a bare ship it. A reviewable PR is /commit-push-pr."
-metadata:
-  version: "0.10.0"
+disable-model-invocation: true
+description: Ship one iteration of issue work directly — commit with a structured message, push, then close the linked issue with a comment that explains how to test the change; creates the issue inline when none exists. Use when the user says "commit, push, and close", "close out an issue with testing steps", "ship this issue", or is done and says "ship it" without requesting a PR. A reviewable PR is /commit-push-pr.
 ---
 
 # commit-push-close
 
-The boundary against `/commit-push-pr`: same shared ship policy, but this skill closes the linked issue directly instead of opening a PR with target-appropriate issue references.
+The boundary against `/commit-push-pr`: same shared ship policy, but this skill closes the linked issue directly instead of ending in a PR with `Closes #N`.
 
 Issue commands show the GitHub default; a workspace-named tracker overrides them per **Tracker** in `references/ship-policy.md`.
 
 ## Shared ship policy
 
-Read [`references/ship-policy.md`](references/ship-policy.md) once, then consult its named sections for the active step; retain its safety gates. This file covers direct-close steps.
+Read [`references/ship-policy.md`](references/ship-policy.md) first — it holds every shared ship rule the steps below cite by bold section name, **Read state** through the **Response footer**. This `SKILL.md` only covers what is specific to closing the issue directly.
 
 ## Issue-close comment format
 
@@ -38,11 +37,11 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
 
 3. **Read issue labels** — for pre-existing issues, run `gh issue view <num> --json state,labels,title,url,body` and validate against the **Label validation** table, following its outcomes (stop states route to `/triage`; the taxonomy-absence fallback applies). Already `CLOSED` → stop and ask: reopen for this iteration, comment without closing, or target a different issue. Skip for issues just created inline — labels were set at creation.
 
-4. **Draft the commit message** from the issue title and diff, per **Commit message format** and **Naming anchor**. A clean tree with commits ahead of the base follows **Commits already on the branch**: no new commit, and step 8 is skipped.
+4. **Draft the commit message** from the issue title and diff, per **Commit message format** and **Naming anchor**.
 
-5. **Draft the issue-close comment** using **How-to-test rules**. Apply **Check evidence and reuse** before shipping: inspect existing proof and run only missing or invalidated checks; put actual results and provenance in the draft. Verify each issue **Acceptance criteria** item by automated test or, for browser-visible behavior, a browser run in the mode required by the target policy, and put the acceptance report in the draft; an unmet criterion stops shipping unless the user defers it. If the plan isn't clear from the diff and repo, ask for the missing information before continuing.
+5. **Draft the issue-close comment** using **How-to-test rules**. Run applicable local pass/fail checks before shipping, and put actual results in the draft. Verify each issue **Acceptance criteria** item by automated test or, for browser-visible behavior, a headless browser run, and put the acceptance report in the draft; an unmet criterion stops shipping unless the user defers it. If the plan isn't clear from the diff and repo, ask for the missing information before continuing.
 
-   Before presenting drafts, run the **Authorship policy** scrub and, if env files/keys changed, the **Env parity policy** verification.
+   Before presenting drafts, run the **Authorship policy** scrub and, if env files/keys changed, the **Env parity policy** sync pass.
 
 6. **Show the user the drafts** and wait for approval before any write action — one combined confirmation, not three:
    - Existing issue: commit message + close comment.
@@ -58,9 +57,9 @@ Emit `Stage / Found / Next / Needs user` at each phase transition — one line p
    - Tracks a remote → `git push`.
    - No upstream → `git push -u origin <branch>`.
    - **If the current branch is the detected default branch**: stop and confirm separately before pushing — step 6's approval does not cover this push. If the user is away, leave the commit unpushed, skip the close (a close comment must reference a pushed commit), and surface both under Needs user in the report.
-   - **Confirm the push landed** before the close — non-error exit and the exact destination's `git ls-remote` SHA matches the local commit, per **Read state**; local status alone is insufficient. A rejected push (non-fast-forward, auth expiry) stops the close.
+   - **Confirm the push landed** before the close — non-error exit and `git status -sb` shows the branch up-to-date with its remote. A rejected push (non-fast-forward, auth expiry) stops the close.
 
-10. **Close the issue** — verify **Check evidence and reuse** still covers the pushed content and execution identities; rerun missing/invalidated checks or a repository-mandated gate. A failure stops closure. Fill the QA draft with the actual SHA and branch and write it to a temp file. Post and read back the comment before closing:
+10. **Close the issue** — check that test evidence still covers the pushed content; rerun if content changed. A failure stops closure. Fill the QA draft with the actual SHA and branch and write it to a temp file. Post and read back the comment before closing:
     ```bash
     gh issue comment <num> --body-file <temp-file>.md
     gh issue view <num> --json comments
@@ -105,15 +104,8 @@ Partially accepted — 2/3 criteria verified by automated tests and headless bro
 - [ ] Verified in the payment sandbox — pending manual: How to test step 1 (sandbox needs owner credentials).
 
 ### Verification
-Status: PARTIAL — source: executed now
 Automated check: 1 test file and 6 tests passed. Manual payment checks pending.
-Before: `handler.test.ts` "replays return the original result" failed at base — expected 1 charge, received 2.
-After: the same test passes.
 Review: /code-review — standards and spec: no findings.
-
-### Merge danger
-Door: two-way — reverting the commit restores the old path; idempotency keys expire in 24h.
-Blast radius: checkout API clients — checked: `rg "x-request-id"` shows only the web client sends it.
 
 ### Gaps
 Webhook handling remains outside this fix, follow-up #419. Remove test orders after manual QA.

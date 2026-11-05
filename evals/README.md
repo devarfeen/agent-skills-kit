@@ -7,7 +7,7 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in commi
 | Layer | Question | Lives in | Who runs it |
 | :--- | :--- | :--- | :--- |
 | **Trigger evals** | Does the runtime load the right skill? | `skills/<name>/evals/evals.json` | Maintainer, by hand |
-| **Quality rubric** | Is the skill worth loading once triggered? | [`skill-quality-rubric.md`](skill-quality-rubric.md) → scored into `evals/current/skills-audit.md` | Any reviewer or agent |
+| **Quality rubric** | Is the skill worth loading once triggered? | [`skill-quality-rubric.md`](skill-quality-rubric.md) → scored into `skills/<name>/evals/final.md` | Any reviewer or agent |
 | **Repo eval** | Do the kit-wide invariants still hold? | [`repo-eval-template.md`](repo-eval-template.md) | `bash tools/validate.sh`, then by hand |
 
 Trigger and quality are independent on purpose. A skill can route perfectly and still waste
@@ -15,11 +15,10 @@ the context it earns; a superb body is dead weight if nothing loads it.
 
 ## Scope boundary
 
-This directory keeps reusable scoring instruments and fixtures. The
-[current audit](current/README.md) holds the latest observed results, raw
-routing ballots and validation logs. Historical reports have been removed;
-reusable test cases stay beside their skills. The [fixtures](fixtures/) folder
-preserves reusable inputs recovered from earlier runs.
+This directory holds the **scoring instruments**. It does not hold scores.
+Per-skill results live next to that skill's trigger evals, at
+`skills/<name>/evals/baseline.md` and `final.md`, so a scorecard travels with the thing it
+describes and rots visibly when the skill changes underneath it.
 
 ## The rules that constrain any scoring run
 
@@ -32,9 +31,12 @@ These are not style preferences. Violating them destroys evidence.
   delegates the run. Record only completed runs.
 - **The frontmatter `description` is the router, and it is under test.**
   Editing one invalidates the recorded baseline. Improve skill *bodies* and
-  `references/` freely; change a description when an authorized routing change or observed failure
-  requires it, and re-run before landing. A note that the baseline is stale does
+  `references/` freely; touch a description only when a trigger eval actually
+  fails, and then re-run before landing. A note that the baseline is stale does
   not satisfy validator check 10.
+  This has bitten the kit once already: a description changed after a passing
+  run, nobody re-ran, and the `last_run` blocks carried a 280/280 claim while
+  the kit actually scored 277/280.
 - **Score against evidence, not taste.** `trigger_clarity` is settled by the
   eval set, not by how the sentence reads. If you want to mark it down, name the
   sibling skill it collides with and the query that would misroute.
@@ -44,7 +46,7 @@ These are not style preferences. Violating them destroys evidence.
 1. Read [`skill-quality-rubric.md`](skill-quality-rubric.md) for the eleven
    categories and their anchors.
 2. Copy [`skill-audit-template.md`](skill-audit-template.md) into
-   `evals/current/skills-audit.md` and fill it in. One auditor per skill; a
+   `skills/<name>/evals/final.md` and fill it in. One auditor per skill; a
    defect without a `file:line` anchor and an exact edit is not a defect.
 3. Fix the body. Re-score with a *different* reader than the one who edited —
    an author scoring their own rewrite grades the intent, not the text.
@@ -54,20 +56,6 @@ Three categories have their own deep-dive sheets, used when a headline score is
 contested: [`tdd-workflow-eval.md`](tdd-workflow-eval.md),
 [`agent-usability-eval.md`](agent-usability-eval.md), and
 [`frontier-readiness-eval.md`](frontier-readiness-eval.md).
-
-## Writing behavior cases
-
-Behavior cases (`skills/<name>/evals/behavioral-cases.md` and similar) test what an
-agent does once the skill is loaded. A case earns its place only by showing a failure:
-
-- **Run a no-skill control first.** The same scenario without the skill must show the
-  failure the rule targets. If the control already behaves, there is nothing to fix —
-  drop the case and the rule it was meant to justify.
-- **Combine at least three pressures** in one forced-choice scenario — for example the
-  user is away, work is already sunk, and an authority figure asks for the shortcut. One
-  pressure at a time rarely breaks a rule an agent already knows.
-- **Repeat each case.** Single samples lie; record the run count beside the result and
-  report a rate (`4 of 5 held`), never a lone pass.
 
 ## Relationship to CONTRIBUTING.md
 

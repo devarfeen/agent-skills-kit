@@ -26,7 +26,7 @@ Reuse the user's established permission-mode preference without asking again. A 
 - its elevated interactive preset from the workspace's Runtime tool-calling table, verified against the installed CLI's `--help`; if the table is absent, derive the offered flags from that help and explain their effect
 - the **bare launch token**, with the consequence stated: every worker pauses at its own approvals
 
-A worktree separates files, but does not sandbox commands, credentials, or network access; an external container or VM supplies that boundary. Do not pass non-interactive subcommands such as `opencode run` through `agent start`; verify flags on the interactive launch command. Codex launches always add `--no-daemon` (see **Start agent** in `herdr-commands.md`); it is required, not a permission choice.
+A worktree separates files, but does not sandbox commands, credentials, or network access; an external container or VM supplies that boundary. Do not pass non-interactive subcommands such as `opencode run` through `agent start`; verify flags on the interactive launch command.
 
 The answer becomes `CODING_CLI`: the launch token plus flags. Under `herdr agent start`, flags go after `--`, never inside `--kind`.
 
@@ -36,15 +36,11 @@ Name the affected issues and their repos in the question, then offer:
 
 | Mode | Each worker gets | Concurrency | Cost |
 | :--- | :--- | :--- | :--- |
-| `worktree` | its own git worktree and branch | parallel, no file collisions | one checkout per issue on disk |
+| `worktree` | its own git worktree and branch | parallel, no collisions | one checkout per issue on disk |
 | `branch` | its own branch in the shared checkout | **serial only** — one checkout cannot hold two branches at once | none |
 | `shared` | the orchestrator's folder and branch | parallel, collisions possible | none |
 
 `worktree` is the recommended default whenever more than one open sub-issue touches the same repo — it is the only mode that makes same-repo parallelism safe, and the kit's guide already sanctions locally worktree-isolated agents.
-
-A worktree isolates files, not ports, databases, Compose projects, or gitignored setup files (`.env*`). Name any shared runtime resource the workers' tests start in this question; serialize those workers or confirm per-worker ports.
-
-When **Discover** found blocked pairs, list them here and ask whether each blocked issue dispatches after its blocker completes. **User away →** hold blocked issues until their blocker completes.
 
 `branch` cannot run parallel workers against one repo: two workers checking out two branches in one working folder overwrite each other. Choosing `branch` for a same-repo set means serial dispatch — say that in the question rather than discovering it at fan-out.
 
@@ -62,14 +58,9 @@ Tabs labelled `[<launch token>] - <TRACKER_TAG> #<n>`, or live agents holding th
 
 In `worktree` mode, herdr backs the checkout itself:
 
-Resolve the issue's owning repository and requested base before creation, preserving unrelated changes. Inspect the live worktree command for a placement option; create only when it can honor `<project-repo>/.worktrees/<task-name>`. Add the owning repo's `/.worktrees/` ignore entry if missing, verify the actual destination is ignored and untracked, and pass the verified placement option when available. Unsupported placement means stop that worker's setup, not a default-location checkout or Git fallback.
-
 ```bash
-herdr worktree create --cwd <owning-repository> \
-  --branch <branch-name> --base <resolved-base> \
-  --path <owning-repository>/.worktrees/<task-name> --label "<tab label>" --no-focus
+herdr worktree create --workspace "$HERDR_WORKSPACE_ID" --cwd "$PWD" \
+  --branch <branch-name> --base <default-branch> --label "<tab label>" --no-focus
 ```
 
-`--workspace` and `--cwd` are alternative ways to select the repository; pass one. herdr 0.9 honors `--path` exactly and opens a linked workspace for the checkout.
-
-Read the resulting workspace, tab, pane, and checkout path from JSON. Verify canonical placement and repository/branch/base identity before launch; mirror only the missing ignore entry into the destination, and preserve source changes. Save the worker's context separately when a linked workspace is created. Never predict IDs or hand-roll `git worktree add`. In `branch` and `shared` mode use **Create tab**; never create a worktree the user did not choose.
+Read the resulting workspace, tab, pane, and checkout path from the JSON response. Worktree creation can create a linked workspace; save that worker's context separately from the caller's. Never predict IDs or hand-roll `git worktree add`. In `branch` and `shared` mode use **Create tab** instead, and never create a worktree the user did not choose.

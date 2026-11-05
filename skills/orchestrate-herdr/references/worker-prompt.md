@@ -1,60 +1,24 @@
 # Worker prompt
 
-Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
-
 One prompt per worker, filled from that worker's assigned issue. Never send the full spec; each worker owns exactly one issue unless the user asked for the same task on every tab.
 
 Fill `TRACKER` with the workspace tracker per **Resolve** in [`tracker-map.md`](tracker-map.md), `ISSUE` with the issue's native identifier (`42` on GitHub, `PRWL-101` on Linear), and `ISSUE_URL` with its link.
 
 `BRANCH` follows `ISOLATION`. In `worktree` and `branch` mode it is that issue's branch — Linear supplies `gitBranchName`, GitHub has no native name so use `<issue-number>-<slug>`. In `shared` mode there is no per-issue branch: drop the `BRANCH` line and the clause naming it, rather than sending an empty field.
 
-`REPORT_DIR` is an absolute directory outside the checkout for `ac-map.md`: `/tmp/<issue-id>/` unless the caller names a log directory.
-
-`LESSONS` is filled only by `/factory run`, with the lesson lines it passes for this issue's project. Otherwise drop the `LESSONS` line and the sentence naming it.
-
-Append the verified checkout and instruction block from `checkout-binding.md`. Set the expected branch from `BRANCH`, or the recorded shared branch in shared mode; never infer checkout identity from the issue.
-
 ```md
 TRACKER: [GitHub|Linear]
 ISSUE: [NATIVE_IDENTIFIER]
 ISSUE_URL: [ISSUE_URL]
 BRANCH: [BRANCH_NAME]
-LESSONS: [LESSON_LINES]
-REPORT_DIR: [ABSOLUTE_DIRECTORY_OUTSIDE_CHECKOUT]
 
-Work only on this issue on BRANCH. Follow workspace local-commit authority.
+Work only on this issue, committing only to BRANCH.
 
-Use the supplied checkout record and instructions for project/repository context.
+Infer project/repo context from the assigned issue.
 
-Drive each seam with `/tdd-loop` directly when available; use `/tdd` only as
-test-quality reference. Never auto-invoke user-only `/implement`. Without
-`/tdd-loop`, reproduce the failure with a test and make it pass; still report
-the command and passing output. In `worktree` or `branch` mode, commit each green step to BRANCH; task-branch
-commits are local engineering commits and need no ship skill. In `shared`
-mode, commit only when the workspace permits commits on that shared branch;
-otherwise return verified uncommitted changes for the ship skill. Never push
-or open a PR.
-
-Before coding, read the issue's acceptance criteria, any issues labelled
-`qa-escape` for this area, and the `## QA escape guards` lines in AGENTS.md.
-Map every criterion to a test, to `agentic-qa (<surface>)` when only a running
-app can prove it, or to a deferral with its reason. Never report UI behavior
-as verified from unit tests. Keep the map per path: one row per criterion for
-each of happy, edge, failure and alternative, or a row saying that path does
-not apply and why, plus the span check. Write the full map to `ac-map.md`
-in REPORT_DIR. It holds only the rows and the span check: scenario, proof,
-and a one-line deferral or not-applicable reason, never implementation
-reasoning. QA, shipping and review read that file.
-
-A criterion a user would see is done only when a user can reach it: name the
-route, menu item, button, or form that opens it in its AC map row. Before
-changing a rule, format, or field, find every place that already reads it and
-list each under Decisions as updated or unaffected.
-
-Follow each line under LESSONS above. Never edit the issue body, its
-acceptance criteria, or anything under `specs/factory/`, and never delete a
-test or remove an assertion to reach green; a test whose contract must change
-is named under Decisions with the reason.
+Use `/tdd-loop` for the test-first procedure when installed and `/tdd` for
+test quality guidance. If neither is installed, reproduce the failure with a
+test and make it pass; still report the command and passing output.
 
 Do not work on the full spec. Do not redo spec orchestration. Do only the
 issue-level discovery this issue needs.
@@ -62,9 +26,6 @@ issue-level discovery this issue needs.
 Read and write issue state only through TRACKER above.
 
 Avoid unrelated changes.
-
-If tests need a gitignored file missing from this checkout (`.env*`, local
-config), report blocked naming it; never copy secrets between checkouts.
 
 Sub-agents: dispatch local lanes automatically for independent work — never
 cloud agents; announce the lane count at dispatch and report each lane as it
@@ -80,9 +41,7 @@ your tooling injects.
 Report back when completed, errored, or blocked.
 
 Completion requires test evidence: the test command and its passing output.
-End the report with four fields, one line each:
-Status: <completed | blocked — decision needed | errored — cause>
-AC map: <ac-map.md path> — <AC-n path → test name | agentic-qa (surface) | deferred — why; every criterion listed>
+End the report with two fields, one line each:
 Decisions: <choices made that the issue didn't dictate, or "none">
 Open items: <what a next session must resolve, or "none">
 ```
@@ -93,6 +52,6 @@ The sub-agent paragraph opens with the kit's canonical lane one-liner. Check the
 
 **Widening multiplies write contention.** Under `shared` isolation, replace the widening sentences with: "Delegate read-only work only. Serialize all edits in the shared checkout." Keep the normal paragraph in `worktree` and serial `branch` mode.
 
-`Report back` is a formatting instruction, not a channel: the worker has no handle on the orchestrator, so it prints its report into its own terminal and the orchestrator reads it back per **Read** in [`herdr-commands.md`](herdr-commands.md). The four closing fields exist because a labelled single line survives a terminal scrape and a free-form sign-off does not; `Status:` matters most, since herdr's `idle` means the terminal settled, not that the task finished.
+`Report back` is a formatting instruction, not a channel: the worker has no handle on the orchestrator, so it prints its report into its own terminal and the orchestrator reads it back per **Read** in [`herdr-commands.md`](herdr-commands.md). The two closing fields exist because a labelled single line survives a terminal scrape and a free-form sign-off does not.
 
 Never ask for file output here. That is the alternate-screen fallback in **Read**, used only after a read has already failed.

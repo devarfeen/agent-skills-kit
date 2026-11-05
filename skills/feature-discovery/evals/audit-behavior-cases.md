@@ -11,13 +11,13 @@ only the fixture inputs below. Withhold acceptance checks and prior results.
 Request ordered actions, questions/pauses, and the proposed user-facing report.
 Score all observable requirements for a case, not just whether its heading
 appears. Record actual decisions and limitations in
-[current audit](../../../evals/current/README.md); distinguish simulations from
+[behavioral-results.md](behavioral-results.md); distinguish simulations from
 executed commands and live observations. Never restamp routing evidence for a
 body-only review.
 
 Fixtures are fictional, not permission to access or mutate host paths. Unless
 overridden, the main session starts at the correct workspace root; PAYMENTS-API
-is mapped to its checkout; no domain-term candidates exist; only the
+is mapped to its checkout; no graph or domain-term candidates exist; only the
 supplied evidence is available. No project/test commands have been executed.
 
 ## Original regressions
@@ -25,9 +25,8 @@ supplied evidence is available. No project/test commands have been executed.
 | Case | Input and fixture | Required observable behavior |
 | :--- | :--- | :--- |
 | Dependency source is absent | Explain package X retries. `src/retry-client.ts:call` delegates to X; only its public wrapper is installed and upstream source is unreachable. | Inspect available source and consider official upstream read-only evidence. Report missing evidence; do not fetch, install, or write files. |
-| One-symbol quick trace | What does RETRY_LIMIT do? `src/retry.ts:1` sets it to 3; `retryRequest` at line 9 stops after three retries. No domain terms are discovered. | Emit Quick trace with sections 1–3, 5, and 9 (5 one line). Omitted section 7 does not force an approval question. |
-| Old rationale | `src/retry.ts` caps retries at three. Recent history lacks rationale; `acme/payments` commit `8ac114e`, dated 2026-03-09, introduced it to prevent repeated billing requests. | Read no git history during discovery. Section 8 offers a history scan naming the question, `src/retry.ts`, and a last-2-months window. Only after a yes: extend the lookup narrowly to find `8ac114e`; cite commit and date, distinguishing inference. |
-| ADR versus code | `docs/adr/0007-retry-cap.md` (accepted) says retries cap at 5; `src/retry.ts` caps at 3. | Section 1 answers 3 from current code. Section 5 cites ADR 0007 as accepted and conflicting, both cited; never rewrite either as the rule. |
+| One-symbol quick trace | What does RETRY_LIMIT do? `src/retry.ts:1` sets it to 3; `retryRequest` at line 9 stops after three retries. No domain terms are discovered. | Emit Quick trace with sections 1–3 and 8. Omitted section 6 does not force an approval question. |
+| Old rationale | `src/retry.ts` caps retries at three. Recent history lacks rationale; `acme/payments` commit `8ac114e`, dated 2026-03-09, introduced it to prevent repeated billing requests. | Use a narrowly scoped older history lookup if needed for rationale; cite commit and date, distinguishing inference. |
 
 ## Purpose-focused regressions
 
@@ -51,7 +50,7 @@ lookup to the correct repository.
 
 **Fixture:** Explain credit holds and identify context terms needing attention.
 `src/holds.ts:12` blocks charges but permits refunds; `src/refunds.ts:30` does
-not check credit holds. `GLOSSARY.md:18` says holds block charges and refunds.
+not check credit holds. `CONTEXT.md:18` says holds block charges and refunds.
 Already supplied `acme/payments#18` is a still-current approved requirement
 that refunds remain blocked. Nothing explains the divergence. No context edits
 are approved, and no tests or runtime behavior have been observed.
@@ -140,13 +139,3 @@ or application commands have run.
 but mark current runtime enablement unresolved. Identify the missing effective
 configuration/runtime evidence; do not call inspected test assertions executed
 passes or infer deployment state from a source default.
-
-## Forward regression cases — not executed
-
-These fixtures cover the current edit. They are expected decisions, not live
-execution results or replacements for the catalog-only trigger evals.
-
-| Case | Input and fixture | Required observable behavior |
-| :--- | :--- | :--- |
-| Quick trace without candidates | One project, one unbranched config lookup; glossary already covers its terms. | Use eligible Quick trace sections; do not load the full report template or candidate-approval reference. Preserve the read-only boundary. |
-| Candidate term discovered | A targeted trace finds a renamed business status in code and an old glossary definition. | Load the candidate reference, distinguish implementation from approved intent, show proposed text, and await approval before editing. |

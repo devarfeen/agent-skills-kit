@@ -1,9 +1,7 @@
 ---
 name: pixel-audit
 disable-model-invocation: true
-description: "Audit ONE page or route for visual conformance against Figma or reference screens, fix gaps with the UI library, and verify at element level. Not feature porting; never auto-chains."
-metadata:
-  version: "1.0.2"
+description: Strict per-page visual-conformance audit at the verify phase — ONE page/route against a source of truth (Figma MCP nodes, or reference screens when no Figma exists). Captures a full-size pixel inventory, writes a MISSING-vs-EXTRA defect list, fixes node-by-node reusing the project's UI library (never inlining), and refuses to say "verified" until a hard element-level gate passes — served assets confirmed, getBoundingClientRect/computed-style proof, every in-scope state checked. Use when the user asks to audit a target page against legacy or reference screens, including when no Figma exists; it audits visual conformance, not feature porting. Stays inside the given SCOPE; never auto-chains; distinct from /design-system's startup preview check.
 ---
 
 # Pixel audit
@@ -15,14 +13,14 @@ Audit **one page** against its source of truth, fix the mismatches, and prove ea
 Infer from the request; interview only for what's missing:
 
 - **TARGET PROJECT-CODE** — full Project Matrix code; sets the stack idiom and UI library.
-- **SCOPE** — the single page/route plus the states to audit (list/detail, modals, forms, empty/error/loading, responsive breakpoints, theme variants such as light/dark when the source has them). **Scope is a hard boundary — never edit other pages, routes, or steps.**
+- **SCOPE** — the single page/route plus the states to audit (list/detail, modals, forms, empty/error/loading, responsive breakpoints). **Scope is a hard boundary — never edit other pages, routes, or steps.**
 - **SOURCE OF TRUTH** — Figma node(s) via the Figma MCP companion, or reference screens / a reference implementation when no Figma exists. Name which is in use in the artifact. If neither is available, stop and ask — never audit against memory.
 - **Login / env** — local credentials only, if the page needs auth.
 
 ## Load first
 
-- The target's binding context: `GLOSSARY.md` (legacy `CONTEXT.md`) and ADRs located by page/topic or linked decision; read only relevant ADRs.
-- The project UI skill named in its design-system doc or `AGENTS.md`; fall back to detecting a `*-ui-coding` skill when unregistered. **Reuse its components; never inline.** If absent, discover tokens, library, and preview from the design-system docs or project code.
+- The target's binding context: `CONTEXT.md` and `specs/adr/`.
+- The project's `*-ui-coding` skill if it exists — it owns the component catalog, tokens, and gotchas. **Reuse its components; never inline.** If absent, discover the tokens, library, and preview from `/design-system`'s docs or the project code.
 
 ## Process
 
@@ -47,20 +45,18 @@ Per node/state, classify each mismatch:
 
 ## The defect list artifact
 
-Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`GLOSSARY-MAP.md` at repo root; legacy `CONTEXT-MAP.md`), else the repo root. The filename is keyed by PROJECT-CODE so two projects' same-named pages never collide:
+Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`CONTEXT-MAP.md` at repo root), else the repo root. The filename is keyed by PROJECT-CODE so two projects' same-named pages never collide:
 
 ```text
 <artifacts-root>/specs/pixel-audit/<TARGET-PROJECT-CODE>-<page-slug>-defects.md
 ```
 
-Inventory and screenshots sit beside it: `<TARGET-PROJECT-CODE>-<page-slug>-inventory.md` and `shots/<TARGET-PROJECT-CODE>-<page-slug>/`. Include the zero-attribution rule in both Markdown artifacts.
+Inventory and screenshots sit beside it: `<TARGET-PROJECT-CODE>-<page-slug>-inventory.md` and `shots/<TARGET-PROJECT-CODE>-<page-slug>/`.
 
 One row per defect:
 
 ```markdown
 # Pixel Audit — <page-slug> (<TARGET-PROJECT-CODE>)
-
-Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
 Source of truth: <Figma node(s) URL | reference screens/impl — name it>
 Scope: <route + states audited>
@@ -71,14 +67,14 @@ Scope: <route + states audited>
 | 2 | Row actions, extra "Delete" | /assets · list | pages/assets/index | not in source | — | delete icon present | EXTRA | ref=…, screenshot | open |
 ```
 
-**Evidence** is element-level per the verification gate. **Status** runs `open` → `awaiting verification` → `verified`, or `reopened` when the gate fails. On reruns, treat legacy `fixed` rows as awaiting verification; they need the full gate.
+**Evidence** is element-level per the verification gate — not "looks off". **Status** runs `open` → `fixed` → `verified`, or `reopened` when the gate fails.
 
 ## Fixing
 
 - **One node/page/state at a time.** Do not batch unrelated fixes.
 - **A MISSING defect that needs behaviour, data, or interface work is a slice, not a style fix.** Record the row, route it to `/to-tickets`, and do not build it here (the boundary `/polish-batch` draws).
-- **Reuse the project UI library's components.** No one-off UI unless justified and documented (per the registered project UI skill's reuse-vs-new rule).
-- **If a shared component must change, suggest `/design-system` extend for the library, preview, and registered project UI skill; never patch it page-local or auto-chain.** Confirm with the user first. Other pages consume it, and this page's frame may be the outlier. Until separately authorized, leave the row `open` under Needs user and continue; never rewrite a shared component unattended.
+- **Reuse the project UI library's components.** No one-off UI unless justified and documented (per the `*-ui-coding` reuse-vs-new rule).
+- **If a shared component must change, suggest `/design-system` extend for the library, preview, and project `*-ui-coding` skill; never patch it page-local or auto-chain.** Confirm with the user first. Other pages consume it, and this page's frame may be the outlier. Until separately authorized, leave the row `open` under Needs user and continue; never rewrite a shared component unattended.
 - **Stay strictly inside SCOPE.** Cosmetic nits on other pages or flows are captured with `/polish-batch`, never fixed here.
 - **Report, don't decide, on EXTRA:** any icon/button/field/action present in the app but absent from the source is surfaced for a user decision, not silently kept, removed, or restyled.
 
@@ -89,15 +85,14 @@ Scope: <route + states audited>
 - **State the env:** host/URL and browser/session, or local app build and simulator/device.
 - **Cross the build pipeline:** rebuild/refresh after each change and confirm the changed classes/styles/components exist in the assets the page or app actually loaded, not just source files.
 - **Prove each fix with element-level evidence:** selector/ref, `getBoundingClientRect()`, relevant computed styles, DOM, and a clipped screenshot when alignment matters. Native apps require equivalent inspector geometry, resolved styles, rendered tree, and screenshots from the local simulator. Full-page shots are overview only. If the required automation is unavailable, list pending manual checks and do not mark any row `verified` on assumption.
-- **These count as failure:** hidden, zero-size, collapsed, clipped, misaligned, wrong-size, or ignored-class elements, and a new console error versus the step-3 capture.
+- **These count as failure:** hidden, zero-size, collapsed, clipped, misaligned, wrong-size, or ignored-class elements.
 - **Falsify before declaring verified:** actively look for the ways the fix could be wrong (wrong breakpoint, stale asset, class not applied, element off-screen) and rule them out.
 - **Do not say "verified / done / fixed" unless ALL hold:** env stated · build pipeline crossed · loaded assets contain the change · element proof captured · source captured full-size · expected-vs-actual compared · every in-scope state checked. Unattempted rows stay `open`; changed rows failing the gate become `reopened`.
-- **Final sweep:** before the final report, re-run element proof for every `verified` row once on the final build. A row that drifted becomes `reopened`.
 
 ## Rules
 
 - Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issue comments, release notes, generated docs, settings, or code comments.
-- **Suggest, never auto-chain.** After the audit, suggest `/code-review`, then `/commit-push-close` / `/commit-push-pr` only when every changed row in the shipment is verified; with a reopened changed row, suggest resolving it first. Then stop.
+- **Suggest, never auto-chain.** After the audit, suggest `/code-review` then `/commit-push-close` / `/commit-push-pr`, and stop.
 - Decisions are **artifacts** — inventory and defect list live on disk, not in chat.
 - Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
 - **Local-only.** Local creds, local browser, no cloud agents.
@@ -111,12 +106,12 @@ After in-scope fixes:
 ```markdown
 Stage: pixel-audit — audited <page-slug> (<TARGET-PROJECT-CODE>) vs <source of truth>; wrote specs/pixel-audit/<TARGET-PROJECT-CODE>-<page-slug>-defects.md.
 Found: <N> defects (<M> MISSING, <E> EXTRA); <V> verified, <R> reopened; <U> EXTRA items awaiting your decision.
-Next: <resolve reopened changed rows; otherwise /code-review, then /commit-push-* for verified changes>. Untouched open rows and EXTRA decisions stay for the next pass.
+Next: /code-review the diff, then /commit-push-*. Reopened rows and EXTRA decisions stay for the next pass.
 Needs user: <EXTRA items to decide (keep/remove/restyle), or blocked states, or "none">.
 
 Suggested next skills (optional):
 - /code-review: eyeball the in-scope diff before shipping.
-- /commit-push-pr (or /commit-push-close): only when every changed row included in the shipment is verified.
+- /commit-push-pr (or /commit-push-close): ship the verified fixes.
 ```
 
 Do not proceed past the suggestion.
@@ -125,5 +120,5 @@ Do not proceed past the suggestion.
 
 - [ ] Defect list exists at `<artifacts-root>/specs/pixel-audit/<TARGET-PROJECT-CODE>-<page-slug>-defects.md`, names its source of truth and scope, one row per defect
 - [ ] `<TARGET-PROJECT-CODE>-<page-slug>-inventory.md` and `shots/<TARGET-PROJECT-CODE>-<page-slug>/` exist beside it
-- [ ] Every row's Status is `verified`, `open`, or `reopened` — none awaiting verification — and each `verified` row's Evidence cell holds element-level proof
+- [ ] Every row's Status is `verified`, `open`, or `reopened` — none left `fixed` — and each `verified` row's Evidence cell holds element-level proof
 - [ ] The reply ends at the `Suggested next skills (optional)` footer — nothing after it

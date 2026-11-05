@@ -1,9 +1,7 @@
 ---
 name: release-notes
 disable-model-invocation: true
-description: "Write PM-friendly release notes, changelogs, or session summaries from git commits or the current session, in plain language. A PR summary for review is /code-review; an agent handoff is /handoff."
-metadata:
-  version: "0.2.0"
+description: Generate clear, PM-friendly release notes, changelogs, and session summaries from git commits, feature work, or the current development session. Use when the user asks for release notes (for a date, date range, project, or feature), a changelog, a PM/stakeholder update, or to summarize what changed in plain language for non-technical readers. Summarizing a PR to aid code review is /code-review; a handoff for the next agent session is /handoff.
 ---
 
 # release-notes
@@ -25,7 +23,7 @@ asking a developer?"
 2. **Say what the user sees or does.** Name the screen, button, field, or page.
 3. **One idea per bullet, one short sentence each.** Never a paragraph. Max 2
    content bullets per Problem/Change/Impact section — the labeled
-   `What changed where:`, `Simple logic explanation:`, and `Action needed:` lines don't count;
+   `What changed where:` and `Simple logic explanation:` lines don't count;
    needing more means too much detail.
 4. **Feature names describe completed work.** Use "Scanner readiness check"
    for code, or "Login plan documented" for completed planning documents.
@@ -55,29 +53,59 @@ workspace, git history, or context the user provided.
 - **Date-based** (a date or range) — filter local git history by date, group by project, cluster commits.
 - **Session summary** — combine session-modified files, notes, and diffs into logical improvements.
 - **Feature summary** — the feature's commits explained as one Problem → Change → Impact story.
-- **Version range** (`v1.3.0..v1.4.0`, or "since the last release") — resolve local tags with `git tag --sort=-version:refname` and log `<from>..<to>`; the filename uses the `<to>` tag's commit date. A missing local tag → say so; never fetch.
 
-## Evidence collection
+## Git data collection
 
 Never run `git fetch`, `git pull`, or anything that modifies local git state.
-For date, feature, or version history, load
-[`references/git-collection.md`](references/git-collection.md); it covers
-repo discovery, ancestry, delivery claims, and diff-backed clustering.
-Session-only work uses session notes, modified files, and relevant diffs;
-load the git reference only when commit or delivery evidence is needed.
+Read only what is already available locally.
 
-Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
+### Multi-repo workspaces
 
-Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes. Lanes return summaries of hashes, files, user-visible changes, grouping, and uncertainty; the main session owns clustering, wording, QA steps, and file output.
+1. Resolve all in-scope repositories from workspace folders and the Project
+   Matrix. Confirm each with `git -C <path> rev-parse --show-toplevel`;
+   worktrees, submodules, and deeper repositories count too.
+2. Run the log in **each** repo, never only the workspace root:
+   ```bash
+   git log --all --after="YYYY-MM-DDT00:00:00" --before="YYYY-MM-DDT23:59:59" --oneline --no-merges
+   ```
+   Confirm the intended integration branch from local configuration or user
+   context. Check each commit with `git merge-base --is-ancestor <hash> <ref>`:
+   exit 0 means merged locally, 1 means not merged, other exits mean unknown.
+   Label unmerged work "in progress on `<branch>`". Local ancestry alone
+   does not prove release or deployment; say "shipped" only with existing
+   release evidence or user confirmation. Otherwise state delivery is unconfirmed.
+3. If the user names a project and no commits are found, say so explicitly:
+   "No commits found for <Project> on <date>. The local branch may not be up to
+   date — try running `git pull` in that repo." Never silently omit a project.
+
+### Project discovery
+
+Map commits to projects via the `AGENTS.md` Project Matrix, repo docs, paths,
+or user context. Name the full PROJECT-CODE from the Project Matrix everywhere; never mix one project's conventions, tokens, or components into another.
+
+### Agent use
+
+Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes. Split lanes by
+repo, date range, or feature cluster; lanes return summaries — commit
+hashes, affected files, user-visible changes, likely grouping, uncertainty —
+never transcripts; the main session owns clustering, plain-language rewriting,
+QA-step quality, and file output.
 
 Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field.
+
+## Commit clustering
+
+Never narrate commit-by-commit — cluster related commits into one PM-facing
+Problem → Change → Impact change. Commits sharing a product, feature or
+workflow, bug, file area, or one objective cluster together (iterative and
+bugfix sequences included); when uncertain, keep them separate.
 
 ## Output format
 
 One markdown file, filled from the mode's asset skeleton — the
 skeletons are the single format source:
 
-- Date-based / date-range / version-range / feature mode →
+- Date-based / date-range / feature mode →
   [`assets/release-notes-template.md`](assets/release-notes-template.md)
 - Session summary →
   [`assets/session-summary-template.md`](assets/session-summary-template.md)
@@ -103,9 +131,6 @@ Filling rules:
 - **User-visible detail** goes on the optional `What changed where:` line
   under **Change** — the setting, page/screen, element, or route, only when
   commits/diffs reveal it; otherwise omit the line.
-- The optional `Action needed:` line under **Impact**: what users or operations must do —
-  re-login, a new setting, a migration, an env key. Omit the line when the
-  diffs show nothing.
 - Commit hashes appear only under **Commits Included**, one per bullet (the
   session skeleton's `(uncommitted session work)` fallback covers no-commit
   sessions).
@@ -117,10 +142,9 @@ Save under `<artifacts-root>/specs/release-notes/`.
 Zero attribution: never add or leave co-author, AI, or tool attribution in
 commits, PRs, issue comments, release notes, generated docs, settings, or code comments.
 
-Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`GLOSSARY-MAP.md` at repo root; legacy `CONTEXT-MAP.md`), else the repo root.
-With neither a workspace file nor a mapped context root, resolve each in-scope
-repo separately and write one file per repo. Mapped contexts use their resolved
-root; do not replace it with a per-repo fallback.
+Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`CONTEXT-MAP.md` at repo root), else the repo root.
+Multi-repo workspaces *without* a `.code-workspace` file get one file per
+repo, under each repo's own `specs/release-notes/`.
 
 Filenames — `D-Month-YYYY`, no leading zero, Title Case English month:
 `10-March-2026.md`; date ranges `10-March-2026-to-12-March-2026.md`.

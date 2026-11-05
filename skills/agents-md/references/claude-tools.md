@@ -1,6 +1,6 @@
 Tool-calling index: [`tool-calling.md`](tool-calling.md).
 
-> Last verified: 2026-09-28 against installed claude 2.1.283 — flag/command surface via installed `--help`; internal tool names via official docs or the shipped binary; re-verify on touch (see CONTRIBUTING sync map). Question tool verified 2026-10-22 against [official source](https://code.claude.com/docs/en/tools-reference).
+> Last verified: 2026-09-28 against installed claude 2.1.283 — flag/command surface via installed `--help`; internal tool names via official docs or the shipped binary; re-verify on touch (see CONTRIBUTING sync map).
 
 Authoritative tool reference: https://code.claude.com/docs/en/tools-reference
 
@@ -19,18 +19,16 @@ Zero attribution: omit co-author, AI, and tool attribution from all output.
 | `WebSearch` | `WebSearch` |
 | `WebFetch` | `WebFetch` |
 | Skill invocation | `/skill-name`, the built-in `Skill` tool, or automatic loading when the request matches the skill `description` |
-| Ask the user a question (UI) | `AskUserQuestion` (1–4 questions per call, 2–4 options each, `header` ≤12 chars, `multiSelect`; free-text "Other" added automatically) |
 
 **Key Notes:**
 
 - Tool names are the exact strings used in permission rules (`permissions.allow`/`deny`), subagent `tools` lists, and hook matchers. Permission patterns also accept file globs and domain filters: `Read(~/secrets/**)`, `Edit(/src/**)`, `Agent(Explore)`, `WebFetch(domain:example.com)`.
 - Task tracking uses `TaskCreate` / `TaskGet` / `TaskList` / `TaskUpdate` / `TaskStop`. `TodoWrite` is disabled by default; set `CLAUDE_CODE_ENABLE_TASKS=0` to re-enable it.
 - `allowed-tools` pre-approves listed tools during the invoking turn; it does not restrict which tools are callable. Use permission deny rules or supported `disallowed-tools` to restrict access. Verified 2026-09-09 against [skill permissions](https://code.claude.com/docs/en/skills#pre-approve-tools-for-a-skill).
-- Claude CLI (v2.1.277+) reads `AGENTS.md` directly when no `CLAUDE.md`, `.claude/CLAUDE.md`, or `CLAUDE.local.md` sits in the working directory or above it; one that does must import `@AGENTS.md` or the generated rules never load. The `agents-md` skill emits no `CLAUDE.md`. Verified 2026-10-12 against [memory docs](https://code.claude.com/docs/en/memory#agents-md).
+- Claude CLI reads `CLAUDE.md`, not `AGENTS.md`, as its canonical workspace file; keep `AGENTS.md` canonical and write a `CLAUDE.md` shim importing only it (`@AGENTS.md`) — the pattern the `agents-md` skill emits.
 - **Memory:** auto memory is on by default (`autoMemoryEnabled` in settings; `/memory` to toggle); native project memory is user-local. Do not create, import, symlink, or sync repo memory files. See [`memory-global-defaults.md`](memory-global-defaults.md).
 - Other built-in tools available for permission / hook matchers: `AskUserQuestion`, `EnterPlanMode` / `ExitPlanMode`, `EnterWorktree` / `ExitWorktree`, `LSP`, `Monitor`, `NotebookEdit`, `PowerShell` (Windows default; opt-in elsewhere via `CLAUDE_CODE_USE_POWERSHELL_TOOL=1`), `ToolSearch`, `WaitForMcpServers`, `ScheduleWakeup`, `PushNotification`, `RemoteTrigger`, `SendMessage`, `ShareOnboardingGuide`, `Artifact`, `EndConversation`, `ListAgents`, `ReportFindings`, `SendFeedback`, `SendUserFile`, `Skill`, `SubagentHandback`, `TaskOutput` (deprecated), `Workflow`, `CronCreate` / `CronList` / `CronDelete`, `ListMcpResourcesTool` / `ReadMcpResourceTool`.
 - `EnterWorktree` switches the session's cwd into a worktree it creates under `.claude/worktrees/`, and only fires when the user or `CLAUDE.md` says "worktree". Its base ref follows the `worktree.baseRef` setting — `fresh` (default) branches from `origin/<default-branch>`, so local unpushed commits are absent; `head` branches from local HEAD. To land a worktree under the project-local `.worktrees/` path the generated rules mandate, `git worktree add .worktrees/<name>` first, then `EnterWorktree` with that `path` — a path outside `.claude/worktrees/` prompts for approval. `ExitWorktree` takes `keep` or `remove`. No CLI setting moves `.claude/worktrees/` (`worktree.location` is read only by Desktop for SSH sessions); a `WorktreeCreate` hook replaces creation entirely.
-- `AskUserQuestion` is unavailable in `Agent`-spawned subagents, removed by `--permission-prompts none`, and denied in `dontAsk` mode; `askUserQuestionTimeout` can auto-submit. Otherwise ask in chat.
 - Multi-repo workspace policy: use workspace-root MCP config.
 - Highest elevated permission launch: `claude --dangerously-skip-permissions`, equivalent to `claude --permission-mode bypassPermissions`. This bypasses the permission layer.
 - For exact config-file placement by tool, use [`tool-calling.md`](tool-calling.md).

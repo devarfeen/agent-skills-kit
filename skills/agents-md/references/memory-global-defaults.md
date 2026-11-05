@@ -1,18 +1,14 @@
 # Native Memory Defaults By CLI
 
-Zero attribution: omit co-author, AI, and tool attribution from all output.
-
 > Human setup reference. Never loaded during `AGENTS.md` generation — open it
 > only when the user asks to enable a CLI's native memory. Re-verify a snippet
 > against its linked docs on touch (CONTRIBUTING sync map).
 
-Owner-applied snippets for **user-level** config. Merge into existing files; do not overwrite unrelated keys. Agent-written Markdown and settings must explicitly state zero attribution. TOML supports a policy comment; for strict JSON with no schema-supported policy field, show the settings patch for the owner instead of writing an invalid key or comment. Instruction-file snippets below carry the rule themselves.
+Copy-paste snippets for **user-level** config. Merge into existing files; do not overwrite unrelated keys.
 
-This kit creates no repo `MEMORY.md`, wiki, or discovery memory. Use each CLI's native memory only when it provides one. Shared rules live in generated `AGENTS.md`, with `GLOSSARY.md` / `specs/adr/` as binding project context when those files exist.
+This kit creates no repo `MEMORY.md`, wiki, discovery, or default knowledge-graph memory. Use each CLI's native memory only when it provides one; graph/index companion artifacts are never binding memory. Shared rules live in generated `AGENTS.md`, with `CONTEXT.md` / `specs/adr/` as binding project context when those files exist.
 
 ---
-
-Contents: [Codex CLI](#codex-cli) · [Claude CLI](#claude-cli) · [GitHub Copilot CLI](#github-copilot-cli) · [Cursor CLI](#cursor-cli) · [Opencode CLI](#opencode-cli) · [Antigravity CLI](#antigravity-cli) · [Quick reference](#quick-reference)
 
 ## Codex CLI
 
@@ -20,7 +16,6 @@ Contents: [Codex CLI](#codex-cli) · [Claude CLI](#claude-cli) · [GitHub Copilo
 **Docs:** [Memories](https://developers.openai.com/codex/memories), [Config reference](https://developers.openai.com/codex/config-reference)
 
 ```toml
-# Zero attribution: never add or leave co-author, AI, or tool attribution in output.
 [features]
 memories = true
 
@@ -51,10 +46,9 @@ Optional global reminder in `~/.claude/CLAUDE.md`:
 ```markdown
 ## Native Memory
 
-- Zero attribution: never add or leave co-author, AI, or tool attribution in output.
 - Use Claude's native project memory for user-local recall.
 - Do not create or sync repo MEMORY.md files.
-- Shared project rules come from AGENTS.md, GLOSSARY.md, and ADRs.
+- Shared project rules come from AGENTS.md, CONTEXT.md, and ADRs.
 ```
 
 - `autoMemoryDirectory` is **user/local settings only** (not project `settings.json`).
@@ -71,11 +65,10 @@ Optional global reminder in `~/.claude/CLAUDE.md`:
 ```markdown
 ## Memory
 
-- Zero attribution: never add or leave co-author, AI, or tool attribution in output.
 - Prefer `/memory on` in CLI sessions (`/memory show` to verify).
 - Use Copilot Memory for GitHub-hosted user/repo recall when enabled.
 - Do not create or sync repo MEMORY.md files.
-- Shared project rules come from AGENTS.md, GLOSSARY.md, and ADRs.
+- Shared project rules come from AGENTS.md, CONTEXT.md, and ADRs.
 ```
 
 - No `memory` key in `~/.copilot/settings.json`; enablement is account + `/memory` slash commands.
@@ -97,7 +90,7 @@ Optional global reminder in `~/.claude/CLAUDE.md`:
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": ["AGENTS.md", "GLOSSARY.md"]
+  "instructions": ["AGENTS.md", "CONTEXT.md"]
 }
 ```
 
@@ -115,7 +108,7 @@ Optional global reminder in `~/.claude/CLAUDE.md`:
 
 ## Quick reference
 
-Shared project context in every runtime: `AGENTS.md`, `GLOSSARY.md`, ADRs.
+Shared project context in every runtime: `AGENTS.md`, `CONTEXT.md`, ADRs.
 
 | Runtime | Native memory handling |
 | :--- | :--- |

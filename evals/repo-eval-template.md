@@ -1,7 +1,5 @@
 # Repo eval
 
-Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
-
 Kit-wide health. Skills can each score 5/5 and the kit still be broken — this
 sheet catches what per-skill scoring cannot see.
 
@@ -11,7 +9,7 @@ sheet catches what per-skill scoring cannot see.
 bash tools/validate.sh
 ```
 
-Nineteen checks: frontmatter (name matches folder, kebab-case, description present,
+Fourteen checks: frontmatter (name matches folder, kebab-case, description present,
 ≤1024 chars, parses as **strict YAML**), duplicated-by-design copies
 byte-identical, manifest↔folder agreement in both directions, README table rows,
 relative links and cross-file anchors resolve, zero-attribution tripwire on files
@@ -20,11 +18,8 @@ trigger-eval sets parse, **eval provenance** — every live description still
 matches the one judged in the run its `last_run` records — invocation parity
 (`disable-model-invocation` ⇔ `agents/openai.yaml` with
 `allow_implicit_invocation: false`), SKILL.md body word ceiling (1500),
-canonical one-liners byte-exact where used, no placeholder scaffolding in
-`references/` or `assets/`, a version bump on every changed skill, one plugin
-group per skill, no hidden zero-width or bidi characters, companion credits,
-the `agents-md` template byte budget, and the description budgets (200
-characters each, 3,000 total for model-invocable skills).
+canonical one-liners byte-exact where used, and no placeholder scaffolding in
+`references/` or `assets/`.
 
 Green is a gate, not a score. It proves nothing about whether the skills are good.
 
@@ -45,7 +40,7 @@ Green is a gate, not a score. It proves nothing about whether the skills are goo
 
 ## Kit score
 
-Average the per-skill averages from the per-skill entries in `evals/current/skills-audit.md`.
+Average the per-skill averages from each `skills/<name>/evals/final.md`.
 Record the date, the rubric version, and how many readers scored each skill —
 a single-reader pass and a panel are not the same evidence.
 

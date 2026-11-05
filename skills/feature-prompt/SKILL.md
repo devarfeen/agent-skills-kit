@@ -1,16 +1,14 @@
 ---
 name: feature-prompt
 disable-model-invocation: true
-description: "Turn a feature idea, change request, or rough requirement into a small prompt for grill-with-field. An ADR, even as a prompt, is /to-spec; how existing behaviour works is /feature-discovery."
-metadata:
-  version: "0.3.4"
+description: "Use when the user wants to turn a feature idea, change request, or rough requirement into a small prompt for grill-with-docs. When cheap repo exploration reveals domain terms missing from or stale in CONTEXT.md, surface those candidate terms for user approval before any context update. Post-decision artifacts route onward instead: turning an ADR into a spec or implementation prompt is /to-spec, and investigating how existing behaviour works is /feature-discovery."
 ---
 
 # feature-prompt
 
 Produces the smallest useful handoff for the next step — not an implementation
-spec. `grill-with-field` will challenge the plan, sharpen domain terms, update
-`GLOSSARY.md`, and offer ADRs only for hard decisions.
+spec. `grill-with-docs` will challenge the plan, sharpen domain terms, update
+`CONTEXT.md`, and offer ADRs only for hard decisions.
 
 ## Output contract
 
@@ -24,26 +22,24 @@ What is needed:
 [The change to make. One short paragraph or 2-4 bullets.]
 
 Why it is needed:
-[The problem, user pain, business reason, or workflow gap — so grill-with-field
-can challenge tradeoffs, not just wording — and what happens if nothing is
-built.]
+[The problem, user pain, business reason, or workflow gap — so grill-with-docs
+can challenge tradeoffs, not just wording.]
 
 Expected end result:
 [Observable done state. Prefer user-visible behavior, passing checks, or a
-demo flow; seeds the later acceptance criteria. Name the empty, loading,
-error, and recovery behavior, each role that sees it, and one thing that must
-not happen.]
+demo flow; seeds the later acceptance criteria.]
 
 Known limits:
-[Hard constraints, non-goals, compatibility needs, or exclusions
+[Conditional. Hard constraints, non-goals, compatibility needs, or exclusions
 already known. When intake was split, list the deferred slices as explicit
-non-goals. Always include the zero-attribution rule.]
+non-goals so the scoping decision survives in the artifact.]
 
 Open questions:
-[Conditional. Real unresolved questions for grill-with-field to attack.]
+[Conditional. Real unresolved questions for grill-with-docs to attack.]
 ```
 
-The first five sections are always present; omit `Open questions` when none remain.
+Emit `Known limits` and `Open questions` only when useful; the other four
+sections are always present.
 
 ## Rules
 
@@ -53,8 +49,9 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 
 - Start from free-form intake. Infer first; ask only when `What is needed` is
   unclear or project/context cannot be inferred safely.
-- Use repo evidence when cheap: Project Matrix, cwd, `GLOSSARY.md`,
-  `GLOSSARY-MAP.md`, and ADR names. Do not run a broad code scan by default.
+- Use repo evidence when cheap: Project Matrix, cwd, `CONTEXT.md`,
+  `CONTEXT-MAP.md`, and ADR names. Do not run a broad code scan by default.
+- Use `graphify-out/graph.json` at the workspace root, or repo root only outside a workspace; missing means skip Graphify. Query before raw search and verify hits against current source. Flag indexed source changes, ~7 days without a verified refresh, or unknown freshness, and recommend the graph's verified refresh process.
 
 ### Scope and slicing
 
@@ -76,18 +73,16 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 
 - Use the full Project Matrix code verbatim whenever one exists. Never
   abbreviate project codes or invent shorthand.
-- Reference existing files/modules/seams. Put "reuse existing seam vs create
-  new seam" under `Open questions` only while unresolved; otherwise record
-  the settled choice and its evidence in the contract section that names
-  the seam, never as a new section. If search finds no existing seam, name
-  the terms searched.
+- Reference existing files/modules/seams when known, and keep "reuse existing
+  seam vs create new seam" under `Open questions` explicitly — it is how
+  duplicate logic gets prevented.
 - Include only non-obvious context: constraints, architecture quirks, and
   domain rules the model cannot infer cheaply from repo scans. Omit stack
   facts the code already shows.
 - Dependency internals central and unclear → suggest fetching targeted source
   (e.g. `opensrc`) as a follow-up context step before deep grilling.
 - Keep domain words intact. Ground candidate definitions in evidence and use
-  the approval flow below; unresolved definitions belong to `grill-with-field`.
+  the approval flow below; unresolved definitions belong to `grill-with-docs`.
 
 ### Questions and output discipline
 
@@ -103,7 +98,7 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 - A vague answer to a sharp question ("as fast as possible", "all users") is
   not an answer — ask once for a number or a named segment; still vague →
   park it under `Open questions` as written.
-- Do not implement the feature, create a spec, or edit ADRs. `GLOSSARY.md`
+- Do not implement the feature, create a spec, or edit ADRs. `CONTEXT.md`
   changes happen only through the approved candidate-terms flow below.
 - Keep the final prompt spartan, direct, plain English — it is a generated
   artifact, never compressed shorthand.
@@ -111,7 +106,7 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 ## Candidate context terms
 
 Only when cheap repo evidence or user-requested exploration reveals domain
-terms missing from or stale in `GLOSSARY.md` — never run extra exploration just
+terms missing from or stale in `CONTEXT.md` — never run extra exploration just
 to fill this. The shared flow — what qualifies, presentation, the
 away-fallback, applying approvals — lives in
 [`references/context-terms.md`](references/context-terms.md). Show candidates
@@ -126,10 +121,8 @@ Sub-agents: dispatch local lanes automatically for independent work — never cl
 ## Final output
 
 1. Draft the final prompt.
-2. For non-trivial or inferred prompts, show it once for correction, listing
-   inferred facts (project, slice boundary, end result) separately from what
-   the user stated. User away → save as drafted and note at the top that it
-   is unconfirmed.
+2. For non-trivial or inferred prompts, show it once for correction. User
+   away → save as drafted and note at the top that it is unconfirmed.
 3. If candidate context terms were found, run the shared approval flow.
 4. Verify the pre-save checklist and save to the path below, then re-open the
    saved file and confirm sections and path match the approved draft, or the
@@ -138,12 +131,12 @@ Sub-agents: dispatch local lanes automatically for independent work — never cl
 5. Add only:
 
 ```markdown
-Context updated: <relative GLOSSARY.md path> [only if edited]
+Context updated: <relative CONTEXT.md path> [only if edited]
 Saved to: <relative path written>
-Next: pass this final prompt to the `grill-with-field` skill.
+Next: pass this final prompt to the `grill-with-docs` skill.
 Suggested next skills (optional):
 
-- /grill-with-field: challenge assumptions, sharpen domain terms, and confirm decisions.
+- /grill-with-docs: challenge assumptions, sharpen domain terms, and confirm decisions.
 - /handoff + /prototype: when open questions are ungrillable and need a higher-fidelity spike.
 - /to-spec: if this needs a formal spec (PRD) after grilling.
 ```
@@ -156,12 +149,12 @@ Suggested next skills (optional):
 <artifacts-root>/specs/prompts/NNNN-<feature-slug>-prompt.md
 ```
 
-Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`GLOSSARY-MAP.md` at repo root; legacy `CONTEXT-MAP.md`), else the repo root.
+Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else the per-context root (`CONTEXT-MAP.md` at repo root), else the repo root.
 
 - **`NNNN`** — scan `<artifacts-root>/specs/adr/` and `specs/prompts/` for the
-  highest existing four-digit number and increment. This avoids numbers occupied
-  when the prompt is created. ADRs have an independent sequence and may later
-  reuse a prompt number; the recorded prompt path is the link.
+  highest existing four-digit number and increment, so prompt numbers never
+  collide with ADRs. ADRs are numbered independently from `specs/adr/` alone;
+  the prompt path recorded in the ADR is the link, not the number.
 - **`<feature-slug>`** — kebab-case from `What is needed`, max 4 words, ASCII.
 - **`-prompt`** — fixed suffix marking the artifact type.
 
@@ -179,7 +172,7 @@ Resolve `<artifacts-root>`: the `*.code-workspace` directory if one exists, else
 ### File body
 
 Write exactly the final prompt body — no preface, no generated-by header —
-drop-in usable as input to `grill-with-field`.
+drop-in usable as input to `grill-with-docs`.
 
 ### Pre-save checklist
 
@@ -187,7 +180,5 @@ drop-in usable as input to `grill-with-field`.
 - [ ] `Project:` names the full Project Matrix code verbatim (when one exists)
 - [ ] For a new file, `NNNN` unique across `specs/adr/` and `specs/prompts/`; an in-place update retains its own number; slug ≤ 4 words,
       kebab-case ASCII, `-prompt` suffix
-- [ ] Split intake: deferred slices recorded under `Known limits`; the zero-attribution rule is present
-- [ ] No placeholder text (`TBD`, `TODO`, `[...]`) remains, and no two sections
-      contradict each other
+- [ ] Split intake: deferred slices recorded under `Known limits`
 - [ ] File body is the prompt only — drop-in, no preface

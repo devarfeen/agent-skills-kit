@@ -1,8 +1,6 @@
 # Skill audit template
 
-Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
-
-Copy into `evals/current/skills-audit.md` and fill in. Delete this line and the
+Copy into `skills/<name>/evals/final.md` (or `baseline.md`) and fill in. Delete this line and the
 heading above; keep the structure below.
 
 ---

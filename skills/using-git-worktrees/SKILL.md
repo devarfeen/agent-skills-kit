@@ -1,14 +1,11 @@
 ---
 name: using-git-worktrees
-disable-model-invocation: true
-description: "Set up or reuse a Git worktree when the user asks to work in a worktree, before the task skill runs. Not for branch-only requests, generic implementation, worktree questions, or cleanup alone."
-metadata:
-  version: "0.3.0"
+description: "Set up or reuse a Git worktree when the user asks to do work in a worktree, including implementing a ticket, fixing a bug, prototyping, or reviewing there. Load before the task's implementation or review skill so checkout selection happens before edits. Also use for an explicit /using-git-worktrees request. A branch-only request, generic implementation, a question about worktrees, or worktree cleanup alone does not trigger this skill."
 ---
 
 # Using git worktrees
 
-Establish a task checkout and return its verified location; setup does not implement or ship the task.
+A worktree gives a task its own checkout while sharing the repository's history. This companion establishes that checkout and returns its verified location to the calling workflow; it does not implement or ship the task.
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
@@ -19,8 +16,6 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in any o
 - The request to work in a worktree already authorizes setup. Do not ask for the same permission again. A request for only a new branch stays a branch operation; ambiguous isolation wording needs its form resolved before this skill runs.
 
 ## Rules
-
-- **User invocation, workflow exceptions.** Direct use requires explicit user invocation; implicit discovery stays disabled. Explicitly user-started `/orchestrate-t3` and `/factory run` may read and follow these instructions for checkout setup only; never call a runtime Skill tool that rejects user-only targets. Other workflows use authorized Git setup or ask the user to run this skill when needed.
 
 - **Preserve existing work.** Inspect staged, unstaged, and untracked changes in both the source and any reused checkout. Leave unrelated changes in place. Uncommitted source changes do not appear in a new worktree; if the task needs them, resolve a scoped transfer with the user before proceeding. Never stash, reset, overwrite, or copy the whole checkout as a shortcut.
 - **Keep isolation binding.** A permission error, occupied branch, or failed setup is a blocked worktree step. Report it and pause dependent edits; never fall back to writing in the original checkout without the user's explicit change of scope.
@@ -44,7 +39,7 @@ git branch --show-current
 git rev-parse HEAD
 ```
 
-Use canonical paths. Different Git and common directories suggest linked-worktree isolation; verify against `git worktree list` before treating the current checkout as reusable. A `.git` file alone proves nothing: submodules also use one. A `prunable` or registered-but-missing entry blocks reuse at that path; report it — pruning is cleanup. A superproject result identifies a submodule; resolve which repository the task targets instead of accidentally isolating the wrong one.
+Use canonical paths. Different Git and common directories suggest linked-worktree isolation; verify against `git worktree list` before treating the current checkout as reusable. A `.git` file alone proves nothing: submodules also use one. A superproject result identifies a submodule; resolve which repository the task targets instead of accidentally isolating the wrong one.
 
 Reuse an existing worktree only when it belongs to this task and matches the requested branch/base and lives under that project repository’s `.worktrees/`. A harness-created worktree counts; do not nest another by default. An explicit request for a new worktree still requires a new one. Leave unrelated or actively owned worktrees alone. For a suitable detached checkout, report detached state and preserve harness ownership; create a named branch only if the task requires one and the runtime permits it.
 
@@ -56,7 +51,7 @@ Prefer an exposed native worktree tool when it can honor the requested repositor
 
 Create each task checkout under **that project's own repository** at `.worktrees/<task-name>`. Resolve the owning repository root from the primary checkout in `git worktree list`; do not create a workspace-wide container, use a sibling project's repo, or nest `.worktrees/` inside a linked checkout. Multi-project tasks need one worktree per affected repository. A native tool qualifies only if it can use this placement; otherwise use Git directly within the same authorization.
 
-Before creation or reuse, add `/.worktrees/` once to the owning repository's `.gitignore` and verify the actual destination is ignored, per [`references/ignore-rule.md`](references/ignore-rule.md). Tracked content under `.worktrees/` → stop setup and report it; never untrack or remove it automatically.
+Before creation or reuse, ensure the owning repository's `.gitignore` contains `/.worktrees/`, adding that exact entry once while preserving existing content. Leave the edit uncommitted for the authorized shipping workflow. Verify the **actual destination** with `git check-ignore -v -- <path>` from the owning repository, and confirm no tracked files occupy `.worktrees/`. An ignored directory with another name or from another project is irrelevant. If existing tracked content conflicts, stop setup and report it; do not untrack or remove it automatically. Recheck the selected child path before creation.
 
 Choose a valid task branch and unused destination. Resolve the intended base to a commit first. For a new branch:
 
@@ -70,11 +65,11 @@ For an existing branch, use `git worktree add "$worktree_path" "$task_branch"` o
 
 Set an explicit working directory for every subsequent command; a shell's `cd` may not persist across tool calls. Confirm the destination appears in `git worktree list`, and check its repository root, branch or detached state, `HEAD`, and status. Compare a newly created branch's `HEAD` with the recorded base commit. Verify the source checkout's branch and pre-existing changes remain intact, apart from the reported additive `.gitignore` entry.
 
-Mirror the rule into the destination's `.gitignore` per [`references/ignore-rule.md`](references/ignore-rule.md); never copy the source file wholesale.
+Ensure the destination’s `.gitignore` also contains `/.worktrees/`; add only that missing entry, never copy the source file wholesale. This makes the rule shippable on the task branch while preserving any unrelated source edits. Report the source and destination ignore edits separately.
 
 Read destination-specific instructions and use the project's documented setup, lockfiles, package manager, and verification command. Reuse completed native setup; do not blindly install dependencies or copy secrets. Confirm containers and test runners mount or execute this checkout rather than the source checkout. Skip dependency setup in a docs-only repository when none is needed.
 
-Before a baseline that starts services, check for collisions with the source checkout — fixed ports, a shared local database that migrations would change — and use the project's documented override, else report a blocker. Run the relevant baseline before task edits and record the command, checkout, and result. Missing tools or environment mean unverified, not passing. For baseline failures, continue only if existing user instructions already authorize working past those failures; otherwise report the evidence and ask whether to proceed or investigate. Unrelated repairs need their own scope.
+Run the relevant baseline before task edits and record the command, checkout, and result. Missing tools or environment mean unverified, not passing. For baseline failures, continue only if existing user instructions already authorize working past those failures; otherwise report the evidence and ask whether to proceed or investigate. Unrelated repairs need their own scope.
 
 ## Output
 
@@ -84,7 +79,7 @@ Return at most three bullets, with the shortest decisive verification evidence:
 - Baseline: `bash tools/validate.sh` in that checkout — passed; source branch and pre-existing edits preserved.
 - Handoff: bind task commands and edit paths to this verified checkout; recheck identity before the first write and after handoffs or restarts. Preserve workspace instructions; report source-only `.gitignore` edits.
 
-On a blocker, replace the handoff with the blocked step and needed input. Stop setup here. After explicit invocation within an authorized task, or setup loaded by an authorized workflow exception, return the checkout record so that task continues without another permission prompt. A setup-only request ends here; recommend at most one next skill, never auto-chain a new workflow.
+On a blocker, replace the handoff with the blocked step and needed input. Stop this setup skill here. If invoked within an already-authorized task, return control so that task continues in the verified checkout without another permission prompt. A setup-only request ends here; recommend at most one next skill, never auto-chain a new workflow.
 
 ## Completion criteria
 

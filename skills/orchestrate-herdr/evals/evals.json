@@ -9,8 +9,7 @@
     },
     {
       "q": "Fan this PRD out to per-issue workers",
-      "expect": "no-trigger",
-      "route": "/ask-kit"
+      "expect": "trigger"
     },
     {
       "q": "Spin up one worker tab per open sub-issue of PRD-142 using claude",
@@ -124,22 +123,13 @@
       "q": "Mark PRWL-101 ready-for-human with a comment",
       "expect": "no-trigger",
       "route": "none"
-    },
-    {
-      "q": "Implement this whole spec in one run with parallel implementer subagents",
-      "expect": "no-trigger",
-      "route": "/implement-spec"
-    },
-    {
-      "q": "Fan this PRD out to per-issue workers in herdr; HERDR_ENV=1",
-      "expect": "trigger"
     }
   ],
   "last_run": {
-    "date": "2026-11-03",
-    "method": "3 independent fresh catalog-only judges; majority vote; no workflow execution",
-    "result": "607/607 pass",
-    "judge_model": "Inherited Claude Code session model (claude-opus-5-5); three fresh sub-agent sessions without model overrides; catalog-only, no repository access",
-    "catalog": "live kit descriptions and invocation policies + catalog-externals.md; ef048b5c8dc13dc35683148fdf2389e83f9fbab4 + uncommitted changes"
+    "date": "2026-09-28",
+    "method": "3 independent fresh catalog-only judges over the full 352-query mixed set, deterministic shuffle; each judge was instructed to read only the judge prompt, catalog, and query list, with no repository access (instruction-level isolation, not a sandbox).",
+    "result": "352/352 pass — majority vote passed every query; 349 unanimous, 3 passed 2/3 (writing-kit-skills trigger 'Move this skill's long examples out of SKILL.md properly'; design-system and port-feature no-trigger negatives split between other routes).",
+    "judge_model": "Claude Opus 5.5 (claude-opus-5-5), 3 independent Claude Code Agent-tool subagents",
+    "catalog": "tools/trigger-evals/build-catalog.sh (live kit descriptions 2026-09-28) + tools/trigger-evals/catalog-externals.md snapshot dated 2026-09-28; judged tree e45c0d73460c3186a062d425c655011fe28444de + uncommitted changes"
   }
 }

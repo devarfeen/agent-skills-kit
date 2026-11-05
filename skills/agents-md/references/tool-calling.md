@@ -6,17 +6,17 @@ Zero attribution: omit co-author, AI, and tool attribution from all output. Use 
 
 > Last verified: 2026-09-28 against all six installed CLIs (codex-cli 0.158.0, claude 2.1.283, agy 1.2.12, cursor-agent 2026.09.26-dd393fe, opencode 1.18.33, copilot 1.0.88) — flag/command surface via installed `--help`; internal tool names via official docs or the shipped binary; re-verify on touch (see CONTRIBUTING sync map).
 
-Contents: [Emitting into AGENTS.md](#emitting-into-agentsmd) · [Agent Orchestration Model](#agent-orchestration-model) · [All runtimes (index)](#all-runtimes-index)
-
 ## Emitting into AGENTS.md
 
-The `agents-md` generator fills the `## Runtime tool-calling` slot in `rules/skills.md` with exactly one untitled table, one row per runtime in this file's order, cells copied verbatim, alignment row `| :--- |`: `| Runtime | Skill invocation | Ask the user |`, from the **All runtimes (index)** table without its `Tool mapping` column.
+The `agents-md` generator fills its `### Runtime tool-calling` slot with exactly three untitled tables, one row per runtime in this file's order, cells copied verbatim, alignment row `| :--- |`:
 
-The **Parallel & background mechanism** and **Highest elevated permission** tables are reference only and never emitted — the live tool schema is the authority on dispatch, and a launch preset is the user's choice at launch, not a workspace rule.
+1. `| Runtime | Skill invocation |` — from the **All runtimes (index)** table; drop its `Tool mapping` column.
+2. `| Runtime | Parallel dispatch | Local background / async |` — from **Parallel & background mechanism by runtime**; drop `Custom agent files`.
+3. `| Runtime | Highest elevated launch / preset | Effect |` — from **Highest elevated permission by runtime**.
 
 ## Agent Orchestration Model
 
-The model itself is the generated orchestration rule in `rules/orchestration.md` (main session orchestrates role-typed local lanes and keeps the only seat for merge and final judgment); this file maps it to each runtime's concrete mechanisms. A runtime with no subagents uses a focused in-process tool pass per lane.
+The model itself is the `AGENTS.md` Non-negotiable rule **Local orchestration** (main session orchestrates role-typed local lanes and keeps the only seat for merge and final judgment); this file maps it to each runtime's concrete mechanisms. A runtime with no subagents uses a focused in-process tool pass per lane.
 
 ### Local-only policy (no cloud agents)
 
@@ -83,21 +83,21 @@ Verified against the installed CLI surface (`--help`, feature flags, shipped bun
 
 ## All runtimes (index)
 
-| Runtime | Tool mapping | Skill invocation | Ask the user |
-| :--- | :--- | :--- | :--- |
-| Codex CLI | [`codex-tools.md`](codex-tools.md) | `$skill-name` inline mention, or the `/skills` command | `request_user_input` in Plan mode (1–3 questions, 2–3 options, client adds Other); root thread only; not in `codex exec` |
-| Claude CLI | [`claude-tools.md`](claude-tools.md) | `/skill-name`, or auto on `description` match | `AskUserQuestion` (1–4 questions, 2–4 options, Other added); not in subagents or `dontAsk` mode |
-| Antigravity CLI | [`antigravity-tools.md`](antigravity-tools.md) | auto from `description`; name the skill to force activation | no named tool; `/plan` shows question prompts; otherwise chat |
-| Cursor CLI | [`cursor-tools.md`](cursor-tools.md) | `/skill-name`, or auto on `description` match | `AskQuestion` when the live schema offers it (Plan mode); skipped under `-p` |
-| Opencode CLI | [`opencode-tools.md`](opencode-tools.md) | auto via the `skill` tool on `description` match | `question` (needs permission `question: allow`; adds "Type your own answer") |
-| GitHub Copilot CLI | [`copilot-tools.md`](copilot-tools.md) | `/skill-name` | `ask_user` (one question per call; off with `--no-ask-user`; autopilot answers it) |
+| Runtime | Tool mapping | Skill invocation |
+| :--- | :--- | :--- |
+| Codex CLI | [`codex-tools.md`](codex-tools.md) | `$skill-name` inline mention, or the `/skills` command |
+| Claude CLI | [`claude-tools.md`](claude-tools.md) | `/skill-name`, or auto on `description` match |
+| Antigravity CLI | [`antigravity-tools.md`](antigravity-tools.md) | auto from `description`; name the skill to force activation |
+| Cursor CLI | [`cursor-tools.md`](cursor-tools.md) | `/skill-name`, or auto on `description` match |
+| Opencode CLI | [`opencode-tools.md`](opencode-tools.md) | auto via the `skill` tool on `description` match |
+| GitHub Copilot CLI | [`copilot-tools.md`](copilot-tools.md) | `/skill-name` |
 
 ### Context files (multi-repo workspaces)
 
 | Artifact | Location | Steward |
 | :--- | :--- | :--- |
-| `GLOSSARY.md` | `<artifacts-root>` | `grill-with-field` (through `domain-modeling`) |
-| `specs/adr/` | `<artifacts-root>/specs/adr/` | `grill-with-field` (through `domain-modeling`) |
+| `CONTEXT.md` | `<artifacts-root>` | `grill-with-docs` |
+| `specs/adr/` | `<artifacts-root>/specs/adr/` | `grill-with-docs` |
 
 Native CLI memory defaults: [`memory-global-defaults.md`](memory-global-defaults.md).
 

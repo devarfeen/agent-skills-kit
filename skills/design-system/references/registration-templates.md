@@ -13,7 +13,7 @@ Zero attribution: never add or leave co-author, AI, or tool attribution in commi
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issue comments, release notes, generated docs, settings, or code comments.
 
-- **Source:** <DESIGN.md path | project UI skill/library path | Figma URL | spec doc | reference app | guided-definition (approved <date>)>
+- **Source:** <Figma URL | spec doc | reference app | guided-definition (approved <date>)>
 - **Stack:** <from the Project Matrix>
 - **Tokens:** <actual path and token mechanism from the installed project>
 - **Library:** <path where the components live>
@@ -52,4 +52,29 @@ Per project. When building or changing UI for a listed project, consume its UI l
 Design system: `<docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md` · Preview: `<preview location>` · Project skill: `<ui-skill name>`.
 
 **On any UI change:** check the `<TARGET-PROJECT-CODE>` library first. Reuse covered components. For a missing reusable component, suggest `/design-system` extend and pause that dependency until authorized; do not auto-chain. Ask for a source reference when none exists. Document page-local one-offs and their reason. Per-page pixel conformance is `/pixel-audit`.
+```
+
+## 3. Fresh-seed project UI skill — frontmatter + shape
+
+Fresh-seed path only (SKILL.md owns adopt-vs-seed); match the kit's skill format.
+
+**Location.** Create it at `<project>/.agents/skills/<project-slug>-ui-coding/SKILL.md`
+— the generated AGENTS.md tells every runtime to read that canonical copy. When the
+current runtime also discovers project skills natively from its own directory (e.g.
+`.claude/skills/`, `.cursor/skills/`), add a copy or symlink there by that runtime's
+mechanism; the `.agents/skills/` copy stays canonical.
+
+```markdown
+---
+name: <project-slug>-ui-coding
+description: "UI-coding rules for <TARGET-PROJECT-CODE>: reuse the design-system library and tokens on UI changes; suggest an authorized extension for missing reusable components. Docs: <docs-root>/design-system/<TARGET-PROJECT-CODE>-design-system.md."
+---
+
+# <TARGET-PROJECT-CODE> UI Coding
+
+Zero attribution: never add or leave co-author, AI, or tool attribution in commits, PRs, issue comments, release notes, generated docs, settings, or code comments.
+
+- Tokens: <path/mechanism> · Library: <path> · Preview: <route/file> · Docs: <doc path>
+- On any UI change: check the library first; reuse before new; promote repeated markup to the library; no undocumented one-offs.
+- Suggest /design-system extend for a missing reusable component and pause that dependency until authorized; never auto-chain. Build from the reference, asking when none exists, then verify it in the preview.
 ```
