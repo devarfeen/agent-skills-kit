@@ -35,6 +35,13 @@ re-run `/agents-md` after a marker bump.
   - `/orchestrate-t3` 0.15.0: the worker prompt, which factory builders
     also get, tells workers never to load a ship skill. Before, a builder
     told to "commit" could load `/commit-push-close` on its own.
+- `/factory` 6.4.1: two factory files now agree on how a stage starts.
+  `/commit-push-pr`, `/local-to-staging`, `/staging-fix` and
+  `/staging-to-production` start as a typed command in a worker, so their
+  run authorization applies. Only `tdd-loop`, `code-review` and
+  `risk-review` are called directly. Before, one file said every
+  agent-startable skill was called directly, which skipped the run
+  authorization and left shipping waiting for an approval.
 
 ## 2026-11-03
 
