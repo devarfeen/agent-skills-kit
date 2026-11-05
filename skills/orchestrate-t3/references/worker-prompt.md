@@ -50,7 +50,8 @@ Use the supplied checkout record and instructions for project/repository context
 
 Drive each seam with `/tdd-loop` directly when available; use `/tdd` only as
 test-quality reference. Never auto-invoke user-only `/implement`. Commit each
-green step to BRANCH; never push or open a PR. Without `/tdd-loop`, reproduce
+green step to BRANCH; never push, open a PR, or load a ship skill
+(`/commit-push-pr`, `/commit-push-close`). Without `/tdd-loop`, reproduce
 the failure with a test and make it pass; still report the command and passing output.
 
 Before coding, read the issue's acceptance criteria (in its body, else its
