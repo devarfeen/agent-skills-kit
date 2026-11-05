@@ -34,7 +34,7 @@ Keep each project's commit and remote tied to its own repository. Existing draft
 
 ## Run authorization
 
-A ship skill starts only when the user invokes it or a user-started `/factory run` loads it; another skill or agent may only suggest it. The run loads `/commit-push-pr`, never `/commit-push-close`.
+A ship skill starts only when the user invokes it, when the agent loads it because the user asked in this session to ship (commit, push, open a PR, or close), or when a user-started `/factory run` loads it. Another skill, a worker, or a sub-agent never starts one on its own; it may only suggest it. The run loads `/commit-push-pr`, never `/commit-push-close`.
 
 Applies only when `/factory run` loaded the ship skill; a ship skill the user ran directly keeps every approval below.
 

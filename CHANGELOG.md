@@ -23,6 +23,18 @@ re-run `/agents-md` after a marker bump.
   Before, nothing merged or parked those PRs. Now the run parks them, says
   which condition failed, and names the person who approved as the one to
   merge.
+- Since 2026-11-03 the agent can start `/commit-push-pr` and
+  `/commit-push-close` itself, but some files still said only you could.
+  They now match:
+  - `/commit-push-pr` 0.13.1 and `/commit-push-close` 0.10.1: the shared
+    ship policy says a ship skill starts when you run it, when you ask the
+    agent to ship in this session, or when `/factory run` loads it. Another
+    skill, a worker, or a sub-agent still never starts one on its own.
+  - `/pr-feedback` 0.2.5 says it never starts `/commit-push-pr` itself. It
+    still stops and asks you to run it.
+  - `/orchestrate-t3` 0.15.0: the worker prompt, which factory builders
+    also get, tells workers never to load a ship skill. Before, a builder
+    told to "commit" could load `/commit-push-close` on its own.
 
 ## 2026-11-03
 
