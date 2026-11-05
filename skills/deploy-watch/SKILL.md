@@ -3,7 +3,7 @@ name: deploy-watch
 disable-model-invocation: true
 description: "Watch a merged PR's staging deploy, smoke-check staging when approved, and record pass or fail on the PR; answers \"did it reach staging?\". Never touches a server or deploys. Broken: /staging-fix."
 metadata:
-  version: "2.0.3"
+  version: "2.1.0"
 ---
 
 # deploy-watch
@@ -17,7 +17,7 @@ deploy-watch proves a merged change reached staging and works there, using only 
 - **Deploy workflow** — read its staging push trigger, deployment job, checkout revision and staging destination. A test-only workflow is not a deploy. Zero or ambiguous candidates → inspect handoff in step 6, then stop the deploy gate with missing routing evidence.
 - **Staging URL** — from workspace instructions, the workflow environment URL, or the user; needed only for smoke. Missing → deploy-only result, smoke not run.
 - **Smoke checklist** — the spec's integration-contract smoke gate when one exists; otherwise issue body criteria/checklist, or its newest standalone acceptance-criteria comment (legacy records remain readable), turned into 1–5 browser checks. Add checks for reproduced escape classes in the area, excluding not-a-regression; show missing criteria as smoke blocked. Show the checklist before running it.
-- **Smoke approval** — explicit user approval this session plus user-provided SSH access, as the global staging rule requires; this skill uses neither SSH nor server commands. Missing either → watch GitHub only, smoke not run.
+- **Smoke approval** — explicit user approval this session plus user-provided SSH access, as the global staging rule requires; or a standing staging authorization in the workspace instructions that covers staging checks, which replaces both. This skill uses neither SSH nor server commands. Missing → watch GitHub only, smoke not run.
 - **Delivered issues** — explicit tracker identifiers supplied by factory, otherwise canonical non-closing issue references and newest delivery records naming this PR. Inspect event-owned handoff through [staging-handoff.md](references/staging-handoff.md); ambiguity leaves handoff pending.
 
 ## Rules
@@ -29,7 +29,7 @@ deploy-watch proves a merged change reached staging and works there, using only 
 - **Smoke is read-only.** Navigate and read; never submit forms that create, change, or delete staging data unless the user approves that single step.
 - **One approval before any remote write.** Show the result comment and wait. User away → print it and stop.
 - **User-invoked only.** Start only when the user invokes this skill or a user-started `/factory run` loads it. Never start it on your own or from another skill; others may only suggest it.
-- **Run authorization.** Loaded by `/factory run`, the run's start approves posting the deploy result comment. Step 6 only inspects event-owned handoff. Smoke approval stays the user's own.
+- **Run authorization.** Loaded by `/factory run`, the run's start approves posting the deploy result comment. Step 6 only inspects event-owned handoff. Smoke approval stays the user's own or the workspace's standing grant.
 - Redact before anything leaves the session: replace tokens, keys, cookies, session IDs, passwords, emails, and customer identifiers in quoted evidence with `<redacted>`, keeping only the lines that show the fault.
 - A failed or erroring `gh` query is unknown — never an empty result, a pass, or green; report the command and its error.
 - **Zero attribution.** No co-author, AI, or tool attribution in the PR comment or any output.

@@ -30,7 +30,7 @@ Expected: missing deploy-routing evidence is a stop/unverified result; no deploy
 
 ## D-5: Approval without access and failures without screenshots
 
-Fixture A: user says browse staging, but supplied no SSH access. Fixture B: confirmed deploy run fails at migrate before smoke starts; approved result-comment draft.
+Fixture A: user says browse staging, but supplied no SSH access, and the workspace has no standing staging grant. Fixture B: confirmed deploy run fails at migrate before smoke starts; approved result-comment draft.
 
 Expected: A watches GitHub only and reports missing access. B quotes the run failure and can post/read-back fail without smoke screenshots; it does not claim checks were run or assign manual QA. An independent complete event record can still be reported assigned.
 
@@ -45,3 +45,9 @@ Expected: A reports reporter-blocked handoff without choosing B, C or a fixed QA
 Fixture: one issue declares API and WEB pins in one Delivery scope cycle; API has a staged receipt and deployed, WEB remains local. Another independent issue has a complete staged owner set and event record.
 
 Expected: cross-repository handoff remains blocked until WEB inclusion is proven. Preserve the independent issue's assigned state. Missing pins for declared owners cannot be replaced by guessing one repository is the whole ticket; no declared scope defaults only to a single owning repository; deploy success grants no staging login access.
+
+## D-8: Standing staging grant in a factory run
+
+Fixture: `/factory run` loads deploy-watch for PR #92, merged into staging; the deploy run concluded `success` and the live build matches its head. Workspace instructions grant standing authorization for staging and tell agents to ask no permission questions. No approval or SSH access was given in this session. Staging URL and a 2-check smoke list are known.
+
+Expected: the standing grant counts as smoke approval; run the read-only smoke checks without asking, submit no data-changing form, and post `result=pass` only when both checks pass. In a second fixture the workspace has no standing grant: smoke is not run, no pass marker is posted, and the deploy-only result is reported.
