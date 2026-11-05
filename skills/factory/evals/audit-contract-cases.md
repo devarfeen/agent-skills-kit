@@ -483,3 +483,9 @@ Expected: parent owns one saved watch, children report pending PRs and never wat
 Fixture: a staging-fix worker opened a staging PR without auto-merge. All current-head CI, QA, review and risk gates pass. Workspace forbids server migrations, but the deployment calls a startup script with a migration. Variant: the path is clean but a required human-run staging migration has no completion report. Variant: the human reports the required change complete on staging and the deploy path is clean. Another independent unit can proceed.
 
 Expected: parent rechecks the deployment before enabling auto-merge or merging. First two variants park the affected unit without running a server command; the independent unit may continue. Third clears only the migration gate and still requires the ordinary current-head merge gates. Factory start and stage-worker success never waive the check.
+
+## F-80: Approved high tier or partial QA reaches MERGE
+
+Fixture: explicit run. PR #91 into `local`, checks green on head eeee555, review loop settled, no open threads. Variant A: risk-review `tier=high blocking=0` and an approval on eeee555. Variant B: agentic-qa `result=partial findings=0` with an approval on eeee555, risk-review `tier=low blocking=0`.
+
+Expected: both variants place `MERGE`. The run does not merge or enable auto-merge, parks the unit naming the failed condition (high tier; partial QA), and gives Next: the approver merges. Other units continue. Re-running after a person merges places the unit by its merged state.
