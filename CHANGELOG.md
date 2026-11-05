@@ -17,6 +17,12 @@ re-run `/agents-md` after a marker bump.
   risk, so `/factory run` stopped those PRs for human review even though the
   factory had accepted the QA. A record with a missing field, or any doubt
   that the change can reach a screen, still counts as unproven.
+- `/factory` 6.4.0: a `/factory run` no longer leaves a PR stuck in `MERGE`.
+  A person's approval can move a high-risk PR, or a PR with a `partial` QA
+  result, into `MERGE`, but the run only merges low-risk PRs with full QA.
+  Before, nothing merged or parked those PRs. Now the run parks them, says
+  which condition failed, and names the person who approved as the one to
+  merge.
 
 ## 2026-11-03
 
