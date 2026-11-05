@@ -7,6 +7,17 @@ their new versions, so a workspace on an older copy can see what an update
 brings. Generated `AGENTS.md` files carry the `agents-md` marker version;
 re-run `/agents-md` after a marker bump.
 
+## 2026-11-05
+
+### Fixed
+
+- `/risk-review` 1.2.0 now accepts a complete `## QA carried forward` record
+  for the PR's latest commit, the same way it accepts a `verified` agentic-qa
+  marker. Before, a fix that kept the earlier QA result was always rated high
+  risk, so `/factory run` stopped those PRs for human review even though the
+  factory had accepted the QA. A record with a missing field, or any doubt
+  that the change can reach a screen, still counts as unproven.
+
 ## 2026-11-03
 
 ### Changed
