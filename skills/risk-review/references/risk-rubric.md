@@ -30,7 +30,7 @@ Each diff trigger cites `file:line`. A missing-evidence trigger instead cites th
 8. **Dependency change** — a new dependency, or a major-version bump of an existing one.
 9. **Size** — more than 400 changed lines excluding lockfiles and generated files, or more than 20 files.
 10. **Out of scope** — any change that the ticket's acceptance criteria do not cover.
-11. **Unproven acceptance** — the diff can reach a screen and no agentic-qa `verified` marker exists for the head SHA; or the head-bound acceptance verdict in the body or newest QA handoff is missing, or lists a criterion pending manual or deferred for any reason other than `/agentic-qa` pending.
+11. **Unproven acceptance** — the diff can reach a screen and neither an agentic-qa `verified` marker nor a complete `## QA carried forward` record (see [pr-review.md](pr-review.md)) exists for the head SHA; or the head-bound acceptance verdict in the body or newest QA handoff is missing, or lists a criterion pending manual or deferred for any reason other than `/agentic-qa` pending.
 
 12. **One-way door** — the author's `Door:` line says `one-way`; or it says `two-way` and the diff contains a one-way change: a migration with no working down path, a statement that drops, truncates, or rewrites stored data, a send to an external party (email, payment, webhook, third-party write) on a path the change newly reaches, a removed or renamed public contract, or a rotated or revoked credential. Record the claim, the verdict (`confirmed` or `contradicted`), and the `file:line`. No `Door:` line → this trigger does not fire; triggers 1, 4, and 6 still judge the content.
 
