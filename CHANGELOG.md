@@ -65,6 +65,11 @@ re-run `/agents-md` after a marker bump.
   missing, the run stops before any work starts and shows the install
   command. For several tickets it again suggests `/orchestrate-t3` as well
   as `/orchestrate-herdr`.
+- `/deploy-watch` 2.1.0 counts a standing staging authorization written in
+  the workspace instructions as smoke-test approval. Before, it needed your
+  approval in the session, but a `/factory run` never asks, so staged units
+  never reached `READY_FOR_OWNER`. Without a standing grant it still needs
+  your approval and SSH access. The smoke test stays read-only.
 
 ## 2026-11-03
 
