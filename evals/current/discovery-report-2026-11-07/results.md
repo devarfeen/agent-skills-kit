@@ -2,8 +2,9 @@
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
-Date: 2026-11-07. Source edits only; no installed skills, Lucett workspace
-files, tracker records, commits, or remote branches were changed.
+Date: 2026-11-07. This records the initial evaluation before shipping.
+No installed skills, Lucett workspace files, tracker records, commits,
+or remote branches were changed during that evaluation.
 
 ## Behavior
 
@@ -44,9 +45,46 @@ skills' provenance in Lucett's `skills-lock.json`.
 
 [Repository validation](validation.log): 19 of 20 checks pass. Check 10
 fails because the changed descriptions lack a fully passing routing snapshot.
-The changes remain an uncommitted draft and are not ready to merge.
+At the end of the initial evaluation, the changes were an uncommitted
+draft and were not ready to merge. Subsequent shipping checks are recorded below.
 `git diff --check` passes. The creator's quick validator accepts discovery;
 it rejects reporting's existing `disable-model-invocation` key, which the
 repository validator explicitly supports and checks for runtime parity.
 
 No production access, application tests, uploads, or tracker writes occurred.
+
+
+## Shipping follow-up
+
+The owner asked to commit and push to main. The source changes were already
+in local commit `7876425`; shipping retained that commit and used a branch
+for the repository's required PR flow.
+
+Two description repairs address observed routing misses without changing
+workflow bodies: `ask-kit` 0.3.2 excludes install searches and worker dispatch
+and routes existing work to factory; `commit-push-close` 0.10.3 explicitly
+accepts finished work without an existing issue and retains the testing-step
+trigger.
+
+The first repair sweep scored [604/607](ship-routing/score.log). Restoring
+the original router wording plus the exclusion scored
+[601/607](ship-routing-2/score.log). These failed attempts remain alongside
+all ballots and their actual catalog inputs.
+
+After sharpening the router boundaries and retaining the shipping triggers,
+three fresh independent catalog-only judges scored
+[607/607](ship-routing-3/score.log). The scorer refreshed the success snapshot
+and all skills' `last_run` records. Judges used the inherited Codex session
+model without overrides. The final judge instruction also clarified that
+concrete tasks take precedence over generic question phrasing; no expected
+answers or prior ballots were supplied. All grouped ballots were expanded
+by the builder into JSONL.
+
+The previous 10/10 behavior result still applies; the two additional edits
+change descriptions only. The evaluation tool tests passed: 21 trigger tests
+and 7 behavior tests. The final independent description review found no
+semantic defect and confirmed the earlier issue-creation ordering concern
+was resolved. No live application tests or tracker operations were needed.
+
+The [shipping validation log](ship-validation.log) records the final repo
+checks before the follow-up commit.

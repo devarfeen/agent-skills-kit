@@ -1,8 +1,8 @@
 ---
 name: commit-push-close
-description: "Ship issue work directly: structured commit, push, then close the issue with how-to-test steps. Use for commit, push, and close, or a bare ship it. A reviewable PR is /commit-push-pr."
+description: "Ship finished work, even without an issue: structured commit, push, then close the issue with how-to-test steps. Use for commit, push, and close, or bare ship it. A reviewable PR is /commit-push-pr."
 metadata:
-  version: "0.10.2"
+  version: "0.10.3"
 ---
 
 # commit-push-close

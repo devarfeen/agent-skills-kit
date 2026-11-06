@@ -11,6 +11,10 @@ re-run `/agents-md` after a marker bump.
 
 ### Fixed
 
+- `/ask-kit` 0.3.2 excludes install searches and worker dispatch, and
+  `/commit-push-close` 0.10.3 makes clear that finished work can ship
+  without an existing issue. These description changes address the two
+  misses found while checking the discovery and reporting update.
 - `/feature-discovery` 0.4.0 and `/report-issue` 0.2.0 now suggest only
   Matt Pocock's skills. Discovery points to `/grill-with-docs` for open
   decisions and `/to-spec` for settled changes. Issue reporting suggests
