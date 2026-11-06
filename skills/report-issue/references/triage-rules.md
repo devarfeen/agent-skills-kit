@@ -13,7 +13,7 @@ Load at step 4. Workspace issue, routing and label policy replaces any default h
 | feature | Feature | `feature` (kit default `enhancement`) |
 | maintenance | Maintenance | the label the live template applies |
 
-Read the live template with the tracker's template tool. Its `labelIds` are the template's default classification and workflow labels; resolve their names. No matching template → use the generic skeleton in [issue-body.md](issue-body.md) and say so in the draft.
+Use only classifications permitted by workspace policy; when `maintenance` is absent, map the reported outcome to an allowed class and explain it. No clear fit → ask before drafting. Read the live template with the tracker's template tool. Its `labelIds` are the template's default classification and workflow labels; resolve their names. No matching template → use the generic skeleton in [issue-body.md](issue-body.md) and say so in the draft.
 
 ## Title
 
@@ -30,7 +30,7 @@ Exactly one classification label. The workflow label is the template's default o
 5. No product, design, permission or data decision is open, including any edge case marked `decision needed`.
 6. Dependencies and blocking issues are named, or none exist.
 
-Name each failed check in the triage note. Never set `needs-info`, `ready-for-human` or `wontfix`: those are triage decisions. Never add `qa-escape`; `/qa-escape` owns it. Add another label only when workspace policy defines its meaning. A required label missing from the tracker → leave it off and report the mismatch; never create or rename a label.
+Name each failed check in the triage note. Never set `needs-info`, `ready-for-human` or `wontfix`: those are triage decisions. Never add a delivered-work label or change QA-owned states here; suggest `/triage` on the existing issue instead. Add another label only when workspace policy defines its meaning. A required label missing from the tracker → leave it off and report the mismatch; never create or rename a label.
 
 ## Priority
 

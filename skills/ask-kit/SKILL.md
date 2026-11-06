@@ -1,9 +1,9 @@
 ---
 name: ask-kit
 disable-model-invocation: true
-description: "Route kit skill-map and workflow questions or pick the next agent-skills-kit skill; names one recommendation, never runs it. Existing work: /factory. Matt-only routing: ask-matt."
+description: "Route kit skill-map questions; recommend one skill, never run it. Excludes install searches and worker dispatch. Existing spec, issue, ticket, or PR: /factory. Matt-only routing: ask-matt."
 metadata:
-  version: "0.3.1"
+  version: "0.3.2"
 ---
 
 # ask-kit

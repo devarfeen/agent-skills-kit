@@ -213,7 +213,8 @@ loaded fonts, and light and dark modes. Re-run `extend` as the design grows.
 **`feature-discovery`.** Explains how a named feature, module, or behavior
 works and cites the code behind each claim. It reads current code first,
 then ADRs for intended decisions. It changes nothing. It reads Git history
-only if you accept its offer to do so.
+only if you accept its offer to do so. Its follow-ups use only Matt's skills,
+subject to workspace rules.
 
 **`port-feature`.** Compares a REFERENCE implementation with the TARGET
 project that will receive the feature. Its gap map records what is missing
@@ -308,7 +309,8 @@ PROJECT-CODE. It sets the title, labels, priority, cycle, and due date, with
 a reason for each. It lists code-discovered edge cases separately from
 acceptance criteria. `batch` can draft up to 10 problems in one approval
 table. It creates issues only after you approve the draft and never edits
-code. Bugs in already-delivered work go to `/qa-escape`.
+code. Follow-ups use only Matt's skills: `/implement` for ready work and
+`/triage` for unresolved or already-delivered work, subject to workspace rules.
 
 **`ci-loop`.** Reads failing CI logs on an open PR, fixes problems within the
 ticket’s scope, pushes, and watches the new run. One approval covers at most
@@ -595,7 +597,9 @@ The kit adds these rules when you use those skills together:
   use `/feature-prompt`, then `/grill-with-field`, and run
   `/grill-with-field check` before the spec. `/grill-with-field` loads Matt's
   `/grilling` and `/domain-modeling` and replaces `/grill-with-docs`; where a
-  Matt skill names `/grill-with-docs`, use `/grill-with-field`. If unresolved decisions
+  Matt skill names `/grill-with-docs`, use `/grill-with-field` in that kit
+  planning flow. `/feature-discovery` and `/report-issue` keep Matt-only
+  follow-ups and do not make that substitution. If unresolved decisions
   prevent you from defining the work, use `/wayfinder` to track them as
   tickets and resolve one per session. Both paths lead to `/to-spec`.
 - **PR descriptions.** `/commit-push-pr` requires its own headings and order,

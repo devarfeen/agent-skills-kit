@@ -11,6 +11,7 @@ tracked.
 
 ## Evidence
 
+- [7 November discovery and issue reporting: 10/10 behavior cases; final routing 607/607 after description repairs](discovery-report-2026-11-07/results.md)
 - [3 November plain-language P01: 0/3 on 0.5.0 and the 0.5.1 re-run, then 1/3 with per-item limits](plain-language-p01-results.md)
 - [28 October workspace rule sync: seven modeled cases and validation](workspace-sync-results.md)
 - [All-skill audit, decisions, remaining conflict and body sizes](skills-audit.md)

@@ -546,7 +546,7 @@ to find the next unfinished step. You do not need to repeat setup or planning.
 | :--- | :--- | :--- |
 | 1. Set up the workspace once | Follow [First-Time Setup](#first-time-setup): `/agents-md`, `/setup-matt-pocock-skills`, fill the paths, then `/design-system` for UI projects. | Agents need the correct project rules, tracker, and design library before they work. |
 | 2. Understand the existing behavior | `/feature-discovery Trace checkout in SHOP` | Use the code report to decide what must change. Skip discovery for a new project with no code. |
-| 3. Clarify the request | `/feature-prompt Add checkout approvals in SHOP`, then `/grill-with-field` on the saved prompt and `/grill-with-field check` when grilling ends. If decisions prevent you from defining the scope, use `/wayfinder` first. | Resolve open questions and save the decisions before implementation starts. |
+| 3. Clarify the request | After discovery, use Matt's `/grill-with-docs` for open decisions. If decisions prevent you from defining the scope, use `/wayfinder` first. | Resolve open questions and save the decisions before implementation starts. |
 | 4. Record the agreed requirements | `/to-spec` on the agreed plan or ADR. | A spec issue gives everyone the same acceptance criteria: the conditions the result must meet. |
 | 5. Split the work | `/to-tickets` on the spec issue. | Each ticket should be testable on its own and say which other tickets must finish first. |
 | 6. Build one ready ticket | `/tdd-loop` on the ticket, optionally through `/implement`. | Choose a suitable existing solution, observe a failing behavior test, then make it pass and run wider checks. Use the skill's exception procedure when a test is impractical. |
@@ -571,7 +571,7 @@ Variations on this path:
 - **Whole-spec builds** can use `/implement-spec` instead of one `/implement` per ticket. You start it. It treats the tickets as a task graph, runs implementer subagents in their own worktrees on every ticket that is ready, and merges each onto one local integration branch. It ends with one `/code-review`, then local adversarial `/risk-review` over the combined branch, owned by the coordinator. In a kit workspace its implementers drive `/tdd-loop`, and it stops there. Its own instructions include opening a draft PR and resolving tickets, but in a kit workspace pushing, PRs, and closing issues belong to the ship skills. Inside herdr, `/orchestrate-herdr` does the same fan-out with one visible worker tab per sub-issue.
 - **PR bodies** belong to `/commit-push-pr`, which sets its own body and QA comment. Matt's `/pr` loads automatically whenever a PR body is written. Its three ideas are built into the kit's body: a visual summary (the optional Summary visual), before/after evidence (the **Evidence** section), and a merge-danger call (the **Merge danger** section). When both are installed, the ship skill's headings, order, and the target-required issue reference win. `/pr` only shapes the visual and the wording inside them.
 - **Retro** comes last. After shipping, especially after a session that went badly, `/retro` looks back and proposes changes to the agent's environment. A mechanical mistake becomes an automatic check (lint rule, pre-commit hook, CI job). A judgment call becomes a coding standard that `/code-review` enforces. It proposes; you decide what to apply.
-- **Porting** a feature from a reference implementation starts with `/port-feature` instead of `/feature-discovery` → `/feature-prompt`. It writes a gap map and hands off to `/grill-with-field`.
+- **Porting** a feature from a reference implementation starts with `/port-feature` instead of tracing the existing feature with `/feature-discovery`. It writes a gap map and hands off to `/grill-with-field`.
 - **Verify** is a group of skills, not one:
   - `/agentic-qa` for functional QA of any change that can show up on a screen,
   - `/pixel-audit` for per-page visual conformance,
@@ -621,7 +621,9 @@ per technical term without dropping facts.
 | Confirm nothing required was missed before the spec | `/grill-with-field check` |
 | Read up on one topic and save a cited document | `/research` |
 
-`/grill-with-field` replaces `/grill-with-docs` in kit flows. It still writes
+`/feature-discovery` and `/report-issue` suggest only Matt's skills and follow
+your workspace rules. Their follow-ups keep `/grill-with-docs`. In the other
+kit planning flows, `/grill-with-field` replaces `/grill-with-docs`. It still writes
 ADRs and glossary terms through Matt's `domain-modeling`. It needs Matt's
 `grilling` and `domain-modeling` installed and stops if either is missing. It
 never installs packages, edits code, or writes the spec.
@@ -725,7 +727,7 @@ What each one does:
 
 - **`/ci-loop`** makes up to 3 fix-and-push attempts, all under one approval. It never edits tests or workflows to make CI pass. A flaky failure in code the PR added is fixed like any other code failure (wait on the real condition), not retried. If something "passes locally", it compares the CI and local environments first. If the PR's latest commit is one it didn't push, it stops and reports `head moved`.
 - **`/agentic-qa`** tests the running app across a grid: state × screen size (viewport) × user role, plus keyboard-only. Browser console and network errors are part of the check too. A cell fails only after one exact replay. Anything the test saves must still be there after a reload. It reports findings and never edits code.
-- **`/report-issue`** creates one issue from a template, with acceptance criteria, code leads, labels, priority, cycle and due date, after you approve its draft. A bug on work already delivered goes to `/qa-escape` instead.
+- **`/report-issue`** creates one issue from a template, with acceptance criteria, code leads, labels, priority, cycle and due date, after you approve its draft. A bug on work already delivered stops intake and suggests Matt's `/triage` on the existing issue.
 - **`/qa-escape`** reproduces the bug. It also runs the reproduction once on the PR's base commit, so a bug that was already there is classed `not-a-regression`. It records the escape class (what kind of miss it was) on the issue. It names the regression test to write first, with its proof: the test fails at the tested commit and passes at base.
 - **`/risk-review`** looks at the change through specialist lenses, then gives a risk tier from a fixed rubric. A low tier offers auto-merge; a high tier asks for an engineer. It checks the author's `Door:` claim against the diff. A one-way door, or a `two-way` claim the diff contradicts, is high. Requested changes or an unresolved review thread block any merge, whatever the tier. A lens that fails counts as `not assessed`, never as low risk.
 - **`/deploy-watch`** watches the deploy run for up to 2× its usual time, then calls it `unverified`. With your approval, it smoke-checks staging against a baseline of the errors staging already shows, and records pass or fail. A 200 response without a build identifier is `build unconfirmed`.
@@ -1043,10 +1045,10 @@ The kit has no filed issues yet, so this guide has no "common questions" list. O
 
 Pick the path that fits your work:
 
-- **Planned work:** `/feature-discovery` -> `/feature-prompt` -> `/grill-with-field` (then `check`) -> `/to-spec` -> `/to-tickets` -> `/implement` (or `/tdd-loop` directly; `/implement-spec` for the whole spec in one run) -> `/code-review` -> local `/risk-review` in Matt flows -> `/commit-push-*`. The spec and ticket issues exist before coding. `/to-spec` and `/to-tickets` add the ready labels in the normal path, so you don't need a separate `/triage` step.
+- **Planned work:** `/feature-discovery` -> Matt's `/grill-with-docs` for open decisions, or `/to-spec` when decisions are settled -> `/to-tickets` -> `/implement` (or `/tdd-loop` directly; `/implement-spec` for the whole spec in one run) -> `/code-review` -> local `/risk-review` in Matt flows -> `/commit-push-*`. The spec and ticket issues exist before coding. `/to-spec` and `/to-tickets` add the ready labels in the normal path, so you don't need a separate `/triage` step.
 - **Foggy work:** `/wayfinder` -> chart the map -> resolve one ticket per session -> map exhausted -> rejoin planned work at `/to-spec`. The map's `Way:` issues are closed before the spec exists.
 - **Existing or incoming issues:** Use `/triage` when an issue needs a state change, follow-up with the reporter, `ready-for-human`, `wontfix`, or an agent brief before implementation.
-- **Problems a reporter found:** `/report-issue <problem> [screenshots]` -> one draft -> approved issue -> `/factory run <issue>` when it is `ready-for-agent`, otherwise `/triage`. See [Reporting a problem](#reporting-a-problem).
+- **Problems a reporter found:** `/report-issue <problem> [screenshots]` -> one draft -> approved issue -> Matt's `/implement <issue>` when it is specified and `ready-for-agent`, otherwise `/triage`. See [Reporting a problem](#reporting-a-problem).
 - **Ad hoc work:** one-line request -> `/diagnosing-bugs` or direct fix -> `/tdd-loop` when useful -> `/commit-push-*`. Do not write up a detailed GitHub issue before coding. The ship skill creates the issue at the end from the original request, final diff, decisions, and validation.
 
 If an ad hoc request grows large, unclear, cross-project, or into several slices, stop and route it through `/feature-prompt` or `/to-tickets` before going on. If the scope turns out to wait on unresolved decisions, route it to `/wayfinder` instead. Use `/triage` only when an issue already exists and its state or labels need fixing.
@@ -1068,18 +1070,18 @@ What it does:
 
 Reply `yes`, or name the fields to change. It then creates the issue, uploads the screenshots, reads every field back, and returns the link.
 
-**What the draft contains.** It is shaped so `/factory run` can pick it up: one classification label, numbered acceptance criteria in the body, steps or a route to reach the problem, and code leads marked as leads.
+**What the draft contains.** It supports Matt's `/triage` and `/implement`: one classification label, numbered acceptance criteria in the body, steps or a route to reach the problem, and code leads marked as leads.
 
 - **Workflow label.** The template's workflow label (for example `ready-for-agent`) is kept only when all six agent-ready checks pass. Otherwise the issue gets `needs-triage`, and the triage note names the checks that failed.
 - **Defaults.** Priority, cycle, and due-date defaults live in the skill's `references/triage-rules.md`. Workspace issue policy overrides them.
-- **Edge cases to check.** The body lists edge cases found in the traced code (roles, empty and error states, validation, edit versus create, other callers), each with its `path:line`. They guide the builder and `/agentic-qa`. They are never acceptance criteria. An edge case that needs a product decision keeps the issue at `needs-triage`.
+- **Edge cases to check.** The body lists edge cases found in the traced code (roles, empty and error states, validation, edit versus create, other callers), each with its `path:line`. They guide the builder and QA. They are never acceptance criteria. An edge case that needs a product decision keeps the issue at `needs-triage`.
 
 **Options.**
 
 - Add `repro` to have it try a local reproduction first.
 - Put several problems in one message, or add `batch`, to draft up to 10 issues at once. Problems with the same symptom are merged. You answer against one table with `yes`, `yes 1,3`, `drop 2`, or `<n>: <change>`.
 
-**Duplicates.** If an open duplicate exists, it comments there instead of creating a new issue. A closed, delivered duplicate goes to `/qa-escape`.
+**Duplicates.** If an open duplicate exists, it comments there instead of creating a new issue. A closed, delivered duplicate stops intake and suggests Matt's `/triage` on the existing issue.
 
 The skill never edits code and never changes a label vocabulary.
 
@@ -1151,9 +1153,10 @@ When you get stuck, find your situation below.
 
 ## Practical Default
 
-When unsure, run this sequence by hand:
+When you need to understand existing code before planning, run each step by hand:
+
 1. `/feature-discovery`
-2. `/feature-prompt` (Plan)
-3. `/grill-with-field` (Challenge), then `/grill-with-field check`
+2. Matt's `/grill-with-docs` for open decisions, or `/wayfinder` for unclear scope.
+3. `/to-spec` once the decisions are settled.
 
 No auto-chains. Start each step once the previous one's gate has passed. For anything off this path, `/ask-kit` names the skill to start with.

@@ -97,10 +97,10 @@
     }
   ],
   "last_run": {
-    "date": "2026-11-03",
+    "date": "2026-11-06",
     "method": "3 independent fresh catalog-only judges; majority vote; no workflow execution",
     "result": "607/607 pass",
-    "judge_model": "Inherited Claude Code session model (claude-opus-5-5); three fresh sub-agent sessions without model overrides; catalog-only, no repository access",
-    "catalog": "live kit descriptions and invocation policies + catalog-externals.md; ef048b5c8dc13dc35683148fdf2389e83f9fbab4 + uncommitted changes"
+    "judge_model": "Inherited Codex session model (GPT-6); three fresh sub-agents without model overrides; catalog-only",
+    "catalog": "live kit descriptions and invocation policies + catalog-externals.md; 7876425ba7c077f6b3fe7f5d7e9042ce172d1cb9 + uncommitted changes"
   }
 }

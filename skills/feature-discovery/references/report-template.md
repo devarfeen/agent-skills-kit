@@ -47,5 +47,5 @@ Fill each section with ≤3 bullets; bracketed text says what belongs there.
 
 ## 10. Suggested next skills (optional)
 
-- [/skill-name: reason tied to this report. 1–3 items, adjacent workflow steps.]
+- [1–3 installed, workspace-permitted Matt skills only: /grill-with-docs for open decisions, /to-spec for settled changes, /wayfinder for foggy scope, /handoff or /prototype for experiential questions. Suggest and stop; name missing or blocked targets without substitutes.]
 ```
