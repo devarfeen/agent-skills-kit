@@ -1,8 +1,8 @@
 ---
 name: feature-discovery
-description: "Trace how a named feature, module, workflow, API, config, or symbol works and who uses it; read-only. Whole-repo architecture summaries: /teach. Porting: /port-feature."
+description: "Trace how a named feature, module, workflow, API, config, or symbol works and who uses it; read-only. Whole-repo architecture summaries: /teach. Porting requires a separate request."
 metadata:
-  version: "0.3.1"
+  version: "0.4.0"
 ---
 
 # Feature discovery
@@ -15,6 +15,9 @@ Intake may be structured — `Projects Affected:` plus a `What:` block — or fr
 
 ## Rules
 
+- **Workspace policy first.** Before intake or searches, read applicable `AGENTS.md` files and their required rules. Workspace-root, terminology, safety, project mappings, glossary, tools, checks, and role rules override this workflow; required clarification has no away-default. Never access production or secrets; stop any disallowed lookup and report the gap.
+- **Matt-only follow-ups.** Suggest only skills from `mattpocock/skills`, confirmed from local install metadata. Name missing or workspace-disallowed skills; never substitute kit or third-party skills. Required workspace helpers still apply; they grant no extra workflow authority.
+
 - **Zero attribution.** Never add or leave co-author, AI, or tool attribution in any output.
 - **Read-only, chat-only.** Do not edit code, config, docs, native memory, ADRs, prompts, issues, or generated artifacts while discovering — `GLOSSARY.md` and artifact edits wait for step 7 approval. Never create `docs/discovery/` files, and do not read legacy discovery files unless the user names one — they go stale. No `git fetch`, `git pull`, installs, migrations, or destructive commands.
 - **Non-mutating validation.** Default to static inspection. Execute project or test commands only after establishing they will not change files or local/external state. Otherwise report the unrun check, not a pass. Clean `git status` alone proves neither ignored files nor databases stayed unchanged.
@@ -22,9 +25,9 @@ Intake may be structured — `Projects Affected:` plus a `What:` block — or fr
 - **Git history is opt-in.** Never read it during discovery; offer a scan in the report (step 7).
 - **Trace behavior, not just symbols.** Connect entry points, relevant conditions, state changes, callers, and downstream effects with cited links or explicit gaps. Flag seam-reuse across similar paths. The tell: a symbol dump with no usage site or user-visible effect.
 - **Keep scope thin.** Split broad intake; name the first slice and deferred slices. Stop when scoped questions are answered or evidence gaps reported after validation; unresolved work beyond available context needs a scope split or handoff. The tell: drifting into product discovery or experiment design without an explicit pivot.
-- **Stop after presenting the report.** Suggest the next skill; never invoke it or start implementation without a fresh request. Grillable unknowns stay as open decisions for `/feature-prompt` or `/grill-with-field`; ungrillable ones ("needs to feel/see it") route to `/handoff` + `/prototype` (when installed; else state the uncertainty plainly). Destination or open questions still foggy → suggest `/wayfinder`, not `/feature-prompt`; a PR-sized prompt cannot be written through fog.
+- **Stop after presenting the report.** Suggest the next skill; never invoke it or start implementation without a fresh request. Grillable unknowns stay as open decisions for Matt's `/grill-with-docs`; settled changes can go to `/to-spec`; ungrillable ones ("needs to feel/see it") route to `/handoff` + `/prototype` (when installed; else state the uncertainty plainly). Destination or open questions still foggy → suggest `/wayfinder`; a spec cannot be written through fog.
 - Emit `Stage / Found / Next / Needs user` at each phase transition — one line per field. Phases: parsed, code traced, validated, report.
-- Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes. Summaries back, not transcripts; synthesis stays in the main session.
+- Sub-agents: dispatch local lanes automatically for independent work — never cloud agents; announce the lane count at dispatch and report each lane as it completes. Use read-only scouts under workspace role and model rules; if delegation is disallowed, search in the main session. Summaries back, not transcripts; synthesis stays in the main session.
 
 ## Workflow
 
@@ -48,7 +51,7 @@ Read issues the user names or that can resolve a material gap; when no issue is 
 
 ### 5. Track candidate context terms
 
-Compare discovered domain terms with `GLOSSARY.md` — at `<artifacts-root>`, else nearby project docs — and flag missing, stale, renamed, overloaded, or ambiguous ones. Only when candidates exist, load [`references/context-terms.md`](references/context-terms.md) for qualification, presentation, and approval. With none, report that in one line.
+Compare discovered domain terms with the workspace-designated `GLOSSARY.md` — absent a workspace rule, at `<artifacts-root>`, else nearby project docs — and flag missing, stale, renamed, overloaded, or ambiguous ones. Only when candidates exist, load [`references/context-terms.md`](references/context-terms.md) for qualification, presentation, and approval. With none, report that in one line.
 
 ### 6. Validate twice
 
@@ -58,7 +61,7 @@ Pass 1: cross-check each answer against code, tests, config, and context used. P
 
 When step 2 left a why-or-when question, section 8 ends with a history offer: the question, the traced files, and a last-2-months window. Scan only on a fresh yes, read-only (`git log`, `git show`, `git blame`; extend a targeted lookup for older evidence), and answer as a short addendum that also notes repeated fix commits on the traced files.
 
-For `GLOSSARY.md` or other artifact updates after the report: show each target path, proposed text, and reason; wait for explicit approval, then follow **Applying approved updates** in `references/context-terms.md` (away-fallback: no reply → no edits; candidates stay in the report).
+For `GLOSSARY.md` or other artifact updates after the report: show each target path, proposed text, and reason; wait for explicit approval, then apply workspace domain-document rules and follow **Applying approved updates** in `references/context-terms.md` (away-fallback: no reply → no edits; candidates stay in the report).
 
 ## Output
 

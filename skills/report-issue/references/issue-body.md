@@ -2,7 +2,7 @@
 
 Zero attribution: never add or leave co-author, AI, or tool attribution in any output.
 
-Load at step 5. The body is the factory's criteria source: the template answers carry the reporter's facts, and the appended sections carry what the agent found.
+Load at step 5. The body supports Matt's `/triage` and `/implement` flows: the template answers carry the reporter's facts, and the appended sections carry what the agent found.
 
 ## Template part
 

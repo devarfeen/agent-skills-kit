@@ -7,6 +7,20 @@ their new versions, so a workspace on an older copy can see what an update
 brings. Generated `AGENTS.md` files carry the `agents-md` marker version;
 re-run `/agents-md` after a marker bump.
 
+## 2026-11-07
+
+### Fixed
+
+- `/feature-discovery` 0.4.0 and `/report-issue` 0.2.0 now suggest only
+  Matt Pocock's skills. Discovery points to `/grill-with-docs` for open
+  decisions and `/to-spec` for settled changes. Issue reporting suggests
+  `/implement` for specified work and `/triage` for unresolved or delivered
+  work. Both stop at the suggestion and report missing or blocked skills.
+- Both skills check workspace rules before starting. Workspace safety,
+  terminology, tracker, project, glossary, check, and role rules take priority.
+  Issue reporting uses the workspace's allowed classifications and returns
+  the full draft when its tracker or project mapping is unavailable.
+
 ## 2026-11-05
 
 ### Fixed

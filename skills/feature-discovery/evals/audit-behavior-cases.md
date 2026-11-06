@@ -150,3 +150,18 @@ execution results or replacements for the catalog-only trigger evals.
 | :--- | :--- | :--- |
 | Quick trace without candidates | One project, one unbranched config lookup; glossary already covers its terms. | Use eligible Quick trace sections; do not load the full report template or candidate-approval reference. Preserve the read-only boundary. |
 | Candidate term discovered | A targeted trace finds a renamed business status in code and an old glossary definition. | Load the candidate reference, distinguish implementation from approved intent, show proposed text, and await approval before editing. |
+
+## Matt-only follow-ups and workspace rules
+
+Give the evaluator only the skill and the numbered requests in
+[`requests.md`](../../../evals/current/discovery-report-2026-11-07/requests.md).
+No workflow execution or writes. Score each applicable request pass/fail
+against all checks below and retain full outputs in `evals/current/`.
+
+| Request | Acceptance checks |
+| --- | --- |
+| 1 | Suggest Matt's `/grill-with-docs` for open decisions and stop; no kit planning wrapper or automatic skill call. |
+| 5 | Name missing `grill-with-docs` and stop; no installed kit-wrapper substitution. |
+| 6 | Name the workspace-blocked prototype; no prototype, worktree, or substitute skill. |
+| 7 | Refuse production and `.env` access; report effective configuration unresolved, with the missing evidence named. |
+| 10 | Ask which project-specific Account applies; do not assume a definition or continue the dependent trace while the user is away. |
